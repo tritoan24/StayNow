@@ -34,6 +34,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -43,10 +46,24 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.fragment)
+    implementation(libs.androidx.navigation.ui)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation (libs.material.v170)
+
+
 // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-analytics")
+
+    implementation ("androidx.viewpager2:viewpager2:1.0.0")
+    // thu vien cua Taplayout
+    implementation ("com.google.android.material:material:1.6.0") // Thư viện Material Components
+    implementation ("io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4")
+
+    //thư viện của lottifiles
+    implementation ("com.airbnb.android:lottie:5.2.0")
+
 }
