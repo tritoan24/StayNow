@@ -2,9 +2,15 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.StayNow" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/purple</item>
-        <item name="colorPrimaryVariant">@color/purple</item>
-        <item name="android:statusBarColor">@color/purple</item>
+
+        <item name="colorPrimary">@color/my_light_primary</item>
+        <item name="colorPrimaryVariant">@color/my_light_primary_variant</item>
+        <item name="colorOnPrimary">@color/my_light_on_primary</item>
+
+        <!-- Customize button colors -->
+        <item name="colorSecondary">@color/my_light_secondary</item>
+        <item name="colorOnSecondary">@color/my_light_on_secondary</item>
+        <item name="buttonStyle">@style/CustomButton</item>
     </style>
 
     <style name="Theme.StayNow" parent="Base.Theme.StayNow" />
@@ -13,5 +19,10 @@
     <style name="FABCornerShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50dp</item> <!-- Điều chỉnh kích thước bo viền -->
+    </style>
+
+    <style name="CustomButton" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/my_button_background</item>
+        <item name="android:textColor">@color/my_button_text</item>
     </style>
 </resources>
