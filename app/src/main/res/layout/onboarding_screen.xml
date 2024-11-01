@@ -2,15 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/onboarding_hinh"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:scaleType="centerCrop" />
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/onboarding_animation"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
 
     <TextView
         android:id="@+id/onboarding_tieu_de"
@@ -19,13 +21,16 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
+        android:text="Kham pha"
         android:gravity="center" />
 
     <TextView
         android:id="@+id/onboarding_mo_ta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
+        android:textSize="14sp"
+        android:text="Kham pha ngay nao"
+        android:layout_marginTop="18dp"
+        android:textStyle="italic"
         android:gravity="center" />
 </LinearLayout>

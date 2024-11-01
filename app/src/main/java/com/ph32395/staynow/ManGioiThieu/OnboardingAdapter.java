@@ -7,8 +7,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.ph32395.staynow.R;
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.List;
+
 public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.OnboardingViewHolder> {
 
     private final List<OnboardingScreen> onboardingScreens;
@@ -37,21 +39,26 @@ public class OnboardingAdapter extends RecyclerView.Adapter<OnboardingAdapter.On
     }
 
     static class OnboardingViewHolder extends RecyclerView.ViewHolder {
-        private TextView title;
-        private TextView description;
-        private ImageView image;
+        private final TextView title;
+        private final TextView description;
+        private final LottieAnimationView lottieAnimationView;
 
+        // ViewHolder khởi tạo các thành phần giao diện
         public OnboardingViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.onboarding_tieu_de);
             description = itemView.findViewById(R.id.onboarding_mo_ta);
-            image = itemView.findViewById(R.id.onboarding_hinh);
+            lottieAnimationView = itemView.findViewById(R.id.onboarding_animation);
         }
 
+        // Gán dữ liệu từ OnboardingScreen vào các thành phần giao diện
         public void bind(OnboardingScreen screen) {
-            title.setText(screen.getTieuDe());
-            description.setText(screen.getMoTa());
-            image.setImageResource(screen.getHinh());
+            title.setText(screen.getTitle());
+            description.setText(screen.getDescription());
+
+            // Load animation từ URL Lottie và bắt đầu phát
+            lottieAnimationView.setAnimationFromUrl(screen.getAnimationUrl());
+            lottieAnimationView.playAnimation();
         }
     }
 }

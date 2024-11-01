@@ -51,6 +51,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation (libs.material.v170)
+
+
 // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
     implementation("com.google.firebase:firebase-analytics")
@@ -59,5 +62,8 @@ dependencies {
     // thu vien cua Taplayout
     implementation ("com.google.android.material:material:1.6.0") // Thư viện Material Components
     implementation ("io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4")
+
+    //thư viện của lottifiles
+    implementation ("com.airbnb.android:lottie:5.2.0")
 
 }

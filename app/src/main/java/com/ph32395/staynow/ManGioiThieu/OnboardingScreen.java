@@ -2,25 +2,25 @@ package com.ph32395.staynow.ManGioiThieu;
 
 
 public class OnboardingScreen {
-    private String tieuDe;
-    private String moTa;
-    private int hinh;
+    private String title;
+    private String description;
+    private String animationUrl;
 
-    public OnboardingScreen(String tieuDe, String moTa, int hinh) {
-        this.tieuDe = tieuDe;
-        this.moTa = moTa;
-        this.hinh = hinh;
+    public OnboardingScreen(String title, String description, String animationUrl) {
+        this.title = title;
+        this.description = description;
+        this.animationUrl = animationUrl;
     }
 
-    public String getTieuDe() {
-        return tieuDe;
+    public String getTitle() {
+        return title;
     }
 
-    public String getMoTa() {
-        return moTa;
+    public String getDescription() {
+        return description;
     }
 
-    public int getHinh() {
-        return hinh;
+    public String getAnimationUrl() {
+        return animationUrl;
     }
 }
