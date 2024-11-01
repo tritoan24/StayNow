@@ -13,10 +13,16 @@
         android:theme="@style/Theme.StayNow"
         tools:targetApi="31">
         <activity
-            android:name=".DangNhap"
+            android:name=".ManGioiThieu.OnboardingScreen"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DangNhap"
+            android:exported="false" />
+        <activity
+            android:name=".ManGioiThieu.OnboardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
