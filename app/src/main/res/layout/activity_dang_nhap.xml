@@ -90,7 +90,7 @@
                         android:textSize="16sp" />
 
                     <ImageView
-                        android:id="@+id/Andhienpass"
+                        android:id="@+id/img_anhienpass"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.1"
@@ -130,19 +130,45 @@
                 android:textSize="18sp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/custom_buttom" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:id="@+id/loginWithGGButton"
+                android:text="Đăng Nhập Với Google"
+                android:textSize="18sp"
+                android:drawableLeft="@drawable/icongoogle"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_buttom"
+                />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:text="Not yet registered? Sign Up Now"
-        android:textSize="14sp"
-        android:textAlignment="center"
-        android:id="@+id/signupText"
-        android:textColor="@color/purple"
-        android:layout_marginBottom="20dp" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn chưa có tài khoản?  "
+            android:textSize="14sp"
+            android:textAlignment="center"
+            android:textColor="@color/purple"
+           />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đăng ký ngay"
+            android:textSize="14sp"
+            android:textAlignment="center"
+            android:id="@+id/txtdangky"
+            android:textColor="@color/purple"
+            />
+
+    </LinearLayout>
+
 
 </LinearLayout>
