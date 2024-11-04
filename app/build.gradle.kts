@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -7,6 +9,7 @@ plugins {
 android {
     namespace = "com.ph32395.staynow"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.ph32395.staynow"
@@ -40,7 +43,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -51,19 +53,25 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation (libs.material.v170)
 
-
-// Import the Firebase BoM
+    // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.5.1"))
+
+    // Thêm các thư viện Firebase
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-database")
 
-    implementation ("androidx.viewpager2:viewpager2:1.0.0")
-    // thu vien cua Taplayout
-    implementation ("com.google.android.material:material:1.6.0") // Thư viện Material Components
-    implementation ("io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4")
-
-    //thư viện của lottifiles
-    implementation ("com.airbnb.android:lottie:5.2.0")
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation("com.google.android.material:material:1.6.0")
+    implementation("io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4")
+    implementation("com.airbnb.android:lottie:5.2.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation ("com.google.firebase:firebase-storage:21.0.1")
+    //lấy ảnh từ thư viện và camera ImagePicker
+    implementation ("com.github.Dhaval2404:imagepicker:2.1")
+    // Thư viện xử lý ảnh
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
 }

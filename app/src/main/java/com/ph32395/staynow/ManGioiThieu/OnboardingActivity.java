@@ -2,6 +2,7 @@ package com.ph32395.staynow.ManGioiThieu;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.ph32395.staynow.DangNhap;
+import com.ph32395.staynow.DangKiDangNhap.DangKy;
+import com.ph32395.staynow.DangKiDangNhap.DangNhap;
 import com.ph32395.staynow.R;
 
 import java.util.ArrayList;
@@ -21,11 +23,16 @@ public class OnboardingActivity extends AppCompatActivity {
     private TabLayout indicator;
     private Button btnBatDau;
 
+    private static final String PREFS_NAME = "MyAppPrefs";
+    private static final String FIRST_TIME_KEY = "first_time";
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding_screen);
+
+
 
         viewPager = findViewById(R.id.viewPager);
         indicator = findViewById(R.id.tabLayout);
@@ -67,7 +74,13 @@ public class OnboardingActivity extends AppCompatActivity {
 
         btnBatDau.setOnClickListener(v -> {
             // Chuyển hướng đến hoạt động chính của ứng dụng
-            startActivity(new Intent(OnboardingActivity.this, DangNhap.class));
+
+
+            SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(FIRST_TIME_KEY, false);
+            editor.apply();
+            startActivity(new Intent(OnboardingActivity.this, DangKy.class));
             finish();
         });
     }

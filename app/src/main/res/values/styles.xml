@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.NoStatusBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+    <style name="TransparentDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="windowNoTitle">true</item> <!-- Ẩn tiêu đề -->
+        <item name="android:windowBackground">@android:color/transparent</item> <!-- Nền trong suốt -->
+    </style>
+</resources>

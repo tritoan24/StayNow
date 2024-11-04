@@ -1,0 +1,24 @@
+<!-- hieuungthongbaoloi.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:id="@+id/text_message"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#fff"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:layout_gravity="center" />
+</LinearLayout>
