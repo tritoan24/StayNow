@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -221,7 +222,6 @@ public class DangKy extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN_REGISTER) {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
@@ -241,6 +241,8 @@ public class DangKy extends AppCompatActivity {
 
                 @Override
                 public void onSignInFailed(Exception e) {
+                    Log.d("TRẢ VỀ DATA", "requestCode" + requestCode + ", resultCode" + resultCode + ", data" + data+"Lỗi"+e);
+
                     Toast.makeText(DangKy.this, "Đăng nhập với Google thất bại", Toast.LENGTH_SHORT).show();
                 }
             });
