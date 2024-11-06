@@ -60,7 +60,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListe
         roomsRef = database.getReference("PhongTro")
 
         // Lấy dữ liệu từ Realtime Database
-        getDataFromRealtimeDatabase(roomAdapter, "Tất cả")
+        getDataFromRealtimeDatabase(roomAdapter)
     }
 
     private fun getDataFromRealtimeDatabase(roomAdapter: PhongTroAdapter) {
