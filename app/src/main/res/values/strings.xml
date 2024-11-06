@@ -11,7 +11,9 @@
 
     <string name="default_web_client_id">918655571270-4nik6s7seao371jrq6boha3ro9fq85pf.apps.googleusercontent.com</string>
 
-
+    <string name="default_text">Mục mặc định</string>
+    <string name="icon_description">Mô tả biểu tượng</string>
+    <string name="arrow_description">Mô tả mũi tên</string>
 
 
     <string name="lorem_ipsum">

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -172,6 +173,7 @@ public class DangKy extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
+
                         Toast.makeText(DangKy.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
 
                         // Tải ảnh lên Firebase Storage sau khi đăng ký thành công
@@ -207,6 +209,16 @@ public class DangKy extends AppCompatActivity {
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien,Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
        NguoiDung nguoiDung = new NguoiDung(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
+        Log.d("UserInfo", "Ma_nguoidung: " + Ma_nguoidung);
+        Log.d("UserInfo", "Ho_ten: " + Ho_ten);
+        Log.d("UserInfo", "Sdt: " + Sdt);
+        Log.d("UserInfo", "Email: " + Email);
+        Log.d("UserInfo", "Anh_daidien: " + Anh_daidien);
+        Log.d("UserInfo", "So_luotdatlich: " + So_luotdatlich);
+        Log.d("UserInfo", "Loai_taikhoan: " + Loai_taikhoan);
+        Log.d("UserInfo", "Trang_thaitaikhoan: " + Trang_thaitaikhoan);
+        Log.d("UserInfo", "Ngay_taotaikhoan: " + Ngay_taotaikhoan);
+        Log.d("UserInfo", "Ngay_capnhat: " + Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {

@@ -7,9 +7,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +36,7 @@ public class DangNhap extends AppCompatActivity {
     private RegisterWithGoogle registerWithGoogle;
     private DatabaseReference mDatabase;
     private ImageView img_anhienpass;
+
 
 
     private static final int RC_SIGN_IN_REGISTER = 9001;
@@ -62,34 +66,52 @@ public class DangNhap extends AppCompatActivity {
             String email = edMail.getText().toString().trim();
             String password = edPass.getText().toString().trim();
 
+            Log.d("DangNhap", "Email: " + email);
+            Log.d("DangNhap", "Password: " + password);
+
             if (email.isEmpty() || password.isEmpty()) {
-              Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            }
-            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            } else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                 edMail.setError("Email không hợp lệ");
-            }
-            else {
+            } else {
                 // Đăng nhập bằng Firebase
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
                             if (task.isSuccessful()) {
-                                // Đăng nhập thành công
-                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-
-                                // Lưu trạng thái đã đăng nhập vào SharedPreferences
-                                SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("is_logged_in", true);
-                                editor.apply();
-
-                                startActivity(new Intent(DangNhap.this, MainActivity.class));
-                                finish(); // Đóng màn hình đăng nhập
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null) {
+                                    String userId = user.getUid();
+                                    mDatabase.child("NguoiDung").child(userId).get().addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful() && task1.getResult() != null) {
+                                            NguoiDung nguoiDung = task1.getResult().getValue(NguoiDung.class);
+                                            if (nguoiDung != null) {
+                                                SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = prefs.edit();
+                                                editor.putString("Name", nguoiDung.getHo_ten());
+                                                editor.putString("Phone", nguoiDung.getSdt());
+                                                editor.putString("Image", nguoiDung.getAnh_daidien());
+                                                editor.putString("AccountType", nguoiDung.getLoai_taikhoan());
+                                                editor.putBoolean("is_logged_in", true);
+                                                editor.apply();
+                                                startActivity(new Intent(DangNhap.this, MainActivity.class));
+                                                finish();
+                                            } else {
+                                                Log.d("DangNhap", "Thông tin người dùng không tồn tại.");
+                                                Toast.makeText(DangNhap.this, "Lỗi khi lấy thông tin người dùng.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } else {
+                                            Log.d("DangNhap", "Lỗi khi lấy thông tin người dùng: " + task1.getException());
+                                            Toast.makeText(DangNhap.this, "Đăng nhập thất bại!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             } else {
                                 showFailureAnimation(task.getException().getMessage());
                             }
                         });
             }
         });
+
 
         txtdangky.setOnClickListener(v -> {
             startActivity(new Intent(DangNhap.this, DangKy.class));
@@ -123,7 +145,6 @@ public class DangNhap extends AppCompatActivity {
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien,Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
         NguoiDung nguoiDung = new NguoiDung(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
-
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -143,17 +164,19 @@ public class DangNhap extends AppCompatActivity {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
                     //neu so dien thoai chua co thi hien thi dialog de nhap so dien thoai
+                    String phoneNumber = user.getPhoneNumber() == null ? "ChuaCo" : user.getPhoneNumber();
 
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
-                        startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
-                        startActivity(intent);
-                    }
+                    // Log thông tin người dùng
+                    Log.d("DangNhap", "User ID: " + user.getUid());
+                    Log.d("DangNhap", "Display Name: " + user.getDisplayName());
+                    Log.d("DangNhap", "Email: " + user.getEmail());
+                    Log.d("DangNhap", "Phone Number: " + phoneNumber);
+                    Log.d("DangNhap", "Photo URL: " + user.getPhotoUrl());
+
+                    saveUserInfo(user.getUid(), user.getDisplayName(), phoneNumber, user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                    Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(DangNhap.this, MainActivity.class);
+                    startActivity(intent);
                 }
 
                 @Override
@@ -163,7 +186,6 @@ public class DangNhap extends AppCompatActivity {
             });
         }
     }
-
 
     // Phương thức để hiển thị animation thất bại
     private void showFailureAnimation(String errorMessage) {
