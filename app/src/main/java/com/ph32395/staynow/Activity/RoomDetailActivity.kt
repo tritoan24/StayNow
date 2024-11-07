@@ -18,15 +18,12 @@ import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
-import com.ph32395.staynow.databinding.ActivityMainBinding
-import com.tbuonomo.viewpagerdotsindicator.DotsIndicator
 
 class RoomDetailActivity : AppCompatActivity() {
 
     private lateinit var viewModel: RoomDetailViewModel
     private lateinit var viewPagerAdapter: ImagePagerAdapter
     private lateinit var recyclerViewAdapter: ImageRecyclerViewAdapter
-    private lateinit var dotsIndicator: DotsIndicator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
