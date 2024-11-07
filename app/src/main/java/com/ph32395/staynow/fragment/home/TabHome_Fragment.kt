@@ -2,6 +2,7 @@ package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -51,8 +52,9 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         roomsRef = database.getReference("PhongTro")
         getFullListRoom()
         sharedViewModel.selectedTab.observe(viewLifecycleOwner) { loaiPhongTro ->
-            if (loaiPhongTro == "Tất cả") {
+            if (loaiPhongTro == "0") {
                 getFullListRoom()
+
             } else {
                 getListByCategory(loaiPhongTro)
             }
@@ -77,14 +79,15 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         })
     }
 
-    private fun getListByCategory(loaiPhongTro: String) {
+    private fun getListByCategory(maLoaiPhongTro: String) {
         // Hủy listener cũ nếu có
         valueEventListener?.let { roomsRef.removeEventListener(it) }
 
-        valueEventListener = roomsRef.orderByChild("loaiPhongTro").equalTo(loaiPhongTro)
+        valueEventListener = roomsRef.orderByChild("maLoaiPhongTro").equalTo(maLoaiPhongTro)
             .addValueEventListener(object : ValueEventListener {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
+
                     roomList.clear()
                     for (roomSnapshot in snapshot.children) {
                         val room = roomSnapshot.getValue(PhongTro::class.java)
@@ -100,5 +103,6 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
                 }
             })
     }
+
 
 }
