@@ -19,13 +19,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
-            android:name=".Activity.TestActivity"
-            android:exported="false" />
-        <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".Activity.RoomDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ManGioiThieu.OnboardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.DangKy"
@@ -35,14 +35,10 @@
             android:name=".ManGioiThieu.OnboardingScreen"
             android:exported="false" />
         <activity
-            android:name=".Activity.SplashActivity"
-            android:exported="false" />
-        <activity
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:name=".Activity.RoomDetailActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
