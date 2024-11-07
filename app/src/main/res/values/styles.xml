@@ -9,5 +9,9 @@
         <item name="android:windowBackground">@android:color/transparent</item> <!-- Nền trong suốt -->
     </style>
 
+        <style name="RoundedCornerShape">
+            <item name="cornerFamily">rounded</item>
+            <item name="cornerSize">8dp</item>  <!-- Tùy chỉnh kích thước bo góc -->
+        </style>
 
 </resources>
