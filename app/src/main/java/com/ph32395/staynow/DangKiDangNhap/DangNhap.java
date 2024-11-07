@@ -106,10 +106,11 @@ public class DangNhap extends AppCompatActivity {
 
             if(edPass.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
                 edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                img_anhienpass.setImageResource(R.drawable.visiblepass);
+                img_anhienpass.setImageResource(R.drawable.chepass);
             } else {
                 edPass.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                img_anhienpass.setImageResource(R.drawable.chepass);
+                img_anhienpass.setImageResource(R.drawable.visiblepass);
+
             }
 
             edPass.setSelection(cursorPosition);
