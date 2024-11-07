@@ -1,20 +1,28 @@
 package com.ph32395.staynow
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.ph32395.staynow.databinding.ActivityMainBinding
-import com.ph32395.staynow.fragment.HomeFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
 import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
+import com.ph32395.staynow.fragment.home.HomeTabFragment
+import com.ph32395.staynow.fragment.home.OnTabSelectedListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),OnTabSelectedListener{
 
     private lateinit var binding: ActivityMainBinding
+    // Implement phương thức của interface OnTabSelectedListener
+    override fun onTabSelected(loaiPhongTro: String) {
+        Log.d("MainActivity", "Received tab selection: $loaiPhongTro")
+        // Chuyển giao dữ liệu cho HomeTabFragment
+        val homeTabFragment = supportFragmentManager.findFragmentByTag("HomeTabFragment") as? HomeTabFragment
+        homeTabFragment?.onTabSelected(loaiPhongTro)
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,4 +59,7 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.fragment_container, fragment)
             .commit()
     }
+
+
+
 }

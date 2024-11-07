@@ -35,12 +35,13 @@
             android:name=".ManGioiThieu.OnboardingScreen"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
+            android:name=".MainActivity"
             android:name=".Activity.RoomDetailActivity"
             android:exported="true">
             <intent-filter>
