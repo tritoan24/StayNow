@@ -1,11 +1,13 @@
 package com.ph32395.staynow
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.HomeFragment
 import com.ph32395.staynow.fragment.MessageFragment
@@ -43,6 +45,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+        binding.fabSearch.setOnClickListener {
+            startActivity(Intent(this,SearchActivity::class.java))
         }
     }
 

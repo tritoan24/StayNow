@@ -73,5 +73,6 @@ dependencies {
     // Thư viện xử lý ảnh
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
-
+    //Thu vien khoang gia
+    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
 }

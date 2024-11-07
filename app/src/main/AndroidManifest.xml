@@ -24,6 +24,9 @@
             android:name=".ManGioiThieu.OnboardingActivity"
             android:exported="false" />
         <activity
+            android:name=".ChucNangTimKiem.SearchActivity"
+            android:exported="false" />
+        <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
