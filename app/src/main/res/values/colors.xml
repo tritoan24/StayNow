@@ -19,4 +19,9 @@
         <color name="my_button_background">#FFBB86FC</color>
         <color name="my_button_text">#FFFFFF</color>
 
+        <color name="transparent">#00000000</color>
+
+        <color name="grey_bg">#EFEFEF</color>
+        <color name="red">#FF0808</color>
+
 </resources>
