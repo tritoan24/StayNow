@@ -35,10 +35,10 @@
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

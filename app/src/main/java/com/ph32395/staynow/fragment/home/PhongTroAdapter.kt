@@ -13,21 +13,6 @@ import com.ph32395.staynow.databinding.ItemRoomBinding
 
 class PhongTroAdapter(private var roomList: List<PhongTro>) : RecyclerView.Adapter<PhongTroAdapter.RoomViewHolder>() {
 
-    interface DataUpdateListener {
-        fun onDataUpdate(newRoomList: List<PhongTro>)
-    }
-
-    private var dataUpdateListener: DataUpdateListener? = null
-
-    fun setDataUpdateListener(listener: DataUpdateListener) {
-        dataUpdateListener = listener
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateList(newRoomList: List<PhongTro>) {
-        roomList = newRoomList
-        notifyDataSetChanged()
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
         val binding=ItemRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
