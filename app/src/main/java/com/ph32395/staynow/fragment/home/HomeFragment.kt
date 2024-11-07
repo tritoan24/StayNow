@@ -75,7 +75,6 @@ class HomeFragment : Fragment() {
                 tab?.let {
                     // Chỉ gọi phương thức khi tab được chọn
                     onTabSelectedListener.onTabSelected(it.text.toString())
-                    Log.d("ONTABSELECTED", "Tab selected: ${it.text}")
                 }
             }
 
