@@ -18,7 +18,6 @@ import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
-import com.ph32395.staynow.databinding.ActivityMainBinding
 
 class RoomDetailActivity : AppCompatActivity() {
 
