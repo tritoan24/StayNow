@@ -40,6 +40,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -66,8 +67,10 @@ dependencies {
     implementation("com.google.android.material:material:1.6.0")
     implementation("io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4")
     implementation("com.airbnb.android:lottie:5.2.0")
+    implementation ("com.github.denzcoskun:ImageSlideshow:0.1.0")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation ("com.google.firebase:firebase-storage:21.0.1")
+    //
     //lấy ảnh từ thư viện và camera ImagePicker
     implementation ("com.github.Dhaval2404:imagepicker:2.1")
     // Thư viện xử lý ảnh
@@ -75,4 +78,6 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
     //Thu vien khoang gia
     implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
+
+
 }
