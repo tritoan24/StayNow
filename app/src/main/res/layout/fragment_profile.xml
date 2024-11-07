@@ -55,10 +55,11 @@
 
             <!-- User Information Section -->
             <androidx.cardview.widget.CardView
-                android:layout_width="370dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="4dp"
                 android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 app:cardCornerRadius="16dp"
                 app:cardBackgroundColor="@color/white"
                 android:translationY="-16dp">
@@ -226,26 +227,36 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:background="?attr/selectableItemBackground"
-                    android:foreground="@drawable/ripple_effect"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_qlpt" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Quản lý phòng trọ"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="165dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
 
                 <View
@@ -259,25 +270,36 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_schedule" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lịch hẹn xem phòng"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
-                    <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/right_row"
-                        android:layout_marginLeft="150dp"
-                        android:backgroundTint="@color/white"
-                        />
-                </LinearLayout>
+                        android:text="Lịch xem phòng"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
 
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/right_row"
+                        android:backgroundTint="@color/white" />
+                </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -290,23 +312,35 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_hoadon" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hóa đơn"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="224dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
 
                 <View
@@ -320,23 +354,35 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_hopdong" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hợp đồng"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="214dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
 
                 <View
@@ -350,25 +396,36 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_favourite" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bài đăng yêu thích"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
-                    <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
-                        android:src="@drawable/right_row"
-                        android:layout_marginLeft="159dp"
-                        android:backgroundTint="@color/white"
-                        />
-                </LinearLayout>
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
 
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/right_row"
+                        android:backgroundTint="@color/white" />
+                </LinearLayout>
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -380,23 +437,35 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_dieukhoan" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Điều khoản và chính sách"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="116dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
 
                 <View
@@ -410,23 +479,35 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_error" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Báo cáo sự cố"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:text="Báo cáo sư cố"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="186dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
 
                 <View
@@ -440,24 +521,37 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_setting" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Cài đặt"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="230.5dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
@@ -470,25 +564,38 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp">
+
+                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_exit" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Đăng xuất"
-                        android:textStyle="normal|bold"
-                        android:layout_marginStart="8dp" />
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
                         android:id="@+id/LogoutButton"
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
-                        android:layout_marginLeft="212dp"
-                        android:backgroundTint="@color/white"
-                        />
+                        android:backgroundTint="@color/white" />
                 </LinearLayout>
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"

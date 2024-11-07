@@ -52,26 +52,24 @@ class ProfileFragment : Fragment() {
         Log.d("UID", "UID: $userId")
 
         // Lấy thông tin người dùng từ SharedPreferences
-        val prefs = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val accountType = prefs.getString("AccountType", "NguoiThue") // Mặc định là "NguoiThue"
+
         // Lấy thông tin người dùng từ Firebase nếu có UID
         if (userId != null) {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        val name = prefs.getString("Name", null)
-                        val phone = prefs.getString("Phone", null)
-                        val image = prefs.getString("Image", null)
-                        Log.d("ProfileFragment", "Name: $name, Phone: $phone, Image: $image")
+                        val name = snapshot.child("ho_ten").value.toString()
+                        val phone = snapshot.child("sdt").value.toString()
+                        val img = snapshot.child("anh_daidien").value.toString()
 
-                        // Cập nhật giao diện với thông tin mới từ Firebase
-                        userNameTextView.text = name ?: "Người dùng"
-                        userPhoneTextView.text = phone ?: "Chưa có"
+                        // gắn cho tôi vào textview
+                        userNameTextView.text = name
+                        userPhoneTextView.text = phone
 
                         // Tải ảnh đại diện bằng Glide
-                        if (!image.isNullOrEmpty()) {
+                        if (!img.isNullOrEmpty()) {
                             Glide.with(this@ProfileFragment)
-                                .load(image)
+                                .load(img)
                                 .circleCrop()
                                 .placeholder(R.drawable.ic_user)
                                 .into(profileImageView)
@@ -81,10 +79,10 @@ class ProfileFragment : Fragment() {
                     } else {
                         Log.d("ProfileFragment", "Người dùng không tồn tại")
                     }
-
+                    val accountType = snapshot.child("loai_taikhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
                     val registerLayout = view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
                     if (registerLayout != null) {
-                        if ("Chủ nhà".equals(accountType, ignoreCase = true)) {
+                        if ("ChuNha".equals(accountType)) {
                             registerLayout.visibility = View.GONE
                         } else {
                             registerLayout.visibility = View.VISIBLE

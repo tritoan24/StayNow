@@ -87,11 +87,6 @@ public class DangNhap extends AppCompatActivity {
                                             if (nguoiDung != null) {
                                                 SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                 SharedPreferences.Editor editor = prefs.edit();
-                                                editor.putString("Name", nguoiDung.getHo_ten());
-                                                editor.putString("Phone", nguoiDung.getSdt());
-                                                editor.putString("Image", nguoiDung.getAnh_daidien());
-                                                editor.putString("AccountType", nguoiDung.getLoai_taikhoan()); // Hoặc "Người thuê"
-                                                //editor.putString("AccountType", "Chủ nhà"); // Hoặc "Chủ nhà"
                                                 editor.putBoolean("is_logged_in", true);
                                                 editor.apply();
                                                 startActivity(new Intent(DangNhap.this, MainActivity.class));
