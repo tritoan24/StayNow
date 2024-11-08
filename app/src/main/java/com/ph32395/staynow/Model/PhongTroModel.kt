@@ -7,7 +7,7 @@ data class PhongTroModel(
     val tenPhongTro: String = "",
     val diaChi: String = "",
     val motaChiTiet: String? = "",
-    val loaiPhongTro: String = "",
+    val maLoaiPhongTro: String = "",
     val trangThai: String = "",
     val dienTich: Double = 0.0,
     val giaThue: Double = 0.0,

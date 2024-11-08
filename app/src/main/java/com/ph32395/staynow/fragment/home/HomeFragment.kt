@@ -112,6 +112,7 @@ class HomeFragment : Fragment() {
                     if (selectedPosition < loaiPhongTroList.size) {
                         val selectedLoaiPhongTro = loaiPhongTroList[selectedPosition].id
                         viewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
+                        Log.d("HomeFragment", "Selected LoaiPhongTro: $selectedLoaiPhongTro")
                     }
                 }
             }

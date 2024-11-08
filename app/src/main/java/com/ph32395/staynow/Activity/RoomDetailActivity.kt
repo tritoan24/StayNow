@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -48,7 +49,20 @@ class RoomDetailActivity : AppCompatActivity() {
         val trangThai = intent.getStringExtra("trangThai") ?: ""
 
 //        Cap nhat thong tin ban dau
-        viewModel.setInitialData(maPhongTro, tenPhongTro, giaThue, diaChi, dienTich, tang, soNguoi, tienCoc, motaChiTiet, ArrayList(danhSachAnh), gioiTinh, trangThai)
+        viewModel.setInitialData(
+            maPhongTro,
+            tenPhongTro,
+            giaThue,
+            diaChi,
+            dienTich,
+            tang,
+            soNguoi,
+            tienCoc,
+            motaChiTiet,
+            ArrayList(danhSachAnh),
+            gioiTinh,
+            trangThai
+        )
 
 //        Thiet lap viewPager va RecyclerView cho anh
         val viewPager = findViewById<ViewPager>(R.id.viewPager)
@@ -71,10 +85,13 @@ class RoomDetailActivity : AppCompatActivity() {
 //                Cap nhat du lieu len View
                 findViewById<TextView>(R.id.txtTenPhongTro).text = it.tenPhongTro
                 findViewById<TextView>(R.id.txtTang).text = room.tang.toString()
-                findViewById<TextView>(R.id.txtGiaThue).text = "${it.giaThue?.let { String.format("%,.0f", it) }} VND/ thang"
+                findViewById<TextView>(R.id.txtGiaThue).text =
+                    "${it.giaThue?.let { String.format("%,.0f", it) }} VND/ thang"
                 findViewById<TextView>(R.id.txtDiaChi).text = it.diaChi
-                findViewById<TextView>(R.id.txtDienTich).text = "${it.dienTich?.let { String.format("%.1f", it) }} m²"
-                findViewById<TextView>(R.id.txtTienCoc).text = "${it.tienCoc?.let { String.format("%,.0f", it) }} VND"
+                findViewById<TextView>(R.id.txtDienTich).text =
+                    "${it.dienTich?.let { String.format("%.1f", it) }} m²"
+                findViewById<TextView>(R.id.txtTienCoc).text =
+                    "${it.tienCoc?.let { String.format("%,.0f", it) }} VND"
                 findViewById<TextView>(R.id.txtSoNguoi).text = room.soNguoi.toString()
                 findViewById<TextView>(R.id.txtChiTietThem).text = room.motaChiTiet
                 findViewById<TextView>(R.id.txtGioiTinh).text = room.gioiTinh
