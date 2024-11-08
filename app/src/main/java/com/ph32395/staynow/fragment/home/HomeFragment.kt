@@ -1,6 +1,5 @@
 package com.ph32395.staynow.fragment.home
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,42 +7,35 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.Firebase
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.storage
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
+
     private lateinit var storage: FirebaseStorage
     private lateinit var imageSlider: ImageSlider
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var onTabSelectedListener: OnTabSelectedListener
+    private val viewModel: SharedViewModel by activityViewModels()
 
-    // Danh sách mã loại phòng trọ để truyền đúng mã khi tab được chọn
+    // Danh sách mã loại phòng trọ
     private val loaiPhongTroCodes = mutableListOf<String>()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnTabSelectedListener) {
-            onTabSelectedListener = context
-        } else {
-            throw ClassCastException("$context must implement OnTabSelectedListener")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         binding = FragmentHomeBinding.bind(view)
         imageSlider = view.findViewById(R.id.imageSlider)
@@ -67,12 +59,10 @@ class HomeFragment : Fragment() {
         val imageList = ArrayList<SlideModel>()
         val storageRef = storage.reference.child("banners")
 
-        // Liệt kê tất cả ảnh trong thư mục "banners"
         storageRef.listAll().addOnSuccessListener { listResult ->
             listResult.items.forEach { item ->
                 item.downloadUrl.addOnSuccessListener { uri ->
                     imageList.add(SlideModel(uri.toString()))
-                    // Đặt danh sách ảnh vào slider sau khi tất cả ảnh đã tải
                     if (imageList.size == listResult.items.size) {
                         imageSlider.setImageList(imageList, ScaleTypes.CENTER_CROP)
                     }
@@ -89,16 +79,14 @@ class HomeFragment : Fragment() {
         val database = FirebaseDatabase.getInstance().reference.child("LoaiPhongTro")
         val loaiPhongTroList = mutableListOf<LoaiPhongTro>()
 
-        // Lấy tất cả LoaiPhongTro từ Firebase Realtime Database
         database.get().addOnSuccessListener { snapshot ->
             snapshot.children.forEach { childSnapshot ->
                 val loaiPhongTro = childSnapshot.getValue(LoaiPhongTro::class.java)
                 loaiPhongTro?.let {
                     loaiPhongTroList.add(it)
-                    loaiPhongTroCodes.add(it.id)  // Thêm mã loại vào danh sách
+                    loaiPhongTroCodes.add(it.id)
                 }
             }
-            // Sau khi tải xong, setup các tab động
             setupTabs(loaiPhongTroList)
         }.addOnFailureListener { exception ->
             Log.e("HomeFragment", "Failed to fetch LoaiPhongTro", exception)
@@ -108,26 +96,22 @@ class HomeFragment : Fragment() {
     private fun setupTabs(loaiPhongTroList: List<LoaiPhongTro>) {
         val tabLayout: TabLayout = binding.tabLayoutHome
         val viewPager: ViewPager2 = binding.viewPagerHome
-        val adapter = ViewPagerHomeAdapter(this)
+        val adapter = ViewPagerHomeAdapter(this, loaiPhongTroList)
         viewPager.adapter = adapter
 
-        // Kết nối TabLayout với ViewPager2
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            // Thiết lập tên tab từ danh sách LoaiPhongTro
             if (position < loaiPhongTroList.size) {
                 tab.text = loaiPhongTroList[position].tenLoaiPhong
             }
         }.attach()
 
-        // Lắng nghe sự kiện chọn tab
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
                     val selectedPosition = it.position
-                    if (selectedPosition < loaiPhongTroCodes.size) {
-                        // Truyền mã loại phòng thay vì tên loại
-                        onTabSelectedListener.onTabSelected(loaiPhongTroCodes[selectedPosition])
-                        Log.d("HomeFragment", "Selected tab: ${loaiPhongTroCodes[selectedPosition]}")
+                    if (selectedPosition < loaiPhongTroList.size) {
+                        val selectedLoaiPhongTro = loaiPhongTroList[selectedPosition].id
+                        viewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
                     }
                 }
             }
@@ -136,9 +120,4 @@ class HomeFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
-}
-
-// Interface để truyền sự kiện chọn tab đến Activity cha
-interface OnTabSelectedListener {
-    fun onTabSelected(maLoaiPhongTro: String)
 }

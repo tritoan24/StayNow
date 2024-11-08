@@ -1,8 +1,6 @@
 package com.ph32395.staynow
 
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.ph32395.staynow.databinding.ActivityMainBinding
@@ -10,19 +8,9 @@ import com.ph32395.staynow.fragment.home.HomeFragment
 import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
-import com.ph32395.staynow.fragment.home.HomeTabFragment
-import com.ph32395.staynow.fragment.home.OnTabSelectedListener
-import com.ph32395.staynow.fragment.home.SharedViewModel
 
-class MainActivity : AppCompatActivity(), OnTabSelectedListener {
-    private val sharedViewModel: SharedViewModel by viewModels() // Khởi tạo SharedViewModel
+class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-
-
-    override fun onTabSelected(loaiPhongTro: String) {
-        Log.d("MainActivity", "Received tab selection: $loaiPhongTro")
-        sharedViewModel.selectTab(loaiPhongTro) // Cập nhật tab đã chọn vào ViewModel
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

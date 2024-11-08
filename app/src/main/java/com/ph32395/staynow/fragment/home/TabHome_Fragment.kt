@@ -2,7 +2,6 @@ package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,21 +13,18 @@ import com.ph32395.staynow.databinding.FragmentTabHomeBinding
 
 class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
 
-    private var tabPosition: Int = 0
     private lateinit var binding: FragmentTabHomeBinding
-    private val roomList: MutableList<PhongTro> = mutableListOf()
+    private val roomList = mutableListOf<PhongTro>()
     private val sharedViewModel: SharedViewModel by activityViewModels()
-    private var valueEventListener: ValueEventListener? = null
-
-    private lateinit var database: FirebaseDatabase
     private lateinit var roomsRef: DatabaseReference
     private lateinit var roomAdapter: PhongTroAdapter
+    private var roomEventListener: ValueEventListener? = null
 
     companion object {
-        fun newInstance(tabPosition: Int): HomeTabFragment {
+        fun newInstance(id_LoaiPhong: String): HomeTabFragment {
             val fragment = HomeTabFragment()
             val args = Bundle()
-            args.putInt("tab_position", tabPosition)
+            args.putString("categoryId", id_LoaiPhong)  // Truyền id của loại phòng trọ
             fragment.arguments = args
             return fragment
         }
@@ -36,39 +32,54 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding = FragmentTabHomeBinding.bind(view)
 
-        // Lấy vị trí tab từ arguments
-        tabPosition = arguments?.getInt("tab_position", 0) ?: 0
+        val id_LoaiPhong = arguments?.getString("categoryId")
 
-        binding.roomRclView.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.roomRclView.overScrollMode = View.OVER_SCROLL_NEVER
-        roomAdapter = PhongTroAdapter(roomList)
-        binding.roomRclView.adapter = roomAdapter
+        // Setup RecyclerView
+        setupRecyclerView()
 
-        database = FirebaseDatabase.getInstance()
-        roomsRef = database.getReference("PhongTro")
-        getFullListRoom()
-        sharedViewModel.selectedTab.observe(viewLifecycleOwner) { loaiPhongTro ->
-            if (loaiPhongTro == "0") {
-                getFullListRoom()
+        // Initialize Firebase reference
+        roomsRef = FirebaseDatabase.getInstance().getReference("PhongTro")
 
-            } else {
-                getListByCategory(loaiPhongTro)
-            }
+
+        id_LoaiPhong?.let {
+            updateRoomList(it)
+        }
+        // Observe selected category from ViewModel
+        sharedViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
+            updateRoomList(idloaiPhongTro)
         }
     }
 
-    private fun getFullListRoom() {
-        roomsRef.addValueEventListener(object : ValueEventListener {
+    private fun setupRecyclerView() {
+        binding.roomRclView.apply {
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            overScrollMode = View.OVER_SCROLL_NEVER
+            roomAdapter = PhongTroAdapter(roomList)
+            adapter = roomAdapter
+        }
+    }
+
+    private fun updateRoomList(loaiPhongTro: String) {
+        // Remove previous listener if exists
+        roomEventListener?.let { roomsRef.removeEventListener(it) }
+
+        roomEventListener = if (loaiPhongTro == "0") {
+            roomsRef.addValueEventListener(createEventListener())
+        } else {
+            roomsRef.orderByChild("maLoaiPhongTro").equalTo(loaiPhongTro)
+                .addValueEventListener(createEventListener())
+        }
+    }
+
+    private fun createEventListener(): ValueEventListener {
+        return object : ValueEventListener {
             @SuppressLint("NotifyDataSetChanged")
             override fun onDataChange(snapshot: DataSnapshot) {
                 roomList.clear()
                 for (roomSnapshot in snapshot.children) {
-                    val room = roomSnapshot.getValue(PhongTro::class.java)
-                    room?.let { roomList.add(it) }
-                    Log.d("HomeTabFragment", "Room: $room")
+                    roomSnapshot.getValue(PhongTro::class.java)?.let { roomList.add(it) }
                 }
                 roomAdapter.notifyDataSetChanged()
             }
@@ -76,33 +87,12 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
             override fun onCancelled(error: DatabaseError) {
                 error.toException().printStackTrace()
             }
-        })
+        }
     }
 
-    private fun getListByCategory(maLoaiPhongTro: String) {
-        // Hủy listener cũ nếu có
-        valueEventListener?.let { roomsRef.removeEventListener(it) }
-
-        valueEventListener = roomsRef.orderByChild("maLoaiPhongTro").equalTo(maLoaiPhongTro)
-            .addValueEventListener(object : ValueEventListener {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onDataChange(snapshot: DataSnapshot) {
-
-                    roomList.clear()
-                    for (roomSnapshot in snapshot.children) {
-                        val room = roomSnapshot.getValue(PhongTro::class.java)
-                        room?.let {
-                            roomList.add(it)
-                        }
-                    }
-                    roomAdapter.notifyDataSetChanged()
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    error.toException().printStackTrace()
-                }
-            })
+    override fun onDestroyView() {
+        super.onDestroyView()
+        roomEventListener?.let { roomsRef.removeEventListener(it) }
+        roomEventListener = null
     }
-
-
 }
