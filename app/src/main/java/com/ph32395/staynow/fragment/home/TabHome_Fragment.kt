@@ -25,11 +25,10 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
     private lateinit var roomAdapter: PhongTroAdapter
 
     companion object {
-        // Sửa lại phương thức newInstance để đảm bảo truyền đúng tham số
         fun newInstance(tabPosition: Int): HomeTabFragment {
             val fragment = HomeTabFragment()
             val args = Bundle()
-            args.putInt("tab_position", tabPosition) // Truyền tabPosition vào Bundle
+            args.putInt("tab_position", tabPosition)
             fragment.arguments = args
             return fragment
         }
@@ -69,6 +68,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
                 for (roomSnapshot in snapshot.children) {
                     val room = roomSnapshot.getValue(PhongTro::class.java)
                     room?.let { roomList.add(it) }
+                    Log.d("HomeTabFragment", "Room: $room")
                 }
                 roomAdapter.notifyDataSetChanged()
             }
