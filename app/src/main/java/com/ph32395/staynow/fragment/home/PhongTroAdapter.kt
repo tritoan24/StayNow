@@ -1,18 +1,21 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ph32395.staynow.Model.PhongTro
-import com.ph32395.staynow.R
+import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
 
-class PhongTroAdapter(private var roomList: List<PhongTro>) : RecyclerView.Adapter<PhongTroAdapter.RoomViewHolder>() {
-
+class PhongTroAdapter(
+    private var roomList: List<PhongTroModel>,
+    private var onItemClick: (PhongTroModel) -> Unit
+) : RecyclerView.Adapter<PhongTroAdapter.RoomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
         val binding=ItemRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -22,6 +25,10 @@ class PhongTroAdapter(private var roomList: List<PhongTro>) : RecyclerView.Adapt
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
         val room = roomList[position]
         holder.bind(room)
+//        Bat su kien Click vao item chuyen qua man chi tiet
+        holder.itemView.setOnClickListener {
+            onItemClick(room)
+        }
     }
 
     override fun getItemCount(): Int = roomList.size
@@ -35,7 +42,7 @@ class PhongTroAdapter(private var roomList: List<PhongTro>) : RecyclerView.Adapt
         private val roomViews: TextView = itemView.tvSoLuotXem
 
         @SuppressLint("SetTextI18n", "DefaultLocale")
-        fun bind(room: PhongTro) {
+        fun bind(room: PhongTroModel) {
             // Cập nhật ảnh phòng trọ
             Glide.with(itemView.context)
                 .load(room.imageRoom)
