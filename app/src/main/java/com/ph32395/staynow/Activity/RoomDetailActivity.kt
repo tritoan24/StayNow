@@ -1,15 +1,8 @@
 package com.ph32395.staynow.Activity
 
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,7 +12,6 @@ import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
-import com.ph32395.staynow.fragment.home.PhongTroAdapter
 
 class RoomDetailActivity : AppCompatActivity() {
 

@@ -1,21 +1,17 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.ph32395.staynow.Activity.RoomDetailActivity
-import com.google.firebase.database.*
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentTabHomeBinding
