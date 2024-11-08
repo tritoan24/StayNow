@@ -13,7 +13,7 @@ import com.ph32395.staynow.databinding.ItemHistorySearchBinding
 
 class AdapterHistoryKeyWord(
     context: Context,
-    private val item: MutableList<SearchData>,
+    private var item: MutableList<SearchData>,
     val useID: String
 ) :
     ArrayAdapter<SearchData>(
@@ -40,7 +40,10 @@ class AdapterHistoryKeyWord(
 
         return view
     }
-
+    fun updateList(newItems: List<SearchData>) {
+        item = newItems.toMutableList()
+        notifyDataSetChanged()
+    }
     private fun removeSearchData(searchData: SearchData) {
         // Tìm vị trí của item cần xóa trong listKeySearch
         val position = item.indexOf(searchData)

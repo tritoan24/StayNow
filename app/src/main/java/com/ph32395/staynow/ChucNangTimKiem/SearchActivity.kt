@@ -10,14 +10,18 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.Model.PhongTro
 import com.ph32395.staynow.databinding.ActivitySearchBinding
 import com.ph32395.staynow.databinding.BottomSheetCitySearchBinding
+import com.ph32395.staynow.fragment.home.PhongTroAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -28,14 +32,22 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     private var TAG: String = "zzzzzzzzzz"
     private val database = FirebaseDatabase.getInstance()
     private val searchHistoryRef = database.getReference("LichSuTimKiem")
+    private val dataRoom = database.getReference("PhongTro")
+    val listFullRoom: MutableList<PhongTro> = mutableListOf()
     var min: Int = 0
     var max: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         readKeyWordSearch(userId)
+
+        val adapter = PhongTroAdapter(listFullRoom)
+        binding.rvListRoom.layoutManager = GridLayoutManager(this@SearchActivity, 2)
+        binding.rvListRoom.adapter = adapter
+        readListRoom(adapter)
 
         binding.edtSearch.setOnFocusChangeListener { v, hasFocus ->
             Log.d(TAG, "onCreate: hasFocus-- $hasFocus")
@@ -64,6 +76,13 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         binding.btnSearch.setOnClickListener {
             Log.d(TAG, "onCreate: btnSearch ${binding.edtSearch.text}")
             saveKeyWordSearch(binding.edtSearch.text)
+            val  query:String = binding.edtSearch.text.toString()
+            if (query.isNotEmpty()) {
+                searchRoomByNameOrDescription(query, adapter)
+            } else {
+                // Tải lại toàn bộ danh sách nếu không có từ khóa
+                readListRoom(adapter)
+            }
             hideKeyClearFocus()
         }
 
@@ -88,9 +107,93 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
     }
 
+
+    // Hàm tìm kiếm tương đối trong name hoặc address
+
+
+    fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
+        dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+
+                val filteredList = mutableListOf<PhongTro>()
+//                val queryWords = query.split(" ").filter { it.length >= 2 } // Lọc từ có độ dài ít nhất 2 ký tự
+                val queryWords = query.split(" ").filter { it.isNotEmpty() }
+                Log.d(TAG, "onDataChange: queryWords $queryWords")
+                Log.d(TAG, "onDataChange: query $query")
+                // Tìm kiếm chính xác
+                for (roomSnapshot in snapshot.children) {
+                    val roomData = roomSnapshot.getValue(PhongTro::class.java)
+                    val roomName = roomData?.tenPhongTro ?: ""
+
+                    if (roomName.equals(query, ignoreCase = true)) {
+                        filteredList.add(roomData!!)
+                        Log.d(TAG, "onDataChange: Rom $roomData (chính xác)")
+                    }
+                }
+
+                // Nếu không có kết quả tìm kiếm chính xác, thực hiện tìm kiếm tương đối
+                if (filteredList.isEmpty()) {
+                    for (roomSnapshot in snapshot.children) {
+                        val roomData = roomSnapshot.getValue(PhongTro::class.java)
+                        val roomName = roomData?.tenPhongTro ?: ""
+                        val roomDescription = roomData?.motaChiTiet ?: ""
+
+                        // Kiểm tra tất cả các từ trong `query` phải có mặt trong `name` hoặc `description`
+                        val allWordsMatch = queryWords.all { word ->
+                            roomName.contains(word, ignoreCase = true) || roomDescription.contains(word, ignoreCase = true)
+                        }
+
+                        if (allWordsMatch) {
+                            filteredList.add(roomData!!)
+                            Log.d(TAG, "onDataChange: Rom $roomData (tương đối)")
+                        }
+                    }
+                }
+
+                adapter.updateList(filteredList)
+
+                if (filteredList.isEmpty()) {
+                    println("Không tìm thấy phòng trọ nào với từ khóa: $query")
+                }
+
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                println("Lỗi khi đọc dữ liệu: ${error.message}")
+            }
+        })
+    }
+
+    private fun readListRoom(adapter: PhongTroAdapter) {
+
+        dataRoom.addValueEventListener(object : ValueEventListener {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onDataChange(snapshot: DataSnapshot) {
+                Log.d(TAG, "onDataChange: snapshotRoom $snapshot")
+
+                listFullRoom.clear()
+
+                // Duyệt qua các node con trong "rooms"
+                for (roomSnapshot in snapshot.children) {
+                    val room = roomSnapshot.getValue(PhongTro::class.java)
+                    room?.let {
+                        listFullRoom.add(it)
+                    }
+                }
+                adapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Xử lý lỗi nếu có
+                error.toException().printStackTrace()
+            }
+        })
+
+    }
+
     private fun readKeyWordSearch(userId: String?) {
         val listKeySearch: MutableList<SearchData> = mutableListOf()
-        var adapter:AdapterHistoryKeyWord
+        var adapter: AdapterHistoryKeyWord
         searchHistoryRef.child(userId!!).addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 Log.d(TAG, "onChildAdded: snapshot: $snapshot")
