@@ -1,6 +1,7 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
 
@@ -55,7 +57,7 @@ class PhongTroAdapter(
             roomAddress.text = room.diaChi
 
             // Cập nhật giá thuê
-            roomPrice.text = "Từ ${room.giaThue?.let { String.format("%,.0f", it) }} VND"
+            roomPrice.text = "${room.giaThue?.let { String.format("%,.0f", it) }} VND"
 
             // Cập nhật diện tích
             roomArea.text = " ${room.dienTich?.let { String.format("%.1f", it) }} m²"

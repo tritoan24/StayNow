@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,10 @@ class RoomDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_detail)
+
+        findViewById<ImageView>(R.id.iconBack).setOnClickListener {
+            finish() //Quay lai man hinh truoc
+        }
 
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this).get(RoomDetailViewModel::class.java)
@@ -71,7 +76,7 @@ class RoomDetailActivity : AppCompatActivity() {
 //                Cap nhat du lieu len View
                 findViewById<TextView>(R.id.txtTenPhongTro).text = it.tenPhongTro
                 findViewById<TextView>(R.id.txtTang).text = room.tang.toString()
-                findViewById<TextView>(R.id.txtGiaThue).text = "${it.giaThue?.let { String.format("%,.0f", it) }} VND/ thang"
+                findViewById<TextView>(R.id.txtGiaThue).text = "${it.giaThue?.let { String.format("%,.0f", it) }} VND/ tháng"
                 findViewById<TextView>(R.id.txtDiaChi).text = it.diaChi
                 findViewById<TextView>(R.id.txtDienTich).text = "${it.dienTich?.let { String.format("%.1f", it) }} m²"
                 findViewById<TextView>(R.id.txtTienCoc).text = "${it.tienCoc?.let { String.format("%,.0f", it) }} VND"
