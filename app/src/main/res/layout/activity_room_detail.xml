@@ -14,11 +14,52 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!--        Slider anh lon-->
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
+<!--        Icon-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="250dp"/>
+            android:layout_height="250dp">
+
+            <!-- ViewPager -->
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Icon Back -->
+            <ImageView
+                android:id="@+id/iconBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_back"
+                android:contentDescription="Back icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="16dp" />
+
+            <!-- Icon Favorite -->
+            <ImageView
+                android:id="@+id/iconFavorite"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/icon_favorite"
+                android:contentDescription="Favorite icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="16dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        Slider anh lon-->
+<!--        <androidx.viewpager.widget.ViewPager-->
+<!--            android:id="@+id/viewPager"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="250dp"/>-->
 
         <!--        Danh sach anh nho-->
         <androidx.recyclerview.widget.RecyclerView
@@ -130,7 +171,26 @@
                     android:id="@+id/txtDiaChi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
+                    android:layout_marginStart="5dp" />
+            </LinearLayout>
+
+<!--            Trang thai-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/icon_status"/>
+                <TextView
+                    android:id="@+id/txtTrangThai"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
                     android:layout_marginStart="5dp" />
             </LinearLayout>
 
@@ -176,7 +236,7 @@
                             android:textSize="16sp"
                             android:layout_marginBottom="10dp"/>
                         <TextView
-                            android:id="@+id/txtTrangThai"
+                            android:id="@+id/txtTrangThaiHoatDong"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"/>

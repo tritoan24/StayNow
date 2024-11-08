@@ -1,6 +1,7 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,7 +12,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
-import com.ph32395.staynow.Model.PhongTro
+import com.ph32395.staynow.Activity.RoomDetailActivity
+import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentTabHomeBinding
 
@@ -19,14 +21,30 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListe
     // Implement method của interface để nhận sự thay đổi tab
     override fun onTabSelected(loaiPhongTro: String) {
         Log.d("HomeTabFragment", "Tab selected: $loaiPhongTro")
-        val roomAdapter = PhongTroAdapter(roomList)
+        val roomAdapter = PhongTroAdapter(roomList) { room ->
+            val intent = Intent(requireContext(), RoomDetailActivity::class.java).apply {
+                putExtra("tenPhongTro", room.tenPhongTro)
+                putExtra("giaThue", room.giaThue)
+                putExtra("diaChi", room.diaChi)
+                putExtra("dienTich", room.dienTich)
+                putExtra("maPhongTro", room.maPhongTro)
+                putExtra("tang", room.tang)
+                putExtra("soNguoi", room.soNguoi)
+                putExtra("tienCoc", room.tienCoc)
+                putExtra("motaChiTiet", room.motaChiTiet)
+                putStringArrayListExtra("danhSachAnh", ArrayList(room.danhSachAnh))
+                putExtra("gioiTinh", room.gioiTinh)
+                putExtra("trangThai", room.trangThai)
+            }
+            startActivity(intent)
+        }
         getDataFromRealtimeDatabase(roomAdapter, loaiPhongTro)
         Log.d("HomeTabFragment", "Loading rooms for category: $loaiPhongTro")
     }
 
     private var tabPosition: Int = 0
     private lateinit var binding: FragmentTabHomeBinding  // Đối tượng ViewBinding
-    private val roomList: MutableList<PhongTro> = mutableListOf()  // Danh sách phòng trọ
+    private val roomList: MutableList<PhongTroModel> = mutableListOf()  // Danh sách phòng trọ
 
     private lateinit var database: FirebaseDatabase
     private lateinit var roomsRef: DatabaseReference
@@ -52,7 +70,23 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListe
         // Cài đặt RecyclerView và adapter
         binding.roomRclView.layoutManager = GridLayoutManager(requireContext(), 2)  // 2 cột
         binding.roomRclView.setOverScrollMode(View.OVER_SCROLL_NEVER)
-        val roomAdapter = PhongTroAdapter(roomList)
+        val roomAdapter = PhongTroAdapter(roomList) { room ->
+            val intent = Intent(requireContext(), RoomDetailActivity::class.java).apply {
+                putExtra("tenPhongTro", room.tenPhongTro)
+                putExtra("giaThue", room.giaThue)
+                putExtra("diaChi", room.diaChi)
+                putExtra("dienTich", room.dienTich)
+                putExtra("maPhongTro", room.maPhongTro)
+                putExtra("tang", room.tang)
+                putExtra("soNguoi", room.soNguoi)
+                putExtra("tienCoc", room.tienCoc)
+                putExtra("motaChiTiet", room.motaChiTiet)
+                putStringArrayListExtra("danhSachAnh", ArrayList(room.danhSachAnh))
+                putExtra("gioiTinh", room.gioiTinh)
+                putExtra("trangThai", room.trangThai)
+            }
+            startActivity(intent)
+        }
         binding.roomRclView.adapter = roomAdapter
 
         // Cài đặt Firebase
@@ -73,7 +107,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListe
 
                 // Duyệt qua các node con trong "rooms"
                 for (roomSnapshot in snapshot.children) {
-                    val room = roomSnapshot.getValue(PhongTro::class.java)
+                    val room = roomSnapshot.getValue(PhongTroModel::class.java)
                     room?.let {
                         roomList.add(it)
                     }
@@ -97,7 +131,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListe
                 override fun onDataChange(snapshot: DataSnapshot) {
                     roomList.clear()
                     for (roomSnapshot in snapshot.children) {
-                        val room = roomSnapshot.getValue(PhongTro::class.java)
+                        val room = roomSnapshot.getValue(PhongTroModel::class.java)
                         room?.let {
                             roomList.add(it)
                         }
