@@ -1,6 +1,6 @@
 package com.ph32395.staynow.ChucNangTimKiem
 
-class SearchData(
+class SearchDataModel(
     val Ma_timkiem: String? = null,
     val Tu_khoa: String? = null,
     val Thoi_giantimkiem: String? = null

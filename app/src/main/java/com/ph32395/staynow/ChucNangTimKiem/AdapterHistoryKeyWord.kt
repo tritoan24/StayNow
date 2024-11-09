@@ -6,17 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ItemHistorySearchBinding
 
 class AdapterHistoryKeyWord(
     context: Context,
-    private var item: MutableList<SearchData>,
+    private var item: MutableList<SearchDataModel>,
     val useID: String
 ) :
-    ArrayAdapter<SearchData>(
+    ArrayAdapter<SearchDataModel>(
         context, R.layout.item_history_search, item
     ) {
     private lateinit var binding: ItemHistorySearchBinding
@@ -40,11 +39,11 @@ class AdapterHistoryKeyWord(
 
         return view
     }
-    fun updateList(newItems: List<SearchData>) {
+    fun updateList(newItems: List<SearchDataModel>) {
         item = newItems.toMutableList()
         notifyDataSetChanged()
     }
-    private fun removeSearchData(searchData: SearchData) {
+    private fun removeSearchData(searchData: SearchDataModel) {
         // Tìm vị trí của item cần xóa trong listKeySearch
         val position = item.indexOf(searchData)
         if (position != -1) {
@@ -61,7 +60,7 @@ class AdapterHistoryKeyWord(
 
     }
 
-    private fun deleteSearchFromFirebase(searchData: SearchData) {
+    private fun deleteSearchFromFirebase(searchData: SearchDataModel) {
         // Xóa mục tìm kiếm trong Firebase
         searchHistoryRef.child(useID).child(searchData.Ma_timkiem!!).removeValue()
             .addOnSuccessListener {

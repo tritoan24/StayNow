@@ -240,7 +240,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     }
 
     private fun readKeyWordSearch(userId: String?) {
-        val listKeySearch: MutableList<SearchData> = mutableListOf()
+        val listKeySearch: MutableList<SearchDataModel> = mutableListOf()
         var adapter: AdapterHistoryKeyWord
         searchHistoryRef.child(userId!!).addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
@@ -248,7 +248,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 Log.d(TAG, "onChildAdded: snapshot_value: ${snapshot.value}")
                 Log.d(TAG, "onChildAdded: previousChildName: $previousChildName")
 
-                val newData = snapshot.getValue(SearchData::class.java)
+                val newData = snapshot.getValue(SearchDataModel::class.java)
                 Log.d(TAG, "onChildAdded: newData $newData")
                 newData.let {
                     listKeySearch.add(it!!)
