@@ -129,7 +129,10 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                     // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
                     val allWordsMatch = queryWords.all { word ->
-                        roomName.contains(word, ignoreCase = true) || roomDescription.contains(word, ignoreCase = true)
+                        roomName.contains(word, ignoreCase = true) || roomDescription.contains(
+                            word,
+                            ignoreCase = true
+                        )
                     }
 
                     // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
@@ -207,7 +210,6 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 //            }
 //        })
 //    }
-
 
 
     private fun readListRoom(adapter: PhongTroAdapter) {
