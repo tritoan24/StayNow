@@ -76,7 +76,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         binding.btnSearch.setOnClickListener {
             Log.d(TAG, "onCreate: btnSearch ${binding.edtSearch.text}")
             saveKeyWordSearch(binding.edtSearch.text)
-            val  query:String = binding.edtSearch.text.toString()
+            val query: String = binding.edtSearch.text.toString()
             if (query.isNotEmpty()) {
                 searchRoomByNameOrDescription(query, adapter)
             } else {
@@ -109,60 +109,106 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
 
     // Hàm tìm kiếm tương đối trong name hoặc address
-
-
     fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
         dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-
                 val filteredList = mutableListOf<PhongTro>()
-//                val queryWords = query.split(" ").filter { it.length >= 2 } // Lọc từ có độ dài ít nhất 2 ký tự
                 val queryWords = query.split(" ").filter { it.isNotEmpty() }
+
                 Log.d(TAG, "onDataChange: queryWords $queryWords")
                 Log.d(TAG, "onDataChange: query $query")
-                // Tìm kiếm chính xác
+
                 for (roomSnapshot in snapshot.children) {
                     val roomData = roomSnapshot.getValue(PhongTro::class.java)
                     val roomName = roomData?.tenPhongTro ?: ""
+                    val roomDescription = roomData?.motaChiTiet ?: ""
 
-                    if (roomName.equals(query, ignoreCase = true)) {
-                        filteredList.add(roomData!!)
-                        Log.d(TAG, "onDataChange: Rom $roomData (chính xác)")
+                    // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
+                    val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
+                            roomDescription.contains(query, ignoreCase = true)
+
+                    // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
+                    val allWordsMatch = queryWords.all { word ->
+                        roomName.contains(word, ignoreCase = true) || roomDescription.contains(word, ignoreCase = true)
                     }
-                }
 
-                // Nếu không có kết quả tìm kiếm chính xác, thực hiện tìm kiếm tương đối
-                if (filteredList.isEmpty()) {
-                    for (roomSnapshot in snapshot.children) {
-                        val roomData = roomSnapshot.getValue(PhongTro::class.java)
-                        val roomName = roomData?.tenPhongTro ?: ""
-                        val roomDescription = roomData?.motaChiTiet ?: ""
-
-                        // Kiểm tra tất cả các từ trong `query` phải có mặt trong `name` hoặc `description`
-                        val allWordsMatch = queryWords.all { word ->
-                            roomName.contains(word, ignoreCase = true) || roomDescription.contains(word, ignoreCase = true)
-                        }
-
-                        if (allWordsMatch) {
-                            filteredList.add(roomData!!)
-                            Log.d(TAG, "onDataChange: Rom $roomData (tương đối)")
-                        }
+                    // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
+                    if (queryInDescriptionOrName || allWordsMatch) {
+                        filteredList.add(roomData!!)
+                        Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm chi tiết hoặc tương đối)")
                     }
                 }
 
                 adapter.updateList(filteredList)
 
                 if (filteredList.isEmpty()) {
-                    println("Không tìm thấy phòng trọ nào với từ khóa: $query")
+                    Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
                 }
-
             }
 
             override fun onCancelled(error: DatabaseError) {
-                println("Lỗi khi đọc dữ liệu: ${error.message}")
+                Log.e(TAG, "Lỗi khi đọc dữ liệu: ${error.message}")
             }
         })
     }
+
+    //Cung có the dung ham nay neu thay han tren khong on
+//    fun searchRoomByNameOrDescription2(query: String, adapter: PhongTroAdapter) {
+//        dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val filteredList = mutableListOf<PhongTro>()
+//                val cleanedQuery = query.trim().replace(Regex("\\s+"), " ") // Xóa khoảng trắng thừa
+//                val queryWords = cleanedQuery.split(" ").filter { it.isNotEmpty() }
+//
+//                Log.d(TAG, "onDataChange: cleanedQuery $cleanedQuery")
+//                Log.d(TAG, "onDataChange: queryWords $queryWords")
+//
+//                // Tìm kiếm theo cụm từ đầy đủ
+//                for (roomSnapshot in snapshot.children) {
+//                    val roomData = roomSnapshot.getValue(PhongTro::class.java)
+//                    val roomName = roomData?.tenPhongTro ?: ""
+//                    val roomDescription = roomData?.motaChiTiet ?: ""
+//
+//                    if (roomName.contains(cleanedQuery, ignoreCase = true) ||
+//                        roomDescription.contains(cleanedQuery, ignoreCase = true)) {
+//                        filteredList.add(roomData!!)
+//                        Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm theo cụm từ đầy đủ)")
+//                    }
+//                }
+//
+//                // Nếu không có kết quả theo cụm từ đầy đủ, thực hiện tìm kiếm từng từ khóa
+//                if (filteredList.isEmpty()) {
+//                    for (roomSnapshot in snapshot.children) {
+//                        val roomData = roomSnapshot.getValue(PhongTro::class.java)
+//                        val roomName = roomData?.tenPhongTro ?: ""
+//                        val roomDescription = roomData?.motaChiTiet ?: ""
+//
+//                        val allWordsMatch = queryWords.all { word ->
+//                            roomName.contains(word, ignoreCase = true) ||
+//                                    roomDescription.contains(word, ignoreCase = true)
+//                        }
+//
+//                        if (allWordsMatch) {
+//                            filteredList.add(roomData!!)
+//                            Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm từng từ khóa)")
+//                        }
+//                    }
+//                }
+//
+//                adapter.updateList(filteredList)
+//
+//                if (filteredList.isEmpty()) {
+//                    Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.e(TAG, "Lỗi khi đọc dữ liệu: ${error.message}")
+//            }
+//        })
+//    }
+
+
 
     private fun readListRoom(adapter: PhongTroAdapter) {
 
