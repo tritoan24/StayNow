@@ -1,17 +1,18 @@
 package com.ph32395.staynow.ChucNangTimKiem
 
 class SearchDataModel(
-    val Ma_timkiem: String? = null,
-    val Tu_khoa: String? = null,
-    val Thoi_giantimkiem: String? = null
+    val ma_timkiem: String? = null,
+    val tu_khoa: String? = null,
+    val thoi_giantimkiem: String? = null,
+    var timestamps: String? = null
 ) {
 
 
-
     override fun toString(): String {
-        return "Id: $Ma_timkiem\n" +
-                "Key: $Tu_khoa\n" +
-                "Time: $Thoi_giantimkiem"
+        return "Id: $ma_timkiem\n" +
+                "Key: $tu_khoa\n" +
+                "Time: $thoi_giantimkiem\n" +
+                "Timestamps: $timestamps"
     }
 
 }

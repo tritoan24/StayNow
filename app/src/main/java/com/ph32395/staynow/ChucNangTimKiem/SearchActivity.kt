@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
@@ -34,6 +35,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     private val searchHistoryRef = database.getReference("LichSuTimKiem")
     private val dataRoom = database.getReference("PhongTro")
     val listFullRoom: MutableList<PhongTro> = mutableListOf()
+    val listKeySearch: MutableList<SearchDataModel> = mutableListOf()
     var min: Int = 0
     var max: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +140,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
                     if (queryInDescriptionOrName || allWordsMatch) {
                         filteredList.add(roomData!!)
+                        binding.rvListRoom.visibility = View.VISIBLE
+                        binding.layoutNullMsg.visibility = View.GONE
                         Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm chi tiết hoặc tương đối)")
                     }
                 }
@@ -146,6 +150,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                 if (filteredList.isEmpty()) {
                     Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
+                    binding.rvListRoom.visibility = View.GONE
+                    binding.layoutNullMsg.visibility = View.VISIBLE
                 }
             }
 
@@ -240,46 +246,62 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     }
 
     private fun readKeyWordSearch(userId: String?) {
-        val listKeySearch: MutableList<SearchDataModel> = mutableListOf()
-        var adapter: AdapterHistoryKeyWord
-        searchHistoryRef.child(userId!!).addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d(TAG, "onChildAdded: snapshot: $snapshot")
-                Log.d(TAG, "onChildAdded: snapshot_value: ${snapshot.value}")
-                Log.d(TAG, "onChildAdded: previousChildName: $previousChildName")
+        var adapter: AdapterHistoryKeyWord = AdapterHistoryKeyWord(this, mutableListOf(), userId!!)
+        searchHistoryRef.child(userId).orderByChild("timestamps")
+            .addChildEventListener(object : ChildEventListener {
+                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+                    Log.d(TAG, "onChildAdded: snapshot: $snapshot")
+                    Log.d(TAG, "onChildAdded: snapshot_value: ${snapshot.value}")
+                    Log.d(TAG, "onChildAdded: previousChildName: $previousChildName")
 
-                val newData = snapshot.getValue(SearchDataModel::class.java)
-                Log.d(TAG, "onChildAdded: newData $newData")
-                newData.let {
-                    listKeySearch.add(it!!)
-                    Log.d(TAG, "onChildAdded: it let ${it.Tu_khoa}")
+                    val newData = snapshot.getValue(SearchDataModel::class.java)
+                    Log.d(TAG, "onChildAdded: newData $newData")
+                    newData.let {
+                        listKeySearch.add(it!!)
+                        Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
+                    }
+                    if (listKeySearch.size >= 3) {
+                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
+                        binding.lvHistory.layoutParams.height = 300
+                    }
+                    // Đảo ngược danh sách để hiển thị từ mới nhất đến cũ nhất
+                    listKeySearch.reverse()
+                    adapter = AdapterHistoryKeyWord(
+                        this@SearchActivity,
+                        listKeySearch,
+                        userId
+                    )
+                    binding.lvHistory.adapter = adapter
+                    adapter.notifyDataSetChanged()
+                    Log.d(TAG, "onChildAdded: List Search $listKeySearch")
                 }
-                adapter = AdapterHistoryKeyWord(this@SearchActivity, listKeySearch, userId)
-                binding.lvHistory.adapter = adapter
-                Log.d(TAG, "onChildAdded: List Search $listKeySearch")
-            }
 
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d(TAG, "onChildChanged: snapshot: $snapshot")
-                Log.d(TAG, "onChildChanged: previousChildName: $previousChildName")
-            }
+                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+                    Log.d(TAG, "onChildChanged: snapshot: $snapshot")
+                    Log.d(TAG, "onChildChanged: previousChildName: $previousChildName")
+                    Log.d(TAG, "onChildChanged: listKeySearch $listKeySearch")
+                }
 
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                Log.d(TAG, "onChildRemoved: snapshot: $snapshot")
-                Log.d(TAG, "onChildRemoved: $listKeySearch")
-            }
+                override fun onChildRemoved(snapshot: DataSnapshot) {
+                    Log.d(TAG, "onChildRemoved: snapshot: $snapshot")
+                    Log.d(TAG, "onChildRemoved: $listKeySearch")
+                    if (listKeySearch.size < 3) {
+                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
+                        binding.lvHistory.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+                }
 
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                Log.d(TAG, "onChildMoved: snapshot: $snapshot")
-                Log.d(TAG, "onChildMoved: previousChildName: $previousChildName")
+                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+                    Log.d(TAG, "onChildMoved: snapshot: $snapshot")
+                    Log.d(TAG, "onChildMoved: previousChildName: $previousChildName")
 
-            }
+                }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.d(TAG, "onCancelled: error: $error")
-            }
+                override fun onCancelled(error: DatabaseError) {
+                    Log.d(TAG, "onCancelled: error: $error")
+                }
 
-        })
+            })
 
     }
 
@@ -303,10 +325,17 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         val searchId = searchHistoryRef.child(userId!!).push().key ?: return
 
         // Tạo đối tượng lưu vào Firebase
-        val searchData = mapOf(
-            "Ma_timkiem" to searchId,
-            "Tu_khoa" to searchQuery,
-            "Thoi_giantimkiem" to formattedTime
+//        val searchData = mapOf(
+//            "Ma_timkiem" to searchId,
+//            "Tu_khoa" to searchQuery,
+//            "Thoi_giantimkiem" to formattedTime,
+//            "timestamps" to timeStamp
+//        )
+        val searchData = SearchDataModel(
+            ma_timkiem = searchId,
+            tu_khoa = searchQuery,
+            thoi_giantimkiem = formattedTime,
+            timestamps = timeStamp.toString()
         )
         Log.d(TAG, "saveKeyWordSearch: timeStamp $timeStamp")
         Log.d(TAG, "saveKeyWordSearch: formattedTime $formattedTime")

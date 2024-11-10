@@ -30,11 +30,9 @@ class AdapterHistoryKeyWord(
 
         val searchData = item[position]
 
-        binding.tvKeyWordSearch.text = item[position].Tu_khoa
+        binding.tvKeyWordSearch.text = item[position].tu_khoa
         binding.ivDelete.setOnClickListener {
-
             removeSearchData(searchData)
-
         }
 
         return view
@@ -62,7 +60,7 @@ class AdapterHistoryKeyWord(
 
     private fun deleteSearchFromFirebase(searchData: SearchDataModel) {
         // Xóa mục tìm kiếm trong Firebase
-        searchHistoryRef.child(useID).child(searchData.Ma_timkiem!!).removeValue()
+        searchHistoryRef.child(useID).child(searchData.ma_timkiem!!).removeValue()
             .addOnSuccessListener {
                 Log.d("SearchHistory", "Mục tìm kiếm đã được xóa thành công.")
             }
