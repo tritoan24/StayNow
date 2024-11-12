@@ -12,12 +12,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentTabHomeBinding
 
 class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
-
 
     private val sharedViewModel: SharedViewModel by activityViewModels()
     private lateinit var binding: FragmentTabHomeBinding  // Đối tượng ViewBinding
@@ -88,6 +88,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
                     roomSnapshot.getValue(PhongTroModel::class.java)?.let { roomList.add(it) }
                 }
                 roomAdapter.notifyDataSetChanged()
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -95,6 +96,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

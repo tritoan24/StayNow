@@ -41,7 +41,7 @@ class PhongTroAdapter(
         fun bind(room: PhongTroModel) {
             // Cập nhật ảnh phòng trọ
             Glide.with(itemView.context)
-                .load(room.imageRoom)
+                .load(room.danhSachAnh[0])
                 .into(roomImage)
 
             // Cập nhật tên phòng trọ

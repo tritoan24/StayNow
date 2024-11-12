@@ -24,7 +24,7 @@ class RoomDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_room_detail)
 
 //        Khoi tao viewModel
-        viewModel = ViewModelProvider(this).get(RoomDetailViewModel::class.java)
+        viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
 
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""

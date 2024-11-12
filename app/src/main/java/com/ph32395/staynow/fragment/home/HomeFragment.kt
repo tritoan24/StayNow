@@ -31,6 +31,7 @@ class HomeFragment : Fragment() {
 
     // Danh sách mã loại phòng trọ
     private val loaiPhongTroCodes = mutableListOf<String>()
+    private var lastUpdateTime: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +39,8 @@ class HomeFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
         binding = FragmentHomeBinding.bind(view)
-        imageSlider = view.findViewById(R.id.imageSlider)
+        imageSlider = binding.imageSlider
+
         storage = Firebase.storage
 
         // Load banner images from Firebase Storage
@@ -53,6 +55,17 @@ class HomeFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Kiểm tra xem có thay đổi hay không (so sánh thời gian cập nhật)
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastUpdateTime > 10000) {  // Ví dụ: nếu quá 10 giây (hoặc thời gian bạn xác định) thì load lại dữ liệu
+            loadImagesFromFirebase()
+            loadLoaiPhongTro()
+        }
     }
 
     private fun loadImagesFromFirebase() {
@@ -73,6 +86,7 @@ class HomeFragment : Fragment() {
         }.addOnFailureListener { exception ->
             Log.e("HomeFragment", "Failed to list images", exception)
         }
+        lastUpdateTime = System.currentTimeMillis()
     }
 
     private fun loadLoaiPhongTro() {
@@ -91,6 +105,8 @@ class HomeFragment : Fragment() {
         }.addOnFailureListener { exception ->
             Log.e("HomeFragment", "Failed to fetch LoaiPhongTro", exception)
         }
+        lastUpdateTime = System.currentTimeMillis()
+
     }
 
     private fun setupTabs(loaiPhongTroList: List<LoaiPhongTro>) {
@@ -121,4 +137,6 @@ class HomeFragment : Fragment() {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
+
+
 }

@@ -14,7 +14,6 @@ data class PhongTroModel(
     val soLuotXem: Int? = 0,
     val ngayTao: Long? = 0L,
     val ngayCapNhat: Long? = 0L,
-    val imageRoom: String = "",
     val danhSachAnh: ArrayList<String> = ArrayList(),
     val soNguoi: Int = 0,
     val tang: Int = 0,
