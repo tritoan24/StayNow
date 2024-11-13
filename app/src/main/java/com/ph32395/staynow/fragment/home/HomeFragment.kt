@@ -14,16 +14,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
-import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.storage
 import com.ph32395.staynow.Model.LoaiPhongTro
-import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentHomeBinding
-import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
 
