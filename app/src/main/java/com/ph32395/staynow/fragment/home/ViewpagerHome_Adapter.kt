@@ -10,7 +10,7 @@ class ViewPagerHomeAdapter(fragment: Fragment, private val categories: List<Loai
     override fun getItemCount(): Int = categories.size
 
     override fun createFragment(position: Int): Fragment {
-        val category = categories[position].id
+        val category = categories[position].Ma_loaiphong
         return HomeTabFragment.newInstance(category)
     }
 }

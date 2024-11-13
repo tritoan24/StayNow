@@ -2,9 +2,11 @@ package com.ph32395.staynow.Model
 
 
 data class LoaiPhongTro(
-    val id: String,
-    val tenLoaiPhong: String
-){
-    constructor() : this("", "")
+    val Ma_loaiphong: String,
+    val Status: Boolean,
+    val Ten_loaiphong: String
+) {
+    constructor() : this("", false, "")
+
 }
 
