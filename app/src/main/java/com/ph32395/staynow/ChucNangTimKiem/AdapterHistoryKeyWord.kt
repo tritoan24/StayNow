@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ItemHistorySearchBinding
 
@@ -19,8 +20,12 @@ class AdapterHistoryKeyWord(
         context, R.layout.item_history_search, item
     ) {
     private lateinit var binding: ItemHistorySearchBinding
-    private val database = FirebaseDatabase.getInstance()
-    private val searchHistoryRef = database.getReference("LichSuTimKiem")
+
+    //    private val database = FirebaseDatabase.getInstance()
+//    private val searchHistoryRef = database.getReference("LichSuTimKiem")
+    private val firestore = FirebaseFirestore.getInstance()
+    private val searchHistoryRef = firestore.collection("LichSuTimKiem")
+
     private val TAG: String = "zzzz"
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
@@ -37,10 +42,12 @@ class AdapterHistoryKeyWord(
 
         return view
     }
+
     fun updateList(newItems: List<SearchDataModel>) {
         item = newItems.toMutableList()
         notifyDataSetChanged()
     }
+
     private fun removeSearchData(searchData: SearchDataModel) {
         // Tìm vị trí của item cần xóa trong listKeySearch
         val position = item.indexOf(searchData)
@@ -55,17 +62,22 @@ class AdapterHistoryKeyWord(
         }
 
 
-
     }
 
     private fun deleteSearchFromFirebase(searchData: SearchDataModel) {
         // Xóa mục tìm kiếm trong Firebase
-        searchHistoryRef.child(useID).child(searchData.ma_timkiem!!).removeValue()
-            .addOnSuccessListener {
-                Log.d("SearchHistory", "Mục tìm kiếm đã được xóa thành công.")
-            }
-            .addOnFailureListener { exception ->
-                Log.e("SearchHistory", "Lỗi khi xóa mục tìm kiếm: ${exception.message}")
+//        searchHistoryRef.child(useID).child(searchData.ma_timkiem!!).removeValue()
+//            .addOnSuccessListener {
+//                Log.d("SearchHistory", "Mục tìm kiếm đã được xóa thành công.")
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("SearchHistory", "Lỗi khi xóa mục tìm kiếm: ${exception.message}")
+//            }
+        searchHistoryRef.document(useID).collection("HistoryKeyWord").document(searchData.ma_timkiem!!)
+            .delete().addOnSuccessListener {
+                Log.d(TAG, "deleteSearchFromFirebase: Xoa thanh cong")
+            }.addOnFailureListener {
+                Log.d(TAG, "deleteSearchFromFirebase: Xoa that bai")
             }
     }
 }

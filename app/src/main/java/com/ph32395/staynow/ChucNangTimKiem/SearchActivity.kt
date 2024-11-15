@@ -2,6 +2,7 @@ package com.ph32395.staynow.ChucNangTimKiem
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -19,6 +20,10 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
+import com.ph32395.staynow.Maps.MapsActivity
 import com.ph32395.staynow.Model.PhongTro
 import com.ph32395.staynow.databinding.ActivitySearchBinding
 import com.ph32395.staynow.databinding.BottomSheetCitySearchBinding
@@ -31,9 +36,16 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
     private lateinit var binding: ActivitySearchBinding
     private var TAG: String = "zzzzzzzzzz"
-    private val database = FirebaseDatabase.getInstance()
-    private val searchHistoryRef = database.getReference("LichSuTimKiem")
-    private val dataRoom = database.getReference("PhongTro")
+    //Realtime
+//    private val database = FirebaseDatabase.getInstance()
+//    private val searchHistoryRef = database.getReference("LichSuTimKiem")
+//    private val dataRoom = database.getReference("PhongTro")
+
+    private val firestore = FirebaseFirestore.getInstance()
+    private val searchHistoryRef = firestore.collection("LichSuTimKiem")
+    private val dataRoom = firestore.collection("PhongTro")
+
+
     val listFullRoom: MutableList<PhongTro> = mutableListOf()
     val listKeySearch: MutableList<SearchDataModel> = mutableListOf()
     var min: Int = 0
@@ -105,61 +117,112 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         binding.ivBack.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
+        binding.btnMap.setOnClickListener {
+            startActivity(Intent(this,MapsActivity::class.java))
+        }
 
 
     }
 
 
-    // Hàm tìm kiếm tương đối trong name hoặc address
+    // Hàm tìm kiếm tương đối trong name hoặc address realtime database
+//    fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
+//        dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val filteredList = mutableListOf<PhongTro>()
+//                val queryWords = query.split(" ").filter { it.isNotEmpty() }
+//
+//                Log.d(TAG, "onDataChange: queryWords $queryWords")
+//                Log.d(TAG, "onDataChange: query $query")
+//
+//                for (roomSnapshot in snapshot.children) {
+//                    val roomData = roomSnapshot.getValue(PhongTro::class.java)
+//                    val roomName = roomData?.tenPhongTro ?: ""
+//                    val roomDescription = roomData?.motaChiTiet ?: ""
+//
+//                    // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
+//                    val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
+//                            roomDescription.contains(query, ignoreCase = true)
+//
+//                    // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
+//                    val allWordsMatch = queryWords.all { word ->
+//                        roomName.contains(word, ignoreCase = true) || roomDescription.contains(
+//                            word,
+//                            ignoreCase = true
+//                        )
+//                    }
+//
+//                    // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
+//                    if (queryInDescriptionOrName || allWordsMatch) {
+//                        filteredList.add(roomData!!)
+//                        binding.rvListRoom.visibility = View.VISIBLE
+//                        binding.layoutNullMsg.visibility = View.GONE
+//                        Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm chi tiết hoặc tương đối)")
+//                    }
+//                }
+//
+//                adapter.updateList(filteredList)
+//
+//                if (filteredList.isEmpty()) {
+//                    Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
+//                    binding.rvListRoom.visibility = View.GONE
+//                    binding.layoutNullMsg.visibility = View.VISIBLE
+//                }
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.e(TAG, "Lỗi khi đọc dữ liệu: ${error.message}")
+//            }
+//        })
+//    }
+
+    //Fire store
     fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
-        dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val filteredList = mutableListOf<PhongTro>()
-                val queryWords = query.split(" ").filter { it.isNotEmpty() }
+        val filteredList = mutableListOf<PhongTro>()
+        val queryWords = query.split(" ").filter { it.isNotEmpty() }
 
-                Log.d(TAG, "onDataChange: queryWords $queryWords")
-                Log.d(TAG, "onDataChange: query $query")
+        Log.d(TAG, "onDataChange: queryWords $queryWords")
+        Log.d(TAG, "onDataChange: query $query")
 
-                for (roomSnapshot in snapshot.children) {
-                    val roomData = roomSnapshot.getValue(PhongTro::class.java)
-                    val roomName = roomData?.tenPhongTro ?: ""
-                    val roomDescription = roomData?.motaChiTiet ?: ""
+        dataRoom.get().addOnSuccessListener { snapshot ->
+            for (document in snapshot.documents) {
+                val roomData = document.toObject(PhongTro::class.java)
+                val roomName = roomData?.tenPhongTro ?: ""
+                val roomDescription = roomData?.motaChiTiet ?: ""
 
-                    // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
-                    val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
-                            roomDescription.contains(query, ignoreCase = true)
+                // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
+                val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
+                        roomDescription.contains(query, ignoreCase = true)
 
-                    // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
-                    val allWordsMatch = queryWords.all { word ->
-                        roomName.contains(word, ignoreCase = true) || roomDescription.contains(
-                            word,
-                            ignoreCase = true
-                        )
-                    }
-
-                    // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
-                    if (queryInDescriptionOrName || allWordsMatch) {
-                        filteredList.add(roomData!!)
-                        binding.rvListRoom.visibility = View.VISIBLE
-                        binding.layoutNullMsg.visibility = View.GONE
-                        Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm chi tiết hoặc tương đối)")
-                    }
+                // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
+                val allWordsMatch = queryWords.all { word ->
+                    roomName.contains(word, ignoreCase = true) || roomDescription.contains(
+                        word,
+                        ignoreCase = true
+                    )
                 }
 
-                adapter.updateList(filteredList)
-
-                if (filteredList.isEmpty()) {
-                    Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
-                    binding.rvListRoom.visibility = View.GONE
-                    binding.layoutNullMsg.visibility = View.VISIBLE
+                // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
+                if (queryInDescriptionOrName || allWordsMatch) {
+                    filteredList.add(roomData!!)
+                    binding.rvListRoom.visibility = View.VISIBLE
+                    binding.layoutNullMsg.visibility = View.GONE
+                    Log.d(TAG, "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)")
                 }
             }
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e(TAG, "Lỗi khi đọc dữ liệu: ${error.message}")
+            adapter.updateList(filteredList)
+
+            if (filteredList.isEmpty()) {
+                Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
+                binding.rvListRoom.visibility = View.GONE
+                binding.layoutNullMsg.visibility = View.VISIBLE
             }
-        })
+        }.addOnFailureListener { exception ->
+            Log.e(TAG, "Error getting documents: ", exception)
+        }
     }
+
 
     //Cung có the dung ham nay neu thay han tren khong on
 //    fun searchRoomByNameOrDescription2(query: String, adapter: PhongTroAdapter) {
@@ -218,119 +281,231 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 //    }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun readListRoom(adapter: PhongTroAdapter) {
-
-        dataRoom.addValueEventListener(object : ValueEventListener {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onDataChange(snapshot: DataSnapshot) {
-                Log.d(TAG, "onDataChange: snapshotRoom $snapshot")
-
-                listFullRoom.clear()
-
-                // Duyệt qua các node con trong "rooms"
-                for (roomSnapshot in snapshot.children) {
-                    val room = roomSnapshot.getValue(PhongTro::class.java)
-                    room?.let {
-                        listFullRoom.add(it)
-                    }
+        //Realtime data base
+//        dataRoom.addValueEventListener(object : ValueEventListener {
+//            @SuppressLint("NotifyDataSetChanged")
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                Log.d(TAG, "onDataChange: snapshotRoom $snapshot")
+//
+//                listFullRoom.clear()
+//
+//                // Duyệt qua các node con trong "rooms"
+//                for (roomSnapshot in snapshot.children) {
+//                    val room = roomSnapshot.getValue(PhongTro::class.java)
+//                    room?.let {
+//                        listFullRoom.add(it)
+//                    }
+//                }
+//                adapter.notifyDataSetChanged()
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                // Xử lý lỗi nếu có
+//                error.toException().printStackTrace()
+//            }
+//        })
+        //firestore
+        dataRoom.get().addOnSuccessListener { it ->
+            listFullRoom.clear()
+            val documents = it.toObjects(PhongTro::class.java)
+            Log.d(TAG, "readListRoom: it read room ${it.toObjects(PhongTro::class.java)}")
+            for (document in documents) {
+                document.let { room ->
+                    listFullRoom.add(room)
                 }
-                adapter.notifyDataSetChanged()
             }
+            adapter.notifyDataSetChanged()
+        }.addOnFailureListener {
+            Log.e(TAG, "readListRoom: ${it.message.toString()}")
+        }
 
-            override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi nếu có
-                error.toException().printStackTrace()
-            }
-        })
 
     }
 
     private fun readKeyWordSearch(userId: String?) {
         var adapter: AdapterHistoryKeyWord = AdapterHistoryKeyWord(this, mutableListOf(), userId!!)
-        searchHistoryRef.child(userId).orderByChild("timestamps")
-            .addChildEventListener(object : ChildEventListener {
-                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    Log.d(TAG, "onChildAdded: snapshot: $snapshot")
-                    Log.d(TAG, "onChildAdded: snapshot_value: ${snapshot.value}")
-                    Log.d(TAG, "onChildAdded: previousChildName: $previousChildName")
 
-                    val newData = snapshot.getValue(SearchDataModel::class.java)
-                    Log.d(TAG, "onChildAdded: newData $newData")
-                    newData.let {
-                        listKeySearch.add(it!!)
-                        Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
+        searchHistoryRef.document(userId).collection("HistoryKeyWord").orderBy("timestamps")
+            .addSnapshotListener { snapshots, error ->
+                if (error != null) {
+                    Log.d(TAG, "Error listening to snapshots: $error")
+                    return@addSnapshotListener
+                }
+
+                if (snapshots != null) {
+                    for (change in snapshots.documentChanges) {
+                        when (change.type) {
+                            DocumentChange.Type.ADDED -> {
+                                Log.d(TAG, "onChildAdded: snapshot: ${change.document}")
+                                Log.d(TAG, "onChildAdded: snapshot_value: ${change.document.data}")
+
+                                val newData = change.document.toObject(SearchDataModel::class.java)
+                                Log.d(TAG, "onChildAdded: newData $newData")
+
+                                newData.let {
+                                    listKeySearch.add(it)
+                                    Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
+                                }
+
+                                if (listKeySearch.size >= 3) {
+                                    Log.d(
+                                        TAG,
+                                        "onChildAdded: listKeySearch.size >= 3 Three size list search"
+                                    )
+                                    binding.lvHistory.layoutParams.height = 300
+                                }
+
+                                // Đảo ngược danh sách để hiển thị từ mới nhất đến cũ nhất
+                                listKeySearch.reverse()
+                                adapter = AdapterHistoryKeyWord(
+                                    this@SearchActivity,
+                                    listKeySearch,
+                                    userId
+                                )
+                                binding.lvHistory.adapter = adapter
+                                adapter.notifyDataSetChanged()
+                                Log.d(TAG, "onChildAdded: List Search $listKeySearch")
+                            }
+
+                            DocumentChange.Type.MODIFIED -> {
+                                Log.d(TAG, "onChildChanged: snapshot: ${change.document}")
+                                Log.d(TAG, "onChildChanged: listKeySearch $listKeySearch")
+                                // Cập nhật danh sách nếu cần
+                            }
+
+                            DocumentChange.Type.REMOVED -> {
+                                Log.d(TAG, "onChildRemoved: snapshot: ${change.document}")
+                                listKeySearch.removeIf {
+                                    it.timestamps == change.document.getString(
+                                        "timestamps"
+                                    )
+                                }
+                                if (listKeySearch.size < 3) {
+                                    binding.lvHistory.layoutParams.height =
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
+                                }
+                                adapter.notifyDataSetChanged()
+                            }
+                        }
                     }
-                    if (listKeySearch.size >= 3) {
-                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
-                        binding.lvHistory.layoutParams.height = 300
-                    }
-                    // Đảo ngược danh sách để hiển thị từ mới nhất đến cũ nhất
-                    listKeySearch.reverse()
-                    adapter = AdapterHistoryKeyWord(
-                        this@SearchActivity,
-                        listKeySearch,
-                        userId
-                    )
-                    binding.lvHistory.adapter = adapter
-                    adapter.notifyDataSetChanged()
-                    Log.d(TAG, "onChildAdded: List Search $listKeySearch")
                 }
+            }
 
-                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                    Log.d(TAG, "onChildChanged: snapshot: $snapshot")
-                    Log.d(TAG, "onChildChanged: previousChildName: $previousChildName")
-                    Log.d(TAG, "onChildChanged: listKeySearch $listKeySearch")
-                }
 
-                override fun onChildRemoved(snapshot: DataSnapshot) {
-                    Log.d(TAG, "onChildRemoved: snapshot: $snapshot")
-                    Log.d(TAG, "onChildRemoved: $listKeySearch")
-                    if (listKeySearch.size < 3) {
-                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
-                        binding.lvHistory.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
-                }
-
-                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                    Log.d(TAG, "onChildMoved: snapshot: $snapshot")
-                    Log.d(TAG, "onChildMoved: previousChildName: $previousChildName")
-
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.d(TAG, "onCancelled: error: $error")
-                }
-
-            })
+        //Realtime database
+//        var adapter: AdapterHistoryKeyWord = AdapterHistoryKeyWord(this, mutableListOf(), userId!!)
+//        searchHistoryRef.child(userId).orderByChild("timestamps")
+//            .addChildEventListener(object : ChildEventListener {
+//                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
+//                    Log.d(TAG, "onChildAdded: snapshot: $snapshot")
+//                    Log.d(TAG, "onChildAdded: snapshot_value: ${snapshot.value}")
+//                    Log.d(TAG, "onChildAdded: previousChildName: $previousChildName")
+//
+//                    val newData = snapshot.getValue(SearchDataModel::class.java)
+//                    Log.d(TAG, "onChildAdded: newData $newData")
+//                    newData.let {
+//                        listKeySearch.add(it!!)
+//                        Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
+//                    }
+//                    if (listKeySearch.size >= 3) {
+//                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
+//                        binding.lvHistory.layoutParams.height = 300
+//                    }
+//                    // Đảo ngược danh sách để hiển thị từ mới nhất đến cũ nhất
+//                    listKeySearch.reverse()
+//                    adapter = AdapterHistoryKeyWord(
+//                        this@SearchActivity,
+//                        listKeySearch,
+//                        userId
+//                    )
+//                    binding.lvHistory.adapter = adapter
+//                    adapter.notifyDataSetChanged()
+//                    Log.d(TAG, "onChildAdded: List Search $listKeySearch")
+//                }
+//
+//                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
+//                    Log.d(TAG, "onChildChanged: snapshot: $snapshot")
+//                    Log.d(TAG, "onChildChanged: previousChildName: $previousChildName")
+//                    Log.d(TAG, "onChildChanged: listKeySearch $listKeySearch")
+//                }
+//
+//                override fun onChildRemoved(snapshot: DataSnapshot) {
+//                    Log.d(TAG, "onChildRemoved: snapshot: $snapshot")
+//                    Log.d(TAG, "onChildRemoved: $listKeySearch")
+//                    if (listKeySearch.size < 3) {
+//                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
+//                        binding.lvHistory.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+//                    }
+//                }
+//
+//                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
+//                    Log.d(TAG, "onChildMoved: snapshot: $snapshot")
+//                    Log.d(TAG, "onChildMoved: previousChildName: $previousChildName")
+//
+//                }
+//
+//                override fun onCancelled(error: DatabaseError) {
+//                    Log.d(TAG, "onCancelled: error: $error")
+//                }
+//
+//            })
 
     }
 
     private fun saveKeyWordSearch(text: Editable) {
+//        Log.d(TAG, "saveKeyWordSearch: text $text")
+//
+//        // Lấy reference đến Realtime Database
+//
+//        //  userId
+//        val userId = FirebaseAuth.getInstance().currentUser?.uid
+//        Log.d(TAG, "saveKeyWordSearch: userID $userId")
+//        Log.d(TAG, "saveKeyWordSearch: database $database")
+//        Log.d(TAG, "saveKeyWordSearch: searchHistoryRef $searchHistoryRef")
+//
+//        val timeStamp = System.currentTimeMillis() // Lấy thời gian hiện tại
+//        val formattedTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(
+//            Date(timeStamp)
+//        )
+//        val searchQuery = text.toString() // Từ khóa tìm kiếm
+//        // Tạo một ID tìm kiếm ngẫu nhiên
+//        val searchId = searchHistoryRef.child(userId!!).push().key ?: return
+//        val searchData = SearchDataModel(
+//            ma_timkiem = searchId,
+//            tu_khoa = searchQuery,
+//            thoi_giantimkiem = formattedTime,
+//            timestamps = timeStamp.toString()
+//        )
+//        Log.d(TAG, "saveKeyWordSearch: timeStamp $timeStamp")
+//        Log.d(TAG, "saveKeyWordSearch: formattedTime $formattedTime")
+//        Log.d(TAG, "saveKeyWordSearch: searchId $searchId")
+//        Log.d(TAG, "saveKeyWordSearch: searchData $searchData")
+//        // Lưu vào Firebase
+//        searchHistoryRef.child(userId).child(searchId).setValue(searchData)
+//            .addOnSuccessListener {
+//                Log.d("SearchHistory", "Tìm kiếm đã được lưu vào Firebase.")
+//            }
+//            .addOnFailureListener { exception ->
+//                Log.e("SearchHistory", "Lỗi khi lưu tìm kiếm: ${exception.message}")
+//            }
         Log.d(TAG, "saveKeyWordSearch: text $text")
 
-        // Lấy reference đến Realtime Database
-
-        //  userId
+// Lấy reference đến Firestore
+        val firestore = FirebaseFirestore.getInstance()
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         Log.d(TAG, "saveKeyWordSearch: userID $userId")
-        Log.d(TAG, "saveKeyWordSearch: database $database")
-        Log.d(TAG, "saveKeyWordSearch: searchHistoryRef $searchHistoryRef")
+        Log.d(TAG, "saveKeyWordSearch: firestore $firestore")
 
         val timeStamp = System.currentTimeMillis() // Lấy thời gian hiện tại
         val formattedTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(
             Date(timeStamp)
         )
         val searchQuery = text.toString() // Từ khóa tìm kiếm
-        // Tạo một ID tìm kiếm ngẫu nhiên
-        val searchId = searchHistoryRef.child(userId!!).push().key ?: return
-
-        // Tạo đối tượng lưu vào Firebase
-//        val searchData = mapOf(
-//            "Ma_timkiem" to searchId,
-//            "Tu_khoa" to searchQuery,
-//            "Thoi_giantimkiem" to formattedTime,
-//            "timestamps" to timeStamp
-//        )
+// Tạo một ID tìm kiếm ngẫu nhiên
+        val searchId =
+            searchHistoryRef.document(userId!!).collection("HistoryKeyWord").document().id
         val searchData = SearchDataModel(
             ma_timkiem = searchId,
             tu_khoa = searchQuery,
@@ -341,14 +516,18 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         Log.d(TAG, "saveKeyWordSearch: formattedTime $formattedTime")
         Log.d(TAG, "saveKeyWordSearch: searchId $searchId")
         Log.d(TAG, "saveKeyWordSearch: searchData $searchData")
-        // Lưu vào Firebase
-        searchHistoryRef.child(userId).child(searchId).setValue(searchData)
+
+// Lưu vào Firestore
+        searchHistoryRef.document(userId).collection("HistoryKeyWord").document(searchId)
+            .set(searchData)
             .addOnSuccessListener {
-                Log.d("SearchHistory", "Tìm kiếm đã được lưu vào Firebase.")
+                Log.d("SearchHistory", "Tìm kiếm đã được lưu vào Firestore.")
             }
             .addOnFailureListener { exception ->
                 Log.e("SearchHistory", "Lỗi khi lưu tìm kiếm: ${exception.message}")
             }
+
+
     }
 
     private fun showBottomSheetCity() {
