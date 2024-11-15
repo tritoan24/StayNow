@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:gravity="center_horizontal"
+    >
+    <ImageView
+        android:id="@+id/iconNoiThat"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/icon_nuoc"/>
+    <TextView
+        android:id="@+id/txtTenNoiThat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Dien"
+        android:textAlignment="center"
+        android:textSize="12sp"/>
+
+
+</LinearLayout>

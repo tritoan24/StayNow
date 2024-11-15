@@ -81,5 +81,7 @@ dependencies {
 //Thư viện format tgian tạo phòng trọ
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
 
+//    thu vien zoom to anh
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 
 }

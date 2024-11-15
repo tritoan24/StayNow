@@ -1,5 +1,6 @@
 package com.ph32395.staynow.Adapter
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.ph32395.staynow.Activity.FullScreenImageActivity
 
 class ImagePagerAdapter(
     private val viewPager: ViewPager
@@ -54,6 +56,15 @@ class ImagePagerAdapter(
         val imageView = ImageView(container.context)
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         Glide.with(container.context).load(images[position]).into(imageView)
+
+        // Sự kiện nhấn vào ảnh
+        imageView.setOnClickListener {
+            val context = container.context
+            val intent = Intent(context, FullScreenImageActivity::class.java)
+            intent.putExtra("image_url", images[position])
+            context.startActivity(intent)
+        }
+
         container.addView(imageView)
         return imageView
     }

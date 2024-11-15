@@ -7,6 +7,7 @@
         android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,6 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
+            android:name=".Activity.FullScreenImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.OTPActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.RoomDetailActivity"
             android:exported="false" />
         <activity
@@ -27,7 +34,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
         <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"
