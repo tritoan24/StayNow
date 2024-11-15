@@ -4,12 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.RoundedCorner
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
@@ -46,6 +50,7 @@ class PhongTroAdapter(
             // Cập nhật ảnh phòng trọ
             Glide.with(itemView.context)
                 .load(room.imageUrls[0])
+                .apply(RequestOptions().transform(CenterCrop(),RoundedCorners(16)))
                 .into(roomImage)
 
             // Cập nhật tên phòng trọ
@@ -55,10 +60,9 @@ class PhongTroAdapter(
             roomAddress.text = room.Dia_chi
 
             // Cập nhật giá thuê
-            roomPrice.text = "Từ ${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
+            roomPrice.text = "${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
 
-
-//                    roomArea.text = "${String.format("%.1f", dienTich)} m²"
+            roomArea.text = "${String.format("%.1f", room.Dien_tich)} m²"
 
 
             // Cập nhật số lượt xem

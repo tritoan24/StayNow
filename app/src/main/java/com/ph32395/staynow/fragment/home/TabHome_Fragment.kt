@@ -33,23 +33,19 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTabHomeBinding.bind(view)
 
-        val idLoaiPhong = arguments?.getString("id_loaiphong")
-        // Setup RecyclerView
-        setupRecyclerView()
-
         // Initialize Firebase reference
         db = FirebaseFirestore.getInstance()
 
+        // Setup RecyclerView
+        setupRecyclerView()
+
+        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
+            homeViewModel.updateRoomList(idloaiPhongTro)
+        }
         homeViewModel.roomList.observe(viewLifecycleOwner) { roomList ->
             handleRoomList(roomList)
         }
 
-        idLoaiPhong?.let {
-            homeViewModel.updateRoomList(it)
-        }
-        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
-            homeViewModel.updateRoomList(idloaiPhongTro)
-        }
 
     }
 

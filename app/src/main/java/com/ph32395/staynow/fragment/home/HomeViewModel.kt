@@ -21,6 +21,7 @@ class HomeViewModel : ViewModel() {
 
     private val _roomList = MutableLiveData<List<Pair<String, PhongTroModel>>>()
     val roomList: LiveData<List<Pair<String, PhongTroModel>>> get() = _roomList
+    private val cachedRooms = mutableMapOf<String, List<Pair<String, PhongTroModel>>>()
 
     private val _loaiPhongTroList = MutableLiveData<List<LoaiPhongTro>>()
     val loaiPhongTroList: LiveData<List<LoaiPhongTro>> get() = _loaiPhongTroList
@@ -61,41 +62,39 @@ class HomeViewModel : ViewModel() {
     }
 
     fun updateRoomList(maloaiPhongTro: String) {
-        val firestore = FirebaseFirestore.getInstance()
-        val loaiPhongRef = firestore.collection("LoaiPhong")
-
-        // Truy vấn LoaiPhong để lấy tên loại phòng dựa trên mã loại phòng
-        val loaiPhongQuery = loaiPhongRef.whereEqualTo("Ma_loaiphong", maloaiPhongTro)
-
-        loaiPhongQuery.get()
+        cachedRooms[maloaiPhongTro]?.let {
+            _roomList.postValue(it)
+            return
+        }
+        firestore.collection("LoaiPhong")
+            .whereEqualTo("Ma_loaiphong", maloaiPhongTro)
+            .get()
             .addOnSuccessListener { loaiPhongSnapshot ->
-                if (!loaiPhongSnapshot.isEmpty) {
-                    // Lấy tên loại phòng từ tài liệu LoaiPhong
-                    val tenLoaiPhong =
-                        loaiPhongSnapshot.documents.first().getString("Ten_loaiphong")
-
-                    // Truy vấn PhongTro dựa trên tên loại phòng
+                val tenLoaiPhong =
+                    loaiPhongSnapshot.documents.firstOrNull()?.getString("Ten_loaiphong")
+                if (tenLoaiPhong != null) {
                     val roomsRef = firestore.collection("PhongTro")
-                    val query = if (tenLoaiPhong == "Tất cả") {
-                        roomsRef
-                    } else {
-                        roomsRef.whereEqualTo("Ma_loaiphong", maloaiPhongTro)
-                    }
-
-                    // Thực hiện truy vấn PhongTro
+                    val query = if (tenLoaiPhong == "Tất cả") roomsRef else roomsRef.whereEqualTo(
+                        "Ma_loaiphong",
+                        maloaiPhongTro
+                    )
                     query.get()
                         .addOnSuccessListener { snapshot ->
-                            handleRoomList(snapshot)  // Xử lý danh sách phòng trọ
+                            handleRoomList(snapshot)
+                            val rooms = snapshot.documents.map { doc ->
+                                Pair(doc.id, doc.toObject(PhongTroModel::class.java)!!)
+                            }
+                            // Lưu vào cache
+                            cachedRooms[maloaiPhongTro] = rooms
+                            _roomList.postValue(rooms)
                         }
                         .addOnFailureListener { exception ->
-                            Log.e("HomeViewModel", "Error getting rooms: ", exception)
+                            Log.e("HomeViewModel", "Error fetching rooms: ", exception)
                         }
-                } else {
-                    Log.d("HomeViewModel", "No matching LoaiPhong found")
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("HomeViewModel", "Error getting LoaiPhong: ", exception)
+                Log.e("HomeViewModel", "Error fetching LoaiPhong: ", exception)
             }
     }
 
@@ -109,31 +108,37 @@ class HomeViewModel : ViewModel() {
             }
         }
         _roomList.value = roomList // Cập nhật LiveData
+        fetchChiTietThongTinForRoomList(roomList)
     }
 
-    private val _chiTietThongTinList = MutableLiveData<List<ChiTietThongTin>>()
-    val chiTietThongTinList: LiveData<List<ChiTietThongTin>> get() = _chiTietThongTinList
+    private fun fetchChiTietThongTinForRoomList(roomList: List<Pair<String, PhongTroModel>>) {
+        val updatedRoomList = mutableListOf<Pair<String, PhongTroModel>>()
 
-    fun fetchChiTietThongTin(maPhongTro: String) {
-        firestore.collection("ChiTietThongTin")
-            .whereEqualTo("ma_phongtro", maPhongTro) // Điều kiện 1: trùng mã phòng
-            .whereEqualTo("ten_thongtin", "Diện tích") // Điều kiện 2: tên thông tin là "diện tích"
-            .get()
-            .addOnSuccessListener { documents ->
-                val list = mutableListOf<ChiTietThongTin>()
-                for (document in documents) {
-                    // Chuyển mỗi document thành đối tượng ChiTietThongTin
-                    val chiTiet = document.toObject(ChiTietThongTin::class.java)
-                    list.add(chiTiet)
-                    Log.d("HomeViewModel", "ChiTietThongTin: $chiTiet")
+        roomList.forEach { (roomId, room) ->
+            firestore.collection("ChiTietThongTin")
+                .whereEqualTo("ma_phongtro", roomId)
+                .whereEqualTo("ten_thongtin", "Diện tích")
+                .get()
+                .addOnSuccessListener { documents ->
+                    val chiTiet = documents.firstOrNull()?.toObject(ChiTietThongTin::class.java)
+                    chiTiet?.let {
+                        room.Dien_tich = it.so_luong_donvi // Cập nhật diện tích cho phòng
+                    }
+                    updatedRoomList.add(Pair(roomId, room))
+
+                    // Nếu đã xử lý xong tất cả phòng trọ, cập nhật LiveData
+                    if (updatedRoomList.size == roomList.size) {
+                        _roomList.value = updatedRoomList
+                    }
                 }
-                // Cập nhật LiveData với các kết quả phù hợp
-                _chiTietThongTinList.postValue(list)
-            }
-            .addOnFailureListener { exception ->
-                Log.e("HomeViewModel", "Error fetching ChiTietThongTin", exception)
-                // Xử lý lỗi nếu cần
-            }
+                .addOnFailureListener { exception ->
+                    Log.e(
+                        "HomeViewModel",
+                        "Error fetching ChiTietThongTin for roomId $roomId",
+                        exception
+                    )
+                }
+        }
     }
 
 }
