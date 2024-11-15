@@ -5,7 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:layout_gravity="center"
     card_view:cardBackgroundColor="@android:color/white"
     card_view:cardCornerRadius="16dp"
     card_view:cardElevation="4dp">
@@ -13,7 +12,6 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical"
         android:padding="8dp">
 
@@ -23,7 +21,6 @@
             android:layout_width="160dp"
             android:layout_height="100dp"
             android:background="@drawable/border_image"
-            android:scaleType="centerCrop"
             android:src="@drawable/room"
             tools:ignore="ContentDescription" />
 
@@ -38,27 +35,28 @@
             android:textSize="14sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
+
         <!-- Phần địa chỉ của phòng trọ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="start"
+            android:gravity="center"
             android:orientation="horizontal"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginEnd="8dp"
+                android:layout_gravity="start"
                 android:src="@drawable/ic_location_room"
                 tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/tvDiaChi"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginStart="2dp"
                 android:text="Địa chỉ"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
@@ -68,45 +66,41 @@
         <!-- Phần giá thuê -->
         <TextView
             android:id="@+id/tvGiaThue"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginStart="3dp"
+            android:layout_marginTop="4dp"
+            android:text="Giá thuê: 2,000,000 VND"
             android:textColor="#EF1606"
             android:textSize="12sp"
             tools:ignore="HardcodedText" />
 
+        <!-- Layout diện tích và số lượt xem -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
+            android:layout_height="25dp"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
-            android:padding="8dp"
             tools:ignore="DisableBaselineAlignment">
 
-            <!-- LinearLayout cho Diện tích ở bên trái -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="start"
+                android:layout_weight="3"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
-                <!-- Icon diện tích -->
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
                     android:src="@drawable/ic_dientich"
                     tools:ignore="ContentDescription" />
 
-                <!-- Text diện tích -->
                 <TextView
                     android:id="@+id/tvDienTich"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Diện tích: 25m²"
+                    android:text="25m²"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
                     tools:ignore="HardcodedText" />
@@ -116,24 +110,22 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="end"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
 
-                <!-- Icon số lượt xem -->
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
                     android:src="@drawable/ic_viewer"
                     tools:ignore="ContentDescription" />
 
-                <!-- Text số lượt xem -->
                 <TextView
                     android:id="@+id/tvSoLuotXem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Số lượt xem: 10"
+                    android:text=""
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
                     tools:ignore="HardcodedText" />
@@ -141,6 +133,16 @@
 
         </LinearLayout>
 
-
+        <TextView
+            android:id="@+id/tvTgianTao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:text="20 phút trước"
+            android:textColor="#24C12A"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

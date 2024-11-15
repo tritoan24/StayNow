@@ -1,4 +1,4 @@
-package com.ph32395.staynow.Utils;
+package com.ph32395.staynow.ChucNangChung;
 
 import android.net.Uri;
 import android.widget.Toast;

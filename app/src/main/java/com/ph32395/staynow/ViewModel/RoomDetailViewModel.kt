@@ -1,57 +1,186 @@
 package com.ph32395.staynow.ViewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.ph32395.staynow.Model.RoomDetailModel
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldPath
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
+import com.ph32395.staynow.Model.ChiTietThongTinModel
+import com.ph32395.staynow.Model.NoiThatModel
+import com.ph32395.staynow.Model.PhiDichVuModel
+import com.ph32395.staynow.Model.PhongTroModel
+import com.ph32395.staynow.Model.TienNghiModel
 
 class RoomDetailViewModel : ViewModel() {
 
-    private val _room = MutableLiveData<RoomDetailModel>()
-    val room: LiveData<RoomDetailModel> get() = _room
+    private val db = FirebaseFirestore.getInstance()
+    private val realtimeDb = FirebaseDatabase.getInstance().reference
 
-    // Sử dụng MutableLiveData để lưu danh sách ảnh
-    private val _images = MutableLiveData<List<String>>()
-    val images: LiveData<List<String>> get() = _images  // Định nghĩa LiveData cho hình ảnh
+    private val _room = MutableLiveData<PhongTroModel>()
+    val room: LiveData<PhongTroModel> get() = _room
 
-    // Hàm này dùng để cập nhật danh sách ảnh
-    fun setImages(newImages: List<String>) {
-        _images.value = newImages
+    private val _genderInfo = MutableLiveData<Pair<String, String>>()
+    val genderInfo: LiveData<Pair<String, String>> get() = _genderInfo
+
+    private val _roomType = MutableLiveData<String>()
+    val roomType: LiveData<String> get() = _roomType
+
+    private val _userInfo = MutableLiveData<Pair<String, String>>()
+    val userInfo: LiveData<Pair<String, String>> get() = _userInfo
+
+    private val _roomStatus = MutableLiveData<String>()
+    val roomStatus: LiveData<String> get() = _roomStatus
+
+    private val _chiTietList = MutableLiveData<List<ChiTietThongTinModel>>()
+    val chiTietList: LiveData<List<ChiTietThongTinModel>> get() = _chiTietList
+
+    private val _phiDichVuList = MutableLiveData<List<PhiDichVuModel>>()
+    val phiDichVuList: LiveData<List<PhiDichVuModel>> get() = _phiDichVuList
+
+    private val _noiThatList = MutableLiveData<List<NoiThatModel>>()
+    val noiThatList: LiveData<List<NoiThatModel>> get() = _noiThatList
+
+    private val _tienNghiList = MutableLiveData<List<TienNghiModel>>()
+    val tienNghiList: LiveData<List<TienNghiModel>> get() = _tienNghiList
+
+//    lay danh sach tien nghi
+    fun fetchTienNghi(maPhongTro: String) {
+        db.collection("PhongTroTienNghi")
+            .whereEqualTo("ma_phongtro", maPhongTro)
+            .get()
+            .addOnSuccessListener { phongTroTienNghiDocs ->
+                val tienNghiIds = phongTroTienNghiDocs.map { it["ma_tiennghi"] as String }
+                if (tienNghiIds.isNotEmpty()) {
+                    db.collection("TienNghi")
+                        .whereIn(FieldPath.documentId(), tienNghiIds)
+                        .get()
+                        .addOnSuccessListener { tienNghiDocs ->
+                            val tienNghiList = tienNghiDocs.mapNotNull { it.toObject(TienNghiModel::class.java) }
+                            _tienNghiList.value = tienNghiList
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("RoomDetailModel", "Lỗi khi lấy dữ liệu tien nghi", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("RoomDetailModel", "Lỗi khi lấy dữ liệu PhongTroTienNghi", exception)
+            }
     }
 
-    init {
-//        Them du lieu cung cho phong tro
-        loadMockData()
+//    Lay danh sach thong tin noi that
+    fun fetchNoiThat(maPhongTro: String) {
+        db.collection("PhongTroNoiThat")
+            .whereEqualTo("ma_phongtro", maPhongTro)
+            .get()
+            .addOnSuccessListener { phongTroNoiThatDocs ->
+                val noiThatIds = phongTroNoiThatDocs.map { it["ma_noithat"] as String }
+                if (noiThatIds.isNotEmpty()) {
+                    db.collection("NoiThat")
+                        .whereIn(FieldPath.documentId(), noiThatIds)
+                        .get()
+                        .addOnSuccessListener { noiThatDocs ->
+                            val noiThatList = noiThatDocs.mapNotNull { it.toObject(NoiThatModel::class.java) }
+                            _noiThatList.value = noiThatList
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.e("RoomDetailModel", "Lỗi khi lấy dữ liệu nội thất", exception)
+                        }
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("RoomDetailModel", "Lỗi khi lấy dữ liệu PhongTroNoiThat", exception)
+            }
     }
 
-    private fun loadMockData() {
-        val Danh_sachanh = listOf(
-            "https://firebasestorage.googleapis.com/v0/b/staynowapp1.appspot.com/o/avatars%2Fanh_tro_1.jpg?alt=media&token=f7b1c2b5-b718-4811-8090-fb7b586a8ed8",
-            "https://firebasestorage.googleapis.com/v0/b/staynowapp1.appspot.com/o/avatars%2Fanh_tro_2.jpg?alt=media&token=e358c1c8-9159-4d67-b33e-1406e560ea1b",
-            "https://firebasestorage.googleapis.com/v0/b/staynowapp1.appspot.com/o/avatars%2Fanh_tro_3.jpg?alt=media&token=70b837e5-9519-447a-8bf0-15872e4a743e",
-            "https://firebasestorage.googleapis.com/v0/b/staynowapp1.appspot.com/o/avatars%2Fanh_tro_4.jpg?alt=media&token=d8ef4124-12cf-4f11-a493-c529d4921346"
-        )
+//    Lay thong tin chi tiet
+    fun fetchChiTietThongTin(maPhongTro: String) {
+        db.collection("ChiTietThongTin")
+            .whereEqualTo("ma_phongtro", maPhongTro)
+            .get()
+            .addOnSuccessListener { document ->
+                val list = document.mapNotNull { it.toObject(ChiTietThongTinModel::class.java) }
+                _chiTietList.value = list
+            }
+            .addOnFailureListener { exception ->
+                Log.e("RoomDetailViewModel", "Lỗi khi lấy dữ liệu chi tiết thông tin", exception)
+            }
+    }
 
-        val mockRoom = RoomDetailModel(
-            Ma_phongtro = "1",
-            Ma_nguoidung = "user123",
-            Ma_gioitinh = "Nam",
-            Ten_phongtro = "Phòng khép kín, có gác trên ",
-            Dia_chi = "49 Lê Đức Thọ, Mỹ Đình 2, Nam Từ Liêm, Hà Nội",
-            Chi_tietthem = "Thời gian không giới hạn\n Để được 3 xe\n Không chung chủ",
-            Loai_phongtro = "Chung cư mini",
-            Trang_thai = "Online 20 phút trước",
-            Dien_tich = "25m²",
-            Gia_thue = "4,500,000",
-            Danh_sachanh = Danh_sachanh,
-            So_luotxem = 130,
-            Ngay_tao = "06/11/2024",
-            Ngay_capnhat = "06/11/2024",
-            So_nguoi = 3,
-            Tang = 4,
-            Tien_coc = "4,000,000",
-            Danh_gia = "4,5"
-        )
-        _room.value = mockRoom
+//    Lay thong tin phi dich vu
+    fun fetchPhiDichVu(maPhongTro: String) {
+        db.collection("PhiDichVu")
+            .whereEqualTo("ma_phongtro", maPhongTro)
+            .get()
+            .addOnSuccessListener { document ->
+                val list = document.mapNotNull { it.toObject(PhiDichVuModel::class.java) }
+                _phiDichVuList.value = list
+            }
+            .addOnFailureListener { exception ->
+                Log.e("RoomDetailViewModel", "Loi khi lay du lieu phi dich vu", exception)
+            }
+    }
+
+//Lay thong tin chi tiet phong tro
+    fun fetchRoomDetail(maPhongTro: String) {
+        val docRef = db.collection("PhongTro").document(maPhongTro)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    document.toObject(PhongTroModel::class.java)?.let { room ->
+                        _room.value = room
+
+                        fetchAdditionalInfo(room)
+                    }
+                } else {
+                    Log.d("RoomDetailViewModel", "Không có tài liệu này")
+                }
+            }
+            .addOnFailureListener {
+                Log.d("RoomDetailViewModel", "Lỗi khi truy vấn dữ liệu phòng trọ", it)
+            }
+    }
+
+    private fun fetchAdditionalInfo(room: PhongTroModel) {
+//        Truy van thong tin gioi tinh tu Ma_gioitinh
+        room.Ma_gioiTinh?.let { maGioiTinh ->
+            db.collection("GioiTinh").document(maGioiTinh)
+                .get()
+                .addOnSuccessListener { document ->
+                    document?.let {
+                        val imgUrlGioiTinh = it.getString("ImgUrl_gioitinh") ?: ""
+                        val tenGioiTinh = it.getString("Ten_gioitinh") ?: ""
+                        _genderInfo.value = Pair(imgUrlGioiTinh, tenGioiTinh)
+                    }
+                }
+        }
+
+//        Truy van thong tin loai phong tro tu Ma_phongtro
+        room.Ma_loaiphong?.let { maLoaiPhong ->
+            db.collection("LoaiPhong").document(maLoaiPhong)
+                .get()
+                .addOnSuccessListener { document ->
+                    document?.let {
+                        _roomType.value = it.getString("Ten_loaiphong") ?: ""
+                    }
+                }
+        }
+
+//        Truy van thong tin nguoi dung tu Ma_nguoidung
+        room.Ma_nguoidung?.let { maNguoiDung ->
+            realtimeDb.child("NguoiDung").child(maNguoiDung)
+                .get()
+                .addOnSuccessListener { dataSnapshot ->
+                    dataSnapshot?.let {
+                        val anhDaiDien = it.child("anh_daidien").value as? String ?: ""
+                        val hoTen = it.child("ho_ten").value as? String ?: ""
+                        _userInfo.value = Pair(anhDaiDien, hoTen)
+                    }
+                }
+        }
     }
 }

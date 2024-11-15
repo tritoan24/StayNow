@@ -1,13 +1,16 @@
 package com.ph32395.staynow.Adapter
 
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.ph32395.staynow.Activity.FullScreenImageActivity
 
 class ImagePagerAdapter(
     private val viewPager: ViewPager
@@ -37,19 +40,31 @@ class ImagePagerAdapter(
     // Hàm tự động chạy slider sau mỗi 3 giây
     private fun startAutoSlide() {
         handler.removeCallbacksAndMessages(null)  // Xóa mọi callback cũ
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                currentPosition = (currentPosition + 1) % images.size  // Chuyển sang ảnh tiếp theo
-                viewPager.setCurrentItem(currentPosition, true)
-                handler.postDelayed(this, 3000)  // Lập lịch cho 3 giây tiếp theo
-            }
-        }, 3000)  // Lập lịch ngay lần đầu tiên sau 3 giây
+//        Kiem tra ds c rong khong roi mơi chay Slider
+        if (images.isNotEmpty()) {
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    currentPosition = (currentPosition + 1) % images.size  // Chuyển sang ảnh tiếp theo
+                    viewPager.setCurrentItem(currentPosition, true)
+                    handler.postDelayed(this, 3000)  // Lập lịch cho 3 giây tiếp theo
+                }
+            }, 3000)  // Lập lịch ngay lần đầu tiên sau 3 giây
+        }
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val imageView = ImageView(container.context)
         imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         Glide.with(container.context).load(images[position]).into(imageView)
+
+        // Sự kiện nhấn vào ảnh
+        imageView.setOnClickListener {
+            val context = container.context
+            val intent = Intent(context, FullScreenImageActivity::class.java)
+            intent.putExtra("image_url", images[position])
+            context.startActivity(intent)
+        }
+
         container.addView(imageView)
         return imageView
     }

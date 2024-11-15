@@ -14,11 +14,48 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!--        Slider anh lon-->
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
+<!--        Icon-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="250dp"/>
+            android:layout_height="250dp">
+
+            <!-- ViewPager -->
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Icon Back -->
+            <ImageView
+                android:id="@+id/iconBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_back"
+                android:contentDescription="Back icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_margin="16dp" />
+
+            <!-- Icon Favorite -->
+            <ImageView
+                android:id="@+id/iconFavorite"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/icon_favorite"
+                android:contentDescription="Favorite icon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="16dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!--        Slider anh lon-->
 
         <!--        Danh sach anh nho-->
         <androidx.recyclerview.widget.RecyclerView
@@ -36,15 +73,15 @@
             android:orientation="horizontal"
             android:layout_marginTop="20dp"
             android:layout_marginStart="10dp"
-            android:layout_gravity="center_vertical">
+            >
 
 <!--            Loai phong-->
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="@color/white"
-                android:layout_marginBottom="10dp"
                 app:cardElevation="4dp"
+                android:layout_marginBottom="10dp"
                 app:cardCornerRadius="10dp">
 
                 <TextView
@@ -62,13 +99,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginStart="15dp"
-                android:layout_gravity="center_vertical">
+                >
                 <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/img_gender"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:src="@drawable/icon_gender"/>
                 <TextView
                     android:id="@+id/txtGioiTinh"
+                    android:layout_marginTop="2dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
@@ -82,8 +121,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
 <!--            Ten phong-->
@@ -130,7 +169,7 @@
                     android:id="@+id/txtDiaChi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     android:layout_marginStart="5dp" />
             </LinearLayout>
 
@@ -176,7 +215,7 @@
                             android:textSize="16sp"
                             android:layout_marginBottom="10dp"/>
                         <TextView
-                            android:id="@+id/txtTrangThai"
+                            android:id="@+id/txtTrangThaiHoatDong"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="10sp"/>
@@ -207,111 +246,15 @@
                 app:cardCornerRadius="20dp"
                 app:cardElevation="4dp">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewChiTietThongTin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginVertical="8dp"
-                    android:layout_marginHorizontal="10dp">
-
-<!--                    So tang-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_tang"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tầng"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtTang"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    So nguoi-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_nguoi"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Người"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtSoNguoi"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    Dien tich-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_dien_tich"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Diện Tích"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtDienTich"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    Tien coc-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_tien_coc"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Tiền Cọc"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtTienCoc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="10sp"/>
-                    </LinearLayout>
-
-
-                </LinearLayout>
+                    tools:listitem="@layout/item_chitiet_thongtin"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    />
             </androidx.cardview.widget.CardView>
 
 <!--            Phi dich vu-->
@@ -331,134 +274,15 @@
                 app:cardCornerRadius="20dp"
                 app:cardBackgroundColor="@color/white">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewPhiDichVu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginVertical="8dp"
-                    android:layout_marginHorizontal="10dp">
-
-<!--                    Dien-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_dien"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Điện"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtDien"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    Nuoc-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_nuoc"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Nước"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtNuoc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    Rac-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_rac"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Rác"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtRac"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    Thang may-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_thang_may"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Thang Máy"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtThangMay"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-<!--                    Mang-->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center_horizontal"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:src="@drawable/icon_mang"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mạng"
-                            android:textSize="12sp"/>
-                        <TextView
-                            android:id="@+id/txtMang"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
-                </LinearLayout>
+                    tools:listitem="@layout/item_phi_dichvu"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    />
 
             </androidx.cardview.widget.CardView>
 
@@ -470,6 +294,27 @@
                 android:textSize="18sp"
                 android:layout_marginTop="25dp"/>
 
+            <!--            Thong tin noi that-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/white">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewNoiThat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_noi_that"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
+
 <!--            Tien nghi-->
             <TextView
                 android:layout_width="wrap_content"
@@ -477,6 +322,27 @@
                 android:text="Tiện Nghi"
                 android:textSize="18sp"
                 android:layout_marginTop="25dp"/>
+
+            <!--            Thong tin tien nghi-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="20dp"
+                app:cardBackgroundColor="@color/white">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewTienNghi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    tools:listitem="@layout/item_tien_nghi"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    />
+
+            </androidx.cardview.widget.CardView>
 
 <!--            Chi tiet them-->
             <TextView
@@ -501,7 +367,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
                     android:layout_marginVertical="15dp"
-                    android:textSize="12sp"/>
+                    android:textSize="14sp"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -529,6 +395,93 @@
                     android:textSize="15sp"
                     />
             </LinearLayout>
+
+<!--            Liem he dat lich va chi duong-->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/white"
+                android:layout_marginTop="25dp"
+                app:cardCornerRadius="20dp"
+                android:layout_marginBottom="15dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginHorizontal="10dp">
+
+                    <!--                    Chi duong-->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/icon_chi_duong"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chỉ Đưởng"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <!--                    Đặt Phòng-->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/icon_dat_lich"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Đặt Phòng"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+                    <!--                    chat-->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center_horizontal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:src="@drawable/icon_chat"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chat"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
 
         </LinearLayout>
