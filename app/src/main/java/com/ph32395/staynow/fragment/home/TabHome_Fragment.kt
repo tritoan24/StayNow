@@ -39,6 +39,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         // Setup RecyclerView
         setupRecyclerView()
 
+
         homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
             homeViewModel.updateRoomList(idloaiPhongTro)
         }
@@ -53,7 +54,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         binding.roomRclView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             overScrollMode = View.OVER_SCROLL_NEVER
-            roomAdapter = PhongTroAdapter(roomList)
+            roomAdapter = PhongTroAdapter(roomList, homeViewModel)
             adapter = roomAdapter
         }
     }

@@ -15,7 +15,7 @@ data class PhongTroModel(
     val Ngay_capnhat: Long? = 0L,
     val imageUrls: ArrayList<String> = ArrayList(),
     val Ma_gioiTinh: String = "",
-    var Dien_tich: Double? = 0.0
+    var Dien_tich: Long? = 0L
 
 ){
     constructor() : this("", "", "", "", "", "", false, 0.0, 0, 0L, 0L, ArrayList(), "")

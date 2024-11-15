@@ -83,9 +83,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun refreshData() {
+        homeViewModel.clearRoomCache()  // Reset cache
         homeViewModel.loadLoaiPhongTro()
         homeViewModel.loadImagesFromFirebase()
-
+        homeViewModel.selectedLoaiPhongTro.value?.let { maloaiPhong ->
+            homeViewModel.updateRoomList(maloaiPhong)  // Fetch lại danh sách phòng trọ theo loại
+        }
         Handler(Looper.getMainLooper()).postDelayed({
             swipeFresh.isRefreshing = false
         }, 2000)

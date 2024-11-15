@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.firebase.firestore.FieldValue
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -31,6 +32,22 @@ class HomeViewModel : ViewModel() {
 
     fun selectLoaiPhongTro(idLoaiPhong: String) {
         _selectedLoaiPhongTro.value = idLoaiPhong
+    }
+
+    // Hàm để cập nhật số lượt xem phòng trong Firestore
+    fun incrementRoomViewCount(roomId: String) {
+        val roomRef = firestore.collection("PhongTro").document(roomId)
+
+        // Tăng giá trị So_luotxemphong trong Firestore
+        roomRef.update("So_luotxemphong", FieldValue.increment(1))
+            .addOnSuccessListener {
+                Log.d("HomeViewModel", "Successfully incremented So_luotxemphong")
+                // Sau khi cập nhật thành công, lấy lại danh sách phòng để làm mới UI
+                updateRoomList(roomId)
+            }
+            .addOnFailureListener { exception ->
+                Log.e("HomeViewModel", "Error updating So_luotxemphong: ", exception)
+            }
     }
 
     fun loadLoaiPhongTro() {
@@ -68,33 +85,37 @@ class HomeViewModel : ViewModel() {
         }
         firestore.collection("LoaiPhong")
             .whereEqualTo("Ma_loaiphong", maloaiPhongTro)
-            .get()
-            .addOnSuccessListener { loaiPhongSnapshot ->
+            .addSnapshotListener { loaiPhongSnapshot, exception ->
+                if (exception != null) {
+                    Log.e("HomeViewModel", "Error listening for changes: ", exception)
+                    return@addSnapshotListener
+                }
+
+                // Xử lý khi có thay đổi dữ liệu
                 val tenLoaiPhong =
-                    loaiPhongSnapshot.documents.firstOrNull()?.getString("Ten_loaiphong")
+                    loaiPhongSnapshot?.documents?.firstOrNull()?.getString("Ten_loaiphong")
                 if (tenLoaiPhong != null) {
                     val roomsRef = firestore.collection("PhongTro")
                     val query = if (tenLoaiPhong == "Tất cả") roomsRef else roomsRef.whereEqualTo(
-                        "Ma_loaiphong",
-                        maloaiPhongTro
+                        "Ma_loaiphong", maloaiPhongTro
                     )
-                    query.get()
-                        .addOnSuccessListener { snapshot ->
-                            handleRoomList(snapshot)
-                            val rooms = snapshot.documents.map { doc ->
-                                Pair(doc.id, doc.toObject(PhongTroModel::class.java)!!)
-                            }
-                            // Lưu vào cache
-                            cachedRooms[maloaiPhongTro] = rooms
-                            _roomList.postValue(rooms)
-                        }
-                        .addOnFailureListener { exception ->
+                    query.addSnapshotListener { snapshot, exception ->
+                        if (exception != null) {
                             Log.e("HomeViewModel", "Error fetching rooms: ", exception)
+                            return@addSnapshotListener
                         }
+
+                        if (snapshot != null) {
+                            handleRoomList(snapshot)
+                        }
+                        val rooms = snapshot?.documents?.map { doc ->
+                            Pair(doc.id, doc.toObject(PhongTroModel::class.java)!!)
+                        } ?: emptyList()
+                        fetchChiTietThongTinForRoomList(rooms, maloaiPhongTro)
+                        cachedRooms[maloaiPhongTro] = rooms
+                        _roomList.postValue(rooms)
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("HomeViewModel", "Error fetching LoaiPhong: ", exception)
             }
     }
 
@@ -108,37 +129,54 @@ class HomeViewModel : ViewModel() {
             }
         }
         _roomList.value = roomList // Cập nhật LiveData
-        fetchChiTietThongTinForRoomList(roomList)
     }
 
-    private fun fetchChiTietThongTinForRoomList(roomList: List<Pair<String, PhongTroModel>>) {
+    private fun fetchChiTietThongTinForRoomList(
+        roomList: List<Pair<String, PhongTroModel>>,
+        maloaiPhongTro: String
+    ) {
+        clearRoomCache()
+        // Lưu trữ danh sách đã cập nhật
         val updatedRoomList = mutableListOf<Pair<String, PhongTroModel>>()
 
         roomList.forEach { (roomId, room) ->
             firestore.collection("ChiTietThongTin")
                 .whereEqualTo("ma_phongtro", roomId)
                 .whereEqualTo("ten_thongtin", "Diện tích")
-                .get()
-                .addOnSuccessListener { documents ->
-                    val chiTiet = documents.firstOrNull()?.toObject(ChiTietThongTin::class.java)
-                    chiTiet?.let {
-                        room.Dien_tich = it.so_luong_donvi // Cập nhật diện tích cho phòng
+                .addSnapshotListener { documents, exception ->
+                    if (exception != null) {
+                        Log.e(
+                            "HomeViewModel",
+                            "Error listening for ChiTietThongTin for roomId $roomId",
+                            exception
+                        )
+                        return@addSnapshotListener
                     }
+                    // Nếu có thay đổi thông tin diện tích, cập nhật lại vào phòng trọ
+                    val chiTiet = documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
+                    chiTiet?.let {
+                        room.Dien_tich = it.so_luong_donvi
+                    }
+
+                    // Cập nhật lại thông tin trong danh sách đã thay đổi
                     updatedRoomList.add(Pair(roomId, room))
 
-                    // Nếu đã xử lý xong tất cả phòng trọ, cập nhật LiveData
+                    // Nếu đã cập nhật diện tích cho tất cả phòng trọ, thực hiện cập nhật LiveData và cache
                     if (updatedRoomList.size == roomList.size) {
-                        _roomList.value = updatedRoomList
+                        // Cập nhật lại LiveData với danh sách mới
+                        _roomList.postValue(updatedRoomList)
+
+                        // Chỉ lưu vào cache sau khi LiveData đã được cập nhật
+                        cachedRooms[maloaiPhongTro] = updatedRoomList
+
                     }
                 }
-                .addOnFailureListener { exception ->
-                    Log.e(
-                        "HomeViewModel",
-                        "Error fetching ChiTietThongTin for roomId $roomId",
-                        exception
-                    )
-                }
         }
+    }
+
+    fun clearRoomCache() {
+        cachedRooms.clear()  // Xóa cache trước khi tải lại dữ liệu
+        Log.d("HomeViewModel", "Cache cleared")  // Để debug log khi cache bị xóa
     }
 
 }

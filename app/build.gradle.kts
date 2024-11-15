@@ -78,6 +78,8 @@ dependencies {
     // Thư viện xử lý ảnh
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+//Thư viện format tgian tạo phòng trọ
+    implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
 
 
 }
