@@ -19,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
+            android:name=".DangKiDangNhap.OTPActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.RoomDetailActivity"
             android:exported="false" />
         <activity
@@ -27,7 +30,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-
         <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"

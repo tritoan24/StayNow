@@ -122,5 +122,3 @@ class HomeFragment : Fragment() {
 interface OnTabSelectedListener {
     fun onTabSelected(loaiPhongTro: String)
 }
-
-

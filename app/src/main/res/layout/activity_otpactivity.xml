@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF"
+    android:gravity="center_horizontal"
+    android:layout_marginVertical="20dp"
+    tools:context=".DangKiDangNhap.OTPActivity">
+
+<!--    Hinh anh hoat hoa dau-->
+    <ImageView
+        android:layout_width="220dp"
+        android:layout_height="110dp"
+        android:src="@drawable/icon_otp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Xác minh"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="40dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nhập để xác minh tài khoản của bạn"
+        android:textSize="14sp"
+        android:textColor="#404969"
+        android:layout_marginTop="10dp"/>
+
+<!--    Truong nhap ma OTP -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp">
+
+        <EditText
+            android:id="@+id/edtOtp1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/otp_input_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
+
+        <EditText
+            android:id="@+id/edtOtp2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/otp_input_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
+
+        <EditText
+            android:id="@+id/edtOtp3"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/otp_input_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
+
+        <EditText
+            android:id="@+id/edtOtp4"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/otp_input_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
+
+        <EditText
+            android:id="@+id/edtOtp5"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/otp_input_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
+
+        <EditText
+            android:id="@+id/edtOtp6"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="4dp"
+            android:background="@drawable/otp_input_background"
+            android:gravity="center"
+            android:inputType="number"
+            android:maxLength="1"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
+
+    </LinearLayout>
+
+<!--    Nút xác nhan-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/btnOtp"
+        android:text="Xác Nhận"
+        android:textSize="16sp"
+        android:layout_marginTop="100dp"
+        android:layout_marginHorizontal="90dp"
+        android:background="@drawable/custom_buttom" />
+
+<!--    Thoi gian gui lai ma OTP-->
+
+    <TextView
+        android:id="@+id/timeOtp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gui lai ma : 00:50"
+        android:layout_marginTop="10dp"
+        android:textSize="14sp"
+        android:textColor="#FF0000"/>
+
+</LinearLayout>
