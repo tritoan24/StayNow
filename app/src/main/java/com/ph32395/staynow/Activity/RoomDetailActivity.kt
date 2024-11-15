@@ -28,33 +28,33 @@ class RoomDetailActivity : AppCompatActivity() {
 
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
-        val tenPhongTro = intent.getStringExtra("tenPhongTro") ?: ""
-        val giaThue = intent.getDoubleExtra("giaThue", 0.0)
-        val diaChi = intent.getStringExtra("diaChi") ?: ""
-        val dienTich = intent.getDoubleExtra("dienTich", 0.0)
-        val tang = intent.getIntExtra("tang", 0)
-        val soNguoi = intent.getIntExtra("soNguoi", 0)
-        val tienCoc = intent.getDoubleExtra("tienCoc", 0.0)
-        val motaChiTiet = intent.getStringExtra("motaChiTiet") ?: ""
-        val danhSachAnh = intent.getStringArrayListExtra("danhSachAnh") ?: ArrayList()
-        val gioiTinh = intent.getStringExtra("gioiTinh") ?: ""
-        val trangThai = intent.getStringExtra("trangThai") ?: ""
+//        val tenPhongTro = intent.getStringExtra("tenPhongTro") ?: ""
+//        val giaThue = intent.getDoubleExtra("giaThue", 0.0)
+//        val diaChi = intent.getStringExtra("diaChi") ?: ""
+//        val dienTich = intent.getDoubleExtra("dienTich", 0.0)
+//        val tang = intent.getIntExtra("tang", 0)
+//        val soNguoi = intent.getIntExtra("soNguoi", 0)
+//        val tienCoc = intent.getDoubleExtra("tienCoc", 0.0)
+//        val motaChiTiet = intent.getStringExtra("motaChiTiet") ?: ""
+//        val danhSachAnh = intent.getStringArrayListExtra("danhSachAnh") ?: ArrayList()
+//        val gioiTinh = intent.getStringExtra("gioiTinh") ?: ""
+//        val trangThai = intent.getStringExtra("trangThai") ?: ""
 
 //        Cap nhat thong tin ban dau
-        viewModel.setInitialData(
-            maPhongTro,
-            tenPhongTro,
-            giaThue,
-            diaChi,
-            dienTich,
-            tang,
-            soNguoi,
-            tienCoc,
-            motaChiTiet,
-            ArrayList(danhSachAnh),
-            gioiTinh,
-            trangThai
-        )
+//        viewModel.setInitialData(
+//            maPhongTro,
+//            tenPhongTro,
+//            giaThue,
+//            diaChi,
+//            dienTich,
+//            tang,
+//            soNguoi,
+//            tienCoc,
+//            motaChiTiet,
+//            ArrayList(danhSachAnh),
+//            gioiTinh,
+//            trangThai
+//        )
 
 //        Thiet lap viewPager va RecyclerView cho anh
         val viewPager = findViewById<ViewPager>(R.id.viewPager)
@@ -72,27 +72,27 @@ class RoomDetailActivity : AppCompatActivity() {
         }
 
         // Quan sát dữ liệu từ ViewModel
-        viewModel.room.observe(this, Observer { room ->
-            room?.let {
-//                Cap nhat du lieu len View
-                findViewById<TextView>(R.id.txtTenPhongTro).text = it.tenPhongTro
-                findViewById<TextView>(R.id.txtTang).text = room.tang.toString()
-                findViewById<TextView>(R.id.txtGiaThue).text =
-                    "${it.giaThue?.let { String.format("%,.0f", it) }} VND/ thang"
-                findViewById<TextView>(R.id.txtDiaChi).text = it.diaChi
-                findViewById<TextView>(R.id.txtDienTich).text =
-                    "${it.dienTich?.let { String.format("%.1f", it) }} m²"
-                findViewById<TextView>(R.id.txtTienCoc).text =
-                    "${it.tienCoc?.let { String.format("%,.0f", it) }} VND"
-                findViewById<TextView>(R.id.txtSoNguoi).text = room.soNguoi.toString()
-                findViewById<TextView>(R.id.txtChiTietThem).text = room.motaChiTiet
-                findViewById<TextView>(R.id.txtGioiTinh).text = room.gioiTinh
-                findViewById<TextView>(R.id.txtTrangThai).text = room.trangThai
-//                Cap nhat hinh anh
-                recyclerViewAdapter.setImages(room.danhSachAnh)
-                viewPagerAdapter.setImages(room.danhSachAnh)
-            }
-        })
+//        viewModel.room.observe(this, Observer { room ->
+//            room?.let {
+////                Cap nhat du lieu len View
+//                findViewById<TextView>(R.id.txtTenPhongTro).text = it.tenPhongTro
+//                findViewById<TextView>(R.id.txtTang).text = room.tang.toString()
+//                findViewById<TextView>(R.id.txtGiaThue).text =
+//                    "${it.giaThue?.let { String.format("%,.0f", it) }} VND/ thang"
+//                findViewById<TextView>(R.id.txtDiaChi).text = it.diaChi
+//                findViewById<TextView>(R.id.txtDienTich).text =
+//                    "${it.dienTich?.let { String.format("%.1f", it) }} m²"
+//                findViewById<TextView>(R.id.txtTienCoc).text =
+//                    "${it.tienCoc?.let { String.format("%,.0f", it) }} VND"
+//                findViewById<TextView>(R.id.txtSoNguoi).text = room.soNguoi.toString()
+//                findViewById<TextView>(R.id.txtChiTietThem).text = room.motaChiTiet
+//                findViewById<TextView>(R.id.txtGioiTinh).text = room.gioiTinh
+//                findViewById<TextView>(R.id.txtTrangThai).text = room.trangThai
+////                Cap nhat hinh anh
+//                recyclerViewAdapter.setImages(room.danhSachAnh)
+//                viewPagerAdapter.setImages(room.danhSachAnh)
+//            }
+//        })
 
 //        Tai du lieu tu Firebase
         viewModel.fetchRoomDetail(maPhongTro)

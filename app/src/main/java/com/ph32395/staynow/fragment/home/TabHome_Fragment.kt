@@ -15,15 +15,15 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
 
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var binding: FragmentTabHomeBinding  // Đối tượng ViewBinding
-    private val roomList = mutableListOf<PhongTroModel>()
+    private val roomList = mutableListOf<Pair<String, PhongTroModel>>()
     private lateinit var db: FirebaseFirestore
     private lateinit var roomAdapter: PhongTroAdapter
 
     companion object {
-        fun newInstance(ma_loaiphong: String): HomeTabFragment {
+        fun newInstance(maLoaiPhong: String): HomeTabFragment {
             val fragment = HomeTabFragment()
             val args = Bundle()
-            args.putString("id_loaiphong", ma_loaiphong)
+            args.putString("id_loaiphong", maLoaiPhong)
             fragment.arguments = args
             return fragment
         }
@@ -33,7 +33,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTabHomeBinding.bind(view)
 
-        val id_LoaiPhong = arguments?.getString("id_loaiphong")
+        val idLoaiPhong = arguments?.getString("id_loaiphong")
         // Setup RecyclerView
         setupRecyclerView()
 
@@ -44,10 +44,9 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
             handleRoomList(roomList)
         }
 
-        id_LoaiPhong?.let {
+        idLoaiPhong?.let {
             homeViewModel.updateRoomList(it)
         }
-
         homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
             homeViewModel.updateRoomList(idloaiPhongTro)
         }
@@ -65,7 +64,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
 
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun handleRoomList(roomList: List<PhongTroModel>) {
+    private fun handleRoomList(roomList: List<Pair<String, PhongTroModel>>) {
         this.roomList.clear()
         this.roomList.addAll(roomList)
         roomAdapter.notifyDataSetChanged()

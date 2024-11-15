@@ -31,20 +31,20 @@ class RoomDetailViewModel : ViewModel() {
         gioiTinh: String,
         trangThai: String
     ) {
-        _room.value = PhongTroModel(
-            maPhongTro = maPhongTro,
-            tenPhongTro = tenPhongTro,
-            giaThue = giaThue,
-            diaChi = diaChi,
-            dienTich = dienTich,
-            tang = tang,
-            soNguoi = soNguoi,
-            tienCoc = tienCoc,
-            motaChiTiet = motaChiTiet,
-            danhSachAnh = danhSachAnh,
-            gioiTinh = gioiTinh,
-            trangThai = trangThai
-        )
+//        _room.value = PhongTroModel(
+//            maPhongTro = maPhongTro,
+//            tenPhongTro = tenPhongTro,
+//            giaThue = giaThue,
+//            diaChi = diaChi,
+//            dienTich = dienTich,
+//            tang = tang,
+//            soNguoi = soNguoi,
+//            tienCoc = tienCoc,
+//            motaChiTiet = motaChiTiet,
+//            danhSachAnh = danhSachAnh,
+//            gioiTinh = gioiTinh,
+//            trangThai = trangThai
+//        )
     }
 
     fun fetchRoomDetail(maPhongTro: String) {
