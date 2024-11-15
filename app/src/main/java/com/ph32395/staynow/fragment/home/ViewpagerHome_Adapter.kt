@@ -2,11 +2,16 @@ package com.ph32395.staynow.fragment.home
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.ph32395.staynow.Model.LoaiPhongTro
 
-class ViewPagerHomeAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+class ViewPagerHomeAdapter(fragment: Fragment, private val categories: List<LoaiPhongTro>) :
+    FragmentStateAdapter(fragment) {
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = categories.size
+
     override fun createFragment(position: Int): Fragment {
-        return HomeTabFragment.newInstance(position)
+        val category = categories[position].Ma_loaiphong
+        return HomeTabFragment.newInstance(category)
     }
 }
+

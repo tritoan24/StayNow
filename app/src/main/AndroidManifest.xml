@@ -25,6 +25,10 @@
             android:name=".ManGioiThieu.OnboardingActivity"
             android:exported="false" />
         <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
@@ -33,9 +37,6 @@
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.DangNhap"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.SplashActivity"

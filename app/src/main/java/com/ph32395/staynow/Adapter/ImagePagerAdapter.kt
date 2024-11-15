@@ -2,6 +2,7 @@ package com.ph32395.staynow.Adapter
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -37,13 +38,16 @@ class ImagePagerAdapter(
     // Hàm tự động chạy slider sau mỗi 3 giây
     private fun startAutoSlide() {
         handler.removeCallbacksAndMessages(null)  // Xóa mọi callback cũ
-        handler.postDelayed(object : Runnable {
-            override fun run() {
-                currentPosition = (currentPosition + 1) % images.size  // Chuyển sang ảnh tiếp theo
-                viewPager.setCurrentItem(currentPosition, true)
-                handler.postDelayed(this, 3000)  // Lập lịch cho 3 giây tiếp theo
-            }
-        }, 3000)  // Lập lịch ngay lần đầu tiên sau 3 giây
+//        Kiem tra ds c rong khong roi mơi chay Slider
+        if (images.isNotEmpty()) {
+            handler.postDelayed(object : Runnable {
+                override fun run() {
+                    currentPosition = (currentPosition + 1) % images.size  // Chuyển sang ảnh tiếp theo
+                    viewPager.setCurrentItem(currentPosition, true)
+                    handler.postDelayed(this, 3000)  // Lập lịch cho 3 giây tiếp theo
+                }
+            }, 3000)  // Lập lịch ngay lần đầu tiên sau 3 giây
+        }
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
