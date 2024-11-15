@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.BaoMat.DoiMK
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
 
@@ -28,6 +29,7 @@ class ProfileFragment : Fragment() {
     private lateinit var userPhoneTextView: TextView
     private lateinit var profileImageView: ImageView
     private lateinit var logoutButton: ImageButton
+    private lateinit var nextDoiMK: ImageButton
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
 
@@ -42,6 +44,7 @@ class ProfileFragment : Fragment() {
         userPhoneTextView = view.findViewById(R.id.user_phone)
         profileImageView = view.findViewById(R.id.profile_image)
         logoutButton = view.findViewById(R.id.LogoutButton)
+        nextDoiMK = view.findViewById(R.id.next_doimk)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -67,15 +70,18 @@ class ProfileFragment : Fragment() {
                         userPhoneTextView.text = phone
 
                         // Tải ảnh đại diện bằng Glide
-                        if (!img.isNullOrEmpty()) {
-                            Glide.with(this@ProfileFragment)
+                        // Glide with null check to ensure fragment is attached to activity
+                        if (isAdded) {
+                            Glide.with(requireContext())
                                 .load(img)
                                 .circleCrop()
                                 .placeholder(R.drawable.ic_user)
                                 .into(profileImageView)
                         } else {
+                            // Handle the case where fragment is not yet attached
                             profileImageView.setImageResource(R.drawable.ic_user)
                         }
+
                     } else {
                         Log.d("ProfileFragment", "Người dùng không tồn tại")
                     }
@@ -105,6 +111,10 @@ class ProfileFragment : Fragment() {
             requireActivity().finish() // Kết thúc hoạt động hiện tại
         }
 
+        nextDoiMK.setOnClickListener {
+            startActivity(Intent(requireActivity(),DoiMK::class.java))
+            requireActivity().finish()
+        }
         return view
     }
 }

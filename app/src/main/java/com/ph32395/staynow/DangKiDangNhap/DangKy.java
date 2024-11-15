@@ -111,6 +111,7 @@ public class DangKy extends AppCompatActivity {
             String password = passwordEditText.getText().toString().trim();
             String rppassword = rppass.getText().toString().trim();
 
+
             boolean isValid = true;
 
             if (ten.isEmpty()) {

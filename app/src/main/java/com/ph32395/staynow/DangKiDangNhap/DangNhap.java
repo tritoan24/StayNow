@@ -62,6 +62,7 @@ public class DangNhap extends AppCompatActivity {
         registerWithGoogle = new RegisterWithGoogle(this);
 
 
+
         btnDangNhap.setOnClickListener(v -> {
             String email = edMail.getText().toString().trim();
             String password = edPass.getText().toString().trim();
@@ -204,4 +205,15 @@ public class DangNhap extends AppCompatActivity {
             dialog.dismiss();
         }, 1500);
     }
+
+    private String encryptPassword(String password) {
+        // Sử dụng phương thức mã hóa của bạn (ví dụ, AES, BCrypt, v.v.)
+        return password; // Đây chỉ là một ví dụ, bạn cần thay thế bằng một phương pháp mã hóa thực sự
+    }
+
+    private String decryptPassword(String encryptedPassword) {
+        // Giải mã mật khẩu (nếu cần thiết)
+        return encryptedPassword; // Ví dụ không thực sự giải mã
+    }
+
 }
