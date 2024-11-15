@@ -106,7 +106,7 @@
                     android:id="@+id/tvDienTich"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Diện tích: 25m²"
+                    android:text="25m²"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
                     tools:ignore="HardcodedText" />

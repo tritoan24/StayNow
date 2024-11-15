@@ -63,7 +63,7 @@ public class DangNhap extends AppCompatActivity {
             String password = edPass.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-              Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             }
             else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                 edMail.setError("Email không hợp lệ");

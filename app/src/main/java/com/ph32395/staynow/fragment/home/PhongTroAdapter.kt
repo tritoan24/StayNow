@@ -7,33 +7,31 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
 
 class PhongTroAdapter(
-    private var roomList: List<PhongTroModel>,
-    private var onItemClick: (PhongTroModel) -> Unit
+    private var roomList: List<Pair<String, PhongTroModel>>
 ) : RecyclerView.Adapter<PhongTroAdapter.RoomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
-        val binding=ItemRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return RoomViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
-        val room = roomList[position]
-        holder.bind(room)
-//        Bat su kien Click vao item chuyen qua man chi tiet
-        holder.itemView.setOnClickListener {
-            onItemClick(room)
-        }
+        val (room, roomId) = roomList[position]
+        holder.bind(roomId, room)
+
     }
 
     override fun getItemCount(): Int = roomList.size
+
 
     inner class RoomViewHolder(itemView: ItemRoomBinding) : RecyclerView.ViewHolder(itemView.root) {
         private val roomImage: ImageView = itemView.imgPhongTro
@@ -44,26 +42,34 @@ class PhongTroAdapter(
         private val roomViews: TextView = itemView.tvSoLuotXem
 
         @SuppressLint("SetTextI18n", "DefaultLocale")
-        fun bind(room: PhongTroModel) {
+        fun bind(room: PhongTroModel, roomId: String) {
             // Cập nhật ảnh phòng trọ
             Glide.with(itemView.context)
-                .load(room.imageRoom)
+                .load(room.imageUrls[0])
                 .into(roomImage)
 
             // Cập nhật tên phòng trọ
-            roomName.text = room.tenPhongTro
+            roomName.text = room.Ten_phongtro
 
             // Cập nhật địa chỉ phòng trọ
-            roomAddress.text = room.diaChi
+            roomAddress.text = room.Dia_chi
 
             // Cập nhật giá thuê
-            roomPrice.text = "${room.giaThue?.let { String.format("%,.0f", it) }} VND"
+            roomPrice.text = "Từ ${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
 
-            // Cập nhật diện tích
-            roomArea.text = " ${room.dienTich?.let { String.format("%.1f", it) }} m²"
+
+//                    roomArea.text = "${String.format("%.1f", dienTich)} m²"
+
 
             // Cập nhật số lượt xem
-            roomViews.text = "${room.soLuotXem}"
+            roomViews.text = "${room.So_luotxemphong}"
+
+            itemView.setOnClickListener {
+                val context = itemView.context
+                val intent = Intent(context, RoomDetailActivity::class.java)
+                intent.putExtra("maPhongTro", roomId)
+                context.startActivity(intent)
+            }
         }
     }
 }

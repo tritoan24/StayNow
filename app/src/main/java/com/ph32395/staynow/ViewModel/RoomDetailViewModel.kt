@@ -4,10 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Model.PhongTroModel
 
 class RoomDetailViewModel : ViewModel() {
@@ -19,7 +16,7 @@ class RoomDetailViewModel : ViewModel() {
     private val _images = MutableLiveData<List<String>>()
     val images: LiveData<List<String>> get() = _images  // Định nghĩa LiveData cho hình ảnh
 
-//    Ham khoi tao du lieu ban dau
+    //    Ham khoi tao du lieu ban dau
     fun setInitialData(
         maPhongTro: String,
         tenPhongTro: String,
@@ -34,36 +31,39 @@ class RoomDetailViewModel : ViewModel() {
         gioiTinh: String,
         trangThai: String
     ) {
-        _room.value = PhongTroModel(
-            maPhongTro = maPhongTro,
-            tenPhongTro = tenPhongTro,
-            giaThue = giaThue,
-            diaChi = diaChi,
-            dienTich = dienTich,
-            tang = tang,
-            soNguoi = soNguoi,
-            tienCoc = tienCoc,
-            motaChiTiet = motaChiTiet,
-            danhSachAnh = danhSachAnh,
-            gioiTinh = gioiTinh,
-            trangThai = trangThai
-        )
+//        _room.value = PhongTroModel(
+//            maPhongTro = maPhongTro,
+//            tenPhongTro = tenPhongTro,
+//            giaThue = giaThue,
+//            diaChi = diaChi,
+//            dienTich = dienTich,
+//            tang = tang,
+//            soNguoi = soNguoi,
+//            tienCoc = tienCoc,
+//            motaChiTiet = motaChiTiet,
+//            danhSachAnh = danhSachAnh,
+//            gioiTinh = gioiTinh,
+//            trangThai = trangThai
+//        )
     }
 
-//    Lay du lieu tren firebase
     fun fetchRoomDetail(maPhongTro: String) {
-        val dbRef = FirebaseDatabase.getInstance().getReference("PhongTro/$maPhongTro")
-        dbRef.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                snapshot.getValue(PhongTroModel::class.java)?.let { room ->
-                    _room.value = room
-                }
-            }
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("PhongTro").document(maPhongTro)
 
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("RoomDetailViewModel", "Error fetch room data", error.toException())
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    document.toObject(PhongTroModel::class.java)?.let { room ->
+                        _room.value = room
+                    }
+                } else {
+                    Log.d("RoomDetailViewModel", "No such document")
+
+                }
+            }.addOnFailureListener {
+                Log.d("RoomDetailViewModel", "Error fetching room data", it)
             }
-        })
     }
 
     // Hàm này dùng để cập nhật danh sách ảnh

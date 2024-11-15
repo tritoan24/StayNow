@@ -1,59 +1,29 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
-import com.ph32395.staynow.Activity.RoomDetailActivity
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentTabHomeBinding
 
-class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListener {
-    // Implement method của interface để nhận sự thay đổi tab
-    override fun onTabSelected(loaiPhongTro: String) {
-        Log.d("HomeTabFragment", "Tab selected: $loaiPhongTro")
-        val roomAdapter = PhongTroAdapter(roomList) { room ->
-            val intent = Intent(requireContext(), RoomDetailActivity::class.java).apply {
-                putExtra("tenPhongTro", room.tenPhongTro)
-                putExtra("giaThue", room.giaThue)
-                putExtra("diaChi", room.diaChi)
-                putExtra("dienTich", room.dienTich)
-                putExtra("maPhongTro", room.maPhongTro)
-                putExtra("tang", room.tang)
-                putExtra("soNguoi", room.soNguoi)
-                putExtra("tienCoc", room.tienCoc)
-                putExtra("motaChiTiet", room.motaChiTiet)
-                putStringArrayListExtra("danhSachAnh", ArrayList(room.danhSachAnh))
-                putExtra("gioiTinh", room.gioiTinh)
-                putExtra("trangThai", room.trangThai)
-            }
-            startActivity(intent)
-        }
-        getDataFromRealtimeDatabase(roomAdapter, loaiPhongTro)
-        Log.d("HomeTabFragment", "Loading rooms for category: $loaiPhongTro")
-    }
+class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
 
-    private var tabPosition: Int = 0
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var binding: FragmentTabHomeBinding  // Đối tượng ViewBinding
-    private val roomList: MutableList<PhongTroModel> = mutableListOf()  // Danh sách phòng trọ
-
-    private lateinit var database: FirebaseDatabase
-    private lateinit var roomsRef: DatabaseReference
+    private val roomList = mutableListOf<Pair<String, PhongTroModel>>()
+    private lateinit var db: FirebaseFirestore
+    private lateinit var roomAdapter: PhongTroAdapter
 
     companion object {
-        fun newInstance(position: Int): HomeTabFragment {
+        fun newInstance(maLoaiPhong: String): HomeTabFragment {
             val fragment = HomeTabFragment()
             val args = Bundle()
-            args.putInt("tab_position", position)
+            args.putString("id_loaiphong", maLoaiPhong)
             fragment.arguments = args
             return fragment
         }
@@ -61,88 +31,43 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home), OnTabSelectedListe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding = FragmentTabHomeBinding.bind(view)
 
-        // Lấy vị trí tab từ arguments
-        tabPosition = arguments?.getInt("tab_position", 0) ?: 0
+        val idLoaiPhong = arguments?.getString("id_loaiphong")
+        // Setup RecyclerView
+        setupRecyclerView()
 
-        // Cài đặt RecyclerView và adapter
-        binding.roomRclView.layoutManager = GridLayoutManager(requireContext(), 2)  // 2 cột
-        binding.roomRclView.setOverScrollMode(View.OVER_SCROLL_NEVER)
-        val roomAdapter = PhongTroAdapter(roomList) { room ->
-            val intent = Intent(requireContext(), RoomDetailActivity::class.java).apply {
-                putExtra("tenPhongTro", room.tenPhongTro)
-                putExtra("giaThue", room.giaThue)
-                putExtra("diaChi", room.diaChi)
-                putExtra("dienTich", room.dienTich)
-                putExtra("maPhongTro", room.maPhongTro)
-                putExtra("tang", room.tang)
-                putExtra("soNguoi", room.soNguoi)
-                putExtra("tienCoc", room.tienCoc)
-                putExtra("motaChiTiet", room.motaChiTiet)
-                putStringArrayListExtra("danhSachAnh", ArrayList(room.danhSachAnh))
-                putExtra("gioiTinh", room.gioiTinh)
-                putExtra("trangThai", room.trangThai)
-            }
-            startActivity(intent)
+        // Initialize Firebase reference
+        db = FirebaseFirestore.getInstance()
+
+        homeViewModel.roomList.observe(viewLifecycleOwner) { roomList ->
+            handleRoomList(roomList)
         }
-        binding.roomRclView.adapter = roomAdapter
 
-        // Cài đặt Firebase
-        database = FirebaseDatabase.getInstance()
-        roomsRef = database.getReference("PhongTro")
+        idLoaiPhong?.let {
+            homeViewModel.updateRoomList(it)
+        }
+        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
+            homeViewModel.updateRoomList(idloaiPhongTro)
+        }
 
-        // Lấy dữ liệu từ Realtime Database
-        getDataFromRealtimeDatabase(roomAdapter)
     }
 
-    private fun getDataFromRealtimeDatabase(roomAdapter: PhongTroAdapter) {
-        // Lấy dữ liệu từ node "rooms"
-        roomsRef.addValueEventListener(object : ValueEventListener {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onDataChange(snapshot: DataSnapshot) {
-                // Xóa danh sách cũ trước khi thêm dữ liệu mới
-                roomList.clear()
-
-                // Duyệt qua các node con trong "rooms"
-                for (roomSnapshot in snapshot.children) {
-                    val room = roomSnapshot.getValue(PhongTroModel::class.java)
-                    room?.let {
-                        roomList.add(it)
-                    }
-                }
-
-                // Cập nhật adapter khi đã có dữ liệu
-                roomAdapter.notifyDataSetChanged()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi nếu có
-                error.toException().printStackTrace()
-            }
-        })
+    private fun setupRecyclerView() {
+        binding.roomRclView.apply {
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            overScrollMode = View.OVER_SCROLL_NEVER
+            roomAdapter = PhongTroAdapter(roomList)
+            adapter = roomAdapter
+        }
     }
 
-    private fun getDataFromRealtimeDatabase(roomAdapter: PhongTroAdapter, loaiPhongTro: String) {
-        roomsRef.orderByChild("loaiPhongTro").equalTo(loaiPhongTro)
-            .addValueEventListener(object : ValueEventListener {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    roomList.clear()
-                    for (roomSnapshot in snapshot.children) {
-                        val room = roomSnapshot.getValue(PhongTroModel::class.java)
-                        room?.let {
-                            roomList.add(it)
-                        }
-                    }
-                    roomAdapter.notifyDataSetChanged()
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    error.toException().printStackTrace()
-                }
-            })
+    @SuppressLint("NotifyDataSetChanged")
+    private fun handleRoomList(roomList: List<Pair<String, PhongTroModel>>) {
+        this.roomList.clear()
+        this.roomList.addAll(roomList)
+        roomAdapter.notifyDataSetChanged()
     }
 
 

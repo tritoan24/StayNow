@@ -1,58 +1,61 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".fragment.home.HomeFragment">
+    android:layout_height="match_parent">
 
-    <com.denzcoskun.imageslider.ImageSlider
-        android:id="@+id/imageSlider"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        app:iss_auto_cycle="true"
-        app:iss_corner_radius="5"
-        app:iss_period="3000" />
+        android:layout_height="match_parent">
+        <com.denzcoskun.imageslider.ImageSlider
+            android:id="@+id/imageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            app:iss_auto_cycle="true"
+            app:iss_corner_radius="5"
+            app:iss_period="3000" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
-        android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="150dp"
-        android:elevation="8dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="18dp">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="150dp"
+            android:elevation="8dp"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="18dp">
 
-        <include
-            android:id="@+id/view_location_search"
-            layout="@layout/view_location_search"
+            <include
+                android:id="@+id/view_location_search"
+                layout="@layout/view_location_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" />
+
+            <view
+                class="com.ph32395.staynow.view.ItemTienIchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                tools:ignore="MissingClass" />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp" />
+            android:layout_below="@+id/cardView"
+            android:layout_marginTop="5dp"
+            app:tabRippleColor="@android:color/transparent" />
 
-        <view
-            class="com.ph32395.staynow.view.ItemTienIchView"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerHome"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            tools:ignore="MissingClass" />
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tabLayoutHome"
+            android:background="@android:color/transparent" />
 
-    </androidx.cardview.widget.CardView>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutHome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/cardView"
-        android:layout_marginTop="5dp"
-        app:tabRippleColor="@android:color/transparent" />
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerHome"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/tabLayoutHome"
-        android:background="@android:color/transparent" />
-
-</RelativeLayout>
+    </RelativeLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
