@@ -79,5 +79,7 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 
+//    thu vien zoom to anh
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
 
 }

@@ -9,7 +9,7 @@ import com.ph32395.staynow.Model.LoaiPhongTro
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
-import com.ph32395.staynow.Model.ChiTietThongTin
+import com.ph32395.staynow.Model.ChiTietThongTinModel
 import com.ph32395.staynow.Model.PhongTroModel
 
 class HomeViewModel : ViewModel() {
@@ -111,8 +111,8 @@ class HomeViewModel : ViewModel() {
         _roomList.value = roomList // Cập nhật LiveData
     }
 
-    private val _chiTietThongTinList = MutableLiveData<List<ChiTietThongTin>>()
-    val chiTietThongTinList: LiveData<List<ChiTietThongTin>> get() = _chiTietThongTinList
+    private val _chiTietThongTinList = MutableLiveData<List<ChiTietThongTinModel>>()
+    val chiTietThongTinList: LiveData<List<ChiTietThongTinModel>> get() = _chiTietThongTinList
 
     fun fetchChiTietThongTin(maPhongTro: String) {
         firestore.collection("ChiTietThongTin")
@@ -120,10 +120,10 @@ class HomeViewModel : ViewModel() {
             .whereEqualTo("ten_thongtin", "Diện tích") // Điều kiện 2: tên thông tin là "diện tích"
             .get()
             .addOnSuccessListener { documents ->
-                val list = mutableListOf<ChiTietThongTin>()
+                val list = mutableListOf<ChiTietThongTinModel>()
                 for (document in documents) {
                     // Chuyển mỗi document thành đối tượng ChiTietThongTin
-                    val chiTiet = document.toObject(ChiTietThongTin::class.java)
+                    val chiTiet = document.toObject(ChiTietThongTinModel::class.java)
                     list.add(chiTiet)
                     Log.d("HomeViewModel", "ChiTietThongTin: $chiTiet")
                 }
