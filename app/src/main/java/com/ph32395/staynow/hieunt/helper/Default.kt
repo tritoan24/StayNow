@@ -36,6 +36,7 @@ object Default {
     object Collection {
         const val DAT_PHONG = "DatPhong"
         const val MA_NGUOI_DUNG = "ma_nguoi_dung"
+        const val MA_PHONG = "ma_phong"
     }
 
 }
