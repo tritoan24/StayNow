@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:layout_gravity="center"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Phần hiển thị ảnh của phòng trọ -->
+        <ImageView
+            android:id="@+id/imgPhongTro"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:background="@drawable/border_image"
+            android:scaleType="centerCrop"
+            android:src="@drawable/room"
+            tools:ignore="ContentDescription" />
+
+        <!-- Phần tên của phòng trọ -->
+        <TextView
+            android:id="@+id/tvTenPhongTro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Tên phòng trọ"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+        <!-- Phần địa chỉ của phòng trọ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/ic_location_room"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tvDiaChi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Địa chỉ"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <!-- Phần giá thuê -->
+        <TextView
+            android:id="@+id/tvGiaThue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_marginStart="3dp"
+            android:textColor="#EF1606"
+            android:textSize="12sp"
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            tools:ignore="DisableBaselineAlignment">
+
+            <!-- LinearLayout cho Diện tích ở bên trái -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="start"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <!-- Icon diện tích -->
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_dientich"
+                    tools:ignore="ContentDescription" />
+
+                <!-- Text diện tích -->
+                <TextView
+                    android:id="@+id/tvDienTich"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="25m²"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <!-- Icon số lượt xem -->
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_viewer"
+                    tools:ignore="ContentDescription" />
+
+                <!-- Text số lượt xem -->
+                <TextView
+                    android:id="@+id/tvSoLuotXem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Số lượt xem: 10"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

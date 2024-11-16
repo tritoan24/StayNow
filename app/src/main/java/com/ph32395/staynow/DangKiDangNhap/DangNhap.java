@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.ph32395.staynow.MainActivity;
-import com.ph32395.staynow.Model.NguoiDung;
+import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 
 public class DangNhap extends AppCompatActivity {
@@ -63,7 +63,7 @@ public class DangNhap extends AppCompatActivity {
             String password = edPass.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-              Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             }
             else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                 edMail.setError("Email không hợp lệ");
@@ -106,10 +106,11 @@ public class DangNhap extends AppCompatActivity {
 
             if(edPass.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
                 edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                img_anhienpass.setImageResource(R.drawable.visiblepass);
+                img_anhienpass.setImageResource(R.drawable.chepass);
             } else {
                 edPass.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                img_anhienpass.setImageResource(R.drawable.chepass);
+                img_anhienpass.setImageResource(R.drawable.visiblepass);
+
             }
 
             edPass.setSelection(cursorPosition);
@@ -122,7 +123,7 @@ public class DangNhap extends AppCompatActivity {
     // Hàm lưu thông tin người dùng vào Realtime Database
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien,Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-        NguoiDung nguoiDung = new NguoiDung(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
+        NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
