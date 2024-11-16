@@ -81,5 +81,8 @@ dependencies {
 
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
+    //calendar
+    implementation(project(":horizontal_calendar"))
+
 
 }

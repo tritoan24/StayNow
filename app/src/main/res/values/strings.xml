@@ -50,4 +50,5 @@
     </string>
     <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature">You must allow all Permission to use this app with full feature.</string>
     <string name="go_to_setting">Go to setting</string>
+    <string name="t_ph_ng">Đặt phòng</string>
 </resources>

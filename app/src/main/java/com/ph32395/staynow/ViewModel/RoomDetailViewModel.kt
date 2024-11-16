@@ -133,7 +133,6 @@ class RoomDetailViewModel : ViewModel() {
                 if (document != null && document.exists()) {
                     document.toObject(PhongTroModel::class.java)?.let { room ->
                         _room.value = room
-
                         fetchAdditionalInfo(room)
                     }
                 } else {
