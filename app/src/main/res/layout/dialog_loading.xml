@@ -9,7 +9,7 @@
         android:layout_height="75dp"
         android:layout_margin="15dp"
         android:indeterminate="true"
-        app:indicatorColor="#471BC4"
+        app:indicatorColor="@color/color_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

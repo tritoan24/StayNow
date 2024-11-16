@@ -15,9 +15,9 @@
         android:layout_marginBottom="16dp">
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/icon_back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_back_black"
             android:layout_marginEnd="16dp"
             />
         <TextView
@@ -25,30 +25,179 @@
             android:layout_height="wrap_content"
             android:textColor="@color/black"
             android:text="@string/t_ph_ng"
-            android:textSize="18sp"
+            android:textSize="24sp"
             android:fontFamily="@font/gilroy_bold"/>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_bg"
+        android:background="@color/color_text"
         android:layout_marginBottom="16dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chọn ngày"
-        android:layout_marginStart="16dp"
-        android:textSize="14sp"
-        android:fontFamily="@font/inter_medium"
-        android:textColor="@color/black"
-        android:layout_marginBottom="16dp"/>
-    <devs.mulham.horizontalcalendar.HorizontalCalendarView
-        android:id="@+id/calendarView"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:sizeTopText="12sp"
-        app:sizeBottomText="10sp"
-        app:sizeMiddleText="10sp"
-        app:textColorSelected="@color/black"
-        />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn ngày:"
+                android:layout_marginStart="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp"/>
+            <devs.mulham.horizontalcalendar.HorizontalCalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:sizeTopText="12sp"
+                app:sizeBottomText="10sp"
+                app:sizeMiddleText="10sp"
+                app:textColorSelected="@color/black"
+                android:layout_marginBottom="16dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chọn giờ:"
+                android:layout_marginStart="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="16dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="106dp"
+                    >
+                    <com.ph32395.staynow.hieunt.custom_view.WheelView
+                        android:id="@+id/hour_wheel_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#00000000"
+                        app:wv_curvedArcDirection="center"
+                        app:wv_cyclic="true"
+                        app:wv_dividerColor="#00000000"
+                        app:wv_dividerHeight="1px"
+                        app:wv_integerFormat=""
+                        app:wv_lineSpacing="26dp"
+                        app:wv_normalItemTextColor="#80787B82"
+                        app:wv_selectedItemTextColor="@color/color_text"
+                        app:wv_showDivider="false"
+                        app:wv_textAlign="center"
+                        app:wv_textSize="20sp"
+                        app:wv_visibleItems="5"
+                        />
+                    <View
+                        android:layout_width="60dp"
+                        android:layout_height="0dp"/>
+                    <com.ph32395.staynow.hieunt.custom_view.WheelView
+                        android:id="@+id/minute_wheel_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="#00000000"
+                        app:wv_curvedArcDirection="center"
+                        app:wv_cyclic="true"
+                        app:wv_dividerColor="#00000000"
+                        app:wv_dividerHeight="1px"
+                        app:wv_lineSpacing="26dp"
+                        app:wv_normalItemTextColor="#80787B82"
+                        app:wv_selectedItemTextColor="@color/color_text"
+                        app:wv_showDivider="false"
+                        app:wv_textAlign="center"
+                        app:wv_textSize="20sp"
+                        app:wv_visibleItems="5" />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center">
+                    <View
+                        android:layout_width="150dp"
+                        android:layout_height="1dp"
+                        android:background="@color/color_line" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=":"
+                        android:textSize="18sp"
+                        android:fontFamily="@font/gilroy_semibold"
+                        android:textColor="@color/color_text"
+                        android:layout_gravity="center"
+                        android:layout_marginVertical="9dp"/>
+                    <View
+                        android:layout_width="150dp"
+                        android:layout_height="1dp"
+                        android:background="@color/color_line"/>
+                </LinearLayout>
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ghi chú:"
+                android:layout_marginStart="16dp"
+                android:textSize="14sp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/black"
+                android:layout_marginBottom="16dp"
+                />
+            <EditText
+                android:id="@+id/edt_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:lines="3"
+                android:background="@drawable/bg_edit_text_note"
+                android:backgroundTint="@null"
+                android:paddingHorizontal="16dp"
+                android:text=""
+                android:hint="Ghi chú (nếu có)"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginHorizontal="16dp"
+                android:textSize="15sp"
+                android:fontFamily="@font/gilroy_medium"
+                android:layout_marginTop="16dp"
+                android:text="Vui lòng đợi chủ nhà xác nhận lịch hẹn của bạn nhé. Sau khi chủ nhà xác nhận lịch hẹn của bạn bạn sẽ có đầy đủ thông tin về địa chỉ và người chủ trọ."
+                />
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:gravity="center"
+                android:text="Xác Nhận"
+                android:textColor="@color/white"
+                android:fontFamily="@font/inter_bold"
+                android:background="@drawable/bg_button"
+                android:layout_marginBottom="24dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
 </LinearLayout>

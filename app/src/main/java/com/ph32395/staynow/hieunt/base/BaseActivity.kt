@@ -33,6 +33,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
     private val loadingDialog by lazy { LoadingDialog(this) }
     protected abstract fun initViewModel(): Class<VM>
     protected abstract fun initView()
+    protected abstract fun initClickListener()
     protected abstract fun dataObserver()
 
     @SuppressLint("ResourceType")
@@ -73,6 +74,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
         }
         networkCallback?.register(this)
         initView()
+        initClickListener()
         dataObserver()
     }
 

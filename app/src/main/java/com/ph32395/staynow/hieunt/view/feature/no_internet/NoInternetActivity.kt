@@ -15,6 +15,10 @@ class NoInternetActivity : BaseActivity<ActivityNoInternetBinding, CommonVM>() {
 
     }
 
+    override fun initClickListener() {
+
+    }
+
     override fun dataObserver() {
 
     }

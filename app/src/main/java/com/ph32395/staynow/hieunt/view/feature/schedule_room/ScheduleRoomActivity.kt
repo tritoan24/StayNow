@@ -2,22 +2,40 @@ package com.ph32395.staynow.hieunt.view.feature.schedule_room
 
 import android.graphics.Color
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
+import com.ph32395.staynow.hieunt.custom_view.WheelView
+import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
+import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.view_model.CommonVM
 import com.ph32395.staynow.hieunt.widget.currentBundle
+import com.ph32395.staynow.hieunt.widget.getTextEx
+import com.ph32395.staynow.hieunt.widget.tap
+import com.ph32395.staynow.hieunt.widget.toast
 import devs.mulham.horizontalcalendar.HorizontalCalendar
 import devs.mulham.horizontalcalendar.model.CalendarEvent
 import devs.mulham.horizontalcalendar.utils.CalendarEventsPredicate
+import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.Random
 
-class ScheduleRoomActivity: BaseActivity<ActivityScheduleRoomBinding, CommonVM>() {
+class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>() {
     private var horizontalCalendar: HorizontalCalendar? = null
-
+    private val simpleDateFormat by lazy { SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()) }
+    private lateinit var dateSelected : String
+    private lateinit var roomModel: PhongTroModel
+    private var hours: String = "00"
+    private var minutes: String = "00"
 
     override fun setViewBinding(): ActivityScheduleRoomBinding {
         return ActivityScheduleRoomBinding.inflate(layoutInflater)
@@ -26,18 +44,67 @@ class ScheduleRoomActivity: BaseActivity<ActivityScheduleRoomBinding, CommonVM>(
     override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
 
     override fun initView() {
-        val roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
+        roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
         initHorizontalCalendarPicker()
+        initWheelView()
+    }
+
+    override fun initClickListener() {
+        binding.apply {
+            ivBack.tap {
+                onBackPressedSystem()
+            }
+            tvConfirm.tap {
+                showLoading()
+                val scheduleRoomModel = ScheduleRoomModel().apply {
+                    roomId = roomModel.Ma_loaiphong
+                    userId = roomModel.Ma_nguoidung
+                    date = dateSelected
+                    time = "${hours}:${minutes}"
+                    notes = edtNote.getTextEx()
+                    status = 1
+                }
+                addScheduleRoomToFireStore(scheduleRoomModel){ isCompletion ->
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        dismissLoading()
+                        if (isCompletion) {
+                            toast("Successfully")
+                        } else {
+                            toast("Error")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     override fun dataObserver() {
 
     }
 
+    private fun addScheduleRoomToFireStore(schedule: ScheduleRoomModel, onCompletion : (Boolean) -> Unit = {}) {
+        lifecycleScope.launch (Dispatchers.IO) {
+            val firestore = FirebaseFirestore.getInstance()
+            val collection = firestore.collection(DAT_PHONG)
+            val documentReference = collection.document()
+            documentReference.set(schedule)
+                .addOnSuccessListener {
+                    onCompletion.invoke(true)
+                    Log.d("addScheduleRoomToFireStore","Data added successfully with ID: ${documentReference.id}")
+                }
+                .addOnFailureListener { e ->
+                    onCompletion.invoke(false)
+                    Log.d("addScheduleRoomToFireStore","Error adding document: ${e.message}")
+                }
+        }
+
+    }
+
     private fun initHorizontalCalendarPicker() {
+        dateSelected = simpleDateFormat.format(Calendar.getInstance().time)
+
         val startDate = Calendar.getInstance()
         startDate.add(Calendar.YEAR, -5)
-
         val endDate = Calendar.getInstance()
         endDate.add(Calendar.YEAR, 5)
 
@@ -54,7 +121,6 @@ class ScheduleRoomActivity: BaseActivity<ActivityScheduleRoomBinding, CommonVM>(
                 .textColor(Color.LTGRAY, Color.WHITE)
                 .colorTextMiddle(Color.LTGRAY, Color.parseColor("#ffd54f"))
                 .end()
-                //.defaultSelectedDate(calendar)
                 .addEvents(object : CalendarEventsPredicate {
                     var rnd = Random()
                     override fun events(date: Calendar): List<CalendarEvent> {
@@ -73,12 +139,36 @@ class ScheduleRoomActivity: BaseActivity<ActivityScheduleRoomBinding, CommonVM>(
                         }
                         return events
                     }
-                })
-                .build()
-            horizontalCalendar?.selectDate(Calendar.getInstance(), true)
+                }).build().apply {
+                    selectDate(Calendar.getInstance(), true)
+                    calendarListener = object : HorizontalCalendarListener() {
+                        override fun onDateSelected(date: Calendar, position: Int) {
+                            dateSelected = simpleDateFormat.format(date.time)
+                            Log.d("setDataTime", "date: $dateSelected")
+                        }
+                    }
+                }
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }
+    }
+
+    private fun initWheelView() {
+        binding.hourWheelView.setDataItems((0 until 24).map { "%02d".format(it) }.toMutableList())
+        binding.minuteWheelView.setDataItems((0 until 60).map { "%02d".format(it) }.toMutableList())
+        binding.hourWheelView.setOnItemSelectedListener(object : WheelView.OnItemSelectedListener {
+            override fun onItemSelected(wheelView: WheelView, data: Any, position: Int) {
+                hours = (data as String)
+                Log.d("setDataTime", "hours: $hours")
+            }
+        })
+        binding.minuteWheelView.setOnItemSelectedListener(object :
+            WheelView.OnItemSelectedListener {
+            override fun onItemSelected(wheelView: WheelView, data: Any, position: Int) {
+                minutes = (data as String)
+                Log.d("setDataTime", "minutes: $minutes")
+            }
+        })
     }
 
 }

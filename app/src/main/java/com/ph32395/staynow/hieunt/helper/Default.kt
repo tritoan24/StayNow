@@ -2,6 +2,7 @@ package com.ph32395.staynow.hieunt.helper
 
 import android.Manifest
 import android.os.Build
+import com.ph32395.staynow.hieunt.model.ScheduleStateModel
 
 object Default {
     //Name permission
@@ -15,6 +16,13 @@ object Default {
         Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
+    val listScheduleState = mutableListOf<ScheduleStateModel>().apply {
+        add(ScheduleStateModel("Chờ xác nhận", true))
+        add(ScheduleStateModel("Chưa xem phòng", false))
+        add(ScheduleStateModel("Đã xem phòng", false))
+        add(ScheduleStateModel("Đã hủy", false))
+    }
+
     object IntentKeys {
         const val SCREEN = "SCREEN"
         const val SPLASH_ACTIVITY = "SplashActivity"
@@ -23,6 +31,11 @@ object Default {
 
     object SharePreKey {
         const val KEY_SEARCH_ENGINE = "key_search_engine"
+    }
+
+    object Collection {
+        const val DAT_PHONG = "DatPhong"
+        const val MA_NGUOI_DUNG = "ma_nguoi_dung"
     }
 
 }
