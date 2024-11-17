@@ -16,7 +16,8 @@ data class PhongTroModel(
     val ThoiGian_taophong: Long? = 0L,
     val Ngay_capnhat: Long? = 0L,
     val imageUrls: ArrayList<String> = ArrayList(),
-    val Ma_gioiTinh: String = ""
+    val Ma_gioiTinh: String = "",
+    var Dien_tich: Long? = 0L
 ): Serializable{
     constructor() : this("", "", "", "", "", "", false, 0.0, 0, 0L, 0L, ArrayList(), "")
 }

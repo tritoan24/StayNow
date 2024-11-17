@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -67,26 +68,27 @@ class HomeFragment : Fragment() {
             }
         }.attach()
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                tab?.let {
-                    val selectedPosition = it.position
-                    if (selectedPosition < loaiPhongTroList.size) {
-                        val selectedLoaiPhongTro = loaiPhongTroList[selectedPosition].Ma_loaiphong
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            @SuppressLint("SuspiciousIndentation")
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                if (position < loaiPhongTroList.size) {
+                    val selectedLoaiPhongTro = loaiPhongTroList[position].Ma_loaiphong
                         homeViewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
-                    }
+
                 }
             }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
+
     }
 
     private fun refreshData() {
+        homeViewModel.clearRoomCache()  // Reset cache
         homeViewModel.loadLoaiPhongTro()
         homeViewModel.loadImagesFromFirebase()
-
+        homeViewModel.selectedLoaiPhongTro.value?.let { maloaiPhong ->
+            homeViewModel.updateRoomList(maloaiPhong)  // Fetch lại danh sách phòng trọ theo loại
+        }
         Handler(Looper.getMainLooper()).postDelayed({
             swipeFresh.isRefreshing = false
         }, 2000)

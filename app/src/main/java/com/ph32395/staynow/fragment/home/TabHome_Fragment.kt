@@ -33,23 +33,20 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentTabHomeBinding.bind(view)
 
-        val idLoaiPhong = arguments?.getString("id_loaiphong")
-        // Setup RecyclerView
-        setupRecyclerView()
-
         // Initialize Firebase reference
         db = FirebaseFirestore.getInstance()
 
+        // Setup RecyclerView
+        setupRecyclerView()
+
+
+        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
+            homeViewModel.updateRoomList(idloaiPhongTro)
+        }
         homeViewModel.roomList.observe(viewLifecycleOwner) { roomList ->
             handleRoomList(roomList)
         }
 
-        idLoaiPhong?.let {
-            homeViewModel.updateRoomList(it)
-        }
-        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
-            homeViewModel.updateRoomList(idloaiPhongTro)
-        }
 
     }
 
@@ -57,7 +54,7 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         binding.roomRclView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             overScrollMode = View.OVER_SCROLL_NEVER
-            roomAdapter = PhongTroAdapter(roomList)
+            roomAdapter = PhongTroAdapter(roomList, homeViewModel)
             adapter = roomAdapter
         }
     }
