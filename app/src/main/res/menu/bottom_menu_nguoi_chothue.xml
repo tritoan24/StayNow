@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/bottom_home"
-        android:title="Home"
-        android:icon="@drawable/icon_home"/>
+        <item
+            android:id="@+id/bottom_home_nguoichothue"
+            android:title="Home NCT"
+            android:icon="@drawable/icon_home"/>
 
     <item
-        android:id="@+id/bottom_notification"
-        android:title="Notification"
-        android:icon="@drawable/icon_notification"/>
+        android:id="@+id/bottom_management_room"
+        android:title="Management Room"
+        android:icon="@drawable/icon_management_room"/>
 
     <item
         android:id="@+id/bottom_message"
@@ -20,8 +20,5 @@
         android:id="@+id/bottom_profile"
         android:title="Profile"
         android:icon="@drawable/icon_profile"/>
-
-
-
 
 </menu>

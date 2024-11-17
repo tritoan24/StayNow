@@ -20,11 +20,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_menu_nguoi_chothue"
         android:background="@drawable/bg_botton_nav"
         android:layout_margin="10dp"
-        app:menu="@menu/bottom_menu"
         app:itemIconTint="@color/bottom_navigation_colors"
         app:itemTextColor="@color/bottom_navigation_colors"/>
+
+
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_search"
