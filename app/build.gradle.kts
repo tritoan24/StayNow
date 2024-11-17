@@ -66,7 +66,7 @@ dependencies {
     implementation("com.google.firebase:firebase-database")
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
-    implementation("com.google.android.material:material:1.6.0")
+    implementation("com.google.android.material:material:1.9.0")
     implementation("io.github.maitrungduc1410:AVLoadingIndicatorView:2.1.4")
     implementation("com.airbnb.android:lottie:5.2.0")
     implementation ("com.github.denzcoskun:ImageSlideshow:0.1.0")
