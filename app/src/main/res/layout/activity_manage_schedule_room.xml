@@ -41,5 +41,13 @@
         android:layout_marginBottom="24dp"
         />
 
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_room_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:paddingHorizontal="16dp"
+        />
 </LinearLayout>

@@ -21,10 +21,6 @@ class ManageScheduleRoomVM: ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    fun filterRoomByState(state: Int) {
-        _scheduleRoomState.value = scheduleRoomState.value.filter { it.status == state}.toMutableList()
-    }
-
     fun fetchAllScheduleByUser(userId: String, onCompletion : (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
