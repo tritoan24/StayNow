@@ -127,13 +127,20 @@ public class DoiMK extends AppCompatActivity {
             }
 
             // Kiểm tra số lần nhập mật khẩu cũ sai
+            // Kiểm tra mật khẩu cũ
             if (currentUser != null) {
                 String userId = currentUser.getUid();
-                // Kiểm tra mật khẩu cũ
-                if (!currentPassword.equals("Mật khẩu thật sự cũ")) { // Giả sử mật khẩu cũ
+                // Giả sử mật khẩu cũ là "Mật khẩu thật sự cũ"
+                if (!currentPassword.equals("Mật khẩu thật sự cũ")) {
                     incorrectPasswordAttempts++;
 
-                    if (incorrectPasswordAttempts >= 5) {
+                    // Hiển thị Toast nếu số lần nhập mật khẩu sai dưới 5 lần
+                    if (incorrectPasswordAttempts < 5) {
+                        Toast.makeText(this, "Mật khẩu của bạn bị sai. Lần " + incorrectPasswordAttempts, Toast.LENGTH_SHORT).show();
+                    } else {
+                        // Hiển thị AlertDialog khi đã nhập sai 5 lần
+                        Toast.makeText(this, "Mật khẩu của bạn không đúng", Toast.LENGTH_SHORT).show();
+
                         // Hiển thị dialog gợi ý quên mật khẩu với bo góc tròn
                         AlertDialog.Builder builder = new AlertDialog.Builder(DoiMK.this);
 
@@ -144,17 +151,14 @@ public class DoiMK extends AppCompatActivity {
                                 })
                                 .setNegativeButton("Không", null);
 
-                        // Tạo một AlertDialog và áp dụng background bo góc tròn
+                        // Tạo một AlertDialog và áp dụng background bo tròn
                         AlertDialog dialog = builder.create();
                         dialog.getWindow().setBackgroundDrawableResource(R.drawable.custom_edittext);  // Sử dụng drawable bo tròn
                         dialog.show();
-                    } else {
-                        Log.e("DoiMK", "Mật khẩu cũ không đúng.");
                     }
                 }
             }
+
         });
-
-
     }
 }

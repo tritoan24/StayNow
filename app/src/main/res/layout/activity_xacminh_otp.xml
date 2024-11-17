@@ -75,7 +75,7 @@
             android:text="Mã OTP"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:layout_marginLeft="70dp"
+            android:layout_marginLeft="55dp"
             android:layout_marginTop="40dp"
             />
         <!-- Nhập mã OTP -->
@@ -153,11 +153,21 @@
 
         <!-- Nút xác nhận -->
         <Button
+            android:id="@+id/btnXacNhan"
             android:layout_width="280dp"
             android:layout_height="48dp"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="50dp"
             android:layout_marginLeft="50dp"
-            android:text="Gửi mã OTP"
+            android:text="Xác nhận"
+            android:background="@drawable/button_background_doimk"
+            android:textColor="@android:color/white"/>
+        <Button
+            android:id="@+id/btnResendOTP"
+            android:layout_width="280dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="50dp"
+            android:text="Gửi lại mã OTP"
             android:background="@drawable/button_background_doimk"
             android:textColor="@android:color/white"/>
 
@@ -177,6 +187,7 @@
                android:textStyle="bold"
                android:layout_gravity="center" />
            <TextView
+               android:id="@+id/timeDown"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:text="00:50"
