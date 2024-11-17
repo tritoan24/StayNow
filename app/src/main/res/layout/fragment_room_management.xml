@@ -64,6 +64,7 @@
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:paddingHorizontal="16dp"
+            tools:listitem="@layout/renter_item_room_wait"
             />
     </FrameLayout>
 

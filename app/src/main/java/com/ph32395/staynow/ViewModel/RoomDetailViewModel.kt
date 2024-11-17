@@ -127,12 +127,12 @@ class RoomDetailViewModel : ViewModel() {
 //Lay thong tin chi tiet phong tro
     fun fetchRoomDetail(maPhongTro: String) {
         val docRef = db.collection("PhongTro").document(maPhongTro)
-
         docRef.get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     document.toObject(PhongTroModel::class.java)?.let { room ->
                         _room.value = room
+                        Log.d("fetchRoomDetail", "room: $room")
                         fetchAdditionalInfo(room)
                     }
                 } else {
@@ -170,7 +170,7 @@ class RoomDetailViewModel : ViewModel() {
         }
 
 //        Truy van thong tin nguoi dung tu Ma_nguoidung
-        room.maChuTro.let { maChuTro ->
+        room.Ma_nguoidung.let { maChuTro ->
             realtimeDb.child("NguoiDung").child(maChuTro)
                 .get()
                 .addOnSuccessListener { dataSnapshot ->

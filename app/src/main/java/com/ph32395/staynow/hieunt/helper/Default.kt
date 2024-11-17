@@ -39,6 +39,9 @@ object Default {
         const val MA_PHONG = "ma_phong"
         const val NGUOI_THUE = "NguoiThue"
         const val NGUOI_CHO_THUE = "NguoiChoThue"
+        const val NGUOI_DUNG = "NguoiDung"
+        const val HO_TEN = "ho_ten"
+        const val SO_DIEN_THOAI = "sdt"
     }
 
 }

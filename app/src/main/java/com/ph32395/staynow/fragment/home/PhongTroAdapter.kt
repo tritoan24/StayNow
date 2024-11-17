@@ -81,7 +81,7 @@ class PhongTroAdapter(
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
                 context.startActivity(intent)
-                viewmodel.incrementRoomViewCount(roomId.toString())
+                viewmodel.incrementRoomViewCount(roomId)
             }
         }
     }

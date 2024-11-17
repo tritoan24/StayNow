@@ -3,6 +3,8 @@ package com.ph32395.staynow.hieunt.view.feature.schedule_room
 import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
@@ -10,6 +12,9 @@ import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
 import com.ph32395.staynow.hieunt.custom_view.WheelView
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
+import com.ph32395.staynow.hieunt.helper.Default.Collection.HO_TEN
+import com.ph32395.staynow.hieunt.helper.Default.Collection.NGUOI_DUNG
+import com.ph32395.staynow.hieunt.helper.Default.Collection.SO_DIEN_THOAI
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.view_model.CommonVM
@@ -22,7 +27,10 @@ import devs.mulham.horizontalcalendar.model.CalendarEvent
 import devs.mulham.horizontalcalendar.utils.CalendarEventsPredicate
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -31,10 +39,14 @@ import java.util.Random
 class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>() {
     private var horizontalCalendar: HorizontalCalendar? = null
     private val simpleDateFormat by lazy { SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()) }
-    private lateinit var dateSelected : String
+    private lateinit var dateSelected: String
     private lateinit var roomModel: PhongTroModel
     private var hours: String = "00"
     private var minutes: String = "00"
+    private var renterNameByGetInfo = ""
+    private var renterPhoneNumberByGetInfo = ""
+    private var tenantNameByGetInfo = ""
+    private var tenantPhoneNumberByGetInfo = ""
 
     override fun setViewBinding(): ActivityScheduleRoomBinding {
         return ActivityScheduleRoomBinding.inflate(layoutInflater)
@@ -44,8 +56,22 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
 
     override fun initView() {
         roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
+
         initHorizontalCalendarPicker()
         initWheelView()
+        showLoading()
+
+        getAllInfo { isSuccess ->
+            dismissLoading()
+            if (isSuccess) {
+                binding.tvConfirm.apply {
+                    isEnabled = true
+                    alpha = 1f
+                }
+            } else {
+                toast("Có lỗi khi lấy thông tin!")
+            }
+        }
     }
 
     override fun initClickListener() {
@@ -56,24 +82,25 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             tvConfirm.tap {
                 showLoading()
                 val scheduleRoomModel = ScheduleRoomModel().apply {
-                    roomId = roomModel.Ma_loaiphong
+                    roomId = ""
                     roomName = roomModel.Ten_phongtro
-                    renterId = roomModel.maChuTro
-                    renterName = ""
-                    renterPhoneNumber = ""
-                    tenantId = ""
-                    tenantName = ""
-                    tenantPhoneNumber = ""
+                    renterId = roomModel.Ma_nguoidung
+                    renterName = renterNameByGetInfo
+                    renterPhoneNumber = renterPhoneNumberByGetInfo
+                    tenantId = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                    tenantName = tenantNameByGetInfo
+                    tenantPhoneNumber = tenantPhoneNumberByGetInfo
                     date = dateSelected
                     time = "${hours}:${minutes}"
                     notes = edtNote.getTextEx()
-                    status = 1
+                    status = 0
                 }
-                addScheduleRoomToFireStore(scheduleRoomModel){ isCompletion ->
+                addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion ->
                     lifecycleScope.launch(Dispatchers.Main) {
                         dismissLoading()
                         if (isCompletion) {
                             toast("Successfully")
+                            finish()
                         } else {
                             toast("Error")
                         }
@@ -87,22 +114,69 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
 
     }
 
-    private fun addScheduleRoomToFireStore(schedule: ScheduleRoomModel, onCompletion : (Boolean) -> Unit = {}) {
-        lifecycleScope.launch (Dispatchers.IO) {
-            val firestore = FirebaseFirestore.getInstance()
-            val collection = firestore.collection(DAT_PHONG)
-            val documentReference = collection.document()
-            documentReference.set(schedule)
+    private fun addScheduleRoomToFireStore(
+        schedule: ScheduleRoomModel,
+        onCompletion: (Boolean) -> Unit = {}
+    ) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            FirebaseFirestore.getInstance().collection(DAT_PHONG).document().set(schedule)
                 .addOnSuccessListener {
                     onCompletion.invoke(true)
-                    Log.d("addScheduleRoomToFireStore","Data added successfully with ID: ${documentReference.id}")
                 }
                 .addOnFailureListener { e ->
                     onCompletion.invoke(false)
-                    Log.d("addScheduleRoomToFireStore","Error adding document: ${e.message}")
+                    Log.d("addScheduleRoomToFireStore", "Error adding document: ${e.message}")
                 }
         }
+    }
 
+    private fun getAllInfo(onCompletion: (Boolean) -> Unit) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            var isSuccess = true
+            val jobCallInfoRenter = async {
+                try {
+                    FirebaseDatabase.getInstance().reference.child(NGUOI_DUNG)
+                        .child(roomModel.Ma_nguoidung).get()
+                        .addOnSuccessListener { data ->
+                            data?.let {
+                                renterNameByGetInfo = it.child(HO_TEN).value as? String ?: ""
+                                renterPhoneNumberByGetInfo = it.child(SO_DIEN_THOAI).value as? String ?: ""
+                                Log.d("getAllInfo", "renterName : $renterNameByGetInfo")
+                                Log.d("getAllInfo", "renterPhoneNumber : $renterPhoneNumberByGetInfo")
+                            }
+                        }
+                        .addOnFailureListener {
+                            isSuccess = false
+                        }
+                } catch (e: Exception) {
+                    isSuccess = false
+                }
+            }
+
+            val jobCallInfoTenant = async {
+                try {
+                    FirebaseAuth.getInstance().currentUser?.uid?.let {
+                        FirebaseDatabase.getInstance().reference.child(NGUOI_DUNG).child(it).get()
+                            .addOnSuccessListener { data ->
+                                data?.let {
+                                    tenantNameByGetInfo = data.child(HO_TEN).value as? String ?: ""
+                                    tenantPhoneNumberByGetInfo = data.child(SO_DIEN_THOAI).value as? String ?: ""
+                                    Log.d("getAllInfo", "tenantName : $tenantNameByGetInfo")
+                                    Log.d("getAllInfo", "tenantPhoneNumber : $tenantPhoneNumberByGetInfo")
+                                }
+                            }.addOnFailureListener {
+                                isSuccess = false
+                            }
+                    }
+                } catch (e: Exception) {
+                    isSuccess = false
+                }
+            }
+            awaitAll(jobCallInfoRenter, jobCallInfoTenant)
+            withContext(Dispatchers.Main) {
+                onCompletion.invoke(isSuccess)
+            }
+        }
     }
 
     private fun initHorizontalCalendarPicker() {

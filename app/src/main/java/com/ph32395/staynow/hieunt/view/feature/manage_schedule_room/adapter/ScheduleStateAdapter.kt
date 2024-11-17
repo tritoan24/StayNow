@@ -1,4 +1,4 @@
-package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room
+package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
@@ -35,7 +35,7 @@ class ScheduleStateAdapter(
 
     override fun layout(position: Int): Int = R.layout.item_schedule_state
 
-    private fun setSelectedState(position: Int) {
+    fun setSelectedState(position: Int) {
         val oldIndex = listData.indexOfFirst { it.isSelected }
         for (item in listData) {
             item.isSelected = false
