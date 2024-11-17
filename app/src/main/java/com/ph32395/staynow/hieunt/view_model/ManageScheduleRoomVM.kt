@@ -65,7 +65,7 @@ class ManageScheduleRoomVM : ViewModel() {
                     return@launch
                 }
                 val documentId = querySnapshot.documents.first().id
-                firestore.collection(DAT_PHONG).document(documentId).s().addOnSuccessListener {
+                firestore.collection(DAT_PHONG).document(documentId).delete().addOnSuccessListener {
                     _allScheduleRoomState.value = _allScheduleRoomState.value.filter { it.roomScheduleId != roomScheduleId }.toMutableList()
                     onCompletion.invoke(true)
                 }.addOnFailureListener {
