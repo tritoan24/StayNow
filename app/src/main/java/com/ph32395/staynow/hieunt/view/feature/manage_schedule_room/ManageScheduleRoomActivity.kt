@@ -14,9 +14,7 @@ class ManageScheduleRoomActivity : BaseActivity<ActivityManageScheduleRoomBindin
     override fun initViewModel(): Class<ManageScheduleRoomVM> = ManageScheduleRoomVM::class.java
 
     override fun initView() {
-        binding.rvState.adapter = ScheduleStateAdapter { state ->
 
-        }.apply { addList(listScheduleState) }
     }
 
     override fun initClickListener() {

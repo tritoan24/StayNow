@@ -170,8 +170,8 @@ class RoomDetailViewModel : ViewModel() {
         }
 
 //        Truy van thong tin nguoi dung tu Ma_nguoidung
-        room.Ma_nguoidung?.let { maNguoiDung ->
-            realtimeDb.child("NguoiDung").child(maNguoiDung)
+        room.maChuTro.let { maChuTro ->
+            realtimeDb.child("NguoiDung").child(maChuTro)
                 .get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot?.let {

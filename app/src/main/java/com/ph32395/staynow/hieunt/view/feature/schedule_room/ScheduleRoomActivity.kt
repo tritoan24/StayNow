@@ -23,7 +23,6 @@ import devs.mulham.horizontalcalendar.utils.CalendarEventsPredicate
 import devs.mulham.horizontalcalendar.utils.HorizontalCalendarListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -58,7 +57,13 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                 showLoading()
                 val scheduleRoomModel = ScheduleRoomModel().apply {
                     roomId = roomModel.Ma_loaiphong
-                    userId = roomModel.Ma_nguoidung
+                    roomName = roomModel.Ten_phongtro
+                    renterId = roomModel.maChuTro
+                    renterName = ""
+                    renterPhoneNumber = ""
+                    tenantId = ""
+                    tenantName = ""
+                    tenantPhoneNumber = ""
                     date = dateSelected
                     time = "${hours}:${minutes}"
                     notes = edtNote.getTextEx()
