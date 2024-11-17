@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Nút quay lại -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="12dp">
+
+            <ImageButton
+                android:id="@+id/button_backSettings"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/arrow_back"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xác minh OTP"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:textColor="@android:color/black" />
+        </LinearLayout>
+
+        <!-- Hình minh họa -->
+        <ImageView
+            android:id="@+id/imgIllustration"
+            android:layout_width="250dp"
+            android:layout_height="166.25dp"
+            android:src="@drawable/image_otp"
+            android:layout_gravity="center"
+            android:contentDescription="OTP Verification" />
+
+        <!-- Tiêu đề -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Xác Minh"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp" />
+
+        <TextView
+            android:layout_width="300dp"
+            android:layout_height="22dp"
+            android:text="Nhập mã để xác minh tài khoản của bạn"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:layout_marginLeft="40dp"
+            android:textAlignment="center"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mã OTP"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:layout_marginLeft="70dp"
+            android:layout_marginTop="40dp"
+            />
+        <!-- Nhập mã OTP -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:gravity="center">
+
+            <!-- Ô nhập mã 1 -->
+            <EditText
+                android:id="@+id/otp_digit_1"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/background_quenmk"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:importantForAccessibility="yes"
+                android:imeOptions="actionNext"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Ô nhập mã 2 -->
+            <EditText
+                android:id="@+id/otp_digit_2"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/background_quenmk"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:importantForAccessibility="yes"
+                android:imeOptions="actionNext"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Ô nhập mã 3 -->
+            <EditText
+                android:id="@+id/otp_digit_3"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/background_quenmk"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:importantForAccessibility="yes"
+                android:imeOptions="actionNext"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Ô nhập mã 4 -->
+            <EditText
+                android:id="@+id/otp_digit_4"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/background_quenmk"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:importantForAccessibility="yes"
+                android:imeOptions="actionNext"
+                android:layout_marginEnd="8dp" />
+
+            <!-- Ô nhập mã 5 -->
+            <EditText
+                android:id="@+id/otp_digit_5"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/background_quenmk"
+                android:gravity="center"
+                android:inputType="number"
+                android:maxLength="1"
+                android:importantForAccessibility="yes"
+                android:imeOptions="actionDone" />
+        </LinearLayout>
+
+        <!-- Nút xác nhận -->
+        <Button
+            android:layout_width="280dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="110dp"
+            android:layout_marginLeft="50dp"
+            android:text="Gửi mã OTP"
+            android:background="@drawable/button_background_doimk"
+            android:textColor="@android:color/white"/>
+
+        <!-- Đếm ngược gửi lại mã -->
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:gravity="center"
+           android:layout_marginTop="8dp"
+           >
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Gửi lại mã:"
+               android:textSize="16sp"
+               android:layout_marginRight="5dp"
+               android:textStyle="bold"
+               android:layout_gravity="center" />
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="00:50"
+               android:textColor="#f07e4b"
+               android:textStyle="bold"
+               android:textSize="16sp"
+               android:layout_gravity="center" />
+       </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

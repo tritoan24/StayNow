@@ -19,6 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
+            android:name=".BaoMat.Xacminh_OTP"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.CaiDat"
+            android:exported="false" />
+        <activity
             android:name=".BaoMat.QuenMK"
             android:exported="false" />
         <activity

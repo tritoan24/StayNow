@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.BaoMat.DoiMK
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
@@ -28,8 +29,8 @@ class ProfileFragment : Fragment() {
     private lateinit var userNameTextView: TextView
     private lateinit var userPhoneTextView: TextView
     private lateinit var profileImageView: ImageView
-    private lateinit var logoutButton: ImageButton
-    private lateinit var nextDoiMK: ImageButton
+    private lateinit var logoutButton: LinearLayout
+    private lateinit var nextDoiMK: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
 
@@ -44,7 +45,7 @@ class ProfileFragment : Fragment() {
         userPhoneTextView = view.findViewById(R.id.user_phone)
         profileImageView = view.findViewById(R.id.profile_image)
         logoutButton = view.findViewById(R.id.LogoutButton)
-        nextDoiMK = view.findViewById(R.id.next_doimk)
+        nextDoiMK = view.findViewById(R.id.next_caidat)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -112,7 +113,7 @@ class ProfileFragment : Fragment() {
         }
 
         nextDoiMK.setOnClickListener {
-            startActivity(Intent(requireActivity(),DoiMK::class.java))
+            startActivity(Intent(requireActivity(),CaiDat::class.java))
             requireActivity().finish()
         }
         return view

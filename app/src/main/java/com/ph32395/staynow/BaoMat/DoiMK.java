@@ -1,5 +1,6 @@
 package com.ph32395.staynow.BaoMat;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ public class DoiMK extends AppCompatActivity {
 
     private int incorrectPasswordAttempts = 0;  // Biến theo dõi số lần nhập sai mật khẩu
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,35 +58,6 @@ public class DoiMK extends AppCompatActivity {
 
         // Lấy thông tin người dùng hiện tại
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            // Truy cập Firebase Realtime Database để lấy ảnh đại diện của người dùng
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(userId);
-
-            userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        // Lấy hình ảnh và mật khẩu (giả sử mật khẩu được lưu trong Firebase)
-                        String imageUrl = snapshot.child("anh_daidien").getValue(String.class);
-
-                        // Hiển thị hình ảnh
-                        if (imageUrl != null && !imageUrl.isEmpty()) {
-                            Glide.with(DoiMK.this).load(imageUrl).into(doimkImage);
-                        }
-
-                    } else {
-                        Log.e("DoiMK", "Không tìm thấy thông tin người dùng.");
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    Log.e("DoiMK", "Lỗi khi lấy thông tin từ Firebase: " + error.getMessage());
-                }
-            });
-        }
-
         // Xử lý nút quay lại
         buttonBack.setOnClickListener(view -> {
             startActivity(new Intent(DoiMK.this, MainActivity.class));

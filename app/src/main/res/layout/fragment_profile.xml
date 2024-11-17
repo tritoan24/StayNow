@@ -105,7 +105,6 @@
                     </LinearLayout>
 
                     <ImageButton
-                        android:id="@+id/next_doimk"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -231,7 +230,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -273,7 +273,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -315,7 +316,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -357,7 +359,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -399,7 +402,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -440,7 +444,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -482,7 +487,8 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -520,11 +526,13 @@
                     android:background="@android:color/darker_gray" />
 
                 <LinearLayout
+                    android:id="@+id/next_caidat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -563,11 +571,13 @@
                     android:background="@android:color/darker_gray" />
 
                 <LinearLayout
+                    android:id="@+id/LogoutButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:padding="16dp">
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
 
                     <!-- Icon Exit (Bên trái) -->
                     <ImageView
@@ -593,7 +603,6 @@
 
                     <!-- ImageButton Đăng xuất (Bên phải) -->
                     <ImageButton
-                        android:id="@+id/LogoutButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/right_row"
