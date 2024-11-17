@@ -6,8 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
-import com.ph32395.staynow.hieunt.helper.Default.Collection.MA_NGUOI_DUNG
-import com.ph32395.staynow.hieunt.helper.Default.Collection.MA_PHONG
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,7 +53,7 @@ class ManageScheduleRoomVM : ViewModel() {
         }
     }
 
-    fun deleteScheduleRoom(roomScheduleId: String, onCompletion: (Boolean) -> Unit = {}) {
+    fun updateScheduleRoomStatus(roomScheduleId: String, status: Int, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val documentRef = firestore.collection(DAT_PHONG).whereEqualTo("roomScheduleId", roomScheduleId)
@@ -65,16 +63,26 @@ class ManageScheduleRoomVM : ViewModel() {
                     return@launch
                 }
                 val documentId = querySnapshot.documents.first().id
-                firestore.collection(DAT_PHONG).document(documentId).delete().addOnSuccessListener {
-                    _allScheduleRoomState.value = _allScheduleRoomState.value.filter { it.roomScheduleId != roomScheduleId }.toMutableList()
-                    onCompletion.invoke(true)
-                }.addOnFailureListener {
-                    onCompletion.invoke(false)
-                }
+                firestore.collection(DAT_PHONG).document(documentId)
+                    .update("status", status)
+                    .addOnSuccessListener {
+                        _allScheduleRoomState.value = _allScheduleRoomState.value.map {
+                            if (it.roomScheduleId == roomScheduleId) {
+                                it.copy(status = status)
+                            } else {
+                                it
+                            }
+                        }
+                        onCompletion.invoke(true)
+                    }
+                    .addOnFailureListener {
+                        onCompletion.invoke(false)
+                    }
             } catch (e: Exception) {
-                Log.d("ManageScheduleRoomVM", "Error delete: ${e.message}")
+                Log.d("ManageScheduleRoomVM", "Error update status: ${e.message}")
                 onCompletion.invoke(false)
             }
         }
     }
+
 }

@@ -16,8 +16,6 @@ import com.ph32395.staynow.hieunt.view_model.ManageScheduleRoomVM
 import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, ManageScheduleRoomVM>() {
@@ -38,14 +36,15 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
 
         manageScheduleRoomAdapter = RenterManageScheduleRoomAdapter(
             onClickConfirm = {
-                viewModel.deleteScheduleRoom(it.roomScheduleId) { deleteSuccess ->
-                    if (deleteSuccess){
+                showLoadingIfNotBaseActivity()
+                viewModel.updateScheduleRoomStatus(it.roomScheduleId, 1) { updateSuccess ->
+                    if (updateSuccess){
                         viewModel.filerScheduleRoomState(1){
                             scheduleStateAdapter?.setSelectedState(1)
                         }
                     } else {
                         lifecycleScope.launch {
-                            toast("Delete Failed")
+                            toast("Có lỗi khi xác nhận!")
                         }
                     }
                 }
@@ -65,7 +64,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
     override fun initViewModel(): Class<ManageScheduleRoomVM> = ManageScheduleRoomVM::class.java
 
     override fun dataObserver() {
-        showLoading()
+        showLoadingIfNotBaseActivity()
         viewModel.fetchAllScheduleByUser(FirebaseAuth.getInstance().currentUser?.uid.toString()){
             viewModel.filerScheduleRoomState(0)
         }
@@ -80,7 +79,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                         binding.tvNoData.visible()
                     }
                     manageScheduleRoomAdapter?.addListObserver(it)
-                    dismissLoading()
+                    dismissLoadingIfNotBaseActivity()
                 }
             }
         }

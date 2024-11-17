@@ -18,11 +18,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.ph32395.staynow.hieunt.helper.PermissionHelper
 import com.ph32395.staynow.hieunt.helper.SystemUtils
+import com.ph32395.staynow.hieunt.view.dialog.LoadingDialog
 
 abstract class BaseFragment<VB : ViewBinding,VM : ViewModel> : Fragment() {
     private var _binding: VB? = null
     lateinit var binding: VB
     lateinit var viewModel: VM
+    private val loadingDialog by lazy { LoadingDialog(requireContext()) }
     val permissionHelper: PermissionHelper by lazy { PermissionHelper(requireActivity()) }
 
     protected abstract fun setViewBinding(inflater: LayoutInflater, container: ViewGroup?): VB
@@ -103,6 +105,14 @@ abstract class BaseFragment<VB : ViewBinding,VM : ViewModel> : Fragment() {
 
     fun dismissLoading() {
         (activity as? BaseActivity<*, *>)?.dismissLoading()
+    }
+
+    fun showLoadingIfNotBaseActivity(){
+        if (loadingDialog.isShowing.not()) loadingDialog.show()
+    }
+
+    fun dismissLoadingIfNotBaseActivity(){
+        if (loadingDialog.isShowing) loadingDialog.dismiss()
     }
 
     fun showPopupWindow(view: View, popupWindow: PopupWindow) {
