@@ -23,9 +23,9 @@ class RenterManageScheduleRoomAdapter(
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
             binding.apply {
-                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameTenant.text = "Người thuê: ${data.tenantName}"
                 tvNameRoom.text = "Tên phòng: ${data.roomName}"
-                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
+                tvPhoneNumber.text = "SDT: ${data.tenantPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
                 tvConfirm.tap {
                     onClickConfirm.invoke(data)
@@ -42,9 +42,9 @@ class RenterManageScheduleRoomAdapter(
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
             binding.apply {
-                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameTenant.text = "Người thuê: ${data.tenantName}"
                 tvNameRoom.text = "Tên phòng: ${data.roomName}"
-                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
+                tvPhoneNumber.text = "SDT: ${data.tenantPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
                 tvDeposited.tap {
                     onClickDeposited.invoke(data)
@@ -61,9 +61,9 @@ class RenterManageScheduleRoomAdapter(
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
             binding.apply {
-                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameTenant.text = "Người thuê: ${data.tenantName}"
                 tvNameRoom.text = "Tên phòng: ${data.roomName}"
-                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
+                tvPhoneNumber.text = "SDT: ${data.tenantPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
             }
         }
@@ -74,9 +74,9 @@ class RenterManageScheduleRoomAdapter(
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
             binding.apply {
-                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameTenant.text = "Người thuê: ${data.tenantName}"
                 tvNameRoom.text = "Tên phòng: ${data.roomName}"
-                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
+                tvPhoneNumber.text = "SDT: ${data.tenantPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
             }
         }
