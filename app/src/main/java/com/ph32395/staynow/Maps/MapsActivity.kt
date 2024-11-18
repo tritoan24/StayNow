@@ -30,6 +30,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.marginStart
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityMapsBinding
 import com.ph32395.staynow.databinding.BottomSheetCitySearchBinding
@@ -70,6 +72,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private val firestore = FirebaseFirestore.getInstance()
     private val dataRoom = firestore.collection("PhongTro")
+    val addresses2 = mutableListOf<PhongTroModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapsBinding.inflate(layoutInflater)
@@ -237,16 +240,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         )
 
-        val addresses2 = mutableListOf<String>()
         dataRoom.get().addOnSuccessListener {
-            Log.d("TAGzzzz", "onMapReady: ")
+            Log.d("TAGzzzz", "onMapReady: it ${it.documents}")
+            Log.d("TAGzzzz", "onMapReady: it.toObjects ${it.toObjects(PhongTroModel::class.java)}")
+            addresses2.clear()
+            for (document in it.documents) {
+                Log.d("TAGzzz", "onMapReady: document for $document.")
+                val roomData = document.toObject(PhongTroModel::class.java)
+                Log.d("TAGzzz", "onMapReady: roomData $roomData")
+                Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.Ten_phongtro}")
+                Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.Dia_chi}")
+                val newRoomData = roomData!!.Dia_chi.removePrefix("Xã")
+                Log.d("TAGzzzzzzzzz", "onMapReady: newRoomData $newRoomData")
+                addresses2.add(roomData)
+
+            }
+            Log.d("TAGzzzzzz", "onMapReady: addresses2 $addresses2 ")
+            addMarkersFromAddresses(mMap, addresses2, this)
+            Log.d("TAGzzzzzz", "onMapReady: addresses $addresses ")
         }.addOnFailureListener {
             Log.d("TAGzzz", "onMapReady: $it")
         }
-
-
-
-        addMarkersFromAddresses(mMap, addresses, this)
         // Bật tính năng xác định vị trí người dùng
         if (ContextCompat.checkSelfPermission(
                 this, Manifest.permission.ACCESS_FINE_LOCATION
@@ -289,7 +303,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         // Add a marker in Sydney and move the camera
         val hanoi = LatLng(21.0285, 105.8542)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hanoi, 10.0f))
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hanoi, 10f))
     }
 
     fun getCoordinatesUsingNominatim(address: String, onResult: (LatLng?) -> Unit) {
@@ -373,27 +387,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     // Hàm gọi hàm trên cho nhiều địa chỉ và thêm vào bản đồ
-    fun addMarkersFromAddresses(map: GoogleMap, addresses: List<String>, context: Context) {
+    fun addMarkersFromAddresses(
+        map: GoogleMap,
+        addresses: MutableList<PhongTroModel>,
+        context: Context
+    ) {
+        Log.d("zzzzzzzzzz", "addMarkersFromAddresses: $addresses")
         for (address in addresses) {
-            getCoordinatesUsingNominatim(address) { latLng ->
+            val newAddressRoom = address.Dia_chi.removePrefix("Xã")
+            getCoordinatesUsingNominatim(newAddressRoom) { latLng ->
                 latLng?.let {
                     map.addMarker(
                         MarkerOptions()
                             .position(it)
-                            .title(address)
+                            .title(newAddressRoom)
                             .icon(
                                 createCustomMarkerWithLayoutXML(
                                     context,
-                                    address,
+                                    newAddressRoom,
                                     R.drawable.icon_board
                                 )
                             )
                     )
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(it, 10f))
+                    map.animateCamera(CameraUpdateFactory.newLatLng(it))
                 }
             }
         }
-        map.setOnMarkerClickListener {
+        map.setOnMarkerClickListener { it ->
             Log.d("TAGzzz", "addMarkersFromAddresses: ${it.title}")
             val bottomSheet = Dialog(context)
             val binding = BottomSheetDialogDetaillRoomAboveMapsBinding.inflate(layoutInflater)
@@ -405,8 +425,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             bottomSheet.window?.attributes?.gravity = Gravity.BOTTOM
             bottomSheet.window?.attributes?.y = 350
 
+            // Lấy `LayoutParams` và đặt `margin`
+            val layoutParams = bottomSheet.window?.attributes
+            layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT // Đặt chiều rộng
+            bottomSheet.window?.attributes = layoutParams
 
-            binding.tvNameRoom.text = it.title
+            // Thêm margin vào nội dung chính của `Dialog`
+            val dialogLayoutParams = binding.root.layoutParams as ViewGroup.MarginLayoutParams
+            dialogLayoutParams.setMargins(32, 0, 32, 0) // Điều chỉnh margin (trái, trên, phải, dưới)
+            binding.root.layoutParams = dialogLayoutParams
+
+            // Tìm phòng trọ có địa chỉ trùng với marker.title
+            val matchedRoom = addresses.find { room ->
+                room.Dia_chi.removePrefix("Xã") == it.title
+            }
+            if (matchedRoom != null) {
+
+                Log.d("TAGzzzzzzzzzz", "addMarkersFromAddresses: room for $matchedRoom ")
+                binding.tvNameRoom.text = matchedRoom.Ten_phongtro
+                Glide.with(this).load(matchedRoom.imageUrls[0]).into(binding.imageRoom)
+                binding.tvPriceRoom.text = matchedRoom.Gia_phong.toString()
+                binding.tvAddressRoom.text = matchedRoom.Dia_chi
+
+            }
 
             bottomSheet.show()
 
@@ -438,10 +479,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
     }
-
-
-
-
 
 
     // goi ý tim kiem

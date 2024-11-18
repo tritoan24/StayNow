@@ -87,4 +87,7 @@ dependencies {
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
 
+    //Thu vien khoang gia
+    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
+
 }

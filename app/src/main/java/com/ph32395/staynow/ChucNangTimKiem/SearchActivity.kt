@@ -15,18 +15,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.toObject
 import com.ph32395.staynow.Maps.MapsActivity
-import com.ph32395.staynow.Model.PhongTro
+import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ActivitySearchBinding
 import com.ph32395.staynow.databinding.BottomSheetCitySearchBinding
+import com.ph32395.staynow.fragment.home.HomeViewModel
 import com.ph32395.staynow.fragment.home.PhongTroAdapter
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -45,8 +40,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     private val searchHistoryRef = firestore.collection("LichSuTimKiem")
     private val dataRoom = firestore.collection("PhongTro")
 
-
-    val listFullRoom: MutableList<PhongTro> = mutableListOf()
+    private val homeViewModel: HomeViewModel = HomeViewModel()
+    val listFullRoom = mutableListOf<Pair<String, PhongTroModel>>()
     val listKeySearch: MutableList<SearchDataModel> = mutableListOf()
     var min: Int = 0
     var max: Int = 0
@@ -58,7 +53,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         readKeyWordSearch(userId)
 
-        val adapter = PhongTroAdapter(listFullRoom)
+        val adapter = PhongTroAdapter(listFullRoom, homeViewModel)
         binding.rvListRoom.layoutManager = GridLayoutManager(this@SearchActivity, 2)
         binding.rvListRoom.adapter = adapter
         readListRoom(adapter)
@@ -118,7 +113,20 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             onBackPressedDispatcher.onBackPressed()
         }
         binding.btnMap.setOnClickListener {
-            startActivity(Intent(this,MapsActivity::class.java))
+            startActivity(Intent(this, MapsActivity::class.java))
+        }
+        binding.lvHistory.setOnItemClickListener { parent, view, position, id ->
+            Log.d(TAG, "onCreate: LvHistory parent ${parent.adapter.getItem(position).toString()}")
+            Log.d(TAG, "onCreate: LvHistory view $view")
+            Log.d(TAG, "onCreate: LvHistory position $position")
+            Log.d(TAG, "onCreate: LvHistory id $id")
+            val item = parent.adapter.getItem(position)
+            if (item is SearchDataModel) {
+                Log.d(TAG, "Item text: ${item.tu_khoa}")
+                binding.edtSearch.setText(item.tu_khoa.toString())
+            } else {
+                Log.d(TAG, "Item at position $position is not a String")
+            }
         }
 
 
@@ -177,18 +185,20 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 //    }
 
     //Fire store
+    @SuppressLint("NotifyDataSetChanged")
     fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
-        val filteredList = mutableListOf<PhongTro>()
         val queryWords = query.split(" ").filter { it.isNotEmpty() }
 
         Log.d(TAG, "onDataChange: queryWords $queryWords")
         Log.d(TAG, "onDataChange: query $query")
-
+        listFullRoom.clear()
         dataRoom.get().addOnSuccessListener { snapshot ->
             for (document in snapshot.documents) {
-                val roomData = document.toObject(PhongTro::class.java)
-                val roomName = roomData?.tenPhongTro ?: ""
-                val roomDescription = roomData?.motaChiTiet ?: ""
+                val id = document.id.toString()
+                val roomData = document.toObject(PhongTroModel::class.java)
+                Log.d(TAG, "searchRoomByNameOrDescription: room data $roomData")
+                val roomName = roomData?.Ten_phongtro ?: ""
+                val roomDescription = roomData?.Mota_chitiet ?: ""
 
                 // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
                 val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
@@ -204,16 +214,16 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                 // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
                 if (queryInDescriptionOrName || allWordsMatch) {
-                    filteredList.add(roomData!!)
+                    listFullRoom.addAll(mutableListOf(Pair(id, roomData!!)))
                     binding.rvListRoom.visibility = View.VISIBLE
                     binding.layoutNullMsg.visibility = View.GONE
                     Log.d(TAG, "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)")
+
                 }
             }
-
-            adapter.updateList(filteredList)
-
-            if (filteredList.isEmpty()) {
+            Log.d(TAG, "searchRoomByNameOrDescription: list fullRoom $listFullRoom ")
+            adapter.notifyDataSetChanged()
+            if (listFullRoom.isEmpty()) {
                 Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
                 binding.rvListRoom.visibility = View.GONE
                 binding.layoutNullMsg.visibility = View.VISIBLE
@@ -309,11 +319,14 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         //firestore
         dataRoom.get().addOnSuccessListener { it ->
             listFullRoom.clear()
-            val documents = it.toObjects(PhongTro::class.java)
-            Log.d(TAG, "readListRoom: it read room ${it.toObjects(PhongTro::class.java)}")
-            for (document in documents) {
-                document.let { room ->
-                    listFullRoom.add(room)
+            Log.d(TAG, "readListRoom: it read room ${it.toObjects(PhongTroModel::class.java)}")
+            for (document in it) {
+                val id = document.id.toString()
+                Log.d(TAG, "readListRoom: document.id.toString() $id")
+                val roomList = document.toObject(PhongTroModel::class.java)
+                roomList.let { room ->
+                    listFullRoom.add(Pair(id, room))
+                    Log.d(TAG, "readListRoom: $room")
                 }
             }
             adapter.notifyDataSetChanged()
