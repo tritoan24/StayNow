@@ -3,6 +3,7 @@
     <style name="AppTheme.NoStatusBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
     </style>
+
     <style name="TransparentDialog" parent="Theme.AppCompat.Dialog">
         <item name="android:background">@android:color/transparent</item>
         <item name="windowNoTitle">true</item> <!-- Ẩn tiêu đề -->
@@ -14,4 +15,11 @@
             <item name="cornerSize">8dp</item>  <!-- Tùy chỉnh kích thước bo góc -->
         </style>
 
+    <style name="BaseDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
 </resources>

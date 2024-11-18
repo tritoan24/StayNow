@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -22,6 +23,9 @@ import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
+import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
+import com.ph32395.staynow.hieunt.widget.launchActivity
 
 class RoomDetailActivity : AppCompatActivity() {
 
@@ -39,6 +43,10 @@ class RoomDetailActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
             finish() //Quay lai man hinh truoc
+        }
+
+        findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
+            launchActivity(Bundle().apply { putSerializable(ROOM_DETAIL,viewModel.room.value) }, ScheduleRoomActivity::class.java)
         }
 
 //        Khoi tao viewModel

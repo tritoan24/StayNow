@@ -1,8 +1,9 @@
 package com.ph32395.staynow.Model
 
+import java.io.Serializable
 
 data class PhongTroModel(
-    val Ma_nguoidung: String = "",
+    val Ma_nguoidung: String = "", // ma chu tro
     val Ten_phongtro: String = "",
     val Dia_chi: String = "",
     val Dia_chichitiet: String = "",
@@ -16,7 +17,6 @@ data class PhongTroModel(
     val imageUrls: ArrayList<String> = ArrayList(),
     val Ma_gioiTinh: String = "",
     var Dien_tich: Long? = 0L
-
-){
+): Serializable{
     constructor() : this("", "", "", "", "", "", false, 0.0, 0, 0L, 0L, ArrayList(), "")
 }
