@@ -14,7 +14,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +21,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
+        <activity
+            android:name=".BaoMat.Xacminh_OTP"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.CaiDat"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.QuenMK"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.DoiMK"
+            android:exported="false" />
         <activity
             android:name=".Activity.FullScreenImageActivity"
             android:exported="false" />
@@ -46,6 +57,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity> <!-- Thêm cấu hình cho Google Sign-In -->
         </activity>
         <activity
             android:name=".DangKiDangNhap.DangKy"
