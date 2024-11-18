@@ -1,5 +1,6 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
+import android.annotation.SuppressLint
 import android.view.ViewGroup
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.RenterItemRoomCanceledBinding
@@ -12,6 +13,7 @@ import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.widget.layoutInflate
 import com.ph32395.staynow.hieunt.widget.tap
 
+@SuppressLint("SetTextI18n")
 class RenterManageScheduleRoomAdapter(
     private val onClickCancel: (ScheduleRoomModel) -> Unit,
     private val onClickConfirm: (ScheduleRoomModel) -> Unit,
