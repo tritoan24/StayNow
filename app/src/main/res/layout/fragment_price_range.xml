@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_bg_white_bottom_sheet"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fontFamily="sans-serif"
+        android:text="Khoảng giá"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="#C8c8c8" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giá"
+            android:textColor="@color/black"
+            android:textFontWeight="500"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="(theo tháng)"
+            android:textColor="#9B9B9B" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Giá từ "
+            android:textColor="@color/black"
+            android:textFontWeight="500"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_min_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text=" 0đ "
+            android:textColor="#F42828"
+
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="đến"
+            android:textColor="#F42828" />
+
+        <TextView
+            android:id="@+id/tv_max_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text=" 0đ "
+            android:textColor="#F42828" />
+
+    </LinearLayout>
+
+    <com.mohammedalaa.seekbar.DoubleValueSeekBarView
+        android:id="@+id/double_range_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:r2CurrentMaxValue="20000"
+        app:r2CurrentMinValue="500"
+        app:r2barHeight="3dp"
+        app:r2baseColor="#8c8c8c"
+        app:r2circleFillColor="#532CA6"
+        app:r2circleRadius="8dp"
+        app:r2circleTextColor="@color/white"
+        app:r2fillColor="#532CA6"
+        app:r2maxValue="20000"
+        app:r2maxValueStep="1000"
+        app:r2minValue="500"
+        app:r2minValueStep="500" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnLamMoi"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            app:cardCornerRadius="15dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:backgroundTint="#D1D1D1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="serif"
+                android:gravity="center"
+                android:text="Làm mới"
+                android:textColor="@color/black"/>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnApDung"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            app:cardCornerRadius="15dp"
+            android:layout_margin="10dp"
+            android:backgroundTint="#532CA6">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="serif"
+                android:gravity="center"
+                android:text="Áp dụng"
+                android:textColor="@color/white"/>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</LinearLayout>
+

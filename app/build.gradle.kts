@@ -53,6 +53,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
@@ -84,6 +86,7 @@ dependencies {
 //Thư viện format tgian tạo phòng trọ
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
 
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     //calendar
@@ -108,5 +111,8 @@ dependencies {
 
 
 
+
+    //Thu vien khoang gia
+    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
 
 }
