@@ -148,12 +148,12 @@ public class DangNhap extends AppCompatActivity {
 
                     if(user.getPhoneNumber() == null){
                         saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
+                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
                         startActivity(intent);
                     }else {
                         saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                         Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
+                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
                         startActivity(intent);
                     }
                 }
