@@ -14,6 +14,7 @@ import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.Sche
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.TenantManageScheduleRoomAdapter
 import com.ph32395.staynow.hieunt.view_model.ManageScheduleRoomVM
 import com.ph32395.staynow.hieunt.widget.gone
+import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
 import kotlinx.coroutines.launch
@@ -52,7 +53,9 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
     }
 
     override fun initClickListener() {
-
+        binding.ivBack.tap {
+            finish()
+        }
     }
 
     override fun dataObserver() {

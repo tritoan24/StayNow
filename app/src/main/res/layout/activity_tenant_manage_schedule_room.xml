@@ -20,7 +20,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_back_black"
             android:layout_marginEnd="16dp"
-            android:visibility="gone"
+            android:visibility="visible"
             />
         <TextView
             android:layout_width="wrap_content"
