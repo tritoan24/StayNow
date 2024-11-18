@@ -17,7 +17,7 @@ class NoiThatAdapter(
         parent: ViewGroup,
         viewType: Int
     ): NoiThatViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_noi_that, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_noi_that_chitiet, parent, false)
         return  NoiThatViewHolder(view)
     }
 

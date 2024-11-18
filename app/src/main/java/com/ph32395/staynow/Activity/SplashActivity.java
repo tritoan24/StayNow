@@ -19,7 +19,6 @@ public class SplashActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "MyAppPrefs";
     private static final String FIRST_TIME_KEY = "first_time";
 
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +28,7 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         boolean isFirstTime = prefs.getBoolean(FIRST_TIME_KEY, true);
         boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
+
 
         new Handler().postDelayed(() -> {
             if (isFirstTime) {

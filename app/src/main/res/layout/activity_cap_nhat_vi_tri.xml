@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cập nhật vị trí phòng"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"/>
+    <TextView
+        android:id="@+id/dia_chi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="đây là địa chỉ khi đổi từ tọa độ của bạn"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"/>
+    <TextView
+        android:id="@+id/dia_chi_day_du"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="đây là địa chỉ khi đổi từ tọa độ của bạn"
+        android:textSize="16sp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"/>
+
+
+    <!-- Latitude Label -->
+    <TextView
+        android:id="@+id/latitude_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vĩ độ:"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Latitude EditText -->
+    <EditText
+        android:id="@+id/latitude"
+        android:layout_height="wrap_content"
+        android:hint="Nhập vĩ độ"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:padding="10dp"/>
+
+    <!-- Longitude Label -->
+    <TextView
+        android:id="@+id/longitude_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kinh độ:"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Longitude EditText -->
+    <EditText
+        android:id="@+id/longitude"
+        android:layout_height="wrap_content"
+        android:hint="Nhập kinh độ"
+        android:inputType="numberDecimal"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:padding="10dp"/>
+
+    <!-- Update Location Button -->
+    <Button
+        android:id="@+id/update_button"
+        android:layout_height="wrap_content"
+        android:text="Cập nhật vị trí"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:padding="16dp"/>
+
+    <!-- ProgressBar (loading) -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="24dp"/>
+
+</LinearLayout>
