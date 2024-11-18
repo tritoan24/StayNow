@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="12dp"
-    tools:context=".hieunt.view.feature.manage_schedule_room.ManageScheduleRoomActivity">
+    tools:context=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +20,7 @@
             android:layout_height="24dp"
             android:src="@drawable/ic_back_black"
             android:layout_marginEnd="16dp"
+            android:visibility="gone"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -39,15 +40,32 @@
         android:orientation="horizontal"
         tools:itemCount="4"
         android:layout_marginBottom="24dp"
+        android:layout_marginHorizontal="8dp"
         />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_room_state"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:paddingHorizontal="16dp"
-        />
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/tv_no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Không có lịch hẹn!"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:textStyle="italic"
+            android:fontFamily="@font/inter_medium"
+            android:visibility="gone"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_room_state"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:paddingHorizontal="16dp"
+            tools:listitem="@layout/renter_item_room_wait"
+            />
+    </FrameLayout>
+
 </LinearLayout>

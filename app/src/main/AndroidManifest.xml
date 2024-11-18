@@ -49,7 +49,7 @@
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
-            android:name=".hieunt.view.feature.manage_schedule_room.ManageScheduleRoomActivity"
+            android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
             android:exported="true" >
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->

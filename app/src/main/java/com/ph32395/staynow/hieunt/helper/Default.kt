@@ -27,6 +27,7 @@ object Default {
         const val SCREEN = "SCREEN"
         const val SPLASH_ACTIVITY = "SplashActivity"
         const val ROOM_DETAIL = "room_detail"
+        const val ROOM_ID = "room_id"
     }
 
     object SharePreKey {

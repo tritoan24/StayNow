@@ -24,6 +24,7 @@ import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
+import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
 import com.ph32395.staynow.hieunt.widget.launchActivity
 
@@ -45,9 +46,7 @@ class RoomDetailActivity : AppCompatActivity() {
             finish() //Quay lai man hinh truoc
         }
 
-        findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
-            launchActivity(Bundle().apply { putSerializable(ROOM_DETAIL,viewModel.room.value) }, ScheduleRoomActivity::class.java)
-        }
+
 
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
@@ -55,6 +54,15 @@ class RoomDetailActivity : AppCompatActivity() {
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
 
+        findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
+            launchActivity(
+                Bundle().apply {
+                    putSerializable(ROOM_DETAIL, viewModel.room.value)
+                    putString(ROOM_ID, maPhongTro)
+                },
+                ScheduleRoomActivity::class.java
+            )
+        }
 //        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
@@ -80,7 +88,7 @@ class RoomDetailActivity : AppCompatActivity() {
         viewModel.fetchRoomDetail(maPhongTro)
     }
 
-//    Danh sacch thng tin chi tiet
+    //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -90,7 +98,8 @@ class RoomDetailActivity : AppCompatActivity() {
             addItemDecoration(SpacingItemDecoration(20))  // 16dp là khoảng cách giữa các item
         }
     }
-//    Danh sach tien nghi
+
+    //    Danh sach tien nghi
     private fun setupRecyViewTienNghi() {
         findViewById<RecyclerView>(R.id.recyclerViewTienNghi).apply {
             layoutManager = GridLayoutManager(context, 4)
@@ -100,7 +109,7 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
-//    Danh sach noi that
+    //    Danh sach noi that
     private fun setupRecyclerViewNoiThat() {
         findViewById<RecyclerView>(R.id.recyclerViewNoiThat).apply {
             layoutManager = GridLayoutManager(context, 4)
@@ -110,7 +119,7 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
-//    danh sach phi dich vu
+    //    danh sach phi dich vu
     private fun setupListPhiDichVu() {
         findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
             layoutManager = GridLayoutManager(context, 3)
@@ -143,7 +152,8 @@ class RoomDetailActivity : AppCompatActivity() {
 //            Cap nhat giao dien thong tin phong tro
             findViewById<TextView>(R.id.txtTenPhongTro).text = room.Ten_phongtro
             findViewById<TextView>(R.id.txtDiaChi).text = room.Dia_chi
-            findViewById<TextView>(R.id.txtGiaThue).text = "${String.format("%,.0f", room.Gia_phong)} VND"
+            findViewById<TextView>(R.id.txtGiaThue).text =
+                "${String.format("%,.0f", room.Gia_phong)} VND"
             findViewById<TextView>(R.id.txtChiTietThem).text = room.Mota_chitiet
 
 //            Cap nhat hinh anh
