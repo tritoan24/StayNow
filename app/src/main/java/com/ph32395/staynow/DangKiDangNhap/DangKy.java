@@ -80,7 +80,7 @@ public class DangKy extends AppCompatActivity {
         String Ngay_taotaikhoan = String.valueOf(System.currentTimeMillis());
         String Ngay_capnhat = String.valueOf(System.currentTimeMillis());
         Integer So_luotdatlich = 0;
-        String Loai_taikhoan = "NguoiThue";
+        String Loai_taikhoan = "ChuaChon";
         String Trang_thaitaikhoan = "HoatDong";
 
 
@@ -199,7 +199,7 @@ public class DangKy extends AppCompatActivity {
 
                         }
 
-                        Intent intent = new Intent(DangKy.this, DangNhap.class);
+                        Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(DangKy.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -233,11 +233,11 @@ public class DangKy extends AppCompatActivity {
                 public void onSignInSuccess(FirebaseUser user) {
 
                     if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                         Intent intent = new Intent(DangKy.this, MainActivity.class);
                         startActivity(intent);
                     }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                         Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DangKy.this, MainActivity.class);
                         startActivity(intent);
