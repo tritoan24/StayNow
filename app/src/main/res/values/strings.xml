@@ -9,12 +9,8 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="default_web_client_id">918655571270-4nik6s7seao371jrq6boha3ro9fq85pf.apps.googleusercontent.com</string>
-
-    <string name="default_text">Mục mặc định</string>
-    <string name="icon_description">Mô tả biểu tượng</string>
-    <string name="arrow_description">Mô tả mũi tên</string>
-
+    <!-- Strings  id update -->
+    <string name="default_web_client_id">918655571270-u0aorv0f23meel967mfomasbc5e2ngns.apps.googleusercontent.com</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
@@ -52,5 +48,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="title_activity_doi_mk">DoiMK</string>
+    <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature">You must allow all Permission to use this app with full feature.</string>
+    <string name="go_to_setting">Go to setting</string>
+    <string name="t_ph_ng">Đặt phòng</string>
 </resources>

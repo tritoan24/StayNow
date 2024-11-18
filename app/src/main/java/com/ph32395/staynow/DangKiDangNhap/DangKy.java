@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,14 +24,15 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.ph32395.staynow.MainActivity;
-import com.ph32395.staynow.Model.NguoiDung;
+import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 
 
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+
+
 public class DangKy extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -79,22 +79,25 @@ public class DangKy extends AppCompatActivity {
         String Ngay_taotaikhoan = String.valueOf(System.currentTimeMillis());
         String Ngay_capnhat = String.valueOf(System.currentTimeMillis());
         Integer So_luotdatlich = 0;
-        String Loai_taikhoan = "NguoiThue";
+        String Loai_taikhoan = "ChuaChon";
         String Trang_thaitaikhoan = "HoatDong";
 
 
         // Khởi tạo RegisterWithGoogle để xử lý đăng nhập với Google
         registerWithGoogle = new RegisterWithGoogle(this);
 
-        // Sự kiện chọn ảnh đại diện
+//        // Sự kiện chọn ảnh đại diện
         img_avatar.setOnClickListener(view ->
                 ImagePicker.with(this)
-                        .crop() // Cắt ảnh (nếu cần)
-                        .compress(1024) // Giới hạn kích thước ảnh (nếu cần)
-                        .maxResultSize(1080, 1080) // Kích thước tối đa của ảnh
+                        .crop()
+                        .compress(1024)
+                        .maxResultSize(1080, 1080)
                         .start()
-
         );
+//
+
+
+        //do anh ra Fa
 
 
         // sự kiện khi ấn vào nút đăng nhập
@@ -110,7 +113,6 @@ public class DangKy extends AppCompatActivity {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
             String rppassword = rppass.getText().toString().trim();
-
 
             boolean isValid = true;
 
@@ -174,7 +176,6 @@ public class DangKy extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-
                         Toast.makeText(DangKy.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
 
                         // Tải ảnh lên Firebase Storage sau khi đăng ký thành công
@@ -197,7 +198,7 @@ public class DangKy extends AppCompatActivity {
 
                         }
 
-                        Intent intent = new Intent(DangKy.this, DangNhap.class);
+                        Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
                         startActivity(intent);
                     } else {
                         Toast.makeText(DangKy.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -209,17 +210,7 @@ public class DangKy extends AppCompatActivity {
     // Hàm lưu thông tin người dùng vào Realtime Database
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien,Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-       NguoiDung nguoiDung = new NguoiDung(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
-        Log.d("UserInfo", "Ma_nguoidung: " + Ma_nguoidung);
-        Log.d("UserInfo", "Ho_ten: " + Ho_ten);
-        Log.d("UserInfo", "Sdt: " + Sdt);
-        Log.d("UserInfo", "Email: " + Email);
-        Log.d("UserInfo", "Anh_daidien: " + Anh_daidien);
-        Log.d("UserInfo", "So_luotdatlich: " + So_luotdatlich);
-        Log.d("UserInfo", "Loai_taikhoan: " + Loai_taikhoan);
-        Log.d("UserInfo", "Trang_thaitaikhoan: " + Trang_thaitaikhoan);
-        Log.d("UserInfo", "Ngay_taotaikhoan: " + Ngay_taotaikhoan);
-        Log.d("UserInfo", "Ngay_capnhat: " + Ngay_capnhat);
+       NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
@@ -241,11 +232,11 @@ public class DangKy extends AppCompatActivity {
                 public void onSignInSuccess(FirebaseUser user) {
 
                     if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                         Intent intent = new Intent(DangKy.this, MainActivity.class);
                         startActivity(intent);
                     }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                         Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DangKy.this, MainActivity.class);
                         startActivity(intent);

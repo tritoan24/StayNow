@@ -25,4 +25,18 @@
         <item name="backgroundTint">@color/my_button_background</item>
         <item name="android:textColor">@color/my_button_text</item>
     </style>
+
+<!--    Border cho Image trong RecyclerView chi tiet tro-->
+    <style name="BorderImageItem">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+<!--        <item name="strokeColor">@color/purple_border_bottom</item>-->
+<!--        <item name="strokeWidth">8dp</item>-->
+    </style>
+
+<!--    Border anh thanh hinh tron-->
+    <style name="CircularShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

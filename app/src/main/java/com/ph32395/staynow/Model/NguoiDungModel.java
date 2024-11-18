@@ -1,6 +1,6 @@
 package com.ph32395.staynow.Model;
 
-public class NguoiDung {
+public class NguoiDungModel {
     private String Ma_nguoidung;
     private String Ho_ten;
     private String Sdt;
@@ -14,10 +14,10 @@ public class NguoiDung {
 
 
     // Constructor không tham số (cần thiết cho Firebase)
-    public NguoiDung() {
+    public NguoiDungModel() {
     }
 
-    public NguoiDung(String ma_nguoidung, String ho_ten, String sdt, String email, String anh_daidien, Integer so_luotdatlich, String loai_taikhoan, String trang_thaitaikhoan, Long ngay_taotaikhoan, Long ngay_capnhat) {
+    public NguoiDungModel(String ma_nguoidung, String ho_ten, String sdt, String email, String anh_daidien, Integer so_luotdatlich, String loai_taikhoan, String trang_thaitaikhoan, Long ngay_taotaikhoan, Long ngay_capnhat) {
         Ma_nguoidung = ma_nguoidung;
         Ho_ten = ho_ten;
         Sdt = sdt;

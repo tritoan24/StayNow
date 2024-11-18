@@ -4,19 +4,20 @@
     <color name="white">#FFFFFFFF</color>
     <color name="purple_border_bottom">#532CA6</color>
     <color name="flt_bottom">#D1C4E9</color>
-
     <color name="purple">#8692f7</color>
+    <color name="my_light_primary">#FF6200EE</color>
+    <color name="my_light_primary_variant">#FF3700B3</color>
+    <color name="my_light_on_primary">#FFFFFF</color>
+    <color name="my_light_secondary">#03DAC5</color>
+    <color name="my_light_on_secondary">#000000</color>
 
-
-        <color name="my_light_primary">#FF6200EE</color>
-        <color name="my_light_primary_variant">#FF3700B3</color>
-        <color name="my_light_on_primary">#FFFFFF</color>
-
-        <color name="my_light_secondary">#03DAC5</color>
-        <color name="my_light_on_secondary">#000000</color>
-
-        <!-- Button colors -->
-        <color name="my_button_background">#FFBB86FC</color>
-        <color name="my_button_text">#FFFFFF</color>
+    <!-- Button colors -->
+    <color name="my_button_background">#FFBB86FC</color>
+    <color name="my_button_text">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="grey_bg">#EFEFEF</color>
+    <color name="red">#FF0808</color>
+    <color name="color_line">#EEEDED</color>
+    <color name="color_text">#532CA6</color>
 
 </resources>
