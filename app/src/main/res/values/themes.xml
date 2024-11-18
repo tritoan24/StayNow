@@ -15,7 +15,7 @@
 
     <style name="Theme.StayNow" parent="Base.Theme.StayNow" />
 
-<!--    Bo goc Floating Action Button-->
+    <!--    Bo goc Floating Action Button-->
     <style name="FABCornerShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50dp</item> <!-- Điều chỉnh kích thước bo viền -->
