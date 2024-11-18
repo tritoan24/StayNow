@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
+import com.ph32395.staynow.TaoPhongTro.TaoPhongTro;
 
 public class DangNhap extends AppCompatActivity {
     private Button btnDangNhap, btnDangNhapGoogle;
@@ -147,12 +148,12 @@ public class DangNhap extends AppCompatActivity {
 
                     if(user.getPhoneNumber() == null){
                         saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
+                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
                         startActivity(intent);
                     }else {
                         saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                         Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
+                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
                         startActivity(intent);
                     }
                 }

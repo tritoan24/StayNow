@@ -9,8 +9,8 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
 
-    <string name="default_web_client_id">918655571270-4nik6s7seao371jrq6boha3ro9fq85pf.apps.googleusercontent.com</string>
-
+    <!-- Strings  id update -->
+    <string name="default_web_client_id">918655571270-u0aorv0f23meel967mfomasbc5e2ngns.apps.googleusercontent.com</string>
 
     <string name="lorem_ipsum">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
