@@ -16,6 +16,7 @@ import com.ph32395.staynow.hieunt.helper.Default.Collection.HO_TEN
 import com.ph32395.staynow.hieunt.helper.Default.Collection.NGUOI_DUNG
 import com.ph32395.staynow.hieunt.helper.Default.Collection.SO_DIEN_THOAI
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
+import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.view_model.CommonVM
 import com.ph32395.staynow.hieunt.widget.currentBundle
@@ -43,6 +44,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
     private lateinit var roomModel: PhongTroModel
     private var hours: String = "00"
     private var minutes: String = "00"
+    private var roomIdInDetail : String = ""
     private var renterNameByGetInfo = ""
     private var renterPhoneNumberByGetInfo = ""
     private var tenantNameByGetInfo = ""
@@ -56,6 +58,12 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
 
     override fun initView() {
         roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
+        roomIdInDetail = currentBundle()?.getString(ROOM_ID).toString()
+
+        if (roomIdInDetail.isEmpty()){
+            toast("Có lỗi khi lấy thông tin!")
+            finish()
+        }
 
         initHorizontalCalendarPicker()
         initWheelView()
@@ -82,7 +90,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             tvConfirm.tap {
                 showLoading()
                 val scheduleRoomModel = ScheduleRoomModel().apply {
-                    roomId = ""
+                    roomId = roomIdInDetail
                     roomName = roomModel.Ten_phongtro
                     renterId = roomModel.Ma_nguoidung
                     renterName = renterNameByGetInfo

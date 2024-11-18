@@ -1,20 +1,36 @@
 package com.ph32395.staynow.fragment
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import com.ph32395.staynow.R
+import com.ph32395.staynow.databinding.FragmentProfileBinding
+import com.ph32395.staynow.hieunt.base.BaseFragment
+import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
+import com.ph32395.staynow.hieunt.view_model.CommonVM
+import com.ph32395.staynow.hieunt.widget.launchActivity
+import com.ph32395.staynow.hieunt.widget.tap
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : BaseFragment<FragmentProfileBinding,CommonVM>() {
+    override fun setViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentProfileBinding {
+        return FragmentProfileBinding.inflate(layoutInflater)
+    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+    override fun initView() {
+
+    }
+
+    override fun initClickListener() {
+        binding.tvManageSchedule.tap {
+            launchActivity(TenantManageScheduleRoomActivity::class.java)
+        }
+    }
+
+    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
+
+    override fun dataObserver() {
+
     }
 
 }

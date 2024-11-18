@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="12dp"
-    tools:context=".hieunt.view.feature.manage_schedule_room.ManageScheduleRoomActivity">
+    tools:context=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
