@@ -174,6 +174,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 false
             }
         }
+        binding.ivBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
 
     }
 
