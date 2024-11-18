@@ -60,8 +60,7 @@
         android:layout_marginTop="8dp"
         android:textColor="@android:color/white"
         android:padding="12dp"
-        android:drawableStart="@drawable/addavatar"
-        app:backgroundTint= "#ffff"
+        app:backgroundTint= "#0F0F0F"
 
         />
     <EditText
@@ -186,20 +185,37 @@
 
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
 
 
     <!-- Nút Thêm phòng trọ -->
     <Button
         android:id="@+id/addRoomButton"
-        android:layout_width="match_parent"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Thêm phòng trọ"
+        android:text="Lưu Phòng Trọ"
         android:backgroundTint="@color/purple"
         android:textColor="@android:color/white"
         android:layout_marginTop="16dp"
         android:padding="12dp"/>
+        <Button
+            android:id="@+id/addRoomButton2"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="Đăng Phòng Trọ"
+            android:backgroundTint="@color/purple"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:padding="12dp"/>
 
 
+    </LinearLayout>
 
 
 

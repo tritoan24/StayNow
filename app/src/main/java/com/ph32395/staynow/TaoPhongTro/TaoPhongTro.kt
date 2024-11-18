@@ -1,5 +1,6 @@
 package com.ph32395.staynow.TaoPhongTro
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
 import com.ph32395.staynow.DiaChiGHN.GHNViewModel
 import com.ph32395.staynow.DiaChiGHN.Model.District
 import com.ph32395.staynow.DiaChiGHN.Model.Province
@@ -38,6 +40,7 @@ import com.ph32395.staynow.TienNghi.TienNghi
 import com.ph32395.staynow.TienNghi.TienNghiAdapter
 import com.ph32395.staynow.TienNghi.TienNghiViewModel
 import com.ph32395.staynow.databinding.ActivityTaoPhongTroBinding
+import com.ph32395.staynow.fragment.HomeFragment
 import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -151,13 +154,14 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 }
         }
 
-
+        // Logic khi nhấn nút "Lưu"
         binding.addRoomButton.setOnClickListener {
+            saveRoomToFirestore(isSaved = true)
+        }
 
-
-            saveRoomToFirestore()
-
-
+        // Logic khi nhấn nút "Đăng"
+        binding.addRoomButton2.setOnClickListener {
+            saveRoomToFirestore(isSaved = false)
         }
 
 
@@ -342,7 +346,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     }
 
-    private fun saveRoomToFirestore() {
+    private fun saveRoomToFirestore(isSaved: Boolean) {
         val roomName = binding.roomName.text.toString()
         val roomPrice = binding.roomPrice.text.toString().toIntOrNull() ?: 0
         val description = binding.description.text.toString()
@@ -406,10 +410,14 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         loadingAnimation.playAnimation()
 
 
-        val Trang_thai = true
         val ThoiGian_taophong = System.currentTimeMillis()
         val Ngay_capnhat = System.currentTimeMillis()
         val So_luotxemphong = 0
+
+
+        val Trang_thailuu = if (isSaved) true else false
+        val Trang_thaiduyet = if (isSaved) false else false
+
 
         // Tạo danh sách để chứa URL của các ảnh đã tải lên
         val imageUrls = mutableListOf<String>()
@@ -431,18 +439,19 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                         imageUrls.add(downloadUri.toString())
                         uploadedImagesCount++
 
-                        // Kiểm tra nếu tất cả ảnh đã tải lên xong
+                        // Nếu đã upload tất cả ảnh, tiến hành lưu dữ liệu phòng
                         if (uploadedImagesCount == mutableUriList.size) {
-                            // Lưu thông tin phòng trọ sau khi đã có đủ URL ảnh
                             saveRoomDataToFirestore(
                                 roomName,
                                 roomPrice,
                                 description,
                                 imageUrls,
-                                Trang_thai,
+                                Trang_thailuu,
+                                Trang_thaiduyet,
                                 ThoiGian_taophong,
                                 Ngay_capnhat,
-                                So_luotxemphong
+                                So_luotxemphong,
+                                isSaved
                             )
                         }
                     }
@@ -454,38 +463,42 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         }
     }
 
-    private fun saveRoomDataToFirestore(
-        roomName: String,
-        roomPrice: Int,
-        description: String,
-        imageUrls: List<String>,
-        Trang_thai: Boolean,
-        ThoiGian_taophong: Long,
-        Ngay_capnhat: Long,
-        So_luotxemphong: Int
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
+        private fun saveRoomDataToFirestore(
+            roomName: String,
+            roomPrice: Int,
+            description: String,
+            imageUrls: List<String>,
+            Trang_thailuu: Boolean,
+            Trang_thaiduyet: Boolean,
+            ThoiGian_taophong: Long,
+            Ngay_capnhat: Long,
+            So_luotxemphong: Int,
+            isSaved: Boolean
+        ) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
 
-                // Chuẩn bị dữ liệu để lưu vào Firestore
-                val roomData = hashMapOf(
-                    "Ten_phongtro" to roomName,
-                    "Gia_phong" to roomPrice,
-                    "Mota_chitiet" to description,
-                    "Ma_nguoidung" to userId,
-                    "Dia_chi" to fullAddress,
-                    "Dia_chichitiet" to fullAddressDeltail,
-                    "Ma_loaiphong" to Ma_loaiphong,
-                    "Ma_gioiTinh" to Ma_gioiTinh,
-                    "Trang_thai" to Trang_thai,
-                    "ThoiGian_taophong" to ThoiGian_taophong,
-                    "Ngay_capnhat" to Ngay_capnhat,
-                    "So_luotxemphong" to So_luotxemphong,
-                    "imageUrls" to imageUrls
-                )
+                    // Chuẩn bị dữ liệu để lưu vào Firestore
+                    val roomData = hashMapOf(
+                        "Ten_phongtro" to roomName,
+                        "Gia_phong" to roomPrice,
+                        "Mota_chitiet" to description,
+                        "Ma_nguoidung" to userId,
+                        "Dia_chi" to fullAddress,
+                        "Dia_chichitiet" to fullAddressDeltail,
+                        "Trang_thaidc" to false,
+                        "Ma_loaiphong" to Ma_loaiphong,
+                        "Ma_gioiTinh" to Ma_gioiTinh,
+                        "Trang_thailuu" to Trang_thailuu,
+                        "Trang_thaiduyet" to Trang_thaiduyet,
+                        "ThoiGian_taophong" to ThoiGian_taophong,
+                        "Ngay_capnhat" to Ngay_capnhat,
+                        "So_luotxemphong" to So_luotxemphong,
+                        "imageUrls" to imageUrls
+                    )
 
 
-                // Lưu phòng trọ
+                    // Lưu phòng trọ
                 val roomTask = firestore.collection("PhongTro").add(roomData).await()
                 val maPhongTro = roomTask.id
 
@@ -515,6 +528,21 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                         "Tất cả dữ liệu đã được lưu thành công!",
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    // Điều hướng sau khi lưu thành công
+                    if (isSaved) {
+                        // Chuyển sang màn hình Home khi nhấn nút "Lưu phòng"
+                        val intent = Intent(this@TaoPhongTro, HomeFragment::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        // Chuyển sang màn hình chọn địa chỉ khi nhấn nút "Đăng"
+                        val intent = Intent(this@TaoPhongTro, CapNhatViTri::class.java)
+                        intent.putExtra("PHONG_TRO_ID", maPhongTro) // Truyền ID phòng trọ
+                        startActivity(intent)
+                    }
+
+
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {

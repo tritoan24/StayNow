@@ -24,7 +24,7 @@
             android:name=".DangKiDangNhap.ChonLoaiTK"
             android:exported="false" />
         <activity
-            android:name=".Activity.CapNhatViTriPhong.CapNhatViTri"
+            android:name=".CapNhatViTriPhong.CapNhatViTri"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.DangNhap"

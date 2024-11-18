@@ -1,4 +1,4 @@
-package com.ph32395.staynow.Activity.CapNhatViTriPhong
+package com.ph32395.staynow.CapNhatViTriPhong
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -23,7 +23,9 @@ class CapNhatViTri : AppCompatActivity() {
     private lateinit var binding: ActivityCapNhatViTriBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val firestore = FirebaseFirestore.getInstance()
-    private val userId = "USER_ID" // Thay bằng ID người dùng thực tế của bạn
+
+    private val Trang_thaidc = true;
+    private var phongTroId: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +39,8 @@ class CapNhatViTri : AppCompatActivity() {
         binding.updateButton.setOnClickListener {
             doiToaDoRaViTriCuThe(it)
         }
+
+        // Nhận ID phòng trọ từ Intent
 
         // Khởi tạo FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -87,12 +91,6 @@ class CapNhatViTri : AppCompatActivity() {
                 val longitude = location.longitude
                 Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
 
-                // Hiển thị vị trí lên giao diện
-                binding.latitude.setText(latitude.toString())
-                binding.longitude.setText(longitude.toString())
-
-                // Cập nhật vị trí vào Firestore
-                updateLocationInFirestore(latitude, longitude)
             } else {
                 Log.e("Location", "Không lấy được vị trí")
             }
@@ -100,12 +98,31 @@ class CapNhatViTri : AppCompatActivity() {
     }
 
     // Cập nhật vị trí vào Firestore
-    private fun updateLocationInFirestore(latitude: Double, longitude: Double) {
-        val locationData = hashMapOf(
-            "latitude" to latitude,
-            "longitude" to longitude,
-            "updated_at" to System.currentTimeMillis()
-        )
+    private fun updateLocationInFirestore(diachi: String, diachict: String) {
+
+        phongTroId = intent.getStringExtra("PHONG_TRO_ID")
+        if (phongTroId != null) {
+
+            val PhongTro = firestore.collection("PhongTro").document(phongTroId!!)
+
+            PhongTro.update(mapOf(
+                "Dia_chi" to diachi,
+                "Dia_chichitiet" to diachict,
+                "Trang_thai_dc" to Trang_thaidc
+            )).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "Cập nhật vị trí thành công", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Lỗi cập nhật vị trí", Toast.LENGTH_SHORT).show()
+                }
+                binding.progressBar.visibility = View.GONE
+            }
+
+        }else {
+            Toast.makeText(this, "Không tìm thấy ID phòng trọ", Toast.LENGTH_SHORT).show()
+            return
+        }
+
 
     }
 
@@ -129,6 +146,7 @@ class CapNhatViTri : AppCompatActivity() {
 
         if (!addresses.isNullOrEmpty()) {
             val address = addresses[0]
+            val diachict = address.getAddressLine(0);
 
             // Lấy các thành phần của địa chỉ
             val streetName = address.thoroughfare ?: ""       // Tên đường hoặc ngõ
@@ -144,6 +162,9 @@ class CapNhatViTri : AppCompatActivity() {
 
             binding.diaChi.setText(detailedAddress)
             binding.diaChiDayDu.setText(address.getAddressLine(0))
+
+            //cap nhat vi tri vao firestore
+            updateLocationInFirestore(detailedAddress, diachict)
         } else {
             binding.diaChi.setText("Không tìm thấy địa chỉ")
         }
