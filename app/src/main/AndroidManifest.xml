@@ -29,7 +29,7 @@
             android:name=".CapNhatViTriPhong.CapNhatViTri"
             android:exported="false" />
         <activity
-            android:name=".DangKiDangNhap.DangNhap"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
