@@ -32,7 +32,10 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         scheduleStateAdapter =  ScheduleStateAdapter { status ->
             Log.d("ManageScheduleRoomVM"," $status")
             viewModel.filerScheduleRoomState(status)
-        }.apply { addList(listScheduleState) }
+        }.apply {
+            addList(listScheduleState)
+            setSelectedState(0)
+        }
 
         manageScheduleRoomAdapter = RenterManageScheduleRoomAdapter(
             onClickConfirm = {
@@ -72,10 +75,8 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.scheduleRoomState.collect {
                     if (it.isNotEmpty()) {
-                        Log.d("ManageScheduleRoomVM", "notEmpty")
                         binding.tvNoData.gone()
                     } else {
-                        Log.d("ManageScheduleRoomVM", "empty")
                         binding.tvNoData.visible()
                     }
                     manageScheduleRoomAdapter?.addListObserver(it)

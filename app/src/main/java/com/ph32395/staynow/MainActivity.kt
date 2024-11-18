@@ -2,6 +2,7 @@ package com.ph32395.staynow
 
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
@@ -25,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     private val profileFragment = ProfileFragment()
     private var activeFragment: Fragment = homeFragment
 
-
     private lateinit var userRole: String //Luu vai tro nguoi dung
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +33,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                finishAffinity()
+            }
+        })
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
@@ -85,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
     }
 
 
@@ -164,4 +167,5 @@ class MainActivity : AppCompatActivity() {
             activeFragment = fragment
         }
     }
+
 }
