@@ -58,7 +58,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- Thêm cấu hình cho Google Sign-In -->
-        </activity>
         <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"
@@ -79,8 +78,8 @@
             android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
-            android:exported="true" >
-        </activity>
+            android:exported="true" />
+
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
             android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
