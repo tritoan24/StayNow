@@ -40,7 +40,7 @@ import com.ph32395.staynow.TienNghi.TienNghi
 import com.ph32395.staynow.TienNghi.TienNghiAdapter
 import com.ph32395.staynow.TienNghi.TienNghiViewModel
 import com.ph32395.staynow.databinding.ActivityTaoPhongTroBinding
-import com.ph32395.staynow.fragment.HomeFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
 import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

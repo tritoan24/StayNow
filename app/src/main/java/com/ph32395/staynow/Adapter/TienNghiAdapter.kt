@@ -17,7 +17,7 @@ class TienNghiAdapter (
         parent: ViewGroup,
         viewType: Int
     ): TienNghiViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tien_nghi, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_tien_nghi_chitiet, parent, false)
         return TienNghiViewHolder(view)
     }
 
