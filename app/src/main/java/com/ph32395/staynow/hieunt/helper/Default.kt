@@ -42,6 +42,16 @@ object Default {
         const val NGUOI_DUNG = "NguoiDung"
         const val HO_TEN = "ho_ten"
         const val SO_DIEN_THOAI = "sdt"
+        const val RENTER_ID = "renterId"
+        const val STATUS = "status"
+        const val ROOM_SCHEDULE_ID = "roomScheduleId"
+    }
+
+    object StatusRoom {
+        const val WAIT = 0
+        const val HAVE_NOT_SEEN = 1
+        const val SEEN = 2
+        const val CANCEL = 3
     }
 
 }

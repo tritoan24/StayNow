@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
+import com.ph32395.staynow.hieunt.helper.Default.Collection.RENTER_ID
+import com.ph32395.staynow.hieunt.helper.Default.Collection.ROOM_SCHEDULE_ID
+import com.ph32395.staynow.hieunt.helper.Default.Collection.STATUS
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,21 +31,18 @@ class ManageScheduleRoomVM : ViewModel() {
                 onCompletion.invoke()
             }
         }
-        Log.d("ManageScheduleRoomVM", "filtered: ${_scheduleRoomState.value}")
-        Log.d("ManageScheduleRoomVM", "allValue: ${_allScheduleRoomState.value}")
     }
 
     fun fetchAllScheduleByUser(userId: String, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val querySnapshot = firestore.collection(DAT_PHONG)
-                    .whereEqualTo("renterId", userId)
+                    .whereEqualTo(RENTER_ID, userId)
                     .get()
                     .await()
                 val scheduleRooms = querySnapshot.documents.mapNotNull { document ->
                     document.toObject<ScheduleRoomModel>()
                 }
-                Log.d("ManageScheduleRoomVM", "$scheduleRooms")
                 _allScheduleRoomState.value = scheduleRooms
                 onCompletion.invoke(true)
             } catch (e: Exception) {
@@ -56,7 +56,7 @@ class ManageScheduleRoomVM : ViewModel() {
     fun updateScheduleRoomStatus(roomScheduleId: String, status: Int, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val documentRef = firestore.collection(DAT_PHONG).whereEqualTo("roomScheduleId", roomScheduleId)
+                val documentRef = firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
                 val querySnapshot = documentRef.get().await()
                 if (querySnapshot.isEmpty) {
                     onCompletion.invoke(false)
@@ -64,7 +64,7 @@ class ManageScheduleRoomVM : ViewModel() {
                 }
                 val documentId = querySnapshot.documents.first().id
                 firestore.collection(DAT_PHONG).document(documentId)
-                    .update("status", status)
+                    .update(STATUS, status)
                     .addOnSuccessListener {
                         _allScheduleRoomState.value = _allScheduleRoomState.value.map {
                             if (it.roomScheduleId == roomScheduleId) {

@@ -13,6 +13,7 @@ import com.ph32395.staynow.hieunt.widget.layoutInflate
 import com.ph32395.staynow.hieunt.widget.tap
 
 class RenterManageScheduleRoomAdapter(
+    private val onClickCancel: (ScheduleRoomModel) -> Unit,
     private val onClickConfirm: (ScheduleRoomModel) -> Unit,
     private val onClickDeposited: (ScheduleRoomModel) -> Unit,
     private val onClickWatched: (ScheduleRoomModel) -> Unit,
@@ -22,12 +23,15 @@ class RenterManageScheduleRoomAdapter(
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
             binding.apply {
-                tvNameTenant.text = data.renterName
-                tvNameRoom.text = data.roomName
-                tvPhoneNumber.text = data.renterPhoneNumber
+                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameRoom.text = "Tên phòng: ${data.roomName}"
+                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
                 tvConfirm.tap {
                     onClickConfirm.invoke(data)
+                }
+                tvCancel.tap {
+                    onClickCancel.invoke(data)
                 }
             }
         }
@@ -38,9 +42,9 @@ class RenterManageScheduleRoomAdapter(
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
             binding.apply {
-                tvNameTenant.text = data.renterName
-                tvNameRoom.text = data.roomName
-                tvPhoneNumber.text = data.renterPhoneNumber
+                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameRoom.text = "Tên phòng: ${data.roomName}"
+                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
                 tvDeposited.tap {
                     onClickDeposited.invoke(data)
@@ -56,6 +60,12 @@ class RenterManageScheduleRoomAdapter(
         BaseViewHolder<ScheduleRoomModel, RenterItemRoomSeenBinding>(binding) {
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
+            binding.apply {
+                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameRoom.text = "Tên phòng: ${data.roomName}"
+                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
+                tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
+            }
         }
     }
 
@@ -63,6 +73,12 @@ class RenterManageScheduleRoomAdapter(
         BaseViewHolder<ScheduleRoomModel, RenterItemRoomCanceledBinding>(binding) {
         override fun bindData(data: ScheduleRoomModel) {
             super.bindData(data)
+            binding.apply {
+                tvNameTenant.text = "Người thuê: ${data.renterName}"
+                tvNameRoom.text = "Tên phòng: ${data.roomName}"
+                tvPhoneNumber.text = "SDT: ${data.renterPhoneNumber}"
+                tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
+            }
         }
     }
 
