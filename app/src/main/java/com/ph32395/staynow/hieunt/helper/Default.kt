@@ -43,6 +43,7 @@ object Default {
         const val HO_TEN = "ho_ten"
         const val SO_DIEN_THOAI = "sdt"
         const val RENTER_ID = "renterId"
+        const val TENANT_ID = "tenantId"
         const val STATUS = "status"
         const val ROOM_SCHEDULE_ID = "roomScheduleId"
     }

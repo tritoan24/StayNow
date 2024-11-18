@@ -66,7 +66,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
 
     override fun dataObserver() {
         showLoadingIfNotBaseActivity()
-        viewModel.fetchAllScheduleByUser(FirebaseAuth.getInstance().currentUser?.uid.toString()){
+        viewModel.fetchAllScheduleByRenter(FirebaseAuth.getInstance().currentUser?.uid.toString()){
             viewModel.filerScheduleRoomState(WAIT)
         }
         lifecycleScope.launch {
