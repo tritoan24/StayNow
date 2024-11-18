@@ -14,6 +14,7 @@ import com.ph32395.staynow.hieunt.custom_view.WheelView
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
 import com.ph32395.staynow.hieunt.helper.Default.Collection.HO_TEN
 import com.ph32395.staynow.hieunt.helper.Default.Collection.NGUOI_DUNG
+import com.ph32395.staynow.hieunt.helper.Default.Collection.ROOM_SCHEDULE_ID
 import com.ph32395.staynow.hieunt.helper.Default.Collection.SO_DIEN_THOAI
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
@@ -134,7 +135,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     val roomScheduleData = mapOf(
                         "documentId" to documentId
                     )
-                    FirebaseFirestore.getInstance().collection("ScheduleRoomIds")
+                    FirebaseFirestore.getInstance().collection(ROOM_SCHEDULE_ID)
                         .document(schedule.roomScheduleId)
                         .set(roomScheduleData)
                         .addOnSuccessListener {
