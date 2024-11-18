@@ -57,7 +57,7 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
 
     override fun dataObserver() {
         showLoading()
-        viewModel.fetchAllScheduleByRenter(FirebaseAuth.getInstance().currentUser?.uid.toString()){
+        viewModel.fetchAllScheduleByTenant(FirebaseAuth.getInstance().currentUser?.uid.toString()){
             viewModel.filerScheduleRoomState(WAIT)
         }
         lifecycleScope.launch {

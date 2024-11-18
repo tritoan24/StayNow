@@ -127,16 +127,34 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         onCompletion: (Boolean) -> Unit = {}
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
-            FirebaseFirestore.getInstance().collection(DAT_PHONG).document().set(schedule)
-                .addOnSuccessListener {
-                    onCompletion.invoke(true)
-                }
-                .addOnFailureListener { e ->
-                    onCompletion.invoke(false)
+            try {
+                val documentRef = FirebaseFirestore.getInstance().collection(DAT_PHONG).document()
+                documentRef.set(schedule).addOnSuccessListener {
+                    val documentId = documentRef.id
+                    val roomScheduleData = mapOf(
+                        "documentId" to documentId
+                    )
+                    FirebaseFirestore.getInstance().collection("ScheduleRoomIds")
+                        .document(schedule.roomScheduleId)
+                        .set(roomScheduleData)
+                        .addOnSuccessListener {
+                            onCompletion.invoke(true)
+                        }
+                        .addOnFailureListener { e ->
+                            Log.d("addScheduleRoomToFireStore", "Error saving documentId: ${e.message}")
+                            onCompletion.invoke(false)
+                        }
+                }.addOnFailureListener { e ->
                     Log.d("addScheduleRoomToFireStore", "Error adding document: ${e.message}")
+                    onCompletion.invoke(false)
                 }
+            } catch (e: Exception) {
+                Log.d("addScheduleRoomToFireStore", "Error: ${e.message}")
+                onCompletion.invoke(false)
+            }
         }
     }
+
 
     private fun getAllInfo(onCompletion: (Boolean) -> Unit) {
         lifecycleScope.launch(Dispatchers.IO) {
