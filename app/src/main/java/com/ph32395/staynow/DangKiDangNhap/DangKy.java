@@ -32,6 +32,8 @@ import com.ph32395.staynow.R;
 
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+
+
 public class DangKy extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -85,15 +87,18 @@ public class DangKy extends AppCompatActivity {
         // Khởi tạo RegisterWithGoogle để xử lý đăng nhập với Google
         registerWithGoogle = new RegisterWithGoogle(this);
 
-        // Sự kiện chọn ảnh đại diện
+//        // Sự kiện chọn ảnh đại diện
         img_avatar.setOnClickListener(view ->
                 ImagePicker.with(this)
-                        .crop() // Cắt ảnh (nếu cần)
-                        .compress(1024) // Giới hạn kích thước ảnh (nếu cần)
-                        .maxResultSize(1080, 1080) // Kích thước tối đa của ảnh
+                        .crop()
+                        .compress(1024)
+                        .maxResultSize(1080, 1080)
                         .start()
-
         );
+//
+
+
+        //do anh ra Fa
 
 
         // sự kiện khi ấn vào nút đăng nhập

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+    <!-- Ảnh hiển thị -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_background"
+        android:layout_margin="4dp"/>
+
+    <!-- Nút xoá nằm trong ảnh ở góc trên bên phải -->
+    <ImageView
+        android:id="@+id/deleteButton"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:contentDescription="Delete"
+        android:src="@drawable/remove"
+        android:layout_gravity="end|top"
+        android:layout_margin="8dp"/>
+</FrameLayout>

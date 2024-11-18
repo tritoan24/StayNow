@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:padding="16dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:scrollbars="vertical"
+    android:padding="16dp">
+
+    <!-- Header với nút back và tiêu đề -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thêm phòng trọ"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+
+    <!-- Phần: Thông tin phòng -->
+    <TextView
+        android:id="@+id/sectionInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thông tin phòng"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <!-- Form nhập thông tin phòng -->
+    <Button
+        android:id="@+id/roomAddress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="nhập địa chỉ"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:drawableStart="@drawable/addavatar"
+        app:backgroundTint= "#ffff"
+
+        />
+    <EditText
+        android:id="@+id/roomName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tên/ số nhà *"
+        android:layout_marginTop="8dp" />
+
+
+    <EditText
+        android:id="@+id/roomPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Giá phòng *"
+        android:layout_marginTop="8dp" />
+
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mô tả"
+        android:layout_marginTop="8dp" />
+    <!-- Phần: Thông tin dịch vụ -->
+    <TextView
+        android:id="@+id/sectionServiceInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thông tin dịch vụ"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listViewThongTin"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listViewDichVu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"/>
+
+
+    <ImageButton
+        android:id="@+id/addImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/addavatar"
+        />
+    
+    <!-- Khung chọn hình ảnh -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/imagegeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        />
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listViewGioiTinh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        />
+
+    <!-- RecyclerView for Furniture List -->
+    <TextView
+        android:id="@+id/sectionNoiThat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách nội thất"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"/>
+    <!-- RecyclerView for Furniture List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLoaiPhong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách Tiện Nghi"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+    <TextView
+        android:id="@+id/sectionTienNghi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Danh sách Tiện Nghi"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/RcTienNghi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"/>
+
+
+
+
+
+
+    <!-- Nút Thêm phòng trọ -->
+    <Button
+        android:id="@+id/addRoomButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thêm phòng trọ"
+        android:backgroundTint="@color/purple"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"/>
+
+
+
+
+
+
+</LinearLayout>
+</ScrollView>
+    <FrameLayout
+        android:id="@+id/frameLayoutContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingAnimation"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="gone" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/completionAnimation"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            app:lottie_autoPlay="true"
+            android:visibility="gone" />
+
+    </FrameLayout>
+</RelativeLayout>
