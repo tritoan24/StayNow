@@ -127,14 +127,19 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         onCompletion: (Boolean) -> Unit = {}
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
-            FirebaseFirestore.getInstance().collection(DAT_PHONG).document().set(schedule)
-                .addOnSuccessListener {
+            try {
+                val documentRef = FirebaseFirestore.getInstance().collection(DAT_PHONG).document()
+                val scheduleWithId = schedule.copy(roomScheduleId = documentRef.id)
+                documentRef.set(scheduleWithId).addOnSuccessListener {
                     onCompletion.invoke(true)
-                }
-                .addOnFailureListener { e ->
-                    onCompletion.invoke(false)
+                }.addOnFailureListener { e ->
                     Log.d("addScheduleRoomToFireStore", "Error adding document: ${e.message}")
+                    onCompletion.invoke(false)
                 }
+            } catch (e: Exception) {
+                Log.d("addScheduleRoomToFireStore", "Error: ${e.message}")
+                onCompletion.invoke(false)
+            }
         }
     }
 

@@ -55,7 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tabLayoutHome"
-            android:background="@android:color/transparent" />
+            android:background="@android:color/transparent"
+            />
 
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -23,6 +23,9 @@ import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.BaoMat.DoiMK
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
+import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
+import com.ph32395.staynow.hieunt.widget.launchActivity
+import com.ph32395.staynow.hieunt.widget.tap
 
 class ProfileFragment : Fragment() {
 
@@ -30,6 +33,7 @@ class ProfileFragment : Fragment() {
     private lateinit var userPhoneTextView: TextView
     private lateinit var profileImageView: ImageView
     private lateinit var logoutButton: LinearLayout
+    private lateinit var llScheduleRoom: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
@@ -46,6 +50,7 @@ class ProfileFragment : Fragment() {
         profileImageView = view.findViewById(R.id.profile_image)
         logoutButton = view.findViewById(R.id.LogoutButton)
         nextDoiMK = view.findViewById(R.id.next_caidat)
+        llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -115,6 +120,10 @@ class ProfileFragment : Fragment() {
         nextDoiMK.setOnClickListener {
             startActivity(Intent(requireActivity(),CaiDat::class.java))
             requireActivity().finish()
+        }
+
+        llScheduleRoom.tap {
+            launchActivity(TenantManageScheduleRoomActivity::class.java)
         }
         return view
     }
