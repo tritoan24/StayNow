@@ -6,9 +6,12 @@ import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.replace
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
+import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
+import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.HomeNguoiChoThueFragment
 import com.ph32395.staynow.fragment.home.HomeFragment
@@ -91,9 +94,10 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-        binding.fabSearch.setOnClickListener {
-            startActivity(Intent(this,SearchActivity::class.java))
-        }
+//        Nút FloatingActionButton tim kiem
+//        binding.fabSearch.setOnClickListener {
+//            startActivity(Intent(this,SearchActivity::class.java))
+//        }
     }
 
 
@@ -104,10 +108,27 @@ class MainActivity : AppCompatActivity() {
             val database = FirebaseDatabase.getInstance().getReference("NguoiDung").child(userId)
             database.get().addOnSuccessListener { snapshot ->
                 val role = snapshot.child("loai_taikhoan").getValue(String::class.java)
+                Log.d("MainActivity", "Vai tro nguoi dung tu Firebase: $role")
                 if (role != null) {
-                    userRole = role
-                    // Cập nhật giao diện sau khi lấy vai trò
-                    updateUIForRole()
+//                    Kiem tra loai tai khoan de hien thi
+                    when (role) {
+                        "NguoiChoThue", "NguoiThue" -> {
+                            userRole = role
+//                            Cap nhat giao dien sau khi lay vai tro
+                            Log.d("MainActivity", "Cap nhạt giao dien voi vai tro nguoi dung: $role")
+                            updateUIForRole()
+                        }
+                        "ChuaChon" -> {
+                            Log.d("MainActivity", "Dieu huong den man hinh Chọn Loai Tai Khoan")
+//                            Dieu huong den man hinh chon loai tai khoan
+                            val  intent = Intent(this, ChonLoaiTK::class.java)
+                            startActivity(intent)
+                            finish() //Ket thuc activity hien tai de ngan quay lai
+                        }
+                        else -> {
+                            Log.e("MainActivity", "Vai trò không hợp lệ: $role")
+                        }
+                    }
                 } else {
                     Log.e("MainActivity", "Không lấy được vai trò người dùng.")
                 }
@@ -128,6 +149,13 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.menu.clear()
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu_nguoi_chothue)
 
+//                Cap nhat chuc nang FloatingActionButton
+                binding.fabSearch.setImageResource(R.drawable.icon_add_room) //Thay doi Icon
+                binding.fabSearch.setOnClickListener {
+//                    chuyen sang man hinh them phong tro
+                    startActivity(Intent(this@MainActivity, TaoPhongTro::class.java))
+                }
+
                 // Khởi tạo Fragment nếu chưa được thêm
                 if (!roomManagementFragment.isAdded) {
                     add(R.id.fragment_container, roomManagementFragment, "ROOM_MANAGEMENT").hide(roomManagementFragment)
@@ -146,11 +174,18 @@ class MainActivity : AppCompatActivity() {
                 // Hiển thị Fragment mặc định cho NguoiChoThue
                 show(homeNguoiChoThueFragment)
                 activeFragment = homeNguoiChoThueFragment
+
             }
             // Nếu là NgườiThue
             else if (userRole == "NguoiThue") {
                 binding.bottomNavigation.menu.clear()
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu)
+
+//                Cap nhat FAB search
+                binding.fabSearch.setImageResource(R.drawable.icon_search_bottom)
+                binding.fabSearch.setOnClickListener {
+                    startActivity(Intent(this@MainActivity, SearchActivity::class.java))
+                }
 
                 // Ẩn toàn bộ các Fragment
                 hide(homeNguoiChoThueFragment)
