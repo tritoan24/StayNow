@@ -416,7 +416,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
 
         val Trang_thailuu = if (isSaved) true else false
-        val Trang_thaiduyet = if (isSaved) false else false
+        val Trang_thaiduyet = if (isSaved) "Da duyet" else "Cho duyet"
 
 
         // Tạo danh sách để chứa URL của các ảnh đã tải lên
@@ -469,7 +469,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             description: String,
             imageUrls: List<String>,
             Trang_thailuu: Boolean,
-            Trang_thaiduyet: Boolean,
+            Trang_thaiduyet: String,
             ThoiGian_taophong: Long,
             Ngay_capnhat: Long,
             So_luotxemphong: Int,
