@@ -18,7 +18,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.databinding.ActivityCapNhatViTriBinding
-import com.ph32395.staynow.fragment.HomeFragment
 import java.util.Locale
 
 class CapNhatViTri : AppCompatActivity() {
