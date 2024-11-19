@@ -538,7 +538,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     } else {
                         // Chuyển sang màn hình chọn địa chỉ khi nhấn nút "Đăng"
                         val intent = Intent(this@TaoPhongTro, CapNhatViTri::class.java)
-                        intent.putExtra("PHONG_TRO_ID", maPhongTro) // Truyền ID phòng trọ
+                        intent.putExtra("PHONG_TRO_ID", roomTask.id) // Truyền ID phòng trọ
                         startActivity(intent)
                     }
 
