@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -147,6 +148,9 @@ class RoomDetailActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
+        val progressBar = findViewById<ProgressBar>(R.id.progressBarDetail)
+
+
 //        Quan sat chi tiet phong tro chinh
         viewModel.room.observe(this) { room ->
 //            Cap nhat giao dien thong tin phong tro
@@ -161,6 +165,11 @@ class RoomDetailActivity : AppCompatActivity() {
                 viewPagerAdapter.setImages(it)
                 recyclerViewAdapter.setImages(it)
             }
+        }
+
+        // Hiển thị ProgressBar khi bắt đầu tải dữ liệu
+        viewModel.isLoading.observe(this) { isLoading ->
+            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
 
 //        Quan sat thong tin gioi tinh

@@ -3,13 +3,13 @@
 
         <item
             android:id="@+id/bottom_home_nguoichothue"
-            android:title="Home NCT"
+            android:title="Home"
             android:icon="@drawable/icon_home"/>
 
     <item
         android:id="@+id/bottom_management_room"
-        android:title="Management Room"
-        android:icon="@drawable/icon_management_room"/>
+        android:title="Calendar"
+        android:icon="@drawable/ic_management_lich_hen"/>
 
     <item
         android:id="@+id/bottom_message"
