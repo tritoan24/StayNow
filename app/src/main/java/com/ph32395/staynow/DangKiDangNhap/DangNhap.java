@@ -14,13 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDung;
 import com.ph32395.staynow.R;
@@ -35,7 +39,7 @@ public class DangNhap extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private ImageView img_anhienpass;
 
-
+    FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private static final int RC_SIGN_IN_REGISTER = 9001;
 
     @SuppressLint("MissingInflatedId")
@@ -143,19 +147,40 @@ public class DangNhap extends AppCompatActivity {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
-                    //neu so dien thoai chua co thi hien thi dialog de nhap so dien thoai
+                    String email = user.getEmail();
 
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
-                        startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
-                        startActivity(intent);
+                    // Kiểm tra email đã tồn tại trong Firebase Realtime Database
+                    FirebaseDatabase.getInstance().getReference("NguoiDung")
+                            .orderByChild("email")
+                            .equalTo(email)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // Tài khoản đã tồn tại
+                                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
+                                        startActivity(intent);
+                                    } else {
+
+                            if (user.getPhoneNumber() == null) {
+                                saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
+                                startActivity(intent);
+                            } else {
+                                saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
+                                startActivity(intent);
+                            }
+                        }
                     }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Toast.makeText(DangNhap.this, "Lỗi khi kiểm tra tài khoản: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
+
 
                 @Override
                 public void onSignInFailed(Exception e) {

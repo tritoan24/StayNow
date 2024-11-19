@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,8 +21,11 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -227,22 +231,45 @@ public class DangKy extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (requestCode == RC_SIGN_IN_REGISTER) {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
+                    String email = user.getEmail();
 
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                        startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                        startActivity(intent);
-                    }
+                    // Kiểm tra email đã tồn tại trong Firebase Realtime Database
+                    FirebaseDatabase.getInstance().getReference("NguoiDung")
+                            .orderByChild("email")
+                            .equalTo(email)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // Tài khoản đã tồn tại
+                                        Intent intent = new Intent(DangKy.this, MainActivity.class);
+                                        startActivity(intent);
+                                    } else {
+
+                                        if (user.getPhoneNumber() == null) {
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                            Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
+                                            startActivity(intent);
+                                        } else {
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                            Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Toast.makeText(DangKy.this, "Lỗi khi kiểm tra tài khoản: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
+
 
                 @Override
                 public void onSignInFailed(Exception e) {
@@ -251,6 +278,7 @@ public class DangKy extends AppCompatActivity {
             });
         }
 
+
         // Kiểm tra xem có phải là kết quả chọn ảnh không
         if (resultCode == Activity.RESULT_OK && data != null) {
             avatarUri = data.getData(); // Lưu đường dẫn hình ảnh
@@ -258,7 +286,7 @@ public class DangKy extends AppCompatActivity {
                     .load(avatarUri)
                     .circleCrop()
                     .into(img_avatar);
-            img_avatar.setImageURI(avatarUri); // Hiển thị hình ảnh lên ImageView
+            img_avatar.setImageURI(avatarUri);
         }
     }
 
