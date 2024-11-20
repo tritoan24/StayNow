@@ -1,18 +1,26 @@
 <resources>
-    <string name="app_name">StayNow</string>
+    <string name="app_name" translatable="false">StayNow</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="first_fragment_label" translatable="false">First Fragment</string>
+    <string name="second_fragment_label" translatable="false">Second Fragment</string>
+    <string name="next" translatable="false">Next</string>
+    <string name="previous" translatable="false">Previous</string>
+
+    <!-- Các phần khác trong strings.xml -->
+    <string-array name="gender_options">
+        <item>Nam</item>
+        <item>Nữ</item>
+        <item>Giới tính thứ 3</item>
+    </string-array>
+
 
     <!-- Strings  id update -->
     <string name="default_web_client_id">918655571270-u0aorv0f23meel967mfomasbc5e2ngns.apps.googleusercontent.com</string>
 
-    <string name="lorem_ipsum">
+    <string name="lorem_ipsum" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
         volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
         dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
@@ -48,7 +56,7 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
-    <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature">You must allow all Permission to use this app with full feature.</string>
-    <string name="go_to_setting">Go to setting</string>
-    <string name="t_ph_ng">Đặt phòng</string>
+    <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature" translatable="false">You must allow all Permission to use this app with full feature.</string>
+    <string name="go_to_setting" translatable="false">Go to setting</string>
+    <string name="t_ph_ng" translatable="false">Đặt phòng</string>
 </resources>

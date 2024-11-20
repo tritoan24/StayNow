@@ -107,11 +107,6 @@ dependencies {
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
 
-
-
-
-
-
     //Thu vien khoang gia
     implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
 

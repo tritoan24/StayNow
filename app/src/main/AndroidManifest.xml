@@ -10,24 +10,11 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!--permission location-->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- permission location -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!--
-                 TODO: Before you run your application, you need a Google Maps API key.
-
-                 To get one, follow the directions here:
-
-                    https://developers.google.com/maps/documentation/android-sdk/get-api-key
-
-                 Once you have your API key (it starts with "AIza"), define a new property in your
-                 project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
-                 "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
-            -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -35,13 +22,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
+        <activity
+            android:name=".BaoMat.DoiMK"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.CapNhatThongTin"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+
         <activity
             android:name=".Maps.MapsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />
@@ -50,9 +44,6 @@
             android:exported="false" />
         <activity
             android:name=".BaoMat.QuenMK"
-            android:exported="false" />
-        <activity
-            android:name=".BaoMat.DoiMK"
             android:exported="false" />
         <activity
             android:name=".Activity.FullScreenImageActivity"
@@ -103,11 +94,9 @@
         <activity
             android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
             android:exported="true" />
-
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
             android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
-
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"
             android:value="@string/default_web_client_id" />

@@ -126,8 +126,7 @@
             android:id="@+id/giveOTP"
             android:layout_width="280dp"
             android:layout_height="48dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="50dp"
+           android:layout_margin="50dp"
             android:text="Gửi mã OTP"
             android:background="@drawable/button_background_doimk"
             android:textColor="@android:color/white" />

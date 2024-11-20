@@ -1,6 +1,5 @@
 package com.ph32395.staynow.fragment
 
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +19,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
-import com.ph32395.staynow.BaoMat.DoiMK
+import com.ph32395.staynow.BaoMat.CapNhatThongTin
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
@@ -35,6 +34,7 @@ class ProfileFragment : Fragment() {
     private lateinit var logoutButton: LinearLayout
     private lateinit var llScheduleRoom: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
+    private lateinit var nextUpdate: ImageButton
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
 
@@ -50,6 +50,7 @@ class ProfileFragment : Fragment() {
         profileImageView = view.findViewById(R.id.profile_image)
         logoutButton = view.findViewById(R.id.LogoutButton)
         nextDoiMK = view.findViewById(R.id.next_caidat)
+        nextUpdate = view.findViewById(R.id.next_UpdateInfor)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
@@ -117,6 +118,10 @@ class ProfileFragment : Fragment() {
             requireActivity().finish() // Kết thúc hoạt động hiện tại
         }
 
+        nextUpdate.setOnClickListener{
+            startActivity(Intent(requireActivity(),CapNhatThongTin::class.java))
+            requireActivity().finish()
+        }
         nextDoiMK.setOnClickListener {
             startActivity(Intent(requireActivity(),CaiDat::class.java))
             requireActivity().finish()
