@@ -28,6 +28,7 @@ import com.ph32395.staynow.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow.LoaiPhong.LoaiPhongAdapter
 import com.ph32395.staynow.LoaiPhong.LoaiPhongViewModel
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.NoiThat.GioiTinhAdapter
 import com.ph32395.staynow.NoiThat.NoiThat
 import com.ph32395.staynow.NoiThat.NoiThatAdapter
@@ -96,6 +97,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     var fullAddressDeltail = ""
     var Ma_loaiphong = ""
     var Ma_gioiTinh = ""
+    var TrangThaiPhong = false
 
 
     private lateinit var loadingAnimation: LottieAnimationView
@@ -154,12 +156,15 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
         // Logic khi nhấn nút "Lưu"
         binding.addRoomButton.setOnClickListener {
-            saveRoomToFirestore(isSaved = true)
+            TrangThaiPhong = true
+            // Gọi hàm lưu phòng với trạng thái là "Lưu"
+            saveRoomToFirestore(isSaved = true, trangThaiPhong = TrangThaiPhong)
         }
 
         // Logic khi nhấn nút "Đăng"
         binding.addRoomButton2.setOnClickListener {
-            saveRoomToFirestore(isSaved = false)
+            TrangThaiPhong = false
+            saveRoomToFirestore(isSaved = false, trangThaiPhong = TrangThaiPhong)
         }
 
 
@@ -344,7 +349,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     }
 
-    private fun saveRoomToFirestore(isSaved: Boolean) {
+    private fun saveRoomToFirestore(isSaved: Boolean, trangThaiPhong: Boolean) {
         val roomName = binding.roomName.text.toString()
         val roomPrice = binding.roomPrice.text.toString().toIntOrNull() ?: 0
         val description = binding.description.text.toString()
@@ -414,7 +419,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
 
         val Trang_thailuu = if (isSaved) true else false
-        val Trang_thaiduyet = if (isSaved) "Da duyet" else "Cho duyet"
+        val Trang_thaiduyet = if (isSaved) "" else "Cho duyet"
 
 
         // Tạo danh sách để chứa URL của các ảnh đã tải lên
@@ -449,7 +454,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                                 ThoiGian_taophong,
                                 Ngay_capnhat,
                                 So_luotxemphong,
-                                isSaved
+                                isSaved,
+                                trangThaiPhong
                             )
                         }
                     }
@@ -471,7 +477,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             ThoiGian_taophong: Long,
             Ngay_capnhat: Long,
             So_luotxemphong: Int,
-            isSaved: Boolean
+            isSaved: Boolean,
+            trangThaiPhong: Boolean
         ) {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
@@ -492,7 +499,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                         "ThoiGian_taophong" to ThoiGian_taophong,
                         "Ngay_capnhat" to Ngay_capnhat,
                         "So_luotxemphong" to So_luotxemphong,
-                        "imageUrls" to imageUrls
+                        "imageUrls" to imageUrls,
+                        "Trang_thaiphong" to trangThaiPhong
                     )
 
 
@@ -530,7 +538,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     // Điều hướng sau khi lưu thành công
                     if (isSaved) {
                         // Chuyển sang màn hình Home khi nhấn nút "Lưu phòng"
-                        val intent = Intent(this@TaoPhongTro, HomeFragment::class.java)
+                        val intent = Intent(this@TaoPhongTro, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
