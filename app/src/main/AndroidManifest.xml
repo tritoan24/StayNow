@@ -63,7 +63,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -84,7 +84,7 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"
