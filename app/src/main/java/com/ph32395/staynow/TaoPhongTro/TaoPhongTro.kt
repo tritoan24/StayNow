@@ -130,10 +130,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         binding.listViewDichVu.layoutManager = GridLayoutManager(this, 4)
         binding.listViewThongTin.layoutManager = GridLayoutManager(this, 4)
         binding.imagegeContainer.layoutManager = GridLayoutManager(this, 4)
-        binding.recyclerViewLoaiPhong.layoutManager =
-            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
-        binding.listViewGioiTinh.layoutManager =
-            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.recyclerViewLoaiPhong.layoutManager = GridLayoutManager(this, 4)
+        binding.listViewGioiTinh.layoutManager = GridLayoutManager(this, 3)
 
         // Khởi tạo ViewModel
         noiThatViewModel = ViewModelProvider(this).get(NoiThatViewModel::class.java)

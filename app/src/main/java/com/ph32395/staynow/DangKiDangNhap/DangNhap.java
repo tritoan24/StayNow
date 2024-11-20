@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,19 +31,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ph32395.staynow.BaoMat.QuenMK;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro;
+import com.ph32395.staynow.fragment.home.HomeFragment;
 
 public class DangNhap extends AppCompatActivity {
     private Button btnDangNhap, btnDangNhapGoogle;
-    private TextView txtdangky;
+    private TextView txtdangky,Txtquenmk;
     private EditText edMail, edPass;
     private FirebaseAuth mAuth;
     private RegisterWithGoogle registerWithGoogle;
     private DatabaseReference mDatabase;
     private ImageView img_anhienpass;
+    private CheckBox Cbremember;
 
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private static final int RC_SIGN_IN_REGISTER = 9001;
@@ -55,6 +64,8 @@ public class DangNhap extends AppCompatActivity {
         edPass = findViewById(R.id.password);
         img_anhienpass = findViewById(R.id.img_anhienpass);
         btnDangNhapGoogle = findViewById(R.id.loginWithGGButton);
+        Txtquenmk = findViewById(R.id.Txtquenmk);
+        Cbremember = findViewById(R.id.Cbremember);
 
         // Khởi tạo FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
@@ -63,41 +74,96 @@ public class DangNhap extends AppCompatActivity {
         registerWithGoogle = new RegisterWithGoogle(this);
 
 
+        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+
+        // Load thông tin đã lưu (nếu có)
+        boolean isChecked = prefs.getBoolean("isChecked", false);
+        if (isChecked) {
+            edMail.setText(prefs.getString("email", ""));
+            edPass.setText(prefs.getString("password", ""));
+            Cbremember.setChecked(true);
+        }
+
+        // Lưu thông tin khi checkbox thay đổi
+        Cbremember.setOnCheckedChangeListener((buttonView, isChecked1) -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            if (isChecked1) {
+                editor.putString("email", edMail.getText().toString());
+                editor.putString("password", edPass.getText().toString());
+                editor.putBoolean("isChecked", true);
+            } else {
+                editor.putString("email", "");
+                editor.putString("password", "");
+                editor.putBoolean("isChecked", false);
+            }
+            editor.apply();
+        });
+
         btnDangNhap.setOnClickListener(v -> {
             String email = edMail.getText().toString().trim();
             String password = edPass.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            }
-            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 edMail.setError("Email không hợp lệ");
-            }
-            else {
-                // Đăng nhập bằng Firebase
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this, task -> {
-                            if (task.isSuccessful()) {
-                                // Đăng nhập thành công
-                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Lấy UID của user dựa trên email
+                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                DatabaseReference usersRef = database.getReference("NguoiDung");
 
-                                // Lưu trạng thái đã đăng nhập vào SharedPreferences
-                                SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("is_logged_in", true);
-                                editor.apply();
+                usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                String status = userSnapshot.child("trang_thaitaikhoan").getValue(String.class);
 
-                                startActivity(new Intent(DangNhap.this, MainActivity.class));
-                                finish(); // Đóng màn hình đăng nhập
-                            } else {
-                                showFailureAnimation(task.getException().getMessage());
+                                // Kiểm tra trạng thái tài khoản
+                                if ("HoatDong".equals(status)) {
+                                    // Đăng nhập bằng Firebase Auth
+                                    mAuth.signInWithEmailAndPassword(email, password)
+                                            .addOnCompleteListener(DangNhap.this, task -> {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(DangNhap.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+
+                                                    // Lưu trạng thái đã đăng nhập vào SharedPreferences
+                                                    SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = prefs.edit();
+                                                    editor.putBoolean("is_logged_in", true);
+                                                    editor.apply();
+
+                                                    startActivity(new Intent(DangNhap.this, MainActivity.class));
+                                                    finish(); // Đóng màn hình đăng nhập
+                                                } else {
+                                                    showFailureAnimation("Đăng nhập thất bại");
+                                                }
+                                            });
+                                } else {
+                                    showFailureAnimation("Tài khoản của bạn đã bị khóa");
+
+                                }
                             }
-                        });
+                        } else {
+                            showFailureAnimation("Tài khoản không tồn tại");
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        showFailureAnimation("Lỗi Internet");
+
+                    }
+                });
             }
         });
 
         txtdangky.setOnClickListener(v -> {
             startActivity(new Intent(DangNhap.this, DangKy.class));
+        });
+        Txtquenmk.setOnClickListener(v -> {
+            startActivity(new Intent(DangNhap.this, QuenMK.class));
         });
 
         btnDangNhapGoogle.setOnClickListener(v -> {
@@ -157,37 +223,66 @@ public class DangNhap extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
-                                        // Tài khoản đã tồn tại
-                                        Intent intent = new Intent(DangNhap.this, TaoPhongTro.class);
-                                        startActivity(intent);
-                                    } else {
+                                        // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            String trangThaiTaiKhoan = snapshot.child("trang_thaitaikhoan").getValue(String.class);
 
-                            if (user.getPhoneNumber() == null) {
-                                saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                                Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
-                                startActivity(intent);
-                            } else {
-                                saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                                Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
-                                startActivity(intent);
-                            }
-                        }
-                    }
+                                            // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
+                                            if ("HoatDong".equals(trangThaiTaiKhoan)) {
+                                                // Tiến hành chuyển đến màn hình tiếp theo
+                                                Intent intent = new Intent(DangNhap.this, MainActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                // Tài khoản không hoạt động
+                                                showFailureAnimation("Tài khoản này đã bị khóa");
+
+                                                // Đăng xuất tài khoản Google hiện tại
+                                                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(DangNhap.this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+                                                googleSignInClient.signOut()
+                                                        .addOnCompleteListener(DangNhap.this, new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                // Sau khi đăng xuất thành công, yêu cầu người dùng đăng nhập lại
+                                                                Toast.makeText(DangNhap.this, "Vui lòng chọn tài khoản khác", Toast.LENGTH_SHORT).show();
+                                                                // Chuyển sang màn hình đăng nhập lại
+                                                                Intent intent = new Intent(DangNhap.this, DangNhap.class);
+                                                                startActivity(intent);
+                                                                finish();  // Đảm bảo người dùng không quay lại màn hình trước đó
+                                                            }
+                                                        });
+
+                                            }
+                                        }
+                                    } else {
+                                        // Tài khoản chưa tồn tại, tạo mới
+                                        if (user.getPhoneNumber() == null) {
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                            Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
+                                            startActivity(intent);
+                                        } else {
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                            Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Toast.makeText(DangNhap.this, "Lỗi khi kiểm tra tài khoản: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    showFailureAnimation("Lỗi khi kiểm tra tài khoản");
                                 }
                             });
                 }
 
                 @Override
                 public void onSignInFailed(Exception e) {
-                    Toast.makeText(DangNhap.this, "Đăng nhập với Google thất bại", Toast.LENGTH_SHORT).show();
+                    showFailureAnimation("Đăng nhập thất bại");
                 }
             });
         }
     }
+
 
 
     // Phương thức để hiển thị animation thất bại
@@ -198,7 +293,8 @@ public class DangNhap extends AppCompatActivity {
         dialog.setCancelable(true);
 
         TextView txtThongBao = dialog.findViewById(R.id.text_message);
-        txtThongBao.setText("Đăng nhập thất bại!");
+        txtThongBao.setText(errorMessage);
+
 
         LottieAnimationView animationView = dialog.findViewById(R.id.animation_view);
         animationView.setAnimation("thongbaoloi_animation.json");

@@ -18,6 +18,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -230,7 +235,6 @@ public class DangKy extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if (requestCode == RC_SIGN_IN_REGISTER) {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
@@ -245,11 +249,35 @@ public class DangKy extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
-                                        // Tài khoản đã tồn tại
-                                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                                        startActivity(intent);
-                                    } else {
+                                        // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            String trangThaiTaiKhoan = snapshot.child("trang_thaitaikhoan").getValue(String.class);
 
+                                            // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
+                                            if ("HoatDong".equals(trangThaiTaiKhoan)) {
+                                                // Tiến hành chuyển đến màn hình tiếp theo
+                                                Intent intent = new Intent(DangKy.this, MainActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(DangKy.this, "Tài khoản của bạn đã bị khóa", Toast.LENGTH_SHORT).show();
+                                                // Đăng xuất tài khoản Google hiện tại
+                                                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(DangKy.this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+                                                googleSignInClient.signOut()
+                                                        .addOnCompleteListener(DangKy.this, new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                // Sau khi đăng xuất thành công, yêu cầu người dùng đăng nhập lại
+                                                                Toast.makeText(DangKy.this, "Vui lòng chọn tài khoản khác", Toast.LENGTH_SHORT).show();
+                                                                // Chuyển sang màn hình đăng nhập lại
+                                                                Intent intent = new Intent(DangKy.this, DangKy.class);
+                                                                startActivity(intent);
+                                                                finish();  // Đảm bảo người dùng không quay lại màn hình trước đó
+                                                            }
+                                                        });
+                                            }
+                                        }
+                                    } else {
+                                        // Tài khoản chưa tồn tại, tạo mới
                                         if (user.getPhoneNumber() == null) {
                                             saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
                                             Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
@@ -262,20 +290,21 @@ public class DangKy extends AppCompatActivity {
                                         }
                                     }
                                 }
+
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
-                                    Toast.makeText(DangKy.this, "Lỗi khi kiểm tra tài khoản: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(DangKy.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
 
-
                 @Override
                 public void onSignInFailed(Exception e) {
-                    Toast.makeText(DangKy.this, "Đăng nhập với Google thất bại", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(DangKy.this, "Đăng nhập thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
+
 
 
         // Kiểm tra xem có phải là kết quả chọn ảnh không

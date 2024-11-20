@@ -27,13 +27,12 @@ class GioiTinhAdapter(
 
     override fun onBindViewHolder(holder: GioiTinhViewHolder, position: Int) {
         val gioitinh = gioitinhList[position]
-        holder.bind(gioitinh)
+        holder.bind(gioitinh, position == selectedPosition)
     }
 
     override fun getItemCount(): Int = gioitinhList.size
 
     inner class GioiTinhViewHolder(private val binding: ItemGioitinhBinding) : RecyclerView.ViewHolder(binding.root) {
-        private var isSelected = false // Biến lưu trạng thái chọn
         init {
             binding.root.setOnClickListener {
 
@@ -62,5 +61,12 @@ class GioiTinhAdapter(
             // Set trạng thái selected
             binding.root.isSelected = false
 }
+        fun bind(gioitinh: GioiTinh, isSelected: Boolean) {
+            binding.tenGioiTinh.text = gioitinh.Ten_gioitinh
+            Glide.with(context)
+                .load(gioitinh.ImgUrl_gioitinh)
+                .into(binding.iconGioiTinh)
+            binding.root.isSelected = isSelected
+        }
     }
 }
