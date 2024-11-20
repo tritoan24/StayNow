@@ -40,7 +40,7 @@ android {
 
     buildFeatures {
         viewBinding = true
-//        dataBinding = true
+        dataBinding = true
     }
 
 }
@@ -98,7 +98,7 @@ dependencies {
     //Thư Viện SweetAlertDialog
     implementation ("com.github.f0ris.sweetalert:library:1.6.2")
 
-    implementation("io.github.ParkSangGwon:tedimagepicker:1.2.7")
+    implementation("io.github.ParkSangGwon:tedimagepicker:1.6.1")
 
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
