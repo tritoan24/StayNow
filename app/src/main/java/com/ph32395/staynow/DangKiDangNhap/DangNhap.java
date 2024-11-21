@@ -64,11 +64,9 @@ public class DangNhap extends AppCompatActivity {
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            }
-            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 edMail.setError("Email không hợp lệ");
-            }
-            else {
+            } else {
                 // Đăng nhập bằng Firebase
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
@@ -104,7 +102,7 @@ public class DangNhap extends AppCompatActivity {
         img_anhienpass.setOnClickListener(v -> {
             int cursorPosition = edPass.getSelectionStart();
 
-            if(edPass.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD){
+            if (edPass.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
                 edPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 img_anhienpass.setImageResource(R.drawable.chepass);
             } else {
@@ -117,13 +115,12 @@ public class DangNhap extends AppCompatActivity {
         });
 
 
-
     }
 
     // Hàm lưu thông tin người dùng vào Realtime Database
-    private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien,Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
+    private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-        NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
+        NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
@@ -145,12 +142,12 @@ public class DangNhap extends AppCompatActivity {
                 public void onSignInSuccess(FirebaseUser user) {
                     //neu so dien thoai chua co thi hien thi dialog de nhap so dien thoai
 
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                    if (user.getPhoneNumber() == null) {
+                        saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong",true, System.currentTimeMillis(), System.currentTimeMillis());
                         Intent intent = new Intent(DangNhap.this, MainActivity.class);
                         startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                    } else {
+                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong",true, System.currentTimeMillis(), System.currentTimeMillis());
                         Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(DangNhap.this, MainActivity.class);
                         startActivity(intent);

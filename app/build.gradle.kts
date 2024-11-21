@@ -80,7 +80,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 //Thư viện format tgian tạo phòng trọ
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
-
+//
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
 

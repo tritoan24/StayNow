@@ -5,40 +5,46 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFF"
-    android:gravity="center_horizontal"
     android:layout_marginVertical="20dp"
+    android:background="#FFFFFF"
+    android:gravity="top|center_horizontal"
+    android:orientation="vertical"
     tools:context=".DangKiDangNhap.OTPActivity">
 
-<!--    Hinh anh hoat hoa dau-->
     <ImageView
         android:layout_width="220dp"
         android:layout_height="110dp"
-        android:src="@drawable/icon_otp"/>
+        android:layout_marginTop="40dp"
+        android:src="@drawable/icon_otp"
+        tools:ignore="ContentDescription" />
 
+    <!-- Tiêu đề và mô tả -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
         android:text="Xác minh"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:layout_marginTop="40dp"/>
+        tools:ignore="HardcodedText" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nhập để xác minh tài khoản của bạn"
-        android:textSize="14sp"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:text="Nhập mã được gửi đến email để xác minh tài khoản của bạn"
         android:textColor="#404969"
-        android:layout_marginTop="10dp"/>
+        android:textSize="14sp"
+        tools:ignore="HardcodedText" />
 
-<!--    Truong nhap ma OTP -->
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/edtOtp1"
@@ -49,8 +55,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="1"
+            android:textColor="#333333"
             android:textSize="18sp"
-            android:textColor="#333333"/>
+            tools:ignore="Autofill,LabelFor" />
 
         <EditText
             android:id="@+id/edtOtp2"
@@ -61,8 +68,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="1"
+            android:textColor="#333333"
             android:textSize="18sp"
-            android:textColor="#333333"/>
+            tools:ignore="Autofill,LabelFor" />
 
         <EditText
             android:id="@+id/edtOtp3"
@@ -73,8 +81,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="1"
+            android:textColor="#333333"
             android:textSize="18sp"
-            android:textColor="#333333"/>
+            tools:ignore="Autofill,LabelFor" />
 
         <EditText
             android:id="@+id/edtOtp4"
@@ -85,8 +94,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="1"
+            android:textColor="#333333"
             android:textSize="18sp"
-            android:textColor="#333333"/>
+            tools:ignore="Autofill,LabelFor" />
 
         <EditText
             android:id="@+id/edtOtp5"
@@ -97,8 +107,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="1"
+            android:textColor="#333333"
             android:textSize="18sp"
-            android:textColor="#333333"/>
+            tools:ignore="Autofill,LabelFor" />
 
         <EditText
             android:id="@+id/edtOtp6"
@@ -109,31 +120,55 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="1"
+            android:textColor="#333333"
             android:textSize="18sp"
-            android:textColor="#333333"/>
+            tools:ignore="Autofill,LabelFor" />
 
     </LinearLayout>
 
-<!--    Nút xác nhan-->
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="60dp" />
+
     <Button
+        android:id="@+id/btnOtp"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:id="@+id/btnOtp"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/custom_buttom"
+        android:gravity="center"
         android:text="Xác Nhận"
         android:textSize="16sp"
-        android:layout_marginTop="100dp"
-        android:layout_marginHorizontal="90dp"
-        android:background="@drawable/custom_buttom" />
+        tools:ignore="HardcodedText" />
 
-<!--    Thoi gian gui lai ma OTP-->
-
-    <TextView
-        android:id="@+id/timeOtp"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gui lai ma : 00:50"
-        android:layout_marginTop="10dp"
-        android:textSize="14sp"
-        android:textColor="#FF0000"/>
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnResendOtp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:background="?attr/selectableItemBackground"
+            android:text="Gửi lại mã sau"
+            android:textSize="14sp"
+            android:enabled="false"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/timeOtp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:50"
+            android:textColor="#FF0000"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
 
 </LinearLayout>
