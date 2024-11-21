@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -210,7 +211,16 @@ public class DangKy extends AppCompatActivity {
                         Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(DangKy.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        // Xử lý khi đăng ký thất bại
+                        String errorMessage;
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            // Email đã tồn tại trên hệ thống
+                            errorMessage = "Email này đã được sử dụng. Vui lòng thử email khác!";
+                        } else {
+                            // Các lỗi khác
+                            errorMessage = "Đăng ký thất bại: " + task.getException().getMessage();
+                        }
+                        Toast.makeText(DangKy.this, errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
 
