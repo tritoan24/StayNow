@@ -18,6 +18,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
@@ -115,6 +116,7 @@ class ProfileFragment : Fragment() {
 
         // Xử lý sự kiện nhấn nút đăng xuất
         logoutButton.setOnClickListener {
+            setUserOffline()
             mAuth.signOut() // Đăng xuất Firebase
             // Lưu trạng thái đã đăng nhập vào SharedPreferences
             prefs = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
@@ -123,6 +125,7 @@ class ProfileFragment : Fragment() {
             editor.apply()
             startActivity(Intent(requireActivity(), DangNhap::class.java)) // Quay lại màn hình đăng nhập
             requireActivity().finish() // Kết thúc hoạt động hiện tại
+            activity?.finish()
         }
 
         nextDoiMK.setOnClickListener {
@@ -135,4 +138,21 @@ class ProfileFragment : Fragment() {
         }
         return view
     }
+
+
+    private fun setUserOffline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("offline").addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("MainActivity", "User status set to offline")
+                } else {
+                    Log.e("MainActivity", "Failed to set user status to offline: ${task.exception}")
+                }
+            }
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
 }

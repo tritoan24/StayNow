@@ -89,6 +89,7 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
+
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"

@@ -11,6 +11,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
@@ -241,7 +242,40 @@ class MainActivity : AppCompatActivity() {
             activeFragment = fragment
         }
     }
+    override fun onStart() {
+        super.onStart()
+        setUserOnline()
+    }
 
+    override fun onStop() {
+        super.onStop()
+        setUserOffline()
+    }
+    override fun onPause() {
+        super.onPause()
+        setUserOffline()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        setUserOffline()
+    }
 
+    private fun setUserOnline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("online")
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+    private fun setUserOffline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("offline")
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
 
 }
