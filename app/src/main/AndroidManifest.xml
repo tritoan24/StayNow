@@ -23,15 +23,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.StayNow">
+        android:theme="@style/Theme.StayNow"
+        android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+
         <activity
             android:name=".Maps.MapsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"></activity>
         <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />
@@ -98,6 +98,9 @@
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
             android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
+        <activity
+            android:name=".DangKiDangNhap.OTPActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"

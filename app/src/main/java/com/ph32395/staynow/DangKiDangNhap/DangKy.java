@@ -6,27 +6,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 import com.ph32395.staynow.utils.constants.Constants;
@@ -44,11 +38,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
-
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
-import com.bumptech.glide.request.RequestOptions;
-
 
 public class DangKy extends AppCompatActivity {
 
@@ -209,6 +198,7 @@ public class DangKy extends AppCompatActivity {
                             saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, "https://static.vecteezy.com/system/resources/previews/000/422/862/original/avatar-icon-vector-illustration.jpg", So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
                         }
                         Toast.makeText(DangKy.this, "Đăng ký thành công", Toast.LENGTH_SHORT).show();
+
                         //lấy token request lên server
                         user.getIdToken(true).addOnCompleteListener(tokenTask -> {
                             if (tokenTask.isSuccessful()) {
@@ -218,15 +208,13 @@ public class DangKy extends AppCompatActivity {
 
                                 Intent intent = new Intent(DangKy.this, OTPActivity.class);
                                 intent.putExtra("uid", user.getUid());
+                                intent.putExtra("email", user.getEmail());
                                 startActivity(intent);
                             } else {
                                 Log.d("OTP", "Lỗi lấy token: " + Objects.requireNonNull(tokenTask.getException()).getMessage());
                             }
                         });
 
-
-                        Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
-                        startActivity(intent);
                     } else {
                         Toast.makeText(DangKy.this, "Đăng ký thất bại: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -269,7 +257,6 @@ public class DangKy extends AppCompatActivity {
     // Hàm lưu thông tin người dùng vào Realtime Database
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-       NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
         NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
@@ -290,16 +277,6 @@ public class DangKy extends AppCompatActivity {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
-
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                        startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                        startActivity(intent);
                     if (user.getPhoneNumber() == null) {
                         saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", true, System.currentTimeMillis(), System.currentTimeMillis());
                         user.getIdToken(true).addOnCompleteListener(tokenTask -> {
@@ -327,6 +304,7 @@ public class DangKy extends AppCompatActivity {
 
                                 Intent intent = new Intent(DangKy.this, OTPActivity.class);
                                 intent.putExtra("uid", user.getUid());
+                                intent.putExtra("", user.getEmail());
                                 startActivity(intent);
                             } else {
                                 Log.d("OTP", "Lỗi lấy token: " + Objects.requireNonNull(tokenTask.getException()).getMessage());
@@ -339,7 +317,9 @@ public class DangKy extends AppCompatActivity {
                 public void onSignInFailed(Exception e) {
                     Toast.makeText(DangKy.this, "Đăng nhập với Google thất bại", Toast.LENGTH_SHORT).show();
                 }
+
             });
+
         }
 
         // Kiểm tra xem có phải là kết quả chọn ảnh không

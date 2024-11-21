@@ -1,6 +1,7 @@
 package com.ph32395.staynow.DangKiDangNhap
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
@@ -33,20 +34,22 @@ class OTPActivity : AppCompatActivity() {
 
         binding = ActivityOtpactivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setOtpTextWatcher(binding.edtOtp1, binding.edtOtp2)
-        setOtpTextWatcher(binding.edtOtp2, binding.edtOtp3)
-        setOtpTextWatcher(binding.edtOtp3, binding.edtOtp4)
-        setOtpTextWatcher(binding.edtOtp4, binding.edtOtp5)
-        setOtpTextWatcher(binding.edtOtp5, binding.edtOtp6)
-        setOtpTextWatcher(binding.edtOtp6, null)
+        setOtpTextWatcher(binding.edtOtp1, binding.edtOtp2, null)
+        setOtpTextWatcher(binding.edtOtp2, binding.edtOtp3, binding.edtOtp1)
+        setOtpTextWatcher(binding.edtOtp3, binding.edtOtp4, binding.edtOtp2)
+        setOtpTextWatcher(binding.edtOtp4, binding.edtOtp5, binding.edtOtp3)
+        setOtpTextWatcher(binding.edtOtp5, binding.edtOtp6, binding.edtOtp4)
+        setOtpTextWatcher(binding.edtOtp6, null, binding.edtOtp5)
 
         binding.btnResendOtp.isClickable = false
         binding.btnResendOtp.isEnabled = false
         startTimer()
 
         val uid = intent.getStringExtra("uid") ?: ""
-        binding.btnOtp.setOnClickListener {
+        val email = intent.getStringExtra("email") ?: ""
+        binding.tvEmail.text = email
+
+        binding.btnVerifyOtp.setOnClickListener {
             val otp = getOtpFromInputs()
             if (otp.length == 6) {
                 sendOtpToServer(uid, otp)
@@ -59,6 +62,7 @@ class OTPActivity : AppCompatActivity() {
             startTimer()
         }
     }
+
     // Hàm bắt đầu bộ đếm ngược
     private fun startTimer() {
         // Khởi tạo lại bộ đếm ngược
@@ -72,25 +76,36 @@ class OTPActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                binding.btnResendOtp.isEnabled=true
+                binding.btnResendOtp.isEnabled = true
                 binding.btnResendOtp.isClickable = true
             }
         }
         countDownTimer?.start()  // Bắt đầu bộ đếm ngược
     }
-    // next ô nhập
-    private fun setOtpTextWatcher(currentEditText: EditText, nextEditText: EditText?) {
+
+    private fun setOtpTextWatcher(
+        currentEditText: EditText,
+        nextEditText: EditText?,
+        previousEditText: EditText?
+    ) {
         currentEditText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                // Khi nhập ký tự, focus sang ô tiếp theo
                 if (s?.length == 1 && nextEditText != null) {
                     nextEditText.requestFocus()
+                } else if (s.isNullOrEmpty()) {
+                    previousEditText?.requestFocus()
                 }
             }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
         })
     }
+
 
     // Lấy OTP từ các EditText
     private fun getOtpFromInputs(): String {
@@ -117,7 +132,6 @@ class OTPActivity : AppCompatActivity() {
             "application/json;charset=utf-8".toMediaTypeOrNull(),
             jsonObject.toString()
         )
-
         // Tạo request
         val request = Request.Builder()
             .url("$baseUrl/verify-otp")
@@ -144,6 +158,7 @@ class OTPActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+                    startActivity(Intent(this@OTPActivity, ChonLoaiTK::class.java))
                 } else {
                     runOnUiThread {
                         Toast.makeText(this@OTPActivity, "OTP chưa đúng", Toast.LENGTH_SHORT)
@@ -203,7 +218,7 @@ class OTPActivity : AppCompatActivity() {
     }
 
 
-    }
+}
 
 
 
