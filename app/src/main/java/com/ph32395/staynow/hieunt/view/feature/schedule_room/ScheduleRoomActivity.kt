@@ -1,13 +1,16 @@
 package com.ph32395.staynow.hieunt.view.feature.schedule_room
 
+import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
+import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
 import com.ph32395.staynow.hieunt.custom_view.WheelView
@@ -93,6 +96,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     roomId = roomIdInDetail
                     roomName = roomModel.Ten_phongtro
                     renterId = roomModel.Ma_nguoidung
+                    roomAddress = roomModel.Dia_chichitiet
                     renterName = renterNameByGetInfo
                     renterPhoneNumber = renterPhoneNumberByGetInfo
                     tenantId = FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -107,7 +111,10 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     lifecycleScope.launch(Dispatchers.Main) {
                         dismissLoading()
                         if (isCompletion) {
-                            toast("Successfully")
+                            //chuyển sang màn hình Home
+                            Intent (this@ScheduleRoomActivity, MainActivity::class.java).apply {
+                                startActivity(this)
+                            }
                             finish()
                         } else {
                             toast("Error")
@@ -119,7 +126,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
     }
 
     override fun dataObserver() {
-
+3
     }
 
     private fun addScheduleRoomToFireStore(

@@ -1,7 +1,14 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
 import android.annotation.SuppressLint
+import android.net.Uri
+import android.util.Log
 import android.view.ViewGroup
+import android.widget.Toast
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.RenterItemRoomCanceledBinding
 import com.ph32395.staynow.databinding.RenterItemRoomHaveNotSeenBinding
@@ -12,6 +19,9 @@ import com.ph32395.staynow.hieunt.base.BaseViewHolder
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.widget.layoutInflate
 import com.ph32395.staynow.hieunt.widget.tap
+
+
+
 
 @SuppressLint("SetTextI18n")
 class RenterManageScheduleRoomAdapter(
@@ -31,6 +41,31 @@ class RenterManageScheduleRoomAdapter(
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
                 tvConfirm.tap {
                     onClickConfirm.invoke(data)
+                    val notificationData = hashMapOf(
+                        "title" to "Lịch hẹn đã được xác nhận",
+                        "message" to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
+                        "date" to data.date,
+                        "time" to data.time,
+                        "mapLink" to "geo:0,0?q=${Uri.encode(data.roomAddress)}",
+                        "timestamp" to System.currentTimeMillis()
+                    )
+                    val database = FirebaseDatabase.getInstance()
+                    val thongBaoRef = database.getReference("ThongBao")
+
+                    val userId = data.tenantId
+                    val userThongBaoRef = thongBaoRef.child(userId)
+
+                    val newThongBaoId = userThongBaoRef.push().key
+                    if (newThongBaoId != null) {
+                        userThongBaoRef.child(newThongBaoId).setValue(notificationData)
+                            .addOnSuccessListener {
+                                Toast.makeText(context, "Thông báo đã được lưu!", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener { exception ->
+                                Toast.makeText(context, "Lỗi: ${exception.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+
                 }
                 tvCancel.tap {
                     onClickCancel.invoke(data)
@@ -134,4 +169,7 @@ class RenterManageScheduleRoomAdapter(
             R.layout.renter_item_room_canceled
         }
     }
+
+
+
 }
