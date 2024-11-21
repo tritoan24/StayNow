@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
+            android:name=".BaoMat.ThongTinNguoiDung"
+            android:exported="false" />
+        <activity
             android:name=".BaoMat.DoiMK"
             android:exported="false" />
         <activity

@@ -20,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.BaoMat.CapNhatThongTin
+import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
@@ -119,7 +120,7 @@ class ProfileFragment : Fragment() {
         }
 
         nextUpdate.setOnClickListener{
-            startActivity(Intent(requireActivity(),CapNhatThongTin::class.java))
+            startActivity(Intent(requireActivity(),ThongTinNguoiDung::class.java))
             requireActivity().finish()
         }
         nextDoiMK.setOnClickListener {
