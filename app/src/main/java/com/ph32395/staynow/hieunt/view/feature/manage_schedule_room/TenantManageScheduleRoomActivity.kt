@@ -6,10 +6,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.databinding.ActivityTenantManageScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
-import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CANCEL
-import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.SEEN
+import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CANCELED
+import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WAIT
+import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WATCHED
 import com.ph32395.staynow.hieunt.helper.Default.listScheduleState
+import com.ph32395.staynow.hieunt.view.dialog.UpdateRoomScheduleDialog
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.ScheduleStateAdapter
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.TenantManageScheduleRoomAdapter
 import com.ph32395.staynow.hieunt.view_model.ManageScheduleRoomVM
@@ -37,14 +39,33 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
         }
 
         manageScheduleRoomAdapter = TenantManageScheduleRoomAdapter(
-            onClickCancel = {
-                updateStatusRoom(it.roomScheduleId, CANCEL)
-            },
-            onClickGoToRoom = {
-
-            },
             onClickWatched = {
-                updateStatusRoom(it.roomScheduleId, SEEN)
+                updateStatusRoom(it.roomScheduleId, WATCHED)
+            },
+            onClickCancelSchedule = {
+                updateStatusRoom(it.roomScheduleId, CANCELED)
+            },
+            onClickLeaveSchedule = {
+                UpdateRoomScheduleDialog(it,onClickConfirm = { newTime, newDate ->
+                    showLoading()
+                    viewModel.updateScheduleRoom(it.roomScheduleId, newTime, newDate) { updateSuccess ->
+                        if (updateSuccess) {
+                            viewModel.filerScheduleRoomState(0) {
+                                scheduleStateAdapter?.setSelectedState(0)
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                toast("Có lỗi xảy ra!")
+                            }
+                        }
+                    }
+                }).show(supportFragmentManager, "UpdateRoomScheduleDialog")
+            },
+            onClickConfirm = {
+                updateStatusRoom(it.roomScheduleId, CONFIRMED)
+            },
+            onClickCreateContract = {
+
             }
         )
 
@@ -78,16 +99,16 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
         }
     }
 
-    private fun updateStatusRoom (roomScheduleId: String, status: Int){
+    private fun updateStatusRoom(roomScheduleId: String, status: Int){
         showLoading()
         viewModel.updateScheduleRoomStatus(roomScheduleId, status) { updateSuccess ->
-            if (updateSuccess){
-                viewModel.filerScheduleRoomState(status){
+            if (updateSuccess) {
+                viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
                 }
             } else {
                 lifecycleScope.launch {
-                    toast("Có lỗi khi hủy!")
+                    toast("Có lỗi xảy ra!")
                 }
             }
         }
