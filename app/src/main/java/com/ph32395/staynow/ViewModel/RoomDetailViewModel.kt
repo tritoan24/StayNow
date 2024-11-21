@@ -46,6 +46,9 @@ class RoomDetailViewModel : ViewModel() {
     private val _tienNghiList = MutableLiveData<List<TienNghiModel>>()
     val tienNghiList: LiveData<List<TienNghiModel>> get() = _tienNghiList
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
 //    lay danh sach tien nghi
     fun fetchTienNghi(maPhongTro: String) {
         db.collection("PhongTroTienNghi")
@@ -126,6 +129,7 @@ class RoomDetailViewModel : ViewModel() {
 
 //Lay thong tin chi tiet phong tro
     fun fetchRoomDetail(maPhongTro: String) {
+        _isLoading.value = true //Bat dau tai
         val docRef = db.collection("PhongTro").document(maPhongTro)
         docRef.get()
             .addOnSuccessListener { document ->
@@ -141,6 +145,9 @@ class RoomDetailViewModel : ViewModel() {
             }
             .addOnFailureListener {
                 Log.d("RoomDetailViewModel", "Lỗi khi truy vấn dữ liệu phòng trọ", it)
+            }
+            .addOnCompleteListener {
+                _isLoading.value = false //Ket thuc tai du lieu
             }
     }
 

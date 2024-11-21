@@ -12,16 +12,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ph32395.staynow.MainActivity;
@@ -201,7 +211,16 @@ public class DangKy extends AppCompatActivity {
                         Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
                         startActivity(intent);
                     } else {
-                        Toast.makeText(DangKy.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        // Xử lý khi đăng ký thất bại
+                        String errorMessage;
+                        if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                            // Email đã tồn tại trên hệ thống
+                            errorMessage = "Email này đã được sử dụng. Vui lòng thử email khác!";
+                        } else {
+                            // Các lỗi khác
+                            errorMessage = "Đăng ký thất bại: " + task.getException().getMessage();
+                        }
+                        Toast.makeText(DangKy.this, errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -230,25 +249,73 @@ public class DangKy extends AppCompatActivity {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
+                    String email = user.getEmail();
 
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                        startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangKy.this, MainActivity.class);
-                        startActivity(intent);
-                    }
+                    // Kiểm tra email đã tồn tại trong Firebase Realtime Database
+                    FirebaseDatabase.getInstance().getReference("NguoiDung")
+                            .orderByChild("email")
+                            .equalTo(email)
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            String trangThaiTaiKhoan = snapshot.child("trang_thaitaikhoan").getValue(String.class);
+
+                                            // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
+                                            if ("HoatDong".equals(trangThaiTaiKhoan)) {
+                                                // Tiến hành chuyển đến màn hình tiếp theo
+                                                Intent intent = new Intent(DangKy.this, MainActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                Toast.makeText(DangKy.this, "Tài khoản của bạn đã bị khóa", Toast.LENGTH_SHORT).show();
+                                                // Đăng xuất tài khoản Google hiện tại
+                                                GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(DangKy.this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
+                                                googleSignInClient.signOut()
+                                                        .addOnCompleteListener(DangKy.this, new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                // Sau khi đăng xuất thành công, yêu cầu người dùng đăng nhập lại
+                                                                Toast.makeText(DangKy.this, "Vui lòng chọn tài khoản khác", Toast.LENGTH_SHORT).show();
+                                                                // Chuyển sang màn hình đăng nhập lại
+                                                                Intent intent = new Intent(DangKy.this, DangKy.class);
+                                                                startActivity(intent);
+                                                                finish();  // Đảm bảo người dùng không quay lại màn hình trước đó
+                                                            }
+                                                        });
+                                            }
+                                        }
+                                    } else {
+                                        // Tài khoản chưa tồn tại, tạo mới
+                                        if (user.getPhoneNumber() == null) {
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                            Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
+                                            startActivity(intent);
+                                        } else {
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                                            Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
+                                            startActivity(intent);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    Toast.makeText(DangKy.this, "Đăng nhập thất bại", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
 
                 @Override
                 public void onSignInFailed(Exception e) {
-                    Toast.makeText(DangKy.this, "Đăng nhập với Google thất bại", Toast.LENGTH_SHORT).show();
+                   Toast.makeText(DangKy.this, "Đăng nhập thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
+
+
 
         // Kiểm tra xem có phải là kết quả chọn ảnh không
         if (resultCode == Activity.RESULT_OK && data != null) {
@@ -257,7 +324,7 @@ public class DangKy extends AppCompatActivity {
                     .load(avatarUri)
                     .circleCrop()
                     .into(img_avatar);
-            img_avatar.setImageURI(avatarUri); // Hiển thị hình ảnh lên ImageView
+            img_avatar.setImageURI(avatarUri);
         }
     }
 

@@ -6,13 +6,14 @@
         android:background="@drawable/border_selected"
     android:layout_marginBottom="8dp"
     android:layout_margin="4dp"
+    android:gravity="center"
         android:padding="8dp">
 
         <!-- Hình ảnh nội thất -->
         <ImageView
             android:id="@+id/iconGioiTinh"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_launcher_background"
             />
@@ -23,10 +24,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tên giới tính"
-            android:textSize="16sp"
-            android:layout_marginStart="16dp"
+            android:textSize="12sp"
+            android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"
-            android:textStyle="bold"/>
+            />
 
     </LinearLayout>
 
