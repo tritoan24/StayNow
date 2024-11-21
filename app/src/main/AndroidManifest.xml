@@ -12,6 +12,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <!--permission location-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -20,31 +25,44 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.StayNow">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+        <activity
+            android:name=".Maps.MapsActivity"
+            android:exported="true">
+        </activity>
+        <activity
+            android:name=".BaoMat.Xacminh_OTP"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.CaiDat"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.QuenMK"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.DoiMK"
+            android:exported="false" />
         <activity
             android:name=".Activity.FullScreenImageActivity"
             android:exported="false" />
         <activity
-            android:name=".DangKiDangNhap.OTPActivity"
+            android:name=".ChucNangTimKiem.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CapNhatViTriPhong.CapNhatViTri"
             android:exported="false" />
         <activity
             android:name=".Activity.RoomDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ManGioiThieu.OnboardingActivity"
+            android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".DangKiDangNhap.DangKy"
+            android:name=".hieunt.view.feature.schedule_room.ScheduleRoomActivity"
             android:exported="false"
-            android:theme="@style/Theme.StayNow" />
-        <activity
-            android:name=".ManGioiThieu.OnboardingScreen"
-            android:exported="false" />
-        <activity
-            android:name=".DangKiDangNhap.DangNhap"
-            android:exported="false" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".Activity.SplashActivity"
@@ -55,6 +73,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- Thêm cấu hình cho Google Sign-In -->
+        <activity
+            android:name=".DangKiDangNhap.DangKy"
+            android:exported="false"
+            android:theme="@style/Theme.StayNow" />
+        <activity
+            android:name=".DangKiDangNhap.DangNhap"
+            android:exported="false"
+            android:theme="@style/Theme.StayNow" />
+        <activity
+            android:name=".ManGioiThieu.OnboardingActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.ChonLoaiTK"
+            android:exported="false" />
+        <activity
+            android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".TaoPhongTro.TaoPhongTro"
+            android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
+
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"
             android:value="@string/default_web_client_id" />

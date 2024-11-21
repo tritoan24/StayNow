@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,17 +14,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.ph32395.staynow.ChucNangChung.ImageUploader;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
@@ -42,6 +44,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 
 
 public class DangKy extends AppCompatActivity {
@@ -89,22 +95,25 @@ public class DangKy extends AppCompatActivity {
         String Ngay_taotaikhoan = String.valueOf(System.currentTimeMillis());
         String Ngay_capnhat = String.valueOf(System.currentTimeMillis());
         Integer So_luotdatlich = 0;
-        String Loai_taikhoan = "NguoiThue";
+        String Loai_taikhoan = "ChuaChon";
         String Trang_thaitaikhoan = "HoatDong";
 
 
         // Khởi tạo RegisterWithGoogle để xử lý đăng nhập với Google
         registerWithGoogle = new RegisterWithGoogle(this);
 
-        // Sự kiện chọn ảnh đại diện
+//        // Sự kiện chọn ảnh đại diện
         img_avatar.setOnClickListener(view ->
                 ImagePicker.with(this)
-                        .crop() // Cắt ảnh (nếu cần)
-                        .compress(1024) // Giới hạn kích thước ảnh (nếu cần)
-                        .maxResultSize(1080, 1080) // Kích thước tối đa của ảnh
+                        .crop()
+                        .compress(1024)
+                        .maxResultSize(1080, 1080)
                         .start()
-
         );
+//
+
+
+        //do anh ra Fa
 
         // sự kiện khi ấn vào nút đăng nhập
         txtdangnhap.setOnClickListener(view -> {
@@ -183,8 +192,8 @@ public class DangKy extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         // Tải ảnh lên Firebase Storage sau khi đăng ký thành công
                         if (avatarUri != null) {
-                            ImageUploader imageUploader = new ImageUploader();
-                            imageUploader.uploadImage(avatarUri, user.getUid(), new ImageUploader.UploadCallback() {
+                            com.ph32395.staynow.Utils.ImageUploader imageUploader = new com.ph32395.staynow.Utils.ImageUploader();
+                            imageUploader.uploadImage(avatarUri, user.getUid(), new com.ph32395.staynow.Utils.ImageUploader.UploadCallback() {
                                 @Override
                                 public void onSuccess(String imageUrl) {
                                     // Lưu thông tin người dùng với URL ảnh
@@ -216,6 +225,8 @@ public class DangKy extends AppCompatActivity {
                         });
 
 
+                        Intent intent = new Intent(DangKy.this, ChonLoaiTK.class);
+                        startActivity(intent);
                     } else {
                         Toast.makeText(DangKy.this, "Đăng ký thất bại: " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -258,6 +269,7 @@ public class DangKy extends AppCompatActivity {
     // Hàm lưu thông tin người dùng vào Realtime Database
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
+       NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, Ngay_taotaikhoan, Ngay_capnhat);
         NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
@@ -279,6 +291,15 @@ public class DangKy extends AppCompatActivity {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
 
+                    if(user.getPhoneNumber() == null){
+                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                        Intent intent = new Intent(DangKy.this, MainActivity.class);
+                        startActivity(intent);
+                    }else {
+                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
+                        Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(DangKy.this, MainActivity.class);
+                        startActivity(intent);
                     if (user.getPhoneNumber() == null) {
                         saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", true, System.currentTimeMillis(), System.currentTimeMillis());
                         user.getIdToken(true).addOnCompleteListener(tokenTask -> {

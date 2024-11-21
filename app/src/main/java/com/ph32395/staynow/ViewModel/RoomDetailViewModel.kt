@@ -46,6 +46,9 @@ class RoomDetailViewModel : ViewModel() {
     private val _tienNghiList = MutableLiveData<List<TienNghiModel>>()
     val tienNghiList: LiveData<List<TienNghiModel>> get() = _tienNghiList
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
 //    lay danh sach tien nghi
     fun fetchTienNghi(maPhongTro: String) {
         db.collection("PhongTroTienNghi")
@@ -126,14 +129,14 @@ class RoomDetailViewModel : ViewModel() {
 
 //Lay thong tin chi tiet phong tro
     fun fetchRoomDetail(maPhongTro: String) {
+        _isLoading.value = true //Bat dau tai
         val docRef = db.collection("PhongTro").document(maPhongTro)
-
         docRef.get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     document.toObject(PhongTroModel::class.java)?.let { room ->
                         _room.value = room
-
+                        Log.d("fetchRoomDetail", "room: $room")
                         fetchAdditionalInfo(room)
                     }
                 } else {
@@ -142,6 +145,9 @@ class RoomDetailViewModel : ViewModel() {
             }
             .addOnFailureListener {
                 Log.d("RoomDetailViewModel", "Lỗi khi truy vấn dữ liệu phòng trọ", it)
+            }
+            .addOnCompleteListener {
+                _isLoading.value = false //Ket thuc tai du lieu
             }
     }
 
@@ -171,8 +177,8 @@ class RoomDetailViewModel : ViewModel() {
         }
 
 //        Truy van thong tin nguoi dung tu Ma_nguoidung
-        room.Ma_nguoidung?.let { maNguoiDung ->
-            realtimeDb.child("NguoiDung").child(maNguoiDung)
+        room.Ma_nguoidung.let { maChuTro ->
+            realtimeDb.child("NguoiDung").child(maChuTro)
                 .get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot?.let {

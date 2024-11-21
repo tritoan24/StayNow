@@ -1,0 +1,8 @@
+<!-- res/drawable/button_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#552dc9"/> <!-- Màu nền của nút -->
+    <corners
+        android:topLeftRadius="16dp"
+        android:bottomLeftRadius="16dp"
+        android:bottomRightRadius="16dp"/>
+</shape>

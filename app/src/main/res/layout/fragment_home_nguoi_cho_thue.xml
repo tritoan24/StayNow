@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/swipeLayoutChuTro"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.home_chu_tro.HomeNguoiChoThueFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_bg">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/imageSliderChuTro"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                app:iss_auto_cycle="true"
+                app:iss_corner_radius="5"
+                app:iss_period="3000" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewChuTro"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="150dp"
+                android:elevation="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="18dp">
+
+                <include
+                    android:id="@+id/view_location_search"
+                    layout="@layout/view_location_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp" />
+
+                <view
+                    class="com.ph32395.staynow.view.ItemTaoChuTro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="80dp"
+                    tools:ignore="MissingClass" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewQuanLy"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_below="@+id/cardViewChuTro"
+                android:elevation="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Quản lý cho thuê"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="20dp"/>
+
+                <view
+                    class="com.ph32395.staynow.view.ItemQuanLyView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="35dp"
+                    tools:ignore="MissingClass" />
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/txtDoiTac"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đôi tác StayNow"
+                android:layout_below="@id/cardViewQuanLy"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="20dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewDoiTac"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txtDoiTac"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:layout_marginHorizontal="20dp"
+                tools:listitem="@layout/item_room_doi_tac"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
