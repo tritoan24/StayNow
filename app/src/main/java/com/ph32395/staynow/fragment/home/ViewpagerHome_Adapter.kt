@@ -13,5 +13,6 @@ class ViewPagerHomeAdapter(fragment: Fragment, private val categories: List<Loai
         val category = categories[position].Ma_loaiphong
         return HomeTabFragment.newInstance(category)
     }
+
 }
 

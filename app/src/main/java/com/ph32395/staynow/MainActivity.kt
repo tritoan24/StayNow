@@ -1,23 +1,30 @@
 package com.ph32395.staynow
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
+import com.ph32395.staynow.fragment.HomeNguoiChoThueFragment
 import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
 import com.ph32395.staynow.fragment.home.HomeFragment
 import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
 import com.ph32395.staynow.fragment.RoomManagementFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -30,6 +37,9 @@ class MainActivity : AppCompatActivity() {
     private val profileFragment = ProfileFragment()
     private var activeFragment: Fragment = homeFragment
 
+    private val mDatabase = FirebaseDatabase.getInstance().reference
+    private val currentUser = FirebaseAuth.getInstance().currentUser
+
     private lateinit var userRole: String //Luu vai tro nguoi dung
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,11 +47,39 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        FirebaseMessaging.getInstance().getToken()
+            .addOnCompleteListener(
+                object : OnCompleteListener<String?> {
+                    override fun onComplete(task: Task<String?>) {
+                        if (!task.isSuccessful) {
+                            Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                            return
+                        }
+
+                        // Get new FCM registration token
+                        val token = task.result
+
+                        //lưu token này vào database
+                        if (currentUser != null) {
+                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
+                                .setValue(token)
+
+
+                        }
+                        //nếu không có người dùng nào đăng nhập thì không lưu token
+
+                    }
+                })
+
+
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
             }
         })
+
+
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
@@ -93,6 +131,10 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+//        Nút FloatingActionButton tim kiem
+//        binding.fabSearch.setOnClickListener {
+//            startActivity(Intent(this,SearchActivity::class.java))
+//        }
     }
 
 
@@ -200,6 +242,41 @@ class MainActivity : AppCompatActivity() {
                 show(fragment)       // Hiển thị Fragment mới
             }.commit()
             activeFragment = fragment
+        }
+    }
+    override fun onStart() {
+        super.onStart()
+        setUserOnline()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setUserOffline()
+    }
+    override fun onPause() {
+        super.onPause()
+        setUserOffline()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        setUserOffline()
+    }
+
+    private fun setUserOnline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("online")
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+    private fun setUserOffline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("offline")
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
         }
     }
 
