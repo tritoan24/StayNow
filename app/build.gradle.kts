@@ -109,10 +109,6 @@ dependencies {
     //Thu vien khoang gia
     implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
 
-    // Firebase Cloud Messaging
-    implementation("com.google.firebase:firebase-messaging:24.1.0")
-    // Thư viện Volley
-    implementation("com.android.volley:volley:1.2.1")
 
 
 }

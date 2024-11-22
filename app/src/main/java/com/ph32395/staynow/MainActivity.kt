@@ -12,7 +12,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
-import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
@@ -44,31 +43,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(
-                object : OnCompleteListener<String?> {
-                    override fun onComplete(task: Task<String?>) {
-                        if (!task.isSuccessful) {
-                            Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
-                            return
-                        }
-
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        //lưu token này vào database
-                        if (currentUser != null) {
-                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-                                .setValue(token)
-
-
-                        }
-                        //nếu không có người dùng nào đăng nhập thì không lưu token
-
-                    }
-                })
 
 
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {

@@ -191,13 +191,21 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayoutInfor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/roomRecyclerView"
-            android:padding="8dp"
-            android:clipToPadding="false"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginTop="5dp"
+            app:tabRippleColor="@android:color/transparent" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewInfor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tabLayoutHome"
+            android:background="@android:color/transparent"
+            />
+
     </LinearLayout>
 
 

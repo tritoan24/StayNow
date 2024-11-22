@@ -36,6 +36,9 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".BaoMat.ThongTinNguoiDung"
+            android:exported="false" />
+        <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />
         <activity

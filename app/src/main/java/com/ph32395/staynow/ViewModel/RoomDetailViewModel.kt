@@ -31,6 +31,11 @@ class RoomDetailViewModel : ViewModel() {
     private val _userInfo = MutableLiveData<Pair<String, String>>()
     val userInfo: LiveData<Pair<String, String>> get() = _userInfo
 
+    // paste
+
+    private val _userId = MutableLiveData<Pair<String, String>>()
+    val userId: LiveData<Pair<String, String>> get() = _userId
+
     private val _roomStatus = MutableLiveData<String>()
     val roomStatus: LiveData<String> get() = _roomStatus
 
@@ -48,6 +53,7 @@ class RoomDetailViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
+
 
 //    lay danh sach tien nghi
     fun fetchTienNghi(maPhongTro: String) {
@@ -184,6 +190,8 @@ class RoomDetailViewModel : ViewModel() {
                     dataSnapshot?.let {
                         val anhDaiDien = it.child("anh_daidien").value as? String ?: ""
                         val hoTen = it.child("ho_ten").value as? String ?: ""
+                        val ma_NguoiDung = room.Ma_nguoidung
+                        _userId.value = Pair(ma_NguoiDung,hoTen)
                         _userInfo.value = Pair(anhDaiDien, hoTen)
                     }
                 }

@@ -1,5 +1,6 @@
 package com.ph32395.staynow.Activity
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +24,7 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
@@ -47,8 +50,6 @@ class RoomDetailActivity : AppCompatActivity() {
             finish() //Quay lai man hinh truoc
         }
 
-
-
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
 
@@ -64,6 +65,18 @@ class RoomDetailActivity : AppCompatActivity() {
                 ScheduleRoomActivity::class.java
             )
         }
+
+
+        // Nút chi tiết
+        findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
+            val intent = Intent(this@RoomDetailActivity,ThongTinNguoiDung::class.java)
+            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
+                intent.putExtra("idUser",ma_NguoiDung)
+            }
+            startActivity(intent)
+            finish()
+        }
+
 //        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())

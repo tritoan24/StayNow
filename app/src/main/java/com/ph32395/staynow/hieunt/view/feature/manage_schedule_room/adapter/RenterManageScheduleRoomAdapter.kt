@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.RemoteMessage
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.RenterItemRoomCanceledBinding
 import com.ph32395.staynow.databinding.RenterItemRoomHaveNotSeenBinding

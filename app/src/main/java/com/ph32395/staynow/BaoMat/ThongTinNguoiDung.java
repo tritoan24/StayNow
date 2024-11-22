@@ -2,12 +2,14 @@ package com.ph32395.staynow.BaoMat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,15 +28,20 @@ import com.ph32395.staynow.fragment.home.PhongTroAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import kotlin.Pair;
+
 public class ThongTinNguoiDung extends AppCompatActivity {
 
     private ImageView imgInfor;
     private TextView nameInfor;
     private TextView phoneInfor;
     private TextView emailInfor;
-    private RecyclerView rc_Item;
+    private ViewPager2 rc_Item;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+
+    private HomeViewModel homeViewModel; // Khai báo ViewModel
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +53,11 @@ public class ThongTinNguoiDung extends AppCompatActivity {
         nameInfor = findViewById(R.id.infor_name);
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
-        rc_Item = findViewById(R.id.roomRecyclerView);
-
-        // Khởi tạo Firebase Auth và Database Reference
-        mAuth = FirebaseAuth.getInstance();
+        rc_Item = findViewById(R.id.viewInfor);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // Lấy UID của người dùng hiện tại
-        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
-        Log.d("ThongTinNguoiDung", "UID: " + userId);
 
+        String userId = getIntent().getStringExtra("idUser");
         // Kiểm tra nếu người dùng đã đăng nhập
         if (userId != null) {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -94,7 +96,6 @@ public class ThongTinNguoiDung extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    // Log lỗi nếu xảy ra vấn đề với Firebase
                     Log.e("ThongTinNguoiDung", "Lỗi khi lấy dữ liệu người dùng: " + error.getMessage());
                 }
             });
@@ -102,6 +103,8 @@ public class ThongTinNguoiDung extends AppCompatActivity {
             Log.e("ThongTinNguoiDung", "Người dùng chưa đăng nhập.");
         }
     }
+
+
 
     // Hàm che số điện thoại
     private String maskPhone(String phone) {
@@ -122,6 +125,5 @@ public class ThongTinNguoiDung extends AppCompatActivity {
         }
         return email.substring(0, 3) + "*****" + email.substring(atIndex);
     }
-
 
 }
