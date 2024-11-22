@@ -22,8 +22,10 @@ import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
+import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 
@@ -57,8 +59,6 @@ class ProfileFragment : Fragment() {
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance().reference
-
-
 
         // Lấy UID của người dùng đã đăng nhập
         val userId = mAuth.currentUser?.uid

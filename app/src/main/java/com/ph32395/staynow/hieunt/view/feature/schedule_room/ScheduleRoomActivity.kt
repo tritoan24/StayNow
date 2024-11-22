@@ -1,6 +1,5 @@
 package com.ph32395.staynow.hieunt.view.feature.schedule_room
 
-import android.content.Intent
 import android.graphics.Color
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
@@ -10,7 +9,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
-import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
 import com.ph32395.staynow.hieunt.custom_view.WheelView
@@ -24,6 +22,7 @@ import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.view_model.CommonVM
 import com.ph32395.staynow.hieunt.widget.currentBundle
 import com.ph32395.staynow.hieunt.widget.getTextEx
+import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.hieunt.widget.toast
 import devs.mulham.horizontalcalendar.HorizontalCalendar
@@ -57,7 +56,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         return ActivityScheduleRoomBinding.inflate(layoutInflater)
     }
 
-    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
+    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java    
 
     override fun initView() {
         roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
@@ -111,10 +110,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     lifecycleScope.launch(Dispatchers.Main) {
                         dismissLoading()
                         if (isCompletion) {
-                            //chuyển sang màn hình Home
-                            Intent (this@ScheduleRoomActivity, MainActivity::class.java).apply {
-                                startActivity(this)
-                            }
+                            launchActivity(MainActivity::class.java)
                             finish()
                         } else {
                             toast("Error")
@@ -126,7 +122,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
     }
 
     override fun dataObserver() {
-3
+
     }
 
     private fun addScheduleRoomToFireStore(

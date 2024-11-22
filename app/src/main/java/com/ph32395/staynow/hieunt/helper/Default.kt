@@ -18,8 +18,8 @@ object Default {
 
     val listScheduleState = mutableListOf<ScheduleStateModel>().apply {
         add(ScheduleStateModel("Chờ xác nhận", true))
-        add(ScheduleStateModel("Chưa xem phòng", false))
-        add(ScheduleStateModel("Đã xem phòng", false))
+        add(ScheduleStateModel("Đã xác nhận", false))
+        add(ScheduleStateModel("Đã xem", false))
         add(ScheduleStateModel("Đã hủy", false))
     }
 
@@ -46,14 +46,17 @@ object Default {
         const val RENTER_ID = "renterId"
         const val TENANT_ID = "tenantId"
         const val STATUS = "status"
+        const val DATE = "date"
+        const val TIME = "time"
+        const val CHANGED_SCHEDULE_BY_RENTER = "changedScheduleByRenter"
         const val ROOM_SCHEDULE_ID = "roomScheduleId"
     }
 
     object StatusRoom {
         const val WAIT = 0
-        const val HAVE_NOT_SEEN = 1
-        const val SEEN = 2
-        const val CANCEL = 3
+        const val CONFIRMED = 1
+        const val WATCHED = 2
+        const val CANCELED = 3
     }
 
 }
