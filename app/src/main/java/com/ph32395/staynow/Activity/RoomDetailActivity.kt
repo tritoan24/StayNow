@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -39,6 +40,7 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var phiDichVuAdapter: PhiDichVuAdapter
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var tienNghiAdapter: TienNghiAdapter
+    private var ManHome = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +57,8 @@ class RoomDetailActivity : AppCompatActivity() {
 
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+         ManHome = intent.getStringExtra("ManHome") ?: ""
+
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
             launchActivity(
@@ -162,10 +166,21 @@ class RoomDetailActivity : AppCompatActivity() {
                 "${String.format("%,.0f", room.Gia_phong)} VND"
             findViewById<TextView>(R.id.txtChiTietThem).text = room.Mota_chitiet
 
-//            log thong tin trang thai ra
-            Log.d("RoomDetailActivity", "Trang thai duyet: ${room.Trang_thaiduyet}")
-            Log.d("RoomDetailActivity", "Trang thai luu: ${room.Trang_thailuu}")
-            Log.d("RoomDetailActivity", "Trang thai phong: ${room.Trang_thaiphong}")
+            val trangThaiDuyet = room.Trang_thaiduyet
+            val trangThaiLuu = room.Trang_thailuu
+            val trangThaiPhong = room.Trang_thaiphong
+
+
+            //tritoan code dựa vào 3 trạng thái này để hiển thị botton của phòng trọ
+            if(ManHome == "Home") {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
+            }else if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+            }else if(trangThaiLuu == true) {
+                findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
+            }else if(trangThaiDuyet == "BiHuy") {
+                findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
+            }
 
 //            Cap nhat hinh anh
             room.imageUrls?.let {

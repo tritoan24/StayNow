@@ -47,6 +47,9 @@
             android:name=".BaoMat.DoiMK"
             android:exported="false" />
         <activity
+            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.FullScreenImageActivity"
             android:exported="false" />
         <activity
