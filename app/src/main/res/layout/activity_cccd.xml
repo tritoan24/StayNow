@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="#000000"
+        android:layout_alignParentTop="true"
+        >
+        <ImageButton
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/arrow_back"
+            android:background="@android:color/transparent"
+            android:onClick="back"
+            android:layout_gravity="center_vertical"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Quét mã QR"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="16dp"
+            />
+    </LinearLayout>
+
+    <!-- Camera preview -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraPreview"
+        android:layout_width="match_parent"
+        android:layout_below="@+id/topBar"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+    <!-- QR scanning frame -->
+    <View
+        android:id="@+id/scanFrame"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/qr_frame_overlay" />
+
+    <!-- Instruction text -->
+    <TextView
+        android:id="@+id/instructionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scanFrame"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Di chuyển camera đến vùng chứa mã QR để quét"
+        android:textColor="#FFFFFF"
+        android:textSize="13sp"
+        android:textStyle="italic"
+        android:padding="8dp" />
+
+    <!-- Bottom buttons -->
+    <LinearLayout
+        android:id="@+id/bottomButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#99000000"
+        android:padding="16dp">
+
+
+        <Space
+            android:layout_width="18dp"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/chooseImageButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Quét ảnh có sẵn"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/cardview_border"
+
+            android:padding="12dp" />
+    </LinearLayout>
+</RelativeLayout>
