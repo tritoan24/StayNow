@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment.home_chu_tro
 
+import android.app.Notification
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,8 +14,11 @@ import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.R
+import com.ph32395.staynow.ThongBao.NotificationActivity
+import com.ph32395.staynow.ThongBao.NotificationViewModel
 import com.ph32395.staynow.databinding.FragmentHomeBinding
 import com.ph32395.staynow.databinding.FragmentHomeNguoiChoThueBinding
+import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.home.HomeViewModel
 
 class HomeNguoiChoThueFragment : Fragment() {
@@ -24,6 +28,8 @@ class HomeNguoiChoThueFragment : Fragment() {
     private lateinit var swipeFresh: SwipeRefreshLayout // keo de lam moiw noi dung
     private lateinit var imageSliderChuTro: ImageSlider
     private lateinit var roomNguoiChoThueAdapter: RoomNguoiChoThueAdapter
+    private val notificationViewModel: NotificationViewModel by activityViewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +40,21 @@ class HomeNguoiChoThueFragment : Fragment() {
         binding = FragmentHomeNguoiChoThueBinding.inflate(inflater, container, false)
         swipeFresh = binding.swipeLayoutChuTro
         imageSliderChuTro = binding.imageSliderChuTro
+
+        //tritoan code thong bao
+        binding.fNotification.setOnClickListener {
+            startActivity(Intent(context, NotificationActivity::class.java))
+        }
+        // Quan sát số lượng thông báo chưa đọc
+        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
+            if (count > 0) {
+                binding.notificationBadge.text = count.toString()
+                binding.notificationBadge.visibility = View.VISIBLE
+            } else {
+                binding.notificationBadge.visibility = View.GONE
+            }
+        }
+
 
 //        Khoi tao recyclerView
         setupRecyclerView()
@@ -81,6 +102,7 @@ class HomeNguoiChoThueFragment : Fragment() {
         homeViewModel.updateRoomListWithCoroutines()
         swipeFresh.isRefreshing = false //tat hieu ung lam moi khi du lieu duoc tai xong
     }
+
 
 
 }

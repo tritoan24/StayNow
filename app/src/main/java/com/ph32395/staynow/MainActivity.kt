@@ -17,9 +17,7 @@ import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
-import com.ph32395.staynow.fragment.HomeNguoiChoThueFragment
 import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
-import com.ph32395.staynow.fragment.home.HomeFragment
 import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
@@ -220,6 +218,8 @@ class MainActivity : AppCompatActivity() {
             activeFragment = fragment
         }
     }
+
+
     override fun onStart() {
         super.onStart()
         setUserOnline()
@@ -238,6 +238,7 @@ class MainActivity : AppCompatActivity() {
         setUserOffline()
     }
 
+
     private fun setUserOnline() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
@@ -253,6 +254,15 @@ class MainActivity : AppCompatActivity() {
             val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
             userRef.child("status").setValue("offline")
             userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+//nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
         }
     }
 
