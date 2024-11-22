@@ -232,22 +232,6 @@ public class DangKy extends AppCompatActivity {
                 });
     }
 
-    private void uploadImageFromDrawable(int drawableResId, StorageReference storageReference) {
-        // Tạo URI từ tài nguyên drawable
-        Uri drawableUri = Uri.parse("android.resource://" + getPackageName() + "/" + drawableResId);
-
-        // Upload file lên Firebase Storage
-        storageReference.putFile(drawableUri)
-                .addOnSuccessListener(taskSnapshot -> {
-                    // Upload thành công
-                    Toast.makeText(this, "Upload thành công!", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    // Upload thất bại
-                    Toast.makeText(this, "Upload thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
     //hàm gửi token đến server
     private void sendTokenToServer(String token) {
         OkHttpClient client = new OkHttpClient();
