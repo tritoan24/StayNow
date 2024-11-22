@@ -74,17 +74,12 @@ public class DangNhap extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
                             if (task.isSuccessful()) {
-                                // Đăng nhập thành công
-                                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
-                                // Lưu trạng thái đã đăng nhập vào SharedPreferences
-                                SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("is_logged_in", true);
-                                editor.apply();
-
-                                startActivity(new Intent(DangNhap.this, MainActivity.class));
-                                finish(); // Đóng màn hình đăng nhập
+//                                lay ma nguoi dung khi dang nhap
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null) {
+                                    handleUserLogin(user);
+                                }
                             } else {
                                 showFailureAnimation(task.getException().getMessage());
                             }
@@ -121,6 +116,43 @@ public class DangNhap extends AppCompatActivity {
 
     }
 
+//    xu ly lay Id khi dang nhap
+    private void handleUserLogin(FirebaseUser user) {
+        String userId = user.getUid();
+
+        mDatabase.child("NguoiDung").child(userId).get().addOnCompleteListener(snapshotTask -> {
+            if (snapshotTask.isSuccessful() && snapshotTask.getResult().exists()) {
+                // Lấy thông tin người dùng
+                Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+            } else {
+                // Thông tin chưa tồn tại, lưu vào Realtime Database
+                saveUserInfo(
+                        userId,
+                        user.getDisplayName(),
+                        user.getPhoneNumber() != null ? user.getPhoneNumber() : "Chưa có",
+                        user.getEmail(),
+                        String.valueOf(user.getPhotoUrl()),
+                        0,
+                        "NguoiThue",
+                        "HoatDong",
+                        System.currentTimeMillis(),
+                        System.currentTimeMillis()
+                );
+            }
+
+            // Lưu `Ma_nguoidung` vào SharedPreferences
+            SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("is_logged_in", true);
+            editor.putString("Ma_nguoidung", userId); // Lưu Ma_nguoidung
+            editor.apply();
+
+            // Chuyển đến màn hình chính
+            startActivity(new Intent(DangNhap.this, MainActivity.class));
+            finish();
+        });
+    }
+
     // Hàm lưu thông tin người dùng vào Realtime Database
     private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien,Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
@@ -144,18 +176,7 @@ public class DangNhap extends AppCompatActivity {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
-                    //neu so dien thoai chua co thi hien thi dialog de nhap so dien thoai
-
-                    if(user.getPhoneNumber() == null){
-                        saveUserInfo(user.getUid(), user.getDisplayName(),"ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
-                        startActivity(intent);
-                    }else {
-                        saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "NguoiThue", "HoatDong", System.currentTimeMillis(), System.currentTimeMillis());
-                        Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(DangNhap.this, MainActivity.class);
-                        startActivity(intent);
-                    }
+                    handleUserLogin(user); //Phuong thuc xu ly chung
                 }
 
                 @Override

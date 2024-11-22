@@ -2,6 +2,7 @@ package com.ph32395.staynow.Activity
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -93,6 +94,7 @@ class RoomDetailActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//            layoutManager = GridLayoutManager(context, 4)
             adapter = chiTietAdapter
 
             // Thêm SpacingItemDecoration để tạo khoảng cách đều giữa các item
@@ -159,6 +161,11 @@ class RoomDetailActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.txtGiaThue).text =
                 "${String.format("%,.0f", room.Gia_phong)} VND"
             findViewById<TextView>(R.id.txtChiTietThem).text = room.Mota_chitiet
+
+//            log thong tin trang thai ra
+            Log.d("RoomDetailActivity", "Trang thai duyet: ${room.Trang_thaiduyet}")
+            Log.d("RoomDetailActivity", "Trang thai luu: ${room.Trang_thailuu}")
+            Log.d("RoomDetailActivity", "Trang thai phong: ${room.Trang_thaiphong}")
 
 //            Cap nhat hinh anh
             room.imageUrls?.let {
