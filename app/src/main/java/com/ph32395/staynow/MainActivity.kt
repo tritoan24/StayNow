@@ -18,6 +18,8 @@ import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.HomeNguoiChoThueFragment
+import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
 import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
@@ -46,29 +48,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(
-                object : OnCompleteListener<String?> {
-                    override fun onComplete(task: Task<String?>) {
-                        if (!task.isSuccessful) {
-                            Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
-                            return
-                        }
 
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        //lưu token này vào database
-                        if (currentUser != null) {
-                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-                                .setValue(token)
-
-
-                        }
-                        //nếu không có người dùng nào đăng nhập thì không lưu token
-
-                    }
-                })
 
 
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
@@ -76,8 +56,6 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
-
-
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {

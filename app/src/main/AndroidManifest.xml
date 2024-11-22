@@ -6,13 +6,11 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 
     <!--permission location-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -89,7 +87,6 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
-
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"
@@ -100,8 +97,7 @@
 
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
-            android:exported="false" />
-        <!-- Thêm cấu hình cho Google Sign-In -->
+            android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
 
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"
