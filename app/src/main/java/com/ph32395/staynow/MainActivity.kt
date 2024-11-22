@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
@@ -23,6 +24,10 @@ import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
 import com.ph32395.staynow.fragment.RoomManagementFragment
 import com.ph32395.staynow.fragment.home.HomeFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
+import com.ph32395.staynow.fragment.home.HomeViewModel
+import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -44,9 +49,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-
 
 
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {

@@ -109,7 +109,8 @@ public class DangNhap extends AppCompatActivity {
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            }
+            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
                 edMail.setError("Email không hợp lệ");
             } else {
                 // Lấy UID của user dựa trên email
@@ -311,6 +312,4 @@ public class DangNhap extends AppCompatActivity {
             dialog.dismiss();
         }, 1500);
     }
-
-
 }
