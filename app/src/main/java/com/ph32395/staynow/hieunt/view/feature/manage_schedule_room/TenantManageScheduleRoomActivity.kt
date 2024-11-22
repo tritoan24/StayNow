@@ -86,14 +86,25 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.scheduleRoomState.collect {
-                    if (it.isNotEmpty()) {
-                        binding.tvNoData.gone()
-                    } else {
-                        binding.tvNoData.visible()
+                launch {
+                    viewModel.scheduleRoomState.collect {
+                        if (it.isNotEmpty()) {
+                            binding.tvNoData.gone()
+                        } else {
+                            binding.tvNoData.visible()
+                        }
+                        manageScheduleRoomAdapter?.addListObserver(it)
+                        dismissLoading()
                     }
-                    manageScheduleRoomAdapter?.addListObserver(it)
-                    dismissLoading()
+                }
+                launch {
+                    viewModel.allScheduleRoomState.collect {
+                        val newList = listScheduleState.toMutableList()
+                        it.groupBy { room -> room.status }.map { (status, scheduleRooms) ->
+                            newList[status].count = scheduleRooms.size
+                            scheduleStateAdapter?.addListObserver(newList)
+                        }
+                    }
                 }
             }
         }

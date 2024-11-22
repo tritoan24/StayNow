@@ -17,10 +17,10 @@ object Default {
     )
 
     val listScheduleState = mutableListOf<ScheduleStateModel>().apply {
-        add(ScheduleStateModel("Chờ xác nhận", true))
-        add(ScheduleStateModel("Đã xác nhận", false))
-        add(ScheduleStateModel("Đã xem", false))
-        add(ScheduleStateModel("Đã hủy", false))
+        add(ScheduleStateModel("Chờ xác nhận", 0,true))
+        add(ScheduleStateModel("Đã xác nhận", 0,false))
+        add(ScheduleStateModel("Đã xem", 0,false))
+        add(ScheduleStateModel("Đã hủy",0, false))
     }
 
     object IntentKeys {
@@ -57,6 +57,14 @@ object Default {
         const val CONFIRMED = 1
         const val WATCHED = 2
         const val CANCELED = 3
+    }
+
+    object NotificationTitle {
+        const val TITLE_CONFIRMED = "Lịch hẹn đã được xác nhận"
+        const val TITLE_CANCELED_BY_RENTER = "Lịch hẹn đã bị hủy bởi chủ trọ"
+        const val TITLE_CANCELED_BY_TENANT = "Lịch hẹn đã bị hủy bỏ bởi người thuê"
+        const val TITLE_LEAVED_BY_RENTER = "Lịch hẹn đã thay đổi bởi chủ trọ"
+        const val TITLE_LEAVED_BY_TENANT = "Lịch hẹn đã thay đổi bởi người thuê"
     }
 
 }

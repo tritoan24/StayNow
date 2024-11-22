@@ -62,11 +62,11 @@ class NotificationFragment : Fragment() {
         viewModel.fetchNotifications(userId!!)
 
         // Lắng nghe LiveData và cập nhật RecyclerView
-        viewModel.notifications.observe(viewLifecycleOwner, Observer { notificationsList ->
+        viewModel.notifications.observe(viewLifecycleOwner) { notificationsList ->
             notifications.clear()
-            notifications.addAll(notificationsList)
+            notifications.addAll(notificationsList.reversed())
             notificationAdapter.notifyDataSetChanged()
-        })
+        }
 
         return binding.root
     }
