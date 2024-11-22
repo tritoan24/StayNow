@@ -67,9 +67,6 @@ class RenterManageScheduleRoomAdapter(
                 tvLeaveSchedule.tap {
                     onClickLeaveSchedule.invoke(data)
                 }
-                tvConfirm.tap {
-                    onClickConfirm.invoke(data)
-                }
             }
         }
     }
