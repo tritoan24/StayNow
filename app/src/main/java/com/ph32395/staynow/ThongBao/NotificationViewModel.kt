@@ -27,12 +27,15 @@ class NotificationViewModel : ViewModel() {
                     val notification = data.getValue(NotificationModel::class.java)
                     if (notification != null) {
                         notificationsList.add(notification)
+                        Log.d("Notification", "Notification isRead: ${notification.isRead}")
                         if (!notification.isRead) unread++
                     }
                 }
                 _notifications.value = notificationsList
                 _unreadCount.value = unread // Cập nhật số lượng thông báo chưa đọc
+                Log.d("Notification", "Unread count: $unread")
             }
+
 
             override fun onCancelled(error: DatabaseError) {
                 Log.e("NotificationViewModel", "Error fetching notifications: ${error.message}")

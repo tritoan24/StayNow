@@ -17,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
+import com.ph32395.staynow.ThongBao.NotificationViewModel
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private val profileFragment = ProfileFragment()
     private var activeFragment: Fragment = homeFragment
 
+
     private val mDatabase = FirebaseDatabase.getInstance().reference
     private val currentUser = FirebaseAuth.getInstance().currentUser
 
@@ -54,6 +56,11 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
+
+
+
+
+
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
@@ -218,6 +225,7 @@ class MainActivity : AppCompatActivity() {
             activeFragment = fragment
         }
     }
+
 
 
     override fun onStart() {
