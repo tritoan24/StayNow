@@ -35,7 +35,7 @@
 
         <activity
             android:name=".Maps.MapsActivity"
-            android:exported="true"></activity>
+            android:exported="true"/>
         <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />
@@ -106,7 +106,7 @@
         <activity
             android:name=".DangKiDangNhap.OTPActivity"
             android:exported="false" />
-            android:exported="false" />
+
         <!-- Thêm cấu hình cho Google Sign-In -->
 
         <meta-data

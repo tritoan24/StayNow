@@ -51,11 +51,22 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="email "
-            android:textColor="#CC2B1F"
+            android:textColor="#3F51B5"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:text="Nếu chưa nhận được mã, hãy ấn gửi lại"
+        android:textColor="#F44336"
+        android:textSize="12sp"
+        android:textStyle="italic"
+        tools:ignore="HardcodedText" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -84,11 +95,11 @@
             android:layout_margin="4dp"
             android:background="@drawable/otp_input_background"
             android:gravity="center"
+            android:imeOptions="actionPrevious"
             android:inputType="number"
             android:maxLength="1"
             android:textColor="#333333"
             android:textSize="18sp"
-            android:imeOptions="actionPrevious"
             tools:ignore="Autofill,LabelFor" />
 
         <EditText
@@ -98,9 +109,9 @@
             android:layout_margin="4dp"
             android:background="@drawable/otp_input_background"
             android:gravity="center"
+            android:imeOptions="actionPrevious"
             android:inputType="number"
             android:maxLength="1"
-            android:imeOptions="actionPrevious"
             android:textColor="#333333"
             android:textSize="18sp"
             tools:ignore="Autofill,LabelFor" />
@@ -112,9 +123,9 @@
             android:layout_margin="4dp"
             android:background="@drawable/otp_input_background"
             android:gravity="center"
+            android:imeOptions="actionPrevious"
             android:inputType="number"
             android:maxLength="1"
-            android:imeOptions="actionPrevious"
             android:textColor="#333333"
             android:textSize="18sp"
             tools:ignore="Autofill,LabelFor" />
@@ -126,9 +137,9 @@
             android:layout_margin="4dp"
             android:background="@drawable/otp_input_background"
             android:gravity="center"
+            android:imeOptions="actionPrevious"
             android:inputType="number"
             android:maxLength="1"
-            android:imeOptions="actionPrevious"
             android:textColor="#333333"
             android:textSize="18sp"
             tools:ignore="Autofill,LabelFor" />
@@ -140,9 +151,9 @@
             android:layout_margin="4dp"
             android:background="@drawable/otp_input_background"
             android:gravity="center"
+            android:imeOptions="actionPrevious"
             android:inputType="number"
             android:maxLength="1"
-            android:imeOptions="actionPrevious"
             android:textColor="#333333"
             android:textSize="18sp"
             tools:ignore="Autofill,LabelFor" />

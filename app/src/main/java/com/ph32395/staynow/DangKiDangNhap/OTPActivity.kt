@@ -26,7 +26,7 @@ import java.io.IOException
 class OTPActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOtpactivityBinding
-    private val baseUrl = Constants.URL_SERVER_OCEANTECH
+    private val baseUrl = Constants.URL_SERVER_QUYET
     private var countDownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -26,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
         boolean isFirstTime = prefs.getBoolean(FIRST_TIME_KEY, true);
         boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
 
-
         new Handler().postDelayed(() -> {
             if (isFirstTime) {
                 // Nếu là lần đầu, chuyển đến màn hình giới thiệu

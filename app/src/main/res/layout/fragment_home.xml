@@ -50,6 +50,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/cardView"
             android:layout_marginTop="5dp"
+            android:background="@color/transparent"
+            app:tabGravity="fill"
+            app:tabMode="scrollable"
             app:tabRippleColor="@android:color/transparent" />
 
         <androidx.viewpager2.widget.ViewPager2
@@ -57,8 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tabLayoutHome"
-            android:background="@android:color/transparent"
-            />
+            android:background="@android:color/transparent" />
 
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

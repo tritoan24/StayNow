@@ -85,6 +85,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+
     fun updateRoomList(maloaiPhongTro: String) {
         cachedRooms[maloaiPhongTro]?.let {
             _roomList.postValue(it)
@@ -103,8 +104,14 @@ class HomeViewModel : ViewModel() {
                     loaiPhongSnapshot?.documents?.firstOrNull()?.getString("Ten_loaiphong")
                 if (tenLoaiPhong != null) {
                     val roomsRef = firestore.collection("PhongTro")
-                    val query = if (tenLoaiPhong == "Tất cả") roomsRef else roomsRef.whereEqualTo(
+                    val query = if (tenLoaiPhong == "Tất cả") roomsRef.whereEqualTo(
+                        "Trang_thaiduyet",
+                        "DaDuyet"
+                    ) else roomsRef.whereEqualTo(
                         "Ma_loaiphong", maloaiPhongTro
+                    ).whereEqualTo(
+                        "Trang_thaiduyet",
+                        "DaDuyet"
                     )
                     query.addSnapshotListener { snapshot, exception ->
                         if (exception != null) {
@@ -137,7 +144,6 @@ class HomeViewModel : ViewModel() {
         }
         _roomList.value = roomList // Cập nhật LiveData
     }
-
     //    lay du lieu danh sach phong tro su dung Kotlin Coroutines
     fun updateRoomListWithCoroutines() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -167,7 +173,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-//    lay dien tich trong Home Chu Tro
+    //    lay dien tich trong Home Chu Tro
     private fun fetchDienTichForRoomList(
         roomList: List<Pair<String, PhongTroModel>>
     ) {
@@ -210,7 +216,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-//    lay dien tich trong Home Nguoi Thue
+    //    lay dien tich trong Home Nguoi Thue
     private fun fetchChiTietThongTinForRoomList(
         roomList: List<Pair<String, PhongTroModel>>,
         maloaiPhongTro: String
@@ -253,7 +259,6 @@ class HomeViewModel : ViewModel() {
                 }
         }
     }
-
 
 
     fun clearRoomCache() {

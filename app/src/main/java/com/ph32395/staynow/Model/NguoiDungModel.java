@@ -9,14 +9,14 @@ public class NguoiDungModel {
     private Integer So_luotdatlich;
     private String Loai_taikhoan;
     private String Trang_thaitaikhoan;
-    private boolean isXacThuc;
+    private boolean DaXacThuc;
     private Long Ngay_taotaikhoan;
     private Long Ngay_capnhat;
 
     public NguoiDungModel() {
     }
 
-    public NguoiDungModel(String ma_nguoidung, String ho_ten, String sdt, String email, String anh_daidien, Integer so_luotdatlich, String loai_taikhoan, String trang_thaitaikhoan, boolean isXacThuc, Long ngay_taotaikhoan, Long ngay_capnhat) {
+    public NguoiDungModel(String ma_nguoidung, String ho_ten, String sdt, String email, String anh_daidien, Integer so_luotdatlich, String loai_taikhoan, String trang_thaitaikhoan, boolean daXacThuc, Long ngay_taotaikhoan, Long ngay_capnhat) {
         Ma_nguoidung = ma_nguoidung;
         Ho_ten = ho_ten;
         Sdt = sdt;
@@ -25,7 +25,7 @@ public class NguoiDungModel {
         So_luotdatlich = so_luotdatlich;
         Loai_taikhoan = loai_taikhoan;
         Trang_thaitaikhoan = trang_thaitaikhoan;
-        this.isXacThuc = isXacThuc;
+        DaXacThuc = daXacThuc;
         Ngay_taotaikhoan = ngay_taotaikhoan;
         Ngay_capnhat = ngay_capnhat;
     }
@@ -94,12 +94,12 @@ public class NguoiDungModel {
         Trang_thaitaikhoan = trang_thaitaikhoan;
     }
 
-    public boolean isXacThuc() {
-        return isXacThuc;
+    public boolean isDaXacThuc() {
+        return DaXacThuc;
     }
 
-    public void setXacThuc(boolean xacThuc) {
-        isXacThuc = xacThuc;
+    public void setDaXacThuc(boolean daXacThuc) {
+        DaXacThuc = daXacThuc;
     }
 
     public Long getNgay_taotaikhoan() {
