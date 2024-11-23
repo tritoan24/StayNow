@@ -2,12 +2,12 @@ package com.ph32395.staynow.fragment
 
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -18,12 +18,14 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
-import com.ph32395.staynow.BaoMat.DoiMK
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
+import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 
@@ -37,6 +39,8 @@ class ProfileFragment : Fragment() {
     private lateinit var nextDoiMK: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
+    private lateinit var prefs: SharedPreferences
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -112,9 +116,16 @@ class ProfileFragment : Fragment() {
 
         // Xử lý sự kiện nhấn nút đăng xuất
         logoutButton.setOnClickListener {
+            setUserOffline()
             mAuth.signOut() // Đăng xuất Firebase
+            // Lưu trạng thái đã đăng nhập vào SharedPreferences
+            prefs = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+            val editor = prefs.edit()
+            editor.putBoolean("is_logged_in", false)
+            editor.apply()
             startActivity(Intent(requireActivity(), DangNhap::class.java)) // Quay lại màn hình đăng nhập
             requireActivity().finish() // Kết thúc hoạt động hiện tại
+            activity?.finish()
         }
 
         nextDoiMK.setOnClickListener {
@@ -127,4 +138,21 @@ class ProfileFragment : Fragment() {
         }
         return view
     }
+
+
+    private fun setUserOffline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("offline").addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Log.d("MainActivity", "User status set to offline")
+                } else {
+                    Log.e("MainActivity", "Failed to set user status to offline: ${task.exception}")
+                }
+            }
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
 }

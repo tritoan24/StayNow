@@ -16,13 +16,65 @@
             android:layout_height="wrap_content"
             >
 
-            <com.denzcoskun.imageslider.ImageSlider
-                android:id="@+id/imageSliderChuTro"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                app:iss_auto_cycle="true"
-                app:iss_corner_radius="5"
-                app:iss_period="3000" />
+                android:layout_marginBottom="10dp"
+                >
+
+
+                <!-- ImageSlider -->
+                <com.denzcoskun.imageslider.ImageSlider
+                    android:id="@+id/imageSliderChuTro"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:iss_auto_cycle="true"
+                    app:iss_corner_radius="5"
+                    app:iss_period="3000" />
+
+                <FrameLayout
+                    android:id="@+id/fNotification"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="10dp"
+
+                    >
+
+
+                    <!-- Icon thông báo -->
+                    <ImageView
+                        android:id="@+id/iconNotification"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/icon_notification"
+                        android:padding="5dp"
+                        android:elevation="4dp"
+                        android:contentDescription="iconNoti"
+                        android:layout_margin="7dp"
+                        />
+
+                    <!-- Số lượng thông báo -->
+                    <TextView
+                        android:id="@+id/notificationBadge"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="end|top"
+                    android:text="0"
+                    android:textColor="#FF3232"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:background="@drawable/cardview_border"
+                        android:visibility="gone"
+
+
+
+                        />
+
+                </FrameLayout>
+
+            </FrameLayout>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewChuTro"

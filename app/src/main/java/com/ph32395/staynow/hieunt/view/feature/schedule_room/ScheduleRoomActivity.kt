@@ -6,6 +6,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
@@ -21,6 +22,7 @@ import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.view_model.CommonVM
 import com.ph32395.staynow.hieunt.widget.currentBundle
 import com.ph32395.staynow.hieunt.widget.getTextEx
+import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.hieunt.widget.toast
 import devs.mulham.horizontalcalendar.HorizontalCalendar
@@ -54,7 +56,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         return ActivityScheduleRoomBinding.inflate(layoutInflater)
     }
 
-    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
+    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java    
 
     override fun initView() {
         roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
@@ -93,6 +95,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     roomId = roomIdInDetail
                     roomName = roomModel.Ten_phongtro
                     renterId = roomModel.Ma_nguoidung
+                    roomAddress = roomModel.Dia_chichitiet
                     renterName = renterNameByGetInfo
                     renterPhoneNumber = renterPhoneNumberByGetInfo
                     tenantId = FirebaseAuth.getInstance().currentUser?.uid.toString()
@@ -107,7 +110,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     lifecycleScope.launch(Dispatchers.Main) {
                         dismissLoading()
                         if (isCompletion) {
-                            toast("Successfully")
+                            launchActivity(MainActivity::class.java)
                             finish()
                         } else {
                             toast("Error")

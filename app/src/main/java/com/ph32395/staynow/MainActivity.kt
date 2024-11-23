@@ -1,14 +1,18 @@
 package com.ph32395.staynow
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
@@ -32,6 +36,9 @@ class MainActivity : AppCompatActivity() {
     private val messageFragment = MessageFragment()
     private val profileFragment = ProfileFragment()
     private var activeFragment: Fragment = homeFragment
+
+    private val mDatabase = FirebaseDatabase.getInstance().reference
+    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     private lateinit var userRole: String //Luu vai tro nguoi dung
 
@@ -97,6 +104,10 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
+//        Nút FloatingActionButton tim kiem
+//        binding.fabSearch.setOnClickListener {
+//            startActivity(Intent(this,SearchActivity::class.java))
+//        }
     }
 
 
@@ -204,6 +215,53 @@ class MainActivity : AppCompatActivity() {
                 show(fragment)       // Hiển thị Fragment mới
             }.commit()
             activeFragment = fragment
+        }
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        setUserOnline()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        setUserOffline()
+    }
+    override fun onPause() {
+        super.onPause()
+        setUserOffline()
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        setUserOffline()
+    }
+
+
+    private fun setUserOnline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("online")
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+    private fun setUserOffline() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+            userRef.child("status").setValue("offline")
+            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+//nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
         }
     }
 

@@ -18,60 +18,14 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="16dp"/>
     <TextView
-        android:id="@+id/dia_chi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="đây là địa chỉ khi đổi từ tọa độ của bạn"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"/>
-    <TextView
         android:id="@+id/dia_chi_day_du"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="đây là địa chỉ khi đổi từ tọa độ của bạn"
+        android:text="đây là địa chỉ khi đổi từ tọa độ của bạn: "
         android:textSize="16sp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"/>
 
-
-    <!-- Latitude Label -->
-    <TextView
-        android:id="@+id/latitude_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Vĩ độ:"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Latitude EditText -->
-    <EditText
-        android:id="@+id/latitude"
-        android:layout_height="wrap_content"
-        android:hint="Nhập vĩ độ"
-        android:inputType="numberDecimal"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:padding="10dp"/>
-
-    <!-- Longitude Label -->
-    <TextView
-        android:id="@+id/longitude_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kinh độ:"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"/>
-
-    <!-- Longitude EditText -->
-    <EditText
-        android:id="@+id/longitude"
-        android:layout_height="wrap_content"
-        android:hint="Nhập kinh độ"
-        android:inputType="numberDecimal"
-        android:layout_marginTop="8dp"
-        android:layout_width="match_parent"
-        android:padding="10dp"/>
 
     <!-- Update Location Button -->
     <Button

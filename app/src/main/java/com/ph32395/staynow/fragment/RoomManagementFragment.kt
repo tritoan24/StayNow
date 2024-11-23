@@ -8,11 +8,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.databinding.FragmentRoomManagementBinding
 import com.ph32395.staynow.hieunt.base.BaseFragment
-import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CANCEL
-import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.HAVE_NOT_SEEN
-import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.SEEN
+import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CANCELED
+import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WAIT
+import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WATCHED
 import com.ph32395.staynow.hieunt.helper.Default.listScheduleState
+import com.ph32395.staynow.hieunt.view.dialog.UpdateRoomScheduleDialog
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.RenterManageScheduleRoomAdapter
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.ScheduleStateAdapter
 import com.ph32395.staynow.hieunt.view_model.ManageScheduleRoomVM
@@ -23,7 +24,7 @@ import kotlinx.coroutines.launch
 
 class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, ManageScheduleRoomVM>() {
     private var manageScheduleRoomAdapter: RenterManageScheduleRoomAdapter? = null
-    private var scheduleStateAdapter : ScheduleStateAdapter ?= null
+    private var scheduleStateAdapter: ScheduleStateAdapter? = null
     override fun setViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -32,7 +33,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
     }
 
     override fun initView() {
-        scheduleStateAdapter =  ScheduleStateAdapter { status ->
+        scheduleStateAdapter = ScheduleStateAdapter { status ->
             viewModel.filerScheduleRoomState(status)
         }.apply {
             addList(listScheduleState)
@@ -40,17 +41,33 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         }
 
         manageScheduleRoomAdapter = RenterManageScheduleRoomAdapter(
-            onClickCancel = {
-                updateStatusRoom(it.roomScheduleId, CANCEL)
+            onClickWatched = {
+                updateStatusRoom(it.roomScheduleId, WATCHED)
             },
             onClickConfirm = {
-                updateStatusRoom(it.roomScheduleId, HAVE_NOT_SEEN)
+                updateStatusRoom(it.roomScheduleId, CONFIRMED)
             },
-            onClickDeposited = {
-                updateStatusRoom(it.roomScheduleId, SEEN)
+            onClickLeaveSchedule = {
+                UpdateRoomScheduleDialog(it,onClickConfirm = { newTime, newDate ->
+                    showLoading()
+                        viewModel.updateScheduleRoom(it.roomScheduleId, newTime, newDate, isChangedScheduleByRenter = true) { updateSuccess ->
+                        if (updateSuccess) {
+                            viewModel.filerScheduleRoomState(0) {
+                                scheduleStateAdapter?.setSelectedState(0)
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                toast("Có lỗi xảy ra!")
+                            }
+                        }
+                    }
+                }).show(childFragmentManager, "UpdateRoomScheduleDialog")
             },
-            onClickWatched = {
-                updateStatusRoom(it.roomScheduleId, SEEN)
+            onClickCancelSchedule = {
+                updateStatusRoom(it.roomScheduleId, CANCELED)
+            },
+            onClickCreateContract = {
+
             }
         )
 
@@ -66,7 +83,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
 
     override fun dataObserver() {
         showLoadingIfNotBaseActivity()
-        viewModel.fetchAllScheduleByRenter(FirebaseAuth.getInstance().currentUser?.uid.toString()){
+        viewModel.fetchAllScheduleByRenter(FirebaseAuth.getInstance().currentUser?.uid.toString()) {
             viewModel.filerScheduleRoomState(WAIT)
         }
         lifecycleScope.launch {
@@ -84,11 +101,11 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         }
     }
 
-    private fun updateStatusRoom (roomScheduleId: String, status: Int){
+    private fun updateStatusRoom(roomScheduleId: String, status: Int) {
         showLoadingIfNotBaseActivity()
         viewModel.updateScheduleRoomStatus(roomScheduleId, status) { updateSuccess ->
-            if (updateSuccess){
-                viewModel.filerScheduleRoomState(status){
+            if (updateSuccess) {
+                viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
                 }
             } else {

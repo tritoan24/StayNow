@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.google.firebase.firestore.FirebaseFirestore
@@ -57,7 +58,8 @@ class HomeViewModel : ViewModel() {
     }
 
 //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
-    fun loadRoomByStatus(maNguoiDung: String) {
+    fun loadRoomByStatus() {
+    val maNguoiDung = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         firestore.collection("PhongTro")
             .whereEqualTo("Ma_nguoidung", maNguoiDung) //Loc theo ma nguoi dung
             .addSnapshotListener { snapshot, exception ->
@@ -69,9 +71,12 @@ class HomeViewModel : ViewModel() {
 //                lay tat ca cac phong theo ma nguoi fung
                 snapshot?.let {
                     Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
+
+
                     val allRooms = it.documents.mapNotNull { doc ->
                         doc.toObject(PhongTroModel::class.java)?.let { room ->
                             Pair(doc.id, room)
+
                         }
                     }
 
