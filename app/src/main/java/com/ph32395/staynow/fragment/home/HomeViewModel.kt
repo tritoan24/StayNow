@@ -66,6 +66,7 @@ class HomeViewModel : ViewModel() {
                     return@addSnapshotListener
                 }
 
+//                lay tat ca cac phong theo ma nguoi fung
                 snapshot?.let {
                     Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
                     val allRooms = it.documents.mapNotNull { doc ->
