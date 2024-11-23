@@ -10,11 +10,16 @@ import com.google.firebase.firestore.toObject
 import com.ph32395.staynow.hieunt.helper.Default.Collection.CHANGED_SCHEDULE_BY_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DATE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
+import com.ph32395.staynow.hieunt.helper.Default.Collection.MAP_LINK
+import com.ph32395.staynow.hieunt.helper.Default.Collection.MESSAGE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.RENTER_ID
 import com.ph32395.staynow.hieunt.helper.Default.Collection.ROOM_SCHEDULE_ID
 import com.ph32395.staynow.hieunt.helper.Default.Collection.STATUS
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TENANT_ID
+import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME_STAMP
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TITLE
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import kotlinx.coroutines.Dispatchers
@@ -26,7 +31,7 @@ import kotlinx.coroutines.withContext
 
 class ManageScheduleRoomVM : ViewModel() {
     private val _allScheduleRoomState = MutableStateFlow<List<ScheduleRoomModel>>(emptyList())
-    val allScheduleRoomState :StateFlow<List<ScheduleRoomModel>> = _allScheduleRoomState
+    val allScheduleRoomState: StateFlow<List<ScheduleRoomModel>> = _allScheduleRoomState
     private val _scheduleRoomState = MutableStateFlow<List<ScheduleRoomModel>>(emptyList())
     val scheduleRoomState: StateFlow<List<ScheduleRoomModel>> = _scheduleRoomState
 
@@ -176,19 +181,17 @@ class ManageScheduleRoomVM : ViewModel() {
         onCompletion: (Boolean) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val mapLink = if (titleNotification == TITLE_CANCELED_BY_RENTER) null else "geo:0,0?q=${
-                Uri.encode(data.roomAddress)
-            }"
+            val mapLink = if (titleNotification == TITLE_CANCELED_BY_RENTER) null else "geo:0,0?q=${Uri.encode(data.roomAddress)}"
             val notificationData = hashMapOf(
-                "title" to titleNotification,
-                "message" to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
-                "date" to data.date,
-                "time" to data.time,
-                "mapLink" to mapLink,
-                "timestamp" to System.currentTimeMillis()
+                TITLE to titleNotification,
+                MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
+                DATE to data.date,
+                TIME to data.time,
+                MAP_LINK to mapLink,
+                TIME_STAMP to System.currentTimeMillis()
             )
             val database = FirebaseDatabase.getInstance()
-            val thongBaoRef = database.getReference("ThongBao")
+            val thongBaoRef = database.getReference(THONG_BAO)
 
             val userId = data.tenantId
             val userThongBaoRef = thongBaoRef.child(userId)

@@ -68,7 +68,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                             viewModel.filerScheduleRoomState(0) {
                                 scheduleStateAdapter?.setSelectedState(0)
                             }
-                            viewModel.pushNotification(TITLE_LEAVED_BY_RENTER, it){ isCompletion ->
+                            viewModel.pushNotification(TITLE_LEAVED_BY_RENTER, it.copy(time = newTime, date = newDate)){ isCompletion ->
                                 toastNotification(isCompletion)
                             }
                         } else {
