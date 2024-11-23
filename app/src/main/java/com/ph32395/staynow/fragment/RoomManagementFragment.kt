@@ -23,6 +23,8 @@ import com.ph32395.staynow.hieunt.view_model.ManageScheduleRoomVM
 import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, ManageScheduleRoomVM>() {
@@ -117,12 +119,14 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                     }
                 }
                 launch {
-                    viewModel.allScheduleRoomState.collect {
-                        val newList = listScheduleState.toMutableList()
-                        it.groupBy { room -> room.status }.map { (status, scheduleRooms) ->
-                            newList[status].count = scheduleRooms.size
-                            scheduleStateAdapter?.addListObserver(newList)
-                        }
+                    viewModel.allScheduleRoomState.collect {allRoomStates->
+                        val newList = async(Dispatchers.IO) {
+                            listScheduleState.map { scheduleState ->
+                                val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
+                                scheduleState.copy(count = count)
+                            }
+                        }.await()
+                        scheduleStateAdapter?.addListObserver(newList)
                     }
                 }
             }
@@ -135,6 +139,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             if (updateSuccess) {
                 viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
+                    if (status == 3) binding.rvState.scrollToPosition(status)
                 }
             } else {
                 lifecycleScope.launch {

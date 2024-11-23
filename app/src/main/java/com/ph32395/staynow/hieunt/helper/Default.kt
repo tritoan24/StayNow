@@ -17,10 +17,10 @@ object Default {
     )
 
     val listScheduleState = mutableListOf<ScheduleStateModel>().apply {
-        add(ScheduleStateModel("Chờ xác nhận", 0,true))
-        add(ScheduleStateModel("Đã xác nhận", 0,false))
-        add(ScheduleStateModel("Đã xem", 0,false))
-        add(ScheduleStateModel("Đã hủy",0, false))
+        add(ScheduleStateModel("Chờ xác nhận",0, 0,true))
+        add(ScheduleStateModel("Đã xác nhận",1, 0,false))
+        add(ScheduleStateModel("Đã xem",2, 0,false))
+        add(ScheduleStateModel("Đã hủy",3,0, false))
     }
 
     object IntentKeys {
