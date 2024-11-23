@@ -32,15 +32,8 @@ class PhongDaBiHuyFragment : Fragment() {
         //        Khoi tao viewModel
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        val sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val maNguoiDung = sharedPreferences.getString("Ma_nguoidung", null)
-
-        if (maNguoiDung != null) {
-            val viewModel: HomeViewModel by viewModels()
-            viewModel.loadRoomByStatus(maNguoiDung)
-        } else {
-            Log.e("QuanLyPhongTroActivity", "Ma_nguoidung is null. Cannot load rooms.")
-        }
+        val viewModel: HomeViewModel by viewModels()
+        viewModel.loadRoomByStatus()
 
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_da_bi_huy, container, false)

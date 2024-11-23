@@ -170,15 +170,20 @@ class RoomDetailActivity : AppCompatActivity() {
             val trangThaiLuu = room.Trang_thailuu
             val trangThaiPhong = room.Trang_thaiphong
 
+            Log.d("RoomDetailActivity", "Trang thai duyet: $trangThaiDuyet")
+            Log.d("RoomDetailActivity", "Trang thai luu: $trangThaiLuu")
+            Log.d("RoomDetailActivity", "Trang thai phong: $trangThaiPhong")
 
+
+            Log.d("RoomDetailActivity", "Home: $ManHome")
             //tritoan code dựa vào 3 trạng thái này để hiển thị botton của phòng trọ
-            if(ManHome == "Home") {
-                    findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
-            }else if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+            if(ManHome == "ManCT" && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                 findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+            }else if(ManHome == "ManND") {
+                findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
             }else if(trangThaiLuu == true) {
                 findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
-            }else if(trangThaiDuyet == "BiHuy") {
+            }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
                 findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
             }
 

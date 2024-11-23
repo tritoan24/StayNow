@@ -16,6 +16,7 @@ import androidx.lifecycle.get
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentPhongChoDuyetBinding
@@ -36,14 +37,8 @@ class PhongChoDuyetFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         val sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val maNguoiDung = sharedPreferences.getString("Ma_nguoidung", null)
-
-        if (maNguoiDung != null) {
-            val viewModel: HomeViewModel by viewModels()
-            viewModel.loadRoomByStatus(maNguoiDung)
-        } else {
-            Log.e("QuanLyPhongTroActivity", "Ma_nguoidung is null. Cannot load rooms.")
-        }
+        val viewModel: HomeViewModel by viewModels()
+        viewModel.loadRoomByStatus()
 
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_cho_duyet, container, false)
