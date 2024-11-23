@@ -111,7 +111,7 @@ dependencies {
 
 
 
-
+    implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
     //Thu vien khoang gia
     implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
 
