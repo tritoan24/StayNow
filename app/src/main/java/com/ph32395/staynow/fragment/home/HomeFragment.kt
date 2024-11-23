@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.denzcoskun.imageslider.ImageSlider
@@ -18,6 +19,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.databinding.FragmentHomeBinding
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -47,13 +50,24 @@ class HomeFragment : Fragment() {
             refreshData()
         }
         // Load dữ liệu ban đầu
-        homeViewModel.loadLoaiPhongTro()
-        homeViewModel.loadImagesFromFirebase()
-
+        loadData()
         binding.viewLocationSearch.searchLayout.setOnClickListener {
             Toast.makeText(context, "Tính năng đang chờ phát triển", Toast.LENGTH_SHORT).show()
         }
         return binding.root
+    }
+
+    private fun loadData() {
+        // Tải dữ liệu song song bằng Coroutine
+        viewLifecycleOwner.lifecycleScope.launch {
+            // Gọi loadLoaiPhongTro và loadImagesFromFirebase song song
+            val loaiPhongTroDeferred = async { homeViewModel.loadLoaiPhongTro() }
+            val imagesDeferred = async { homeViewModel.loadImagesFromFirebase() }
+
+            // Đợi cả 2 tác vụ hoàn thành
+            loaiPhongTroDeferred.await()
+            imagesDeferred.await()
+        }
     }
 
     private fun setupTabs(loaiPhongTroList: List<LoaiPhongTro>) {
@@ -74,7 +88,7 @@ class HomeFragment : Fragment() {
                 super.onPageSelected(position)
                 if (position < loaiPhongTroList.size) {
                     val selectedLoaiPhongTro = loaiPhongTroList[position].Ma_loaiphong
-                        homeViewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
+                    homeViewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
 
                 }
             }
@@ -93,4 +107,5 @@ class HomeFragment : Fragment() {
             swipeFresh.isRefreshing = false
         }, 2000)
     }
+
 }

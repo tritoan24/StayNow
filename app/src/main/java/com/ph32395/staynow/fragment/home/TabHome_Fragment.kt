@@ -50,6 +50,13 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
+            homeViewModel.updateRoomList(idloaiPhongTro)
+        }
+    }
+
     private fun setupRecyclerView() {
         binding.roomRclView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
