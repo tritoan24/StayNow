@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.ph32395.staynow.R
@@ -121,12 +122,34 @@ class PaymentInfoActivity : AppCompatActivity() {
         firestore.collection("ThongTinTT").document(userId)
             .set(paymentInfo)
             .addOnSuccessListener {
+                updateTrangThaiPTTT(userId, true)
                 Toast.makeText(this, "Lưu thông tin thanh toán thành công!", Toast.LENGTH_SHORT).show()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Lưu thông tin thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+    private fun updateTrangThaiPTTT(userId: String, paymentStatus: Boolean) {
+        // Tham chiếu đến Realtime Database
+        val database = FirebaseDatabase.getInstance().reference
+
+        // Dữ liệu cần cập nhật
+        val updates = mapOf<String, Any>(
+            "StatusPttt" to paymentStatus
+        )
+
+        // Cập nhật trạng thái thanh toán vào bảng NguoiDung
+        database.child("NguoiDung").child(userId)
+            .updateChildren(updates)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Cập nhật trạng thái thanh toán thành công!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Cập nhật trạng thái thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
 
     companion object {
         private const val REQUEST_QR_CODE = 1

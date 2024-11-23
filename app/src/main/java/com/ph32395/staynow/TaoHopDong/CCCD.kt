@@ -19,6 +19,7 @@ import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -181,7 +182,7 @@ class CCCD : AppCompatActivity() {
         firestore.collection("CCCD").document(userID)
             .set(encryptedData)
             .addOnSuccessListener {
-                println("Lưu CCCD thành công (đã mã hóa)!")
+                updateTrangThaiCCCD(userID, true)
             }
             .addOnFailureListener { e ->
                 println("Lỗi khi lưu CCCD: ${e.message}")
@@ -216,6 +217,27 @@ class CCCD : AppCompatActivity() {
         val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
         cipher.init(Cipher.ENCRYPT_MODE, keySpec)
         return Base64.encodeToString(cipher.doFinal(data.toByteArray()), Base64.DEFAULT)
+    }
+
+
+    private fun updateTrangThaiCCCD(userId: String, CCCDstatus: Boolean) {
+        // Tham chiếu đến Realtime Database
+        val database = FirebaseDatabase.getInstance().reference
+
+        // Dữ liệu cần cập nhật
+        val updates = mapOf<String, Any>(
+            "StatusCCCD" to CCCDstatus
+        )
+
+        // Cập nhật trạng thái thanh toán vào bảng NguoiDung
+        database.child("NguoiDung").child(userId)
+            .updateChildren(updates)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Cập nhật trạng thái thanh toán thành công!", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Cập nhật trạng thái thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
 
