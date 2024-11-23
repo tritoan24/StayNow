@@ -22,7 +22,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
-import com.ph32395.staynow.BaoMat.CapNhatThongTin
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
@@ -100,11 +99,14 @@ class ProfileFragment : Fragment() {
                     }
                     val accountType = snapshot.child("loai_taikhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
                     val registerLayout = view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
+                    val scheduleRoom = view.findViewById<LinearLayout>(R.id.ll_schedule_room)
                     if (registerLayout != null) {
                         if ("ChuNha".equals(accountType)) {
                             registerLayout.visibility = View.GONE
+                            scheduleRoom.visibility = View.GONE
                         } else {
                             registerLayout.visibility = View.VISIBLE
+                            scheduleRoom.visibility = View.VISIBLE
                         }
                     } else {
                         Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.");
@@ -132,7 +134,7 @@ class ProfileFragment : Fragment() {
         }
 
         nextUpdate.setOnClickListener{
-            startActivity(Intent(requireActivity(),ThongTinNguoiDung::class.java))
+            startActivity(Intent(requireActivity(), ThongTinNguoiDung::class.java))
             requireActivity().finish()
         }
         nextDoiMK.setOnClickListener {
