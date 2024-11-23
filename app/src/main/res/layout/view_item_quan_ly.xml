@@ -1,41 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:padding="12dp"
+    android:gravity="center"
     tools:ignore="DisableBaselineAlignment">
 
+<!--    Quan ly phong -->
     <LinearLayout
-        android:id="@+id/item_tim_xung_quanh"
+        android:id="@+id/item_quan_ly_phong"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:clickable="true"
-        android:focusable="true"
         android:gravity="center"
+        android:layout_gravity="center"
         android:orientation="vertical"
-        tools:ignore="UseCompoundDrawables">
+        tools:ignore="KeyboardInaccessibleWidget,UseCompoundDrawables">
 
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_tim_xung_quanh"
+            android:src="@drawable/ic_quan_ly_phong"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:minHeight="40dp"
-            android:text="Tìm xung quanh"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="Quản lý phòng"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
+<!--    Quan ly hop dong -->
     <LinearLayout
-        android:id="@+id/item_tim_nguoi_o_khep"
+        android:id="@+id/item_quan_ly_hop_dong"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -47,23 +49,23 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_tim_o_ghep"
+            android:src="@drawable/ic_quan_ly_hop_dong"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:minHeight="40dp"
-            android:text="Tìm người ở ghép"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="Quản lý hợp đông"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
+<!--    quan ly hoa don-->
     <LinearLayout
-        android:id="@+id/item_van_chuyen_do"
+        android:id="@+id/item_quan_ly_hoa_don"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:clickable="true"
         android:gravity="center"
@@ -73,23 +75,23 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_van_chuyen"
+            android:src="@drawable/ic_quan_ly_hoa_don"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:minHeight="40dp"
-            android:text="Vận chuyển đồ"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="Quản lý hóa đơn"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
+<!--    Quan ly nguoi thue-->
     <LinearLayout
-        android:id="@+id/item_doi_binh_gas"
+        android:id="@+id/item_quan_ly_nguoi_thue"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:clickable="true"
         android:gravity="center"
@@ -99,16 +101,15 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_doi_gas"
+            android:src="@drawable/ic_quan_ly_nguoi_thue"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center_horizontal"
-            android:minHeight="40dp"
-            android:text="Đổi bình gas"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:gravity="center"
+            android:text="Quản lý người thuê"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

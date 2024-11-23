@@ -96,7 +96,7 @@ class RoomDetailActivity : AppCompatActivity() {
             adapter = chiTietAdapter
 
             // Thêm SpacingItemDecoration để tạo khoảng cách đều giữa các item
-            addItemDecoration(SpacingItemDecoration(20))  // 16dp là khoảng cách giữa các item
+            addItemDecoration(SpacingItemDecoration(10))  // 16dp là khoảng cách giữa các item
         }
     }
 
@@ -126,7 +126,7 @@ class RoomDetailActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(context, 3)
             adapter = phiDichVuAdapter
 
-            addItemDecoration(SpacingItemDecoration(6))
+//            addItemDecoration(SpacingItemDecoration(1))
         }
     }
 

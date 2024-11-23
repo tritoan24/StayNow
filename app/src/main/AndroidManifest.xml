@@ -27,14 +27,15 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logoapp"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StayNow">
+        android:theme="@style/Theme.StayNow"
+        android:usesCleartextTraffic="true">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+
         <activity
             android:name=".Maps.MapsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />
@@ -66,6 +67,7 @@
             android:name=".hieunt.view.feature.schedule_room.ScheduleRoomActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".Activity.SplashActivity"
             android:exported="true">
@@ -100,7 +102,11 @@
 
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
+            android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
+        <activity
+            android:name=".DangKiDangNhap.OTPActivity"
             android:exported="false" />
+
         <!-- Thêm cấu hình cho Google Sign-In -->
 
         <meta-data
