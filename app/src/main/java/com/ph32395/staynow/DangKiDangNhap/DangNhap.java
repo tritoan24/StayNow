@@ -122,73 +122,80 @@ public class DangNhap extends AppCompatActivity {
             } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 edMail.setError("Email không hợp lệ");
             } else {
-                // Lấy UID của user dựa trên email
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference usersRef = database.getReference("NguoiDung");
+                // Đăng nhập Firebase Auth trước
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(DangNhap.this, task -> {
+                            if (task.isSuccessful()) {
+                                // Nếu đăng nhập Firebase thành công, kiểm tra thông tin người dùng trong Realtime Database
+                                FirebaseUser currentUser = mAuth.getCurrentUser();
+                                if (currentUser != null) {
+                                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                    DatabaseReference usersRef = database.getReference("NguoiDung");
 
-                usersRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                String uid = userSnapshot.getKey();
-                                String status = userSnapshot.child("trang_thaitaikhoan").getValue(String.class);
-                                Boolean daXacThucValue = userSnapshot.child("daXacThuc").getValue(Boolean.class);
-                                // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
-                                boolean daXacThuc = daXacThucValue != null && daXacThucValue;
-                                String loaiTaiKhoan = userSnapshot.child("loai_taikhoan").getValue(String.class);
-                                // Kiểm tra trạng thái tài khoản
-                                if ("HoatDong".equals(status)) {
-                                    if (daXacThuc) {
-                                        assert loaiTaiKhoan != null;
-                                        if (!loaiTaiKhoan.equals("ChuaChon")) {
-                                            // Đăng nhập bằng Firebase Auth
-                                            mAuth.signInWithEmailAndPassword(email, password)
-                                                    .addOnCompleteListener(DangNhap.this, task -> {
-                                                        if (task.isSuccessful()) {
-                                                            Toast.makeText(DangNhap.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                    // Tìm kiếm người dùng qua UID trong Realtime Database
+                                    usersRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+                                                String status = dataSnapshot.child("trang_thaitaikhoan").getValue(String.class);
+                                                Boolean daXacThucValue = dataSnapshot.child("daXacThuc").getValue(Boolean.class);
+                                                boolean daXacThuc = daXacThucValue != null && daXacThucValue;
+                                                String loaiTaiKhoan = dataSnapshot.child("loai_taikhoan").getValue(String.class);
 
+                                                if ("HoatDong".equals(status)) {
+                                                    if (daXacThuc) {
+                                                        // Nếu đã xác thực và loại tài khoản không phải "ChuaChon", vào MainActivity
+                                                        if (!"ChuaChon".equals(loaiTaiKhoan)) {
                                                             // Lưu trạng thái đã đăng nhập vào SharedPreferences
                                                             SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = prefs.edit();
                                                             editor.putBoolean("is_logged_in", true);
                                                             editor.apply();
 
+                                                            // Chuyển sang MainActivity
                                                             startActivity(new Intent(DangNhap.this, MainActivity.class));
                                                             finish(); // Đóng màn hình đăng nhập
                                                         } else {
-                                                            showFailureAnimation("Đăng nhập thất bại");
+                                                            // Nếu loại tài khoản là "ChuaChon", chuyển đến ChonLoaiTK
+                                                            Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
+                                                            startActivity(intent);
                                                         }
-                                                    });
-                                        } else {
-                                            Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
-                                            startActivity(intent);
+                                                    } else {
+                                                        assert loaiTaiKhoan != null;
+                                                        if (loaiTaiKhoan.equals("ChuaChon")) {
+                                                            Intent intent = new Intent(DangNhap.this, OTPActivity.class);
+                                                            intent.putExtra("email", email);
+                                                            intent.putExtra("uid", currentUser.getUid());
+                                                            startActivity(intent);
+                                                        }else {
+                                                            proceedToOtpActivity(currentUser);
+                                                        }
+
+                                                    }
+                                                } else {
+                                                    // Nếu tài khoản bị khóa
+                                                    showFailureAnimation("Tài khoản của bạn đã bị khóa");
+                                                }
+                                            } else {
+                                                // Nếu không tìm thấy người dùng
+                                                showFailureAnimation("Không tìm thấy thông tin người dùng");
+                                            }
                                         }
-                                    } else {
-                                        Intent intent = new Intent(DangNhap.this, OTPActivity.class);
-                                        intent.putExtra("email", email);
-                                        intent.putExtra("uid", uid);
-                                        startActivity(intent);
-                                    }
 
-
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            // Xử lý lỗi kết nối
+                                            showFailureAnimation("Lỗi kết nối tới máy chủ");
+                                        }
+                                    });
                                 } else {
-                                    showFailureAnimation("Tài khoản của bạn đã bị khóa");
-
+                                    showFailureAnimation("Lỗi xác thực người dùng");
                                 }
+                            } else {
+                                // Đăng nhập Firebase thất bại
+                                showFailureAnimation("Email hoặc mật khẩu không đúng");
                             }
-                        } else {
-                            showFailureAnimation("Tài khoản không tồn tại");
-
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                        showFailureAnimation("Lỗi Internet");
-
-                    }
-                });
+                        });
             }
         });
 
