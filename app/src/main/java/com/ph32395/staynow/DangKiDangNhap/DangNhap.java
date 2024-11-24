@@ -53,14 +53,11 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class DangNhap extends AppCompatActivity {
-    private Button btnDangNhap, btnDangNhapGoogle;
-    private TextView txtdangky, Txtquenmk;
     private EditText edMail, edPass;
     private FirebaseAuth mAuth;
     private RegisterWithGoogle registerWithGoogle;
     private DatabaseReference mDatabase;
     private ImageView img_anhienpass;
-    private CheckBox Cbremember;
 
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private static final int RC_SIGN_IN_REGISTER = 9001;
@@ -72,14 +69,14 @@ public class DangNhap extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dang_nhap);
 
-        btnDangNhap = findViewById(R.id.loginButton);
-        txtdangky = findViewById(R.id.txtdangky);
+        Button btnDangNhap = findViewById(R.id.loginButton);
+        TextView txtdangky = findViewById(R.id.txtdangky);
         edMail = findViewById(R.id.username);
         edPass = findViewById(R.id.password);
         img_anhienpass = findViewById(R.id.img_anhienpass);
-        btnDangNhapGoogle = findViewById(R.id.loginWithGGButton);
-        Txtquenmk = findViewById(R.id.Txtquenmk);
-        Cbremember = findViewById(R.id.Cbremember);
+        Button btnDangNhapGoogle = findViewById(R.id.loginWithGGButton);
+        TextView txtquenmk = findViewById(R.id.Txtquenmk);
+        CheckBox cbremember = findViewById(R.id.Cbremember);
 
         // Khởi tạo FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
@@ -95,11 +92,11 @@ public class DangNhap extends AppCompatActivity {
         if (isChecked) {
             edMail.setText(prefs.getString("email", ""));
             edPass.setText(prefs.getString("password", ""));
-            Cbremember.setChecked(true);
+            cbremember.setChecked(true);
         }
 
         // Lưu thông tin khi checkbox thay đổi
-        Cbremember.setOnCheckedChangeListener((buttonView, isChecked1) -> {
+        cbremember.setOnCheckedChangeListener((buttonView, isChecked1) -> {
             SharedPreferences.Editor editor = prefs.edit();
             if (isChecked1) {
                 editor.putString("email", edMail.getText().toString());
@@ -194,7 +191,7 @@ public class DangNhap extends AppCompatActivity {
         txtdangky.setOnClickListener(v -> {
             startActivity(new Intent(DangNhap.this, DangKy.class));
         });
-        Txtquenmk.setOnClickListener(v -> {
+        txtquenmk.setOnClickListener(v -> {
             startActivity(new Intent(DangNhap.this, QuenMK.class));
         });
 
