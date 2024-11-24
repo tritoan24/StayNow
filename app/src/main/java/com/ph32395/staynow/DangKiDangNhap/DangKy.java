@@ -70,7 +70,6 @@ public class DangKy extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-
         // Liên kết các thành phần giao diện
         tenEditText = findViewById(R.id.ten);
         sdtEditText = findViewById(R.id.sdt);
@@ -309,8 +308,8 @@ public class DangKy extends AppCompatActivity {
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
 
+                                                assert loaiTaiKhoan != null;
                                                 if (daXacThuc) {
-                                                    assert loaiTaiKhoan != null;
                                                     Intent intent;
                                                     if (!loaiTaiKhoan.equals("ChuaChon")) {
                                                         intent = new Intent(DangKy.this, MainActivity.class);
@@ -319,8 +318,9 @@ public class DangKy extends AppCompatActivity {
                                                     }
                                                     startActivity(intent);
                                                 } else {
-                                                    Intent intent = new Intent(DangKy.this, OTPActivity.class);
-                                                    startActivity(intent);
+                                                    // nếu tài khoản chưa xác thực
+                                                    proceedToOtpActivity(user);
+
                                                 }
 
                                             } else {

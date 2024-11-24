@@ -143,9 +143,10 @@ public class DangNhap extends AppCompatActivity {
                                                 String loaiTaiKhoan = dataSnapshot.child("loai_taikhoan").getValue(String.class);
 
                                                 if ("HoatDong".equals(status)) {
+                                                    assert loaiTaiKhoan != null;
                                                     if (daXacThuc) {
                                                         // Nếu đã xác thực và loại tài khoản không phải "ChuaChon", vào MainActivity
-                                                        if (!"ChuaChon".equals(loaiTaiKhoan)) {
+                                                        if (!loaiTaiKhoan.equals("ChuaChon")) {
                                                             // Lưu trạng thái đã đăng nhập vào SharedPreferences
                                                             SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = prefs.edit();
@@ -154,23 +155,14 @@ public class DangNhap extends AppCompatActivity {
 
                                                             // Chuyển sang MainActivity
                                                             startActivity(new Intent(DangNhap.this, MainActivity.class));
-                                                            finish(); // Đóng màn hình đăng nhập
+                                                            finish();
                                                         } else {
                                                             // Nếu loại tài khoản là "ChuaChon", chuyển đến ChonLoaiTK
                                                             Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
                                                             startActivity(intent);
                                                         }
                                                     } else {
-                                                        assert loaiTaiKhoan != null;
-                                                        if (loaiTaiKhoan.equals("ChuaChon")) {
-                                                            Intent intent = new Intent(DangNhap.this, OTPActivity.class);
-                                                            intent.putExtra("email", email);
-                                                            intent.putExtra("uid", currentUser.getUid());
-                                                            startActivity(intent);
-                                                        }else {
-                                                            proceedToOtpActivity(currentUser);
-                                                        }
-
+                                                        proceedToOtpActivity(currentUser);
                                                     }
                                                 } else {
                                                     // Nếu tài khoản bị khóa
@@ -331,8 +323,7 @@ public class DangNhap extends AppCompatActivity {
                                                     }
                                                     startActivity(intent);
                                                 } else {
-                                                    Intent intent = new Intent(DangNhap.this, OTPActivity.class);
-                                                    startActivity(intent);
+                                                    proceedToOtpActivity(user);
                                                 }
 
                                             } else {

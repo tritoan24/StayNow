@@ -10,8 +10,14 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.databinding.ActivityOtpactivityBinding
 import com.ph32395.staynow.utils.constants.Constants
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -150,15 +156,7 @@ class OTPActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
-                    // Xử lý kết quả từ server
-                    runOnUiThread {
-                        Toast.makeText(
-                            this@OTPActivity,
-                            "Xác thực OTP thành công",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                    startActivity(Intent(this@OTPActivity, ChonLoaiTK::class.java))
+                    checkAccountTypeInRealtimeDatabase(uid)
                 } else {
                     runOnUiThread {
                         Toast.makeText(this@OTPActivity, "OTP chưa đúng", Toast.LENGTH_SHORT)
@@ -217,6 +215,38 @@ class OTPActivity : AppCompatActivity() {
 
     }
 
+    private fun checkAccountTypeInRealtimeDatabase(uid: String) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val snapshot = databaseReference.get().await()
+                if (snapshot.exists()) {
+                    val accountType = snapshot.child("loai_taikhoan").value.toString()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        navigateBasedOnAccountType(accountType)
+                    }
+                } else {
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(this@OTPActivity, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(this@OTPActivity, "Lỗi khi kiểm tra tài khoản: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+    // Điều hướng dựa trên loại tài khoản
+    private fun navigateBasedOnAccountType(accountType: String) {
+        if (accountType == "ChuaChon") {
+            startActivity(Intent(this@OTPActivity, ChonLoaiTK::class.java))
+        } else {
+            startActivity(Intent(this@OTPActivity, MainActivity::class.java))
+        }
+        finish()
+    }
 
 }
 
