@@ -77,7 +77,8 @@
             android:layout_marginTop="150dp"
             android:elevation="8dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="18dp">
+            app:cardCornerRadius="18dp"
+            >
 
             <include
                 android:id="@+id/view_location_search"

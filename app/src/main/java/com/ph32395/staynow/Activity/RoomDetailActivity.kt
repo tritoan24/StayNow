@@ -1,5 +1,6 @@
 package com.ph32395.staynow.Activity
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
@@ -24,8 +28,11 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.R
+import com.ph32395.staynow.TaoHopDong.TaoHopDong
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.fragment.showWarningDialog
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
@@ -61,14 +68,39 @@ class RoomDetailActivity : AppCompatActivity() {
 
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
-            launchActivity(
-                Bundle().apply {
-                    putSerializable(ROOM_DETAIL, viewModel.room.value)
-                    putString(ROOM_ID, maPhongTro)
-                },
-                ScheduleRoomActivity::class.java
-            )
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            // Lấy dữ liệu từ Firebase Realtime Database
+            val database = FirebaseDatabase.getInstance().reference
+            val userRef = database.child("NguoiDung").child(userId)
+            userRef.get().addOnSuccessListener { snapshot ->
+                val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
+                val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+                Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
+                Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
+
+                // Kiểm tra trạng thái CCCD và PTTT
+                if (!statusCCCD) {
+                    showWarningDialog(
+                        context = this,
+                        title = "Bạn chưa cập nhật CCCD",
+                        content = "Hãy cập nhật CCCD để tiếp tục",
+                        confirmAction = { navigateToUpdateCCCD() }
+                    )
+                } else {
+                    launchActivity(
+                        Bundle().apply {
+                            putSerializable(ROOM_DETAIL, viewModel.room.value)
+                            putString(ROOM_ID, maPhongTro)
+                        },
+                        ScheduleRoomActivity::class.java
+                    )
+                }
+            }.addOnFailureListener { exception ->
+                // Xử lý lỗi nếu có
+                Log.e("RoomManagementFragment", "Error fetching user data", exception)
+            }
         }
+
 //        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
@@ -235,5 +267,9 @@ class RoomDetailActivity : AppCompatActivity() {
             findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
         }
 
+    }
+    private fun navigateToUpdateCCCD() {
+        val intent = Intent(this, CCCD::class.java)
+        startActivity(intent)
     }
 }

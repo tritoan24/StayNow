@@ -484,22 +484,21 @@
                 android:layout_gravity="center"
                 android:background="@drawable/cardview_border" />
 
-            <EditText
-                android:layout_width="match_parent"
+            <androidx.constraintlayout.utils.widget.MotionLabel
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/cardview_border"
-                android:hint="Ngày bắt đầu tính tiền"
-                android:padding="8dp" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/cardview_border"
-                android:padding="8dp" />
-
-
+                android:text="Ngày thanh toán hàng tháng"
+                android:textColor="@color/purple"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
+                <EditText
+                    android:id="@+id/editTextNgayThanhToan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/cardview_border"
+                    android:inputType="number" />
             <!--ListThongTin-->
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
@@ -564,7 +563,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical" />
+            <androidx.constraintlayout.utils.widget.MotionLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Ghi chú thêm"
+                android:textColor="@color/purple"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/cardview_border"
+                android:padding="8dp" />
 
             <!-- Nút lưu -->
             <Button

@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
-            android:name=".TaoHopDong.TaoHopDong"
+            android:name=".Activity.SplashActivity"
             android:exported="false" />
         <activity
             android:name=".ThongBao.NotificationActivity"
@@ -67,7 +67,7 @@
             android:name=".ThongTinThanhToan.PaymentInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".TaoHopDong.CCCD"
+            android:name=".CCCD.CCCD"
             android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
@@ -77,7 +77,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".DangKiDangNhap.DangNhap"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -90,7 +90,7 @@
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
         <activity
-            android:name=".DangKiDangNhap.DangNhap"
+            android:name=".TaoHopDong.TaoHopDong"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
         <activity

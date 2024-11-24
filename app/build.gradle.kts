@@ -120,6 +120,8 @@ dependencies {
     implementation ("androidx.camera:camera-view:1.2.2")
 
     implementation ("com.itextpdf:itext7-core:7.2.3")
+    implementation ("com.afollestad.material-dialogs:core:3.3.0")
+
 
 
 

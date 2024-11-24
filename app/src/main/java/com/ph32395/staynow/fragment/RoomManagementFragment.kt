@@ -11,7 +11,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.ph32395.staynow.TaoHopDong.CCCD
+import com.ph32395.staynow.CCCD.CCCD
+import com.ph32395.staynow.TaoHopDong.TaoHopDong
 import com.ph32395.staynow.ThongTinThanhToan.PaymentInfoActivity
 import com.ph32395.staynow.databinding.FragmentRoomManagementBinding
 import com.ph32395.staynow.hieunt.base.BaseFragment
@@ -74,7 +75,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 updateStatusRoom(it.roomScheduleId, CANCELED)
             },
             onClickCreateContract = {
-               createContract();
+               createContract(it.roomId,it.renterId);
             }
 
         )
@@ -124,7 +125,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         }
     }
     private fun navigateToUpdateCCCD() {
-        val intent = Intent(requireContext(),CCCD::class.java)
+        val intent = Intent(requireContext(), CCCD::class.java)
         startActivity(intent)
     }
     private fun navigateToUpdatePTTT() {
@@ -132,7 +133,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         startActivity(intent)
     }
 
-    private fun createContract() {
+    private fun createContract(maPhongTro: String, maNguoiThue: String) {
     //lấy id của người dùng hiện tại
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         //lấy 2 trường statusCCCD và statusPTTT từ database realtime bảng NguoiDung
@@ -140,7 +141,9 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         val userRef = database.child("NguoiDung").child(userId)
         userRef.get().addOnSuccessListener { snapshot ->
             val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
-            val statusPTTT = snapshot.child("StatusPTTT").value as? Boolean ?: false
+            val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+            Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
+            Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
 
             if (!statusCCCD) {
                 showWarningDialog(
@@ -158,6 +161,13 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 )
             }
                 else{
+                    //nếu đã cập nhật cả 2 thông tin CCCD và PTTT thì chuyển sang màn hình tạo hợp đồng
+                    val intent = Intent(requireContext(), TaoHopDong::class.java)
+                //chuyển mã phòng trọ sang màn hình tạo hợp đồng
+                intent.putExtra("maPhongTro",maPhongTro )
+                intent.putExtra("maNguoiThue",maNguoiThue )
+
+                    startActivity(intent)
 
 
                 }

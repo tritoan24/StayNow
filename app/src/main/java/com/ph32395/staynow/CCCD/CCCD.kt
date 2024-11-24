@@ -1,4 +1,4 @@
-package com.ph32395.staynow.TaoHopDong
+package com.ph32395.staynow.CCCD
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.mlkit.vision.barcode.BarcodeScanning
-import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import com.ph32395.staynow.R
 import java.util.concurrent.ExecutorService
@@ -183,6 +182,7 @@ class CCCD : AppCompatActivity() {
             .set(encryptedData)
             .addOnSuccessListener {
                 updateTrangThaiCCCD(userID, true)
+                finish()
             }
             .addOnFailureListener { e ->
                 println("Lỗi khi lưu CCCD: ${e.message}")
@@ -213,11 +213,18 @@ class CCCD : AppCompatActivity() {
         }
     }
     private fun encrypt(data: String, secretKey: String): String {
-        val keySpec = SecretKeySpec(secretKey.toByteArray(), "AES")
-        val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec)
-        return Base64.encodeToString(cipher.doFinal(data.toByteArray()), Base64.DEFAULT)
+        try {
+            val keySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
+            val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec)
+            val encryptedBytes = cipher.doFinal(data.toByteArray(Charsets.UTF_8))
+            return Base64.encodeToString(encryptedBytes, Base64.DEFAULT)
+        } catch (e: Exception) {
+            Log.e("Encryption", "Lỗi mã hóa: ${e.message}")
+            throw e
+        }
     }
+
 
 
     private fun updateTrangThaiCCCD(userId: String, CCCDstatus: Boolean) {

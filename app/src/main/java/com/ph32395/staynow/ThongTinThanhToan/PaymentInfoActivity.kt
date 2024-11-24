@@ -24,6 +24,7 @@ class PaymentInfoActivity : AppCompatActivity() {
     private lateinit var btnSavePaymentInfo: Button
     private lateinit var mAuth : FirebaseAuth
 
+
     private var qrCodeUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +37,7 @@ class PaymentInfoActivity : AppCompatActivity() {
         ivQrCode = findViewById(R.id.ivQrCode)
         btnUploadQr = findViewById(R.id.btnUploadQr)
         btnSavePaymentInfo = findViewById(R.id.btnSavePaymentInfo)
+        mAuth = FirebaseAuth.getInstance()
 
         // Xử lý tải mã QR lên
         btnUploadQr.setOnClickListener {
@@ -68,8 +70,6 @@ class PaymentInfoActivity : AppCompatActivity() {
             ivQrCode.setImageURI(qrCodeUri) // Hiển thị QR đã chọn
         }
     }
-
-
     private fun saveQrCodeToFirebaseStorage(uri: Uri, callback: (String?) -> Unit) {
         val storageRef = FirebaseStorage.getInstance().reference
         val qrCodeRef = storageRef.child("qr_codes/${UUID.randomUUID()}.jpg") // Tạo tên ngẫu nhiên cho file
@@ -123,7 +123,7 @@ class PaymentInfoActivity : AppCompatActivity() {
             .set(paymentInfo)
             .addOnSuccessListener {
                 updateTrangThaiPTTT(userId, true)
-                Toast.makeText(this, "Lưu thông tin thanh toán thành công!", Toast.LENGTH_SHORT).show()
+               finish()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Lưu thông tin thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
