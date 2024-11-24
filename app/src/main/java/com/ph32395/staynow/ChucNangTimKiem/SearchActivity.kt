@@ -163,7 +163,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         val listSearch = mutableListOf<Pair<String, PhongTroModel>>()
         Log.d(TAG, "onDataChange: queryWords $queryWords")
         Log.d(TAG, "onDataChange: query $query")
-
+        binding.layoutLoading.visibility = View.VISIBLE
         // Truy vấn tất cả các phòng trọ một lần
         dataRoom.get().addOnSuccessListener { snapshot ->
             val tasks = mutableListOf<Task<QuerySnapshot>>()
@@ -235,12 +235,15 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             }
         }.addOnFailureListener { exception ->
             Log.e(TAG, "Error getting documents: ", exception)
+        }.addOnCompleteListener {
+            binding.layoutLoading.visibility = View.GONE
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun readListRoom() {
         //firestore
+        binding.layoutLoading.visibility = View.VISIBLE
         dataRoom.get().addOnSuccessListener { it ->
             listFullRoom.clear()
             Log.d(TAG, "readListRoom: it read room ${it.toObjects(PhongTroModel::class.java)}")
@@ -274,6 +277,9 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             adapter.notifyDataSetChanged()
         }.addOnFailureListener {
             Log.e(TAG, "readListRoom: ${it.message.toString()}")
+        }.addOnCompleteListener {
+            binding.layoutLoading.visibility = View.GONE
+            Log.d(TAG, "readListRoom:  complete")
         }
 
 
@@ -500,7 +506,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 //            .addOnFailureListener {
 //                Log.d(TAG, "onPriceRangeSelected: it.msg ${it.message.toString()}")
 //            }
-
+        binding.layoutLoading.visibility = View.VISIBLE
         dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
             .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
             .get()
@@ -550,6 +556,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 Log.e(TAG, "Error fetching rooms: ${e.message}")
                 binding.rvListRoom.visibility = View.GONE
                 binding.layoutNullMsg.visibility = View.VISIBLE
+            }.addOnCompleteListener {
+                binding.layoutLoading.visibility = View.GONE
             }
 
 
@@ -621,7 +629,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     val maNoiThatList = noiThatTask.result?.documents?.map { it.id } ?: emptyList()
                     Log.d(TAG, "Mã nội thất: $maNoiThatList")
 
-
+                    binding.layoutLoading.visibility = View.VISIBLE
+                    binding.rvListRoom.visibility = View.GONE
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
                         .whereIn("Ma_loaiphong", maLoaiPhongList)
@@ -723,6 +732,9 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                         TAG,
                                                                         "Error fetching room details: ${exception.message}"
                                                                     )
+                                                                }.addOnCompleteListener {
+                                                                    binding.layoutLoading.visibility = View.GONE
+                                                                    binding.rvListRoom.visibility = View.VISIBLE
                                                                 }
                                                         }
 

@@ -139,6 +139,22 @@
             android:layout_weight="1"
             />
         <LinearLayout
+            android:id="@+id/layoutLoading"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:background="#0D9E9E9E"
+            android:visibility="gone"
+            >
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layoutNullMsg"
             android:layout_width="match_parent"
             android:layout_height="0dp"
