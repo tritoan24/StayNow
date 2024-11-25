@@ -28,6 +28,10 @@ class HomeViewModel : ViewModel() {
     val roomList: LiveData<List<Pair<String, PhongTroModel>>> get() = _roomList
     private val cachedRooms = mutableMapOf<String, List<Pair<String, PhongTroModel>>>()
 
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
     private val _loaiPhongTroList = MutableLiveData<List<LoaiPhongTro>>()
     val loaiPhongTroList: LiveData<List<LoaiPhongTro>> get() = _loaiPhongTroList
 
@@ -56,19 +60,26 @@ class HomeViewModel : ViewModel() {
 
 
     fun loadLoaiPhongTro() {
+        _isLoading.value = true  // Bắt đầu tải dữ liệu, set loading = true
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                // Lấy dữ liệu từ Firebase
                 val snapshot = firestore.collection("LoaiPhong").get().await()
                 val list = snapshot.documents.mapNotNull { it.toObject(LoaiPhongTro::class.java) }
+
                 withContext(Dispatchers.Main) {
+                    // Cập nhật danh sách Loại Phòng lên UI
                     _loaiPhongTroList.value = list
+                    _isLoading.value = false  // Dữ liệu đã tải xong, set loading = false
                 }
             } catch (e: Exception) {
-                // Handle error
+                // Xử lý lỗi
                 Log.e("HomeViewModel", "Error loading LoaiPhongTro: ${e.message}", e)
+                _isLoading.value = false  // Nếu có lỗi thì set loading = false
             }
         }
     }
+
 
     fun loadImagesFromFirebase() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -98,7 +109,6 @@ class HomeViewModel : ViewModel() {
             _roomList.postValue(it)
             return
         }
-
         // Bọc logic trong coroutine với Dispatchers.IO
         viewModelScope.launch(Dispatchers.IO) {
             firestore.collection("LoaiPhong")
@@ -141,6 +151,7 @@ class HomeViewModel : ViewModel() {
                             fetchChiTietThongTinForRoomList(rooms, maloaiPhongTro)
                             cachedRooms[maloaiPhongTro] = rooms
                             _roomList.postValue(rooms)
+
                         }
                     }
                 }

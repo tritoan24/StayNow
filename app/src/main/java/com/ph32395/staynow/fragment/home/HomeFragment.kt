@@ -7,6 +7,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -28,6 +29,7 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var swipeFresh: SwipeRefreshLayout
     private lateinit var imageSlider: ImageSlider
+    private lateinit var loadingIndicator: ProgressBar
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,12 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         swipeFresh = binding.swipeRefreshLayout
         imageSlider = binding.imageSlider
+        loadingIndicator = binding.loadingIndicator
+
+
+        // Load dữ liệu ban đầu
+        loadData()
+
 
         // Quan sát LiveData từ ViewModel
         homeViewModel.loaiPhongTroList.observe(viewLifecycleOwner) { loaiPhongTroList ->
@@ -46,11 +54,24 @@ class HomeFragment : Fragment() {
             imageSlider.setImageList(imageList, ScaleTypes.CENTER_CROP)
         }
 
+
+        // Quan sát trạng thái loading
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                loadingIndicator.visibility = View.VISIBLE
+                binding.viewPagerHome.visibility = View.GONE
+                binding.tabLayoutHome.visibility = View.GONE
+            } else {
+                loadingIndicator.visibility = View.GONE
+                binding.viewPagerHome.visibility = View.VISIBLE
+                binding.tabLayoutHome.visibility = View.VISIBLE
+            }
+        }
+
         swipeFresh.setOnRefreshListener {
             refreshData()
         }
-        // Load dữ liệu ban đầu
-        loadData()
+
         binding.viewLocationSearch.searchLayout.setOnClickListener {
             Toast.makeText(context, "Tính năng đang chờ phát triển", Toast.LENGTH_SHORT).show()
         }
@@ -58,15 +79,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadData() {
-        // Tải dữ liệu song song bằng Coroutine
         viewLifecycleOwner.lifecycleScope.launch {
-            // Gọi loadLoaiPhongTro và loadImagesFromFirebase song song
-            val loaiPhongTroDeferred = async { homeViewModel.loadLoaiPhongTro() }
+            // Gọi loadImagesFromFirebase và đợi kết quả
             val imagesDeferred = async { homeViewModel.loadImagesFromFirebase() }
+            imagesDeferred.await()  // Đợi xong rồi mới tiếp tục
 
-            // Đợi cả 2 tác vụ hoàn thành
-            loaiPhongTroDeferred.await()
-            imagesDeferred.await()
+            // Gọi loadLoaiPhongTro sau khi tải ảnh
+            homeViewModel.loadLoaiPhongTro()
         }
     }
 
@@ -89,11 +108,9 @@ class HomeFragment : Fragment() {
                 if (position < loaiPhongTroList.size) {
                     val selectedLoaiPhongTro = loaiPhongTroList[position].Ma_loaiphong
                     homeViewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
-
                 }
             }
         })
-
     }
 
     private fun refreshData() {
@@ -105,7 +122,7 @@ class HomeFragment : Fragment() {
         }
         Handler(Looper.getMainLooper()).postDelayed({
             swipeFresh.isRefreshing = false
-        }, 2000)
+        }, 0)
     }
 
 }
