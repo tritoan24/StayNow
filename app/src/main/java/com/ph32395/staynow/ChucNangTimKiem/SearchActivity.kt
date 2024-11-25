@@ -507,6 +507,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 //                Log.d(TAG, "onPriceRangeSelected: it.msg ${it.message.toString()}")
 //            }
         binding.layoutLoading.visibility = View.VISIBLE
+        binding.rvListRoom.visibility = View.GONE
+        binding.layoutNullMsg.visibility = View.GONE
         dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
             .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
             .get()
@@ -541,6 +543,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     if (listFilterPrice.isEmpty()) {
                         binding.rvListRoom.visibility = View.GONE
                         binding.layoutNullMsg.visibility = View.VISIBLE
+                        binding.layoutLoading.visibility = View.GONE
                     } else {
                         binding.rvListRoom.visibility = View.VISIBLE
                         binding.layoutNullMsg.visibility = View.GONE
@@ -631,6 +634,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                     binding.layoutLoading.visibility = View.VISIBLE
                     binding.rvListRoom.visibility = View.GONE
+                    binding.layoutNullMsg.visibility = View.GONE
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
                         .whereIn("Ma_loaiphong", maLoaiPhongList)
@@ -672,6 +676,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                             if (finalRooms.isEmpty()) {
                                                 binding.layoutNullMsg.visibility = View.VISIBLE
                                                 binding.rvListRoom.visibility = View.GONE
+                                                binding.layoutLoading.visibility = View.GONE
                                             } else {
                                                 binding.layoutNullMsg.visibility = View.GONE
                                                 binding.rvListRoom.visibility = View.VISIBLE
