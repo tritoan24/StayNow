@@ -1,15 +1,23 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
+import FinancialInfo
+import HopDong
+import PersonInfo
+import RoomDetail
+import RoomInfo
+import UtilityFee
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CalendarView
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -19,7 +27,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
@@ -30,34 +37,74 @@ import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.CCCD.CccdViewModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
+import jp.wasabeef.richeditor.RichEditor
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class TaoHopDong : AppCompatActivity() {
 
-    //Khai báo phần lịch
+    // Khai báo ViewModel
+    private val viewModelHopDong: ContractViewModel by viewModels()
+    private lateinit var viewModel: RoomDetailViewModel
+    private lateinit var viewModelCccd: CccdViewModel
+
+    // Khai báo phần lịch
     private lateinit var calendarView: CalendarView
     private var isSelectingStartDate = true
-    //ngày bắt đầu và ngày kết thúc
+
+    // Ngày bắt đầu và ngày kết thúc
     private var startDate: Calendar = Calendar.getInstance()
     private var endDate: Calendar = Calendar.getInstance()
-    //Khai báo phần Lấy thông tin bảng Thông tin
+
+    // Khai báo phần Lấy thông tin bảng Thông tin
     private lateinit var chiTietAdapter: ChiTietThongTinAdapter
     private lateinit var phiDichVuAdapter: PhiDichVuAdapter
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var tienNghiAdapter: TienNghiAdapter
-    //Khai báo viewModel
-    private lateinit var viewModel: RoomDetailViewModel
-    private lateinit var viewModelCccd: CccdViewModel
 
-    private lateinit var tvDienTich: TextView
+    // Firebase Auth
     private val auth = FirebaseAuth.getInstance()
 
+    // Ánh xạ View
+    private lateinit var tvNameRoom: TextView
+    private lateinit var tvAddress: TextView
+    private lateinit var tvPrice: TextView
+    private lateinit var imageRoom: ImageView
+    private lateinit var tvDienTich: TextView
+
+    private lateinit var tvStartDate: TextView
+    private lateinit var tvEndDate: TextView
+    private lateinit var startDateLayout: LinearLayout
+    private lateinit var endDateLayout: LinearLayout
+    private lateinit var tvMonth: TextView
+
+    private lateinit var txtSoCCDCT: TextView
+    private lateinit var txtHoTenCT: TextView
+    private lateinit var txtNgaySinhCT: TextView
+    private lateinit var txtGioiTinhCT: TextView
     private lateinit var txtSoDienThoaiCT: TextView
+    private lateinit var txtDiaChiCT: TextView
+    private lateinit var txtNgayCapCT: TextView
+
+    private lateinit var txtSoCCDNT: TextView
+    private lateinit var txtHoTenNT: TextView
+    private lateinit var txtNgaySinhNT: TextView
+    private lateinit var txtGioiTinhNT: TextView
     private lateinit var txtSoDienThoaiNT: TextView
+    private lateinit var txtDiaChiNT: TextView
+    private lateinit var txtNgayCapNT: TextView
+
+    private lateinit var btnSave: TextView
+    private lateinit var txtNgayThanhToan: TextView
+    private lateinit var editorDieuKhoan: RichEditor
+    private lateinit var note: TextView
+
+    private lateinit var maPhongTro: String
+    private lateinit var maNguoiThue: String
+
+    private var giaPhong: Double = 0.0
 
 
 
@@ -67,43 +114,16 @@ class TaoHopDong : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tao_hop_dong)
 
-        // Ánh xạ view phần xử lý chọn thời gian
-        val tvStartDate = findViewById<TextView>(R.id.tvStartDate)
-        val tvEndDate = findViewById<TextView>(R.id.tvEndDate)
-        val startDateLayout = findViewById<LinearLayout>(R.id.StartDate)
-        val endDateLayout = findViewById<LinearLayout>(R.id.EndDate)
-        val tvMonth = findViewById<TextView>(R.id.tvSoThang)
-        //ánh xạ thông tin CCCD
-        val txtSoCCDCT = findViewById<TextView>(R.id.txtSoCCD)
-        val txtHoTenCT = findViewById<TextView>(R.id.txtHoTenCCCD)
-        val txtNgaySinhCT = findViewById<TextView>(R.id.txtNgaySinhCCCD)
-        val txtGioiTinhCT = findViewById<TextView>(R.id.txtGioiTinhCCCD)
-         txtSoDienThoaiCT = findViewById<TextView>(R.id.txtSDTCCCD)
-        val txtDiaChiCT = findViewById<TextView>(R.id.txtDiaChiCCCD)
-        val txtNgayCapCT = findViewById<TextView>(R.id.txtNgayCapCCCD)
-        //ánh xạ thông tin CCCD bên thuê
-        val txtSoCCDNT = findViewById<TextView>(R.id.txtSoCCDNT)
-        val txtHoTenNT = findViewById<TextView>(R.id.txtHoTenCCCDNT)
-        val txtNgaySinhNT = findViewById<TextView>(R.id.txtNgaySinhCCCDNT)
-        val txtGioiTinhNT = findViewById<TextView>(R.id.txtGioiTinhCCCDNT)
-         txtSoDienThoaiNT = findViewById<TextView>(R.id.txtSDTCCCDNT)
-        val txtDiaChiNT = findViewById<TextView>(R.id.txtDiaChiCCCDNT)
-        val txtNgayCapNT = findViewById<TextView>(R.id.txtNgayCapCCCDNT)
-        //ánh xạ nút lưu
-        val btnSave = findViewById<TextView>(R.id.btnSaveContract)
-        //ánh xạ ngày thanh toán hàng tháng
-        val txtNgayThanhToan = findViewById<TextView>(R.id.editTextNgayThanhToan)
+        // Gọi hàm ánh xạ View
+        initViews()
 
         //nếu ngày thanh toán chưa nhập gì mặc định lấy ngày của startdate
         //ngày thanh toán ở ô Textinput của tôi đã setNumber
-        if(txtNgayThanhToan.text.toString().isEmpty()){
+        if (txtNgayThanhToan.text.toString().isEmpty()) {
             txtNgayThanhToan.text = startDate.get(Calendar.DAY_OF_MONTH).toString()
         }
-        //nếu ngày không phải là ngày trong một tháng
-        if(txtNgayThanhToan.text.toString().toInt() > 30 || txtNgayThanhToan.text.toString().toInt() < 1){
-        }
 
-        tvDienTich = findViewById(R.id.txtDienTich)
+
         calendarView = findViewById(R.id.calendarViewStartDate)
 
         //Khoi tao cac adapter
@@ -114,8 +134,8 @@ class TaoHopDong : AppCompatActivity() {
 
 
         //lấy mã phòng trọ và lấy thông tin phòng trọ
-        val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
-        val maNguoiThue = intent.getStringExtra("maNguoiThue") ?: ""
+        maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+        maNguoiThue = intent.getStringExtra("maNguoiThue") ?: ""
 
         //gọi hàm lấy số điện thoại người dùng
         getPhoneNumberFromId(auth.currentUser?.uid ?: "") { phoneNumber1 ->
@@ -146,15 +166,13 @@ class TaoHopDong : AppCompatActivity() {
         viewModel.room.observe(this) { room ->
             Log.d("TaoHopDong", "room: $room")
             //khai baos cac view
-            val tvNameRoom = findViewById<TextView>(R.id.txtTenPhongTro)
-            val tvAddress = findViewById<TextView>(R.id.txtDiaChiHome)
-            val tvPrice = findViewById<TextView>(R.id.tvGiaThue)
-            val imageRoom = findViewById<ImageView>(R.id.imagePhongTro)
 
-            //set gia tri cho cac view
+
+            //set gia tri cho Phòng trọ
             tvNameRoom.text = room.Ten_phongtro
             tvAddress.text = room.Dia_chichitiet
-            tvPrice.text =  "${String.format("%,.0f", room.Gia_phong)} VND"
+            tvPrice.text = "${String.format("%,.0f", room.Gia_phong)} VND"
+            giaPhong = room.Gia_phong
             // Cập nhật ảnh phòng trọ
             Glide.with(this)
                 .load(room.imageUrls[0])
@@ -201,19 +219,26 @@ class TaoHopDong : AppCompatActivity() {
             }
             if (isSelectingStartDate) {
                 startDate = selectedDate
-                tvStartDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.time)
+                tvStartDate.text =
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.time)
                 // Cập nhật ngày kết thúc dựa trên số tháng
                 DateUtils.updateEndDateBasedOnMonths(startDate, tvMonth.text.toString(), tvEndDate)
                 txtNgayThanhToan.text = startDate.get(Calendar.DAY_OF_MONTH).toString()
             } else {
                 endDate = selectedDate
-                tvEndDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(endDate.time)
+                tvEndDate.text =
+                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(endDate.time)
                 // Kiểm tra nếu ngày kết thúc nhỏ hơn ngày bắt đầu
                 if (endDate.before(startDate)) {
-                    Toast.makeText(this, "Ngày kết thúc không được nhỏ hơn ngày bắt đầu", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Ngày kết thúc không được nhỏ hơn ngày bắt đầu",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     // Reset lại ngày kết thúc
                     endDate = Calendar.getInstance().apply { time = startDate.time }
-                    tvEndDate.text = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(endDate.time)
+                    tvEndDate.text =
+                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(endDate.time)
                 } else {
                     // Cập nhật số tháng nếu ngày kết thúc hợp lệ
                     DateUtils.updateMonthsBasedOnDates(startDate, endDate, tvMonth)
@@ -227,7 +252,6 @@ class TaoHopDong : AppCompatActivity() {
         tvMonth.setOnClickListener {
             DateUtils.showMonthPicker(this, tvMonth, startDate, tvEndDate)
         }
-
 
 
         // Quan sát lỗi
@@ -264,7 +288,44 @@ class TaoHopDong : AppCompatActivity() {
 
             }
         }
+
+
+
+        //sử lý text DieuKhoan
+        editorDieuKhoan.setEditorFontSize(16) // Kích thước font chữ
+        editorDieuKhoan.setEditorFontColor(
+            resources.getColor(
+                android.R.color.black,
+                theme
+            )
+        ) // Màu chữ
+        editorDieuKhoan.setEditorBackgroundColor(
+            resources.getColor(
+                android.R.color.white,
+                theme
+            )
+        ) // Màu nền
+        editorDieuKhoan.setPlaceholder("Nhập quy định hợp đồng...") // Gợi ý khi chưa có nội dung
+
+        // Xử lý nút "Bullet" (ký tự đầu dòng)
+        findViewById<ImageButton>(R.id.btn_bullet).setOnClickListener {
+            editorDieuKhoan.setBullets()
+        }
+
+        btnSave.setOnClickListener {
+            if(validateContract()) {
+                createAndSaveContract()
+            }
+        }
+
+
+
+
+
     }
+
+
+
     // Hàm chuyển đổi trạng thái hiển thị CalendarView
     private fun toggleCalendarVisibility() {
         if (calendarView.visibility == View.GONE) {
@@ -357,5 +418,147 @@ private fun observeViewModel() {
     }
 
 }
+    //hàm lưu hợp đồng
+   private fun createAndSaveContract() {
+        val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
+            UtilityFee(
+                name = phiDichVu.ten_dichvu,
+                amount = phiDichVu.so_tien,
+                unit = phiDichVu.don_vi,
+                isRequired = true // Có thể thêm trường này vào model PhiDichVu nếu cần
+            )
+        } ?: emptyList()
+        // Lấy danh sách tên tiện nghi
+        val listAmenities = viewModel.tienNghiList.value?.map { tn ->
+            tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model HopDong.amenities là List<String>
+        } ?: emptyList()
 
+        // Lấy danh sách tên nội thất
+        val listFurniture = viewModel.noiThatList.value?.map { nt ->
+            nt.Ten_noithat // Chỉ cần lấy tên nội thất vì model HopDong.furniture là List<String>
+        } ?: emptyList()
+        val roomDetail = viewModel.chiTietList.value?.map { tt ->
+            RoomDetail(
+                name = tt.ten_thongtin,
+                value = tt.so_luong_donvi,
+                unit = tt.don_vi,
+            )
+        } ?: emptyList()
+        // Lấy giá trị tiền cọc từ ViewModel
+        val tienCoc = viewModel.getTienCocValue()
+
+
+        // Tạo đối tượng hợp đồng từ dữ liệu form
+        val contract = HopDong(
+            contractId = "", // Để trống để tạo mới
+            createdDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+            startDate = tvStartDate.text.toString(),
+            endDate = tvEndDate.text.toString(),
+            rentDuration = tvMonth.text.toString(),
+            paymentDay = txtNgayThanhToan.text.toString().toInt(),
+            note = note.text.toString(),
+            roomInfo = RoomInfo(
+                roomId = maPhongTro,
+                roomName = tvNameRoom.text.toString(),
+                address = tvAddress.text.toString(),
+                area = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
+                details = roomDetail
+            ),
+            landlordInfo = PersonInfo(
+                userId = auth.currentUser?.uid ?: "",
+                fullName = txtHoTenCT.text.toString(),
+                idNumber = txtSoCCDCT.text.toString(),
+                phone = txtSoDienThoaiCT.text.toString(),
+                address = txtDiaChiCT.text.toString(),
+                idIssueDate = txtNgayCapCT.text.toString(),
+                dateOfBirth = txtNgaySinhCT.text.toString()
+                // Thêm các thông tin khác
+            ),
+            tenantInfo = PersonInfo(
+                userId = maNguoiThue,
+                fullName = txtHoTenNT.text.toString(),
+                idNumber = txtSoCCDNT.text.toString(),
+                phone = txtSoDienThoaiNT.text.toString(),
+                address = txtDiaChiNT.text.toString(),
+                idIssueDate = txtNgayCapNT.text.toString(),
+                dateOfBirth = txtNgaySinhNT.text.toString()
+                // Thêm các thông tin khác
+            ),
+            financialInfo = FinancialInfo(
+               monthlyRent = giaPhong,
+                deposit = tienCoc,
+                utilities = utilityFees
+            ),
+            amenities = listAmenities, // Danh sách String chứa tên tiện nghi
+            furniture = listFurniture, // Danh sách String chứa tên nội thất
+
+            terms = editorDieuKhoan.html,
+
+
+
+            // Thêm các thông tin khác
+
+        )
+        // Lưu hợp đồng
+        viewModelHopDong.saveContract(contract)
+    }
+
+    private fun initViews() {
+        // Thông tin phòng
+        tvNameRoom = findViewById(R.id.txtTenPhongTro)
+        tvAddress = findViewById(R.id.txtDiaChiHome)
+        tvPrice = findViewById(R.id.tvGiaThue)
+        imageRoom = findViewById(R.id.imagePhongTro)
+        tvDienTich = findViewById(R.id.txtDienTich)
+
+        // Thời gian
+        tvStartDate = findViewById(R.id.tvStartDate)
+        tvEndDate = findViewById(R.id.tvEndDate)
+        startDateLayout = findViewById(R.id.StartDate)
+        endDateLayout = findViewById(R.id.EndDate)
+        tvMonth = findViewById(R.id.tvSoThang)
+
+        // CCCD chủ nhà
+        txtSoCCDCT = findViewById(R.id.txtSoCCD)
+        txtHoTenCT = findViewById(R.id.txtHoTenCCCD)
+        txtNgaySinhCT = findViewById(R.id.txtNgaySinhCCCD)
+        txtGioiTinhCT = findViewById(R.id.txtGioiTinhCCCD)
+        txtSoDienThoaiCT = findViewById(R.id.txtSDTCCCD)
+        txtDiaChiCT = findViewById(R.id.txtDiaChiCCCD)
+        txtNgayCapCT = findViewById(R.id.txtNgayCapCCCD)
+
+        // CCCD người thuê
+        txtSoCCDNT = findViewById(R.id.txtSoCCDNT)
+        txtHoTenNT = findViewById(R.id.txtHoTenCCCDNT)
+        txtNgaySinhNT = findViewById(R.id.txtNgaySinhCCCDNT)
+        txtGioiTinhNT = findViewById(R.id.txtGioiTinhCCCDNT)
+        txtSoDienThoaiNT = findViewById(R.id.txtSDTCCCDNT)
+        txtDiaChiNT = findViewById(R.id.txtDiaChiCCCDNT)
+        txtNgayCapNT = findViewById(R.id.txtNgayCapCCCDNT)
+
+        // Lưu hợp đồng
+        btnSave = findViewById(R.id.btnSaveContract)
+
+        // Ngày thanh toán
+        txtNgayThanhToan = findViewById(R.id.editTextNgayThanhToan)
+
+        // Điều khoản
+        editorDieuKhoan = findViewById(R.id.editorDieuKhoan)
+
+        //note
+        note = findViewById(R.id.note)
+
+
+    }
+
+    private fun validateContract(): Boolean {
+        //nếu ngày không phải là ngày trong một tháng
+        if (txtNgayThanhToan.text.toString().toInt() > 30 || txtNgayThanhToan.text.toString().toInt() < 1){
+            toast("Ngày thanh toán không hợp lệ")
+            return false
+        }
+        // Thêm các validation khác
+        return true
+    }
 }
+

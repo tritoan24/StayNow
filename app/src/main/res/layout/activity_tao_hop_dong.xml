@@ -563,6 +563,45 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical" />
+            <!-- RichEditor for nhập liệu -->
+
+            <androidx.constraintlayout.utils.widget.MotionLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Điều Khoản Hợp Đồng"
+                android:textColor="@color/purple"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <FrameLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <!-- RichEditor for nhập liệu -->
+                <jp.wasabeef.richeditor.RichEditor
+                    android:id="@+id/editorDieuKhoan"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/custom_edittext"
+                     android:layout_height="250dp"
+                    android:padding="10dp"
+                    />
+
+
+                <!-- Button nằm trên góc phải -->
+                <ImageButton
+                    android:id="@+id/btn_bullet"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_gravity="top|end"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/dot"
+                    android:elevation="4dp" />
+
+            </FrameLayout>
+
+
+            <!-- Ghi chú thêm -->
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -574,10 +613,11 @@
                 />
 
             <EditText
+                android:id="@+id/note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/cardview_border"
+                android:background="@drawable/custom_edittext"
                 android:padding="8dp" />
 
             <!-- Nút lưu -->

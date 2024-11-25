@@ -122,6 +122,10 @@ dependencies {
     implementation ("com.itextpdf:itext7-core:7.2.3")
     implementation ("com.afollestad.material-dialogs:core:3.3.0")
 
+    //thư viện custom text
+    implementation ("jp.wasabeef:richeditor-android:2.0.0")
+
+
 
 
 

@@ -49,6 +49,10 @@ class RoomDetailViewModel : ViewModel() {
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    // LiveData cho thông tin tiền cọc
+    private val _tienCocInfo = MutableLiveData<ChiTietThongTinModel?>()
+    val tienCocInfo: LiveData<ChiTietThongTinModel?> = _tienCocInfo
+
 //    lay danh sach tien nghi
     fun fetchTienNghi(maPhongTro: String) {
         db.collection("PhongTroTienNghi")
@@ -107,6 +111,7 @@ class RoomDetailViewModel : ViewModel() {
             .addOnSuccessListener { document ->
                 val list = document.mapNotNull { it.toObject(ChiTietThongTinModel::class.java) }
                 _chiTietList.value = list
+                updateTienCocInfo()
             }
             .addOnFailureListener { exception ->
                 Log.e("RoomDetailViewModel", "Lỗi khi lấy dữ liệu chi tiết thông tin", exception)
@@ -188,5 +193,14 @@ class RoomDetailViewModel : ViewModel() {
                     }
                 }
         }
+    }
+    // Hàm lấy thông tin tiền cọc từ danh sách chi tiết
+    private fun updateTienCocInfo() {
+        _tienCocInfo.value = _chiTietList.value?.find { it.ten_thongtin == "Tiền cọc" }
+    }
+
+    // Hàm public để lấy giá trị tiền cọc
+    fun getTienCocValue(): Double {
+        return _tienCocInfo.value?.so_luong_donvi?.toDouble() ?: 0.0
     }
 }
