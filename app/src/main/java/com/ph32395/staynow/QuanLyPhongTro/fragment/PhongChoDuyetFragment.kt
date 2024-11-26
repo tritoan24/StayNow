@@ -36,7 +36,6 @@ class PhongChoDuyetFragment : Fragment() {
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        val sharedPreferences = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
         val viewModel: HomeViewModel by viewModels()
         viewModel.loadRoomByStatus()
 

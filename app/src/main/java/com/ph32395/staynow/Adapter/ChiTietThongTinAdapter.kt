@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ph32395.staynow.Model.ChiTietThongTinModel
 import com.ph32395.staynow.R
+import java.text.NumberFormat
+import java.util.Locale
 
 class ChiTietThongTinAdapter(
     private val chiTietList: List<ChiTietThongTinModel>
@@ -36,7 +38,16 @@ class ChiTietThongTinAdapter(
         fun bind(chiTiet: ChiTietThongTinModel) {
             Glide.with(itemView.context).load(chiTiet.icon_thongtin).into(iconThongTin)
             tenThongTin.text = chiTiet.ten_thongtin
-            soLuongDonVi.text = chiTiet.so_luong_donvi.toString()
+            val soLuong= chiTiet.so_luong_donvi.toString()
+            if (soLuong.length >= 5) {
+//                Format thanh VND
+                val formattedAmount = NumberFormat.getCurrencyInstance(Locale("vi", "VN")).apply {
+                    maximumFractionDigits = 0 // Khong hien thi so thap pha
+                }.format(soLuong.toLong())
+                soLuongDonVi.text = formattedAmount
+            } else {
+                soLuongDonVi.text = soLuong
+            }
             donVi.text = chiTiet.don_vi
         }
     }

@@ -47,14 +47,7 @@ class PhongTroAdapter(
         notifyItemRangeChanged(0, roomList.size)  // Thay vì notifyDataSetChanged()
     }
 
-//    Them phuong thuc xoa hoac thay doi du lieu khi can
-    fun removeRoomAt(position: Int) {
-        if (position in roomList.indices) {
-            roomList.removeAt(position)
-            notifyItemRemoved(position)
-        }
-    }
-
+//    Lay thoi gian tao phong
     fun getFormattedTimeCustom(thoiGianTaoPhong: Long?): String {
         if (thoiGianTaoPhong == null || thoiGianTaoPhong == 0L) return "Không có thời gian"
         val prettyTime = PrettyTimeHelper.createCustomPrettyTime()
@@ -100,8 +93,6 @@ class PhongTroAdapter(
             roomTime.text = formattedTime
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid?: ""
-            Log.d("PTAdapter", userId)
-            Log.d("PTAdapter", room.Ma_nguoidung)
             if (userId.equals(room.Ma_nguoidung)) {
                 loaiTaiKhoan = "ManCT"
             } else {

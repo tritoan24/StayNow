@@ -34,6 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ph32395.staynow.CheckRoleActivity;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
@@ -266,7 +267,7 @@ public class DangKy extends AppCompatActivity {
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
                                                 // Tiến hành chuyển đến màn hình tiếp theo
-                                                Intent intent = new Intent(DangKy.this, MainActivity.class);
+                                                Intent intent = new Intent(DangKy.this, CheckRoleActivity.class);
                                                 startActivity(intent);
                                             } else {
                                                 Toast.makeText(DangKy.this, "Tài khoản của bạn đã bị khóa", Toast.LENGTH_SHORT).show();

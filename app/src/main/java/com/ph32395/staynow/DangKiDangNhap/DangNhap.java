@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ph32395.staynow.BaoMat.QuenMK;
+import com.ph32395.staynow.CheckRoleActivity;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
@@ -87,6 +88,7 @@ public class DangNhap extends AppCompatActivity {
             Cbremember.setChecked(true);
         }
 
+
         // Lưu thông tin khi checkbox thay đổi
         Cbremember.setOnCheckedChangeListener((buttonView, isChecked1) -> {
             SharedPreferences.Editor editor = prefs.edit();
@@ -102,6 +104,7 @@ public class DangNhap extends AppCompatActivity {
             editor.apply();
         });
 
+//        Xu ly su kien khi nhan vao nut dang nhap
         btnDangNhap.setOnClickListener(v -> {
             String email = edMail.getText().toString().trim();
             String password = edPass.getText().toString().trim();
@@ -129,16 +132,36 @@ public class DangNhap extends AppCompatActivity {
                                     mAuth.signInWithEmailAndPassword(email, password)
                                             .addOnCompleteListener(DangNhap.this, task -> {
                                                 if (task.isSuccessful()) {
+
+                                                    String idUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                                     Toast.makeText(DangNhap.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
 
                                                     // Lưu trạng thái đã đăng nhập vào SharedPreferences
                                                     SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                     SharedPreferences.Editor editor = prefs.edit();
                                                     editor.putBoolean("is_logged_in", true);
-                                                    editor.apply();
 
-                                                    startActivity(new Intent(DangNhap.this, MainActivity.class));
-                                                    finish(); // Đóng màn hình đăng nhập
+
+                                                    if (idUser != null) {
+                                                        DatabaseReference database = FirebaseDatabase.getInstance().getReference("NguoiDung").child(idUser);
+
+                                                        database.get().addOnSuccessListener(snapshot -> {
+                                                            String role = snapshot.child("loai_taikhoan").getValue(String.class);
+                                                            Log.d("MainActivity", "Vai trò người dùng từ Firebase: " + role);
+                                                            editor.putString("check", role);
+
+                                                            editor.apply();
+                                                            startActivity(new Intent(DangNhap.this, MainActivity.class));
+                                                            finish(); // Đóng màn hình đăng nhập
+
+                                                        }).addOnFailureListener(e -> Log.e("MainActivity", "Lỗi khi lấy vai trò từ Firebase: " + e.getMessage()));
+                                                    } else {
+                                                        Log.e("MainActivity", "Không tìm thấy userId.");
+                                                    }
+
+
+
+
                                                 } else {
                                                     showFailureAnimation("Đăng nhập thất bại");
                                                 }
@@ -230,11 +253,19 @@ public class DangNhap extends AppCompatActivity {
                                         // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                             String trangThaiTaiKhoan = snapshot.child("trang_thaitaikhoan").getValue(String.class);
+                                            String role = snapshot.child("loai_taikhoan").getValue(String.class);
+
 
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
                                                 // Tiến hành chuyển đến màn hình tiếp theo
+                                                SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = prefs.edit();
                                                 Intent intent = new Intent(DangNhap.this, MainActivity.class);
+                                                editor.putString("check", role);
+                                                editor.putBoolean("is_logged_in", true);
+
+                                                editor.apply();
                                                 startActivity(intent);
                                             } else {
                                                 // Tài khoản không hoạt động

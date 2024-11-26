@@ -7,11 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.ph32395.staynow.Model.ChiTietThongTin
 import com.ph32395.staynow.Model.PhongTroModel
@@ -59,7 +57,7 @@ class HomeViewModel : ViewModel() {
 
 //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
     fun loadRoomByStatus() {
-    val maNguoiDung = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        val maNguoiDung = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         firestore.collection("PhongTro")
             .whereEqualTo("Ma_nguoidung", maNguoiDung) //Loc theo ma nguoi dung
             .addSnapshotListener { snapshot, exception ->
@@ -90,6 +88,36 @@ class HomeViewModel : ViewModel() {
                 }
             }
     }
+
+//    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
+    fun updateRoomStatus(roomId: String, trangThaiDuyet: String, trangThaiLuu: Boolean) {
+        firestore.collection("PhongTro").document(roomId)
+            .update(mapOf(
+                "Trang_thaiduyet" to trangThaiDuyet,
+                "Trang_thailuu" to trangThaiLuu
+            ))
+            .addOnSuccessListener {
+                Log.d("HomeViewModel", "Room status updated successfully")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("HomeViewModel", "Error updating room status: ", exception)
+            }
+    }
+
+//    Doi trang thai de huy phong
+    fun updateRoomStatusHuyPhong(roomId: String, trangThaiDuyet: String) {
+        firestore.collection("PhongTro").document(roomId)
+            .update(mapOf(
+                "Trang_thaiduyet" to trangThaiDuyet
+            ))
+            .addOnSuccessListener {
+                Log.d("HomeViewModel", "Room status updated successfully")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("HomeViewModel", "Error updating room status: ", exception)
+            }
+    }
+
 
     // Hàm để cập nhật số lượt xem phòng trong Firestore
     fun incrementRoomViewCount(roomId: String) {
