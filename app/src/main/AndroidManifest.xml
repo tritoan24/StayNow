@@ -17,11 +17,17 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logoapp"
+        android:icon="@drawable/find_house"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logoapp"
+        android:roundIcon="@drawable/find_house"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
+        <activity
+            android:name=".BaoMat.PhanHoi"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.CapNhatThongTin"
+            android:exported="false" />
         <activity
             android:name=".BaoMat.ThongTinNguoiDung"
             android:exported="false" />
@@ -32,7 +38,7 @@
 
         <activity
             android:name=".Maps.MapsActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />

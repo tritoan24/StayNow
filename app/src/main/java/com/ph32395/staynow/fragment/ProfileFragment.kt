@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
+import com.ph32395.staynow.BaoMat.PhanHoi
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.R
@@ -38,6 +39,7 @@ class ProfileFragment : Fragment() {
     private lateinit var llScheduleRoom: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
     private lateinit var nextUpdate: ImageButton
+    private lateinit var nextPhanhoi: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
@@ -56,6 +58,7 @@ class ProfileFragment : Fragment() {
         logoutButton = view.findViewById(R.id.LogoutButton)
         nextDoiMK = view.findViewById(R.id.next_caidat)
         nextUpdate = view.findViewById(R.id.next_UpdateInfor)
+        nextPhanhoi = view.findViewById(R.id.phanhoiButton)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
@@ -139,6 +142,10 @@ class ProfileFragment : Fragment() {
         }
         nextDoiMK.setOnClickListener {
             startActivity(Intent(requireActivity(),CaiDat::class.java))
+            requireActivity().finish()
+        }
+        nextPhanhoi.setOnClickListener {
+            startActivity(Intent(requireActivity(), PhanHoi::class.java))
             requireActivity().finish()
         }
 

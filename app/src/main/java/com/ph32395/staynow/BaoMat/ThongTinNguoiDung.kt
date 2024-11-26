@@ -44,6 +44,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
 
 
 
+
         val userId = getIntent().getStringExtra("idUser");
         if(userId != null) {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
