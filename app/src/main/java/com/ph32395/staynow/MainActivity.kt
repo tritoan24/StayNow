@@ -1,18 +1,14 @@
 package com.ph32395.staynow
 
-import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
-import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
@@ -23,6 +19,9 @@ import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
 import com.ph32395.staynow.fragment.RoomManagementFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
+import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -38,37 +37,15 @@ class MainActivity : AppCompatActivity() {
     private val mDatabase = FirebaseDatabase.getInstance().reference
     private val currentUser = FirebaseAuth.getInstance().currentUser
 
-    private lateinit var userRole: String //Luu vai tro nguoi dung
+    private val PREFS_NAME: String = "MyAppPrefs"
+    private var userRole: String = ""
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(
-                object : OnCompleteListener<String?> {
-                    override fun onComplete(task: Task<String?>) {
-                        if (!task.isSuccessful) {
-                            Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
-                            return
-                        }
-
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        //lưu token này vào database
-                        if (currentUser != null) {
-                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-                                .setValue(token)
-
-
-                        }
-                        //nếu không có người dùng nào đăng nhập thì không lưu token
-
-                    }
-                })
 
 
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
@@ -77,20 +54,21 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-
-
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
             add(R.id.fragment_container, messageFragment, "MESSAGE").hide(messageFragment)
             add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
-            add(R.id.fragment_container, roomManagementFragment, "ROOM_MANAGEMENT").hide(roomManagementFragment)
-            add(R.id.fragment_container, homeNguoiChoThueFragment, "HOME_NGUOICHOTHUE").hide(homeNguoiChoThueFragment)
             add(R.id.fragment_container, homeFragment, "HOME").hide(homeFragment)
         }.commit()
 
-        //        lay vai tro nguoi dung tu Realtime Database
-        getUserRoleFromDatabase()
+//        Nhan vai tro tu Intent
+        val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
+        userRole = prefs.getString("check", "").toString()
+
+
+//        Cap nhat giao dien theo vai tro
+        updateUIForRole()
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
             Log.d("MainActivity", "Selected item: ${item.itemId}")
@@ -129,53 +107,9 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-//        Nút FloatingActionButton tim kiem
-//        binding.fabSearch.setOnClickListener {
-//            startActivity(Intent(this,SearchActivity::class.java))
-//        }
     }
 
-
-//    Ham lay vai tro nguoi dung tu Firebase Realtime Database
-    private fun getUserRoleFromDatabase() {
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        if (userId != null) {
-            val database = FirebaseDatabase.getInstance().getReference("NguoiDung").child(userId)
-            database.get().addOnSuccessListener { snapshot ->
-                val role = snapshot.child("loai_taikhoan").getValue(String::class.java)
-                Log.d("MainActivity", "Vai tro nguoi dung tu Firebase: $role")
-                if (role != null) {
-//                    Kiem tra loai tai khoan de hien thi
-                    when (role) {
-                        "NguoiChoThue", "NguoiThue" -> {
-                            userRole = role
-//                            Cap nhat giao dien sau khi lay vai tro
-                            Log.d("MainActivity", "Cap nhạt giao dien voi vai tro nguoi dung: $role")
-                            updateUIForRole()
-                        }
-                        "ChuaChon" -> {
-                            Log.d("MainActivity", "Dieu huong den man hinh Chọn Loai Tai Khoan")
-//                            Dieu huong den man hinh chon loai tai khoan
-                            val  intent = Intent(this, ChonLoaiTK::class.java)
-                            startActivity(intent)
-                            finish() //Ket thuc activity hien tai de ngan quay lai
-                        }
-                        else -> {
-                            Log.e("MainActivity", "Vai trò không hợp lệ: $role")
-                        }
-                    }
-                } else {
-                    Log.e("MainActivity", "Không lấy được vai trò người dùng.")
-                }
-            }.addOnFailureListener {
-                Log.e("MainActivity", "Lỗi khi lấy vai trò từ Firebase: ${it.message}")
-            }
-        } else {
-            Log.e("MainActivity", "Không tìm thấy userId.")
-        }
-    }
-
-//    Ham cap nhat giao dien dua tren vai tro nguoi dung
+    //    Ham cap nhat giao dien dua tren vai tro nguoi dung
     private fun updateUIForRole() {
         supportFragmentManager.beginTransaction().apply {
             // Nếu là NgườiChoThue
@@ -199,13 +133,6 @@ class MainActivity : AppCompatActivity() {
                     add(R.id.fragment_container, homeNguoiChoThueFragment, "HOME_NGUOICHOTHUE").hide(homeNguoiChoThueFragment)
                 }
 
-                // Ẩn toàn bộ các Fragment
-                hide(homeFragment)
-                hide(notificationFragment)
-                hide(messageFragment)
-                hide(profileFragment)
-                hide(roomManagementFragment)
-
                 // Hiển thị Fragment mặc định cho NguoiChoThue
                 show(homeNguoiChoThueFragment)
                 activeFragment = homeNguoiChoThueFragment
@@ -221,10 +148,6 @@ class MainActivity : AppCompatActivity() {
                 binding.fabSearch.setOnClickListener {
                     startActivity(Intent(this@MainActivity, SearchActivity::class.java))
                 }
-
-                // Ẩn toàn bộ các Fragment
-                hide(homeNguoiChoThueFragment)
-                hide(roomManagementFragment)
 
                 // Hiển thị Fragment mặc định cho NguoiThue
                 show(homeFragment)
@@ -242,6 +165,8 @@ class MainActivity : AppCompatActivity() {
             activeFragment = fragment
         }
     }
+
+
     override fun onStart() {
         super.onStart()
         setUserOnline()
@@ -260,6 +185,7 @@ class MainActivity : AppCompatActivity() {
         setUserOffline()
     }
 
+
     private fun setUserOnline() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
@@ -275,6 +201,15 @@ class MainActivity : AppCompatActivity() {
             val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
             userRef.child("status").setValue("offline")
             userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+//nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
         }
     }
 

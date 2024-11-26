@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.Activity.RoomDetailActivity
 
 import com.ph32395.staynow.Model.PhongTroModel
@@ -56,6 +57,7 @@ class RoomNguoiChoThueAdapter(
     inner class RoomViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
         private val areaTextView: TextView = view.findViewById(R.id.txtDienTich)
         private val txtThoiGianTao: TextView = view.findViewById(R.id.txtThoiGianTao)
+        private var loaiTaiKhoan: String = ""
 
         fun bind(room: Pair<String, PhongTroModel>) {
             val roomModel = room.second
@@ -77,11 +79,18 @@ class RoomNguoiChoThueAdapter(
             // Cập nhật diện tích (m²)
             areaTextView.text = "${roomModel.Dien_tich} m²"
 
+            val userId = FirebaseAuth.getInstance().currentUser?.uid?: ""
+            if (userId.equals(roomModel.Ma_nguoidung)) {
+                loaiTaiKhoan = "ManCT"
+            } else {
+                loaiTaiKhoan = "ManND"
+            }
 //            Su kien chuyen sang man chi tiet
             itemView.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
+                intent.putExtra("ManHome", loaiTaiKhoan)
                 context.startActivity(intent)
 
 //                goi view model de tang so luot xem

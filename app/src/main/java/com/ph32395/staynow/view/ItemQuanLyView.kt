@@ -1,10 +1,12 @@
 package com.ph32395.staynow.view
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.R
 
 class ItemQuanLyView @JvmOverloads constructor(
@@ -30,7 +32,7 @@ class ItemQuanLyView @JvmOverloads constructor(
     private fun onItemClicked(actionName: String) {
         when (actionName) {
             "QuanLyPhong" -> {
-                Toast.makeText(context, "Quan ly phong", Toast.LENGTH_SHORT).show()
+                context.startActivity(Intent(context, QuanLyPhongTroActivity::class.java))
             }
 
             "QuanLyHopDong" -> {

@@ -6,5 +6,6 @@ data class NotificationModel(
     val date: String = "",
     val time: String = "",
     val mapLink: String? = null,
-    val timestamp : Long = 0
+    val timestamp : Long = 0,
+    val isRead: Boolean = false
 )

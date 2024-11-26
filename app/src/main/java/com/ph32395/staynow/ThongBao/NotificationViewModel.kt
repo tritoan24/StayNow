@@ -15,22 +15,26 @@ class NotificationViewModel : ViewModel() {
     val notifications: LiveData<List<NotificationModel>> get() = _notifications
 
     private val database = FirebaseDatabase.getInstance().getReference("ThongBao")
+    private val _unreadCount = MutableLiveData<Int>()
+    val unreadCount: LiveData<Int> get() = _unreadCount
 
     fun fetchNotifications(userId: String) {
-        // Lắng nghe thay đổi trong cơ sở dữ liệu Firebase
         database.child(userId).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val notificationsList = mutableListOf<NotificationModel>()
+                var unread = 0
                 for (data in snapshot.children) {
                     val notification = data.getValue(NotificationModel::class.java)
-                    notification?.let { notificationsList.add(it) }
+                    if (notification != null) {
+                        notificationsList.add(notification)
+                        if (!notification.isRead) unread++
+                    }
                 }
-                // Cập nhật LiveData với danh sách thông báo mới
                 _notifications.value = notificationsList
+                _unreadCount.value = unread // Cập nhật số lượng thông báo chưa đọc
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Xử lý lỗi nếu có
                 Log.e("NotificationViewModel", "Error fetching notifications: ${error.message}")
             }
         })

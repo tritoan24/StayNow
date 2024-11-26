@@ -50,10 +50,10 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/cardView"
             android:layout_marginTop="5dp"
-            android:background="@color/transparent"
+            android:background="@color/grey_bg"
             app:tabGravity="fill"
             app:tabMode="scrollable"
-            app:tabRippleColor="@android:color/transparent" />
+            app:tabRippleColor="@android:color/transparent" />/>
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerHome"

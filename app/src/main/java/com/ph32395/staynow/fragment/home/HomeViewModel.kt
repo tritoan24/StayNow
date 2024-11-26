@@ -6,11 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.denzcoskun.imageslider.models.SlideModel
+import com.google.firebase.auth.FirebaseAuth
+import com.ph32395.staynow.Model.LoaiPhongTro
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.ph32395.staynow.Model.ChiTietThongTin
-import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.Model.PhongTroModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,9 +39,89 @@ class HomeViewModel : ViewModel() {
     private val _imageList = MutableLiveData<List<SlideModel>>()
     val imageList: LiveData<List<SlideModel>> get() = _imageList
 
+//    LiveData lay phong tro theo trang thai
+    private val _phongDaDang = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDaDang: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaDang
+
+    private val _phongDangLuu = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDangLuu: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDangLuu
+
+    private val _phongChoDuyet = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongChoDuyet: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongChoDuyet
+
+    private val _phongDaHuy = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDaHuy: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaHuy
+
+    private val _phongDaChoThue = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDaChoThue: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaChoThue
+
     fun selectLoaiPhongTro(idLoaiPhong: String) {
         _selectedLoaiPhongTro.value = idLoaiPhong
     }
+
+//    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    fun loadRoomByStatus() {
+        val maNguoiDung = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        firestore.collection("PhongTro")
+            .whereEqualTo("Ma_nguoidung", maNguoiDung) //Loc theo ma nguoi dung
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    Log.e("HomeViewModel", "Error fetching rooms: ", exception)
+                    return@addSnapshotListener
+                }
+
+//                lay tat ca cac phong theo ma nguoi fung
+                snapshot?.let {
+                    Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
+
+
+                    val allRooms = it.documents.mapNotNull { doc ->
+                        doc.toObject(PhongTroModel::class.java)?.let { room ->
+                            Pair(doc.id, room)
+
+                        }
+                    }
+
+//                    Phan loai phong tro theo trang thai
+                    _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
+                    _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
+                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                    _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
+                    _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
+
+                }
+            }
+    }
+
+//    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
+    fun updateRoomStatus(roomId: String, trangThaiDuyet: String, trangThaiLuu: Boolean) {
+        firestore.collection("PhongTro").document(roomId)
+            .update(mapOf(
+                "Trang_thaiduyet" to trangThaiDuyet,
+                "Trang_thailuu" to trangThaiLuu
+            ))
+            .addOnSuccessListener {
+                Log.d("HomeViewModel", "Room status updated successfully")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("HomeViewModel", "Error updating room status: ", exception)
+            }
+    }
+
+//    Doi trang thai de huy phong
+    fun updateRoomStatusHuyPhong(roomId: String, trangThaiDuyet: String) {
+        firestore.collection("PhongTro").document(roomId)
+            .update(mapOf(
+                "Trang_thaiduyet" to trangThaiDuyet
+            ))
+            .addOnSuccessListener {
+                Log.d("HomeViewModel", "Room status updated successfully")
+            }
+            .addOnFailureListener { exception ->
+                Log.e("HomeViewModel", "Error updating room status: ", exception)
+            }
+    }
+
 
     // Hàm để cập nhật số lượt xem phòng trong Firestore
     fun incrementRoomViewCount(roomId: String) {
@@ -59,6 +140,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
+//    lay loai phong
     fun loadLoaiPhongTro() {
         _isLoading.value = true  // Bắt đầu tải dữ liệu, set loading = true
         viewModelScope.launch(Dispatchers.IO) {
@@ -81,6 +163,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
+//    lay anh tu Store de hien thi len banner
     fun loadImagesFromFirebase() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
