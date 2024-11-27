@@ -9,8 +9,11 @@ import RoomDetail
 import UtilityFee
 import UtilityFeeDetail
 import UtilityFeeUiState
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -47,10 +50,11 @@ class HopDongViewModel {
     suspend fun saveContract(
         contract: HopDong,
         appointmentId: String,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         withContext(Dispatchers.IO) {
+            var idHopDong:String = ""
             try {
                 Log.d("HopDongViewModel", "Starting saveContract with appointmentId: $appointmentId")
 
@@ -71,13 +75,23 @@ class HopDongViewModel {
                         }
 
                         // Lưu hợp đồng
-                        val contractRef = if (contract.contractId.isEmpty()) {
+                        val contractRef = if (contract.maHopDong.isEmpty()) {
                             val newDoc = contractsCollection.document()
                             val newContractId = newDoc.id
                             contractData["maHopDong"] = newContractId
 
                             // Tạo một bản sao của hóa đơn với ID hợp đồng được cập nhật
-                            val updatedInvoice = contract.invoice.copy(idHopdong = newContractId)
+                            val updatedInvoice = contract.hoaDonHopDong.copy(idHopDong = newContractId)
+
+                            //chuyển sang màn chi tiết hóa đơn hợp đồng
+                             idHopDong = newContractId
+
+//                            //chuyển màn
+//                            val intent = Intent(requireContext(), ChiTietHoaDon::class.java)
+//                            intent.putExtra("idHopDong",idHopDong)
+//                            startActivity(intent)
+
+
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
                             val invoiceRef = newDoc.collection("hoaDonhopdong").document()
@@ -88,13 +102,15 @@ class HopDongViewModel {
                             newDoc
 
                         } else {
-                            contractsCollection.document(contract.contractId)
+                            val existingDoc = contractsCollection.document(contract.maHopDong)
+                            idHopDong = contract.maHopDong
+                            existingDoc
                         }
 
                         transaction.set(contractRef, contractData, SetOptions.merge())
 
                         // Cập nhật trạng thái phòng
-                        val roomRef = roomsCollection.document(contract.roomInfo.roomId)
+                        val roomRef = roomsCollection.document(contract.maPhong.maPhongTro)
                         transaction.update(roomRef, "Trang_thaiphong", true)
 
                         // Xóa lịch hẹn
@@ -104,7 +120,7 @@ class HopDongViewModel {
                 }
 
                 Log.d("HopDongViewModel", "Transaction completed successfully")
-                onSuccess()
+                onSuccess(idHopDong)
             } catch (e: Exception) {
                 Log.e("HopDongViewModel", "Error in saveContract: ${e.message}")
                 onFailure(e)
@@ -119,114 +135,118 @@ class HopDongViewModel {
      */
     private fun createContractDataMap(contract: HopDong): HashMap<String, Any> {
         return hashMapOf(
-            "maHopDong" to contract.contractId,
-            "ngayTao" to contract.createdDate,
-            "trangThai" to contract.status.name,
-            "ngayBatDau" to contract.startDate,
-            "ngayKetThuc" to contract.endDate,
-            "thoiHanThue" to contract.rentDuration,
-            "ngayThanhToan" to contract.paymentDay,
-            "maPhong" to contract.roomInfo.roomId,
-            "tenPhong" to contract.roomInfo.roomName,
-            "diaChiPhong" to contract.roomInfo.address,
-            "dienTich" to contract.roomInfo.area,
-            "thongTinChiTiet" to createRoomDetailsMap(contract.roomInfo.details),
-            "chuNha" to createLandlordInfoMap(contract.landlordInfo),
-            "nguoiThue" to createTenantInfoMap(contract.tenantInfo),
-            "thongTinTaiChinh" to createFinancialInfoMap(contract.financialInfo),
-            "tienNghi" to contract.amenities,
-            "noiThat" to contract.furniture,
-            "hoaDonhopdong" to createBillMap(contract.invoice),
-            "dieuKhoan" to contract.terms
+            "maHopDong" to contract.maHopDong,
+            "ngayTao" to contract.ngayTao,
+            "trangThai" to contract.trangThai.name,
+            "ngayBatDau" to contract.ngayBatDau,
+            "ngayKetThuc" to contract.ngayKetThuc,
+            "thoiHanThue" to contract.thoiHanThue,
+            "ngayThanhToan" to contract.ngayThanhToan,
+            "maPhong" to contract.maPhong.maPhongTro,
+            "tenPhong" to contract.maPhong.tenPhong,
+            "diaChiPhong" to contract.maPhong.diaChiPhong,
+            "dienTich" to contract.maPhong.dienTich,
+            "chuNha" to createLandlordInfoMap(contract.chuNha),
+            "nguoiThue" to createTenantInfoMap(contract.nguoiThue),
+            "thongTinTaiChinh" to createFinancialInfoMap(contract.thongTinTaiChinh),
+            "tienNghi" to contract.tienNghi,
+            "noiThat" to contract.noiThat,
+            "dieuKhoan" to contract.dieuKhoan,
+            "soNguoiO" to contract.soNguoiO,
+            "hoaDonHopDong" to createBillMap(contract.hoaDonHopDong),
+            "thongTinChiTiet" to createRoomDetailsMap(contract.maPhong.thongTinChiTiet),
+            "ghiChu" to contract.ghiChu,
+
+
         )
     }
 
     private fun createRoomDetailsMap(details: List<RoomDetail>): List<HashMap<String, Any>> {
         return details.map { detail ->
             hashMapOf(
-                "ten" to detail.name,
-                "giaTri" to detail.value,
-                "donVi" to detail.unit
+                "ten" to detail.ten,
+                "giaTri" to detail.giaTri,
+                "donVi" to detail.donVi
             )
         }
     }
 
     private fun createLandlordInfoMap(landlord: PersonInfo): HashMap<String, Any> {
         return hashMapOf(
-            "maNguoiDung" to landlord.userId,
-            "hoTen" to landlord.fullName,
-            "soCCCD" to landlord.idNumber,
-            "ngaySinh" to landlord.dateOfBirth,
-            "gioiTinh" to landlord.gender,
-            "soDienThoai" to landlord.phone,
-            "diaChi" to landlord.address,
-            "ngayCapCCCD" to landlord.idIssueDate
+            "maNguoiDung" to landlord.maNguoiDung,
+            "hoTen" to landlord.hoTen,
+            "soCCCD" to landlord.soCCCD,
+            "ngaySinh" to landlord.ngaySinh,
+            "gioiTinh" to landlord.gioiTinh,
+            "soDienThoai" to landlord.soDienThoai,
+            "diaChi" to landlord.diaChi,
+            "ngayCapCCCD" to landlord.ngayCapCCCD
         )
     }
 
     private fun createTenantInfoMap(tenant: PersonInfo): HashMap<String, Any> {
         return hashMapOf(
-            "maNguoiDung" to tenant.userId,
-            "hoTen" to tenant.fullName,
-            "soCCCD" to tenant.idNumber,
-            "ngaySinh" to tenant.dateOfBirth,
-            "gioiTinh" to tenant.gender,
-            "soDienThoai" to tenant.phone,
-            "diaChi" to tenant.address,
-            "ngayCapCCCD" to tenant.idIssueDate
+            "maNguoiDung" to tenant.maNguoiDung,
+            "hoTen" to tenant.hoTen,
+            "soCCCD" to tenant.soCCCD,
+            "ngaySinh" to tenant.ngaySinh,
+            "gioiTinh" to tenant.gioiTinh,
+            "soDienThoai" to tenant.soDienThoai,
+            "diaChi" to tenant.diaChi,
+            "ngayCapCCCD" to tenant.ngayCapCCCD
         )
     }
 
     private fun createFinancialInfoMap(financialInfo: FinancialInfo): HashMap<String, Any> {
         return hashMapOf(
-            "giaThue" to financialInfo.monthlyRent,
-            "tienCoc" to financialInfo.deposit,
-            "phuongThucThanhToan" to financialInfo.paymentMethod,
-            "soNuocht" to financialInfo.sonuocht,
-            "soDienht" to financialInfo.sodienht,
-            "soNguoio" to financialInfo.songuoio,
-            "phiDichVu" to financialInfo.utilities.map { fee ->
+            "giaThue" to financialInfo.giaThue,
+            "tienCoc" to financialInfo.tienCoc,
+            "phuongThucThanhToan" to financialInfo.phuongThucThanhToan,
+            "soNuocht" to financialInfo.soNuocht,
+            "soDienht" to financialInfo.soDienht,
+            "soNguoio" to financialInfo.soNguoio,
+            "phiDichVu" to financialInfo.phiDichVu.map { fee ->
                 hashMapOf(
-                    "tenDichVu" to fee.name,
-                    "giaTien" to fee.amount,
-                    "donVi" to fee.unit,
-                    "batBuoc" to fee.isRequired
+                    "tenDichVu" to fee.tenDichVu,
+                    "giaTien" to fee.giaTien,
+                    "donVi" to fee.donVi,
+                    "batBuoc" to fee.batBuoc
                 )
             }
         )
     }
     private fun createBillMap(ivoices: Invoice): HashMap<String, Any> {
         return hashMapOf(
-            "idHoaDon" to ivoices.idHoadon,
-            "idNguoigui" to ivoices.idnguoigui,
-            "idNguoinhan" to ivoices.idnguoinhan,
-            "tenKhachHang" to ivoices.customerName,
-            "tenPhong" to ivoices.roomName,
-            "ngayLap" to ivoices.invoiceDate,
-            "kyHoaDon" to ivoices.dueDate,
-            "idHopDong" to ivoices.idHopdong,
-            "kieuHoadon" to ivoices.type,
-            "tongTien" to ivoices.totalAmount,
-            "trangThai" to ivoices.status,
-            "tienPhong" to ivoices.roomprice,
-            "tienCoc" to ivoices.depositAmount,
-            "tongTienDichVu" to ivoices.totalFeeService,
-            "phiCoDinh" to ivoices.feeDefault.map { fee ->
+            "idHoaDon" to ivoices.idHoaDon,
+            "idNguoigui" to ivoices.idNguoigui,
+            "idNguoinhan" to ivoices.idNguoinhan,
+            "tenKhachHang" to ivoices.tenKhachHang,
+            "tenPhong" to ivoices.tenPhong,
+            "ngayLap" to ivoices.ngayLap,
+            "kyHoaDon" to ivoices.kyHoaDon,
+            "idHopDong" to ivoices.idHopDong,
+            "kieuHoadon" to ivoices.kieuHoadon,
+            "tongTien" to ivoices.tongTien,
+            "trangThai" to ivoices.trangThai,
+            "tienPhong" to ivoices.tienPhong,
+            "tienCoc" to ivoices.tienCoc,
+            "tongTienDichVu" to ivoices.tongTienDichVu,
+            "phiCoDinh" to ivoices.phiCoDinh.map { fee ->
                 hashMapOf(
-                    "tenDichVu" to fee.name,
-                    "giaTien" to fee.unitPrice,
-                    "donVi" to fee.unit,
-                    "soLuong" to fee.quantity,
-                    "thanhTien" to fee.subtotal
+                    "tenDichVu" to fee.tenDichVu,
+                    "giaTien" to fee.giaTien,
+                    "donVi" to fee.donVi,
+                    "soLuong" to fee.soLuong,
+                    "thanhTien" to fee.thanhTien
                 )
             },
-            "phiBienDong" to ivoices.feeVariable.map { fee ->
+            "phiBienDong" to ivoices.phiBienDong.map { fee ->
                 hashMapOf(
-                    "tenDichVu" to fee.name,
-                    "giaTien" to fee.unitPrice,
-                    "donVi" to fee.unit,
-                    "soLuong" to fee.quantity,
-                    "thanhTien" to fee.subtotal
+                    "tenDichVu" to fee.tenDichVu,
+                    "giaTien" to fee.giaTien,
+                    "donVi" to fee.donVi,
+                    "soLuong" to fee.soLuong,
+                    "thanhTien" to fee.thanhTien
                 )
             }
         )
@@ -309,6 +329,7 @@ class ContractViewModel : ViewModel() {
                         onSuccess = {
                             _saveResult.postValue(Result.success(Unit))
                             Log.d("ContractViewModel", "Lưu hợp đồng thành công")
+
                         },
                         onFailure = { exception ->
                             _saveResult.postValue(Result.failure(exception))
@@ -326,14 +347,14 @@ class ContractViewModel : ViewModel() {
 
     fun extractVariableFees(utilityFees: List<UtilityFee>): List<UtilityFeeDetail> {
         return utilityFees
-            .filter { it.name in listOf("Điện", "Nước") && it.unit in listOf("Số", "Khối") }
+            .filter { it.tenDichVu in listOf("Điện", "Nước") && it.donVi in listOf("Số", "Khối") }
             .map { fee ->
                 UtilityFeeDetail(
-                    name = fee.name,
-                    unitPrice = fee.amount,
-                    unit = fee.unit,
-                    quantity = 1, // Có thể thay đổi dựa trên thực tế
-                    subtotal = fee.amount // Có thể thay đổi dựa trên số lượng
+                    tenDichVu = fee.tenDichVu,
+                    giaTien = fee.giaTien,
+                    donVi = fee.donVi,
+                    soLuong = 1, // Có thể thay đổi dựa trên thực tế
+                    thanhTien = fee.giaTien // Có thể thay đổi dựa trên số lượng
                 )
             }
     }
@@ -344,27 +365,27 @@ class ContractViewModel : ViewModel() {
     ): Pair<Double, List<UtilityFeeDetail>> {
         val feeDetails = utilityFees
             .filter {
-                (it.name !in listOf("Điện", "Nước") || it.unit !in listOf("Số", "Khối")) &&
-                        (it.unit in listOf("Người", "Phòng") || it.unit == null)
+                (it.tenDichVu!in listOf("Điện", "Nước") || it.tenDichVu !in listOf("Số", "Khối")) &&
+                        (it.tenDichVu in listOf("Người", "Phòng") || it.tenDichVu == null)
             }
             .map { fee ->
-                val quantity = when (fee.unit) {
+                val quantity = when (fee.tenDichVu) {
                     "Người" -> peopleCount
                     "Phòng" -> 1
                     else -> 1
                 }
-                val subtotal = fee.amount * quantity
+                val subtotal = fee.giaTien * quantity
 
                 UtilityFeeDetail(
-                    name = fee.name,
-                    unitPrice = fee.amount,
-                    unit = fee.unit,
-                    quantity = quantity,
-                    subtotal = subtotal
+                    tenDichVu = fee.tenDichVu ?: "",
+                    giaTien = fee.giaTien,
+                    donVi = fee.donVi,
+                    soLuong = quantity,
+                    thanhTien = subtotal
                 )
             }
 
-        val totalFee = feeDetails.sumOf { it.subtotal }
+        val totalFee = feeDetails.sumOf { it.thanhTien }
         return Pair(totalFee, feeDetails)
     }
 
