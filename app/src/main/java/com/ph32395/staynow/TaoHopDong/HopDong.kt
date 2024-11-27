@@ -1,89 +1,88 @@
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 data class HopDong(
-    val contractId: String = "", // ID của hợp đồng
-    val createdDate: String = "", // Ngày tạo hợp đồng
+    val maHopDong: String = "", // ID của hợp đồng
+    val ngayTao: String = "", // Ngày tạo hợp đồng
 
     // Thông tin thời gian thuê
-    val startDate: String = "", // Ngày bắt đầu thuê
-    val endDate: String = "", // Ngày kết thúc thuê
-    val rentDuration: String = "", // Số tháng thuê
-    val paymentDay: Int = 1, // Ngày thanh toán hàng tháng
+    val ngayBatDau: String = "", // Ngày bắt đầu thuê
+    val ngayKetThuc: String = "", // Ngày kết thúc thuê
+    val thoiHanThue: String = "", // Số tháng thuê
+    val ngayThanhToan: Int = 1, // Ngày thanh toán hàng tháng
 
-
-    //ghi chú thêm
-    val note: String = "",
+    // Ghi chú thêm
+    val ghiChu: String = "",
 
     // Thông tin phòng
-    val roomInfo: RoomInfo = RoomInfo(),
+    val maPhong: RoomInfo = RoomInfo(),
 
     // Thông tin bên cho thuê
-    val landlordInfo: PersonInfo = PersonInfo(),
+    val chuNha: PersonInfo = PersonInfo(),
 
     // Thông tin người thuê
-    val tenantInfo: PersonInfo = PersonInfo(),
+    val nguoiThue: PersonInfo = PersonInfo(),
 
     // Thông tin tài chính
-    val financialInfo: FinancialInfo = FinancialInfo(),
-
+    val thongTinTaiChinh: FinancialInfo = FinancialInfo(),
 
     // Tiện ích
-    val amenities: List<String> = listOf(),
+    val tienNghi: List<String> = listOf(),
 
     // Nội thất
-    val furniture: List<String> = listOf(),
-
+    val noiThat: List<String> = listOf(),
 
     // Điều khoản và quy định
-    val terms: String = "", // Nội dung điều khoản hợp đồng
+    val dieuKhoan: String = "", // Nội dung điều khoản hợp đồng
 
-    val peopleCount: Int = 0, // Số người ở
+    val soNguoiO: Int = 0, // Số người ở
 
     // Trạng thái hợp đồng
-    val status: ContractStatus = ContractStatus.PENDING,
+    val trangThai: ContractStatus = ContractStatus.PENDING,
 
     // Thông tin hóa đơn
-    val invoice: Invoice = Invoice()
+    val hoaDonHopDong: Invoice = Invoice()
 )
-
 // Thông tin chi tiết về phòng
 data class RoomInfo(
-    val roomId: String = "", // Mã phòng trọ
-    val roomName: String = "", // Tên phòng
-    val address: String = "", // Địa chỉ chi tiết
-    val area: Double = 0.0, // Diện tích (m²)
-    val details: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
+    val maPhongTro: String = "", // Mã phòng trọ
+    val tenPhong: String = "", // Tên phòng
+    val diaChiPhong: String = "", // Địa chỉ chi tiết
+    val dienTich: Double = 0.0, // Diện tích (m²)
+    val thongTinChiTiet: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
 )
 
 // Chi tiết thông tin phòng
 data class RoomDetail(
-    val name: String = "", // Tên thông tin
-    val value: Long = 0L, // Giá trị
-    val unit: String = "" // Đơn vị
+    val ten: String = "", // Tên thông tin
+    val giaTri: Long = 0L, // Giá trị
+    val donVi: String = "" // Đơn vị
 )
 
 // Thông tin cá nhân (dùng cho cả chủ nhà và người thuê)
 data class PersonInfo(
-    val userId: String = "", // ID người dùng
-    val fullName: String = "", // Họ và tên
-    val idNumber: String = "", // Số CCCD
-    val dateOfBirth: String = "", // Ngày sinh
-    val gender: String = "", // Giới tính
-    val phone: String = "", // Số điện thoại
-    val address: String = "", // Địa chỉ
-    val idIssueDate: String = "" // Ngày cấp CCCD
+    val maNguoiDung: String = "", // ID người dùng
+    val hoTen: String = "", // Họ và tên
+    val soCCCD: String = "", // Số CCCD
+    val ngaySinh: String = "", // Ngày sinh
+    val gioiTinh: String = "", // Giới tính
+    val soDienThoai: String = "", // Số điện thoại
+    val diaChi: String = "", // Địa chỉ
+    val ngayCapCCCD: String = "" // Ngày cấp CCCD
 )
 
 // Thông tin tài chính
 data class FinancialInfo(
-    val monthlyRent: Double = 0.0, // Giá thuê hàng tháng
-    val deposit: Double = 0.0, // Tiền cọc
-    val sonuocht: Int = 0,
-    val sodienht: Int = 0,
-    val songuoio: Int = 0,
+    val giaThue: Double = 0.0, // Giá thuê hàng tháng
+    val tienCoc: Double = 0.0, // Tiền cọc
+    val soNuocht: Int = 0,
+    val soDienht: Int = 0,
+    val soNguoio: Int = 0,
     // Các loại phí
-    val utilities: List<UtilityFee> = listOf(),
+    val phiDichVu: List<UtilityFee> = listOf(),
 
     // Phương thức thanh toán
-    val paymentMethod: String = "",
+    val phuongThucThanhToan: String = "",
 
 
 )
@@ -91,10 +90,10 @@ data class FinancialInfo(
 
 // Chi tiết phí dịch vụ
 data class UtilityFee(
-    val name: String = "", // Tên dịch vụ
-    val amount: Double = 0.0, // Số tiền
-    val unit: String = "", // Đơn vị tính
-    val isRequired: Boolean = true // Bắt buộc hay không
+    val tenDichVu: String = "", // Tên dịch vụ
+    val giaTien: Double = 0.0, // Số tiền
+    val donVi: String = "", // Đơn vị tính
+    val batBuoc: Boolean = true // Bắt buộc hay không
 )
 
 data class UtilityFeeUiState(
@@ -104,23 +103,24 @@ data class UtilityFeeUiState(
     val totalContractPrice: Double = 0.0, // Tổng giá trị hợp đồng
     val invoiceStatus: InvoiceStatus = InvoiceStatus.PENDING // Trạng thái hóa đơn
 )
+
 data class Invoice(
-    val idHoadon: String = "",
-    val idnguoinhan: String = "",
-    val idnguoigui: String = "",
-    val customerName: String = "",
-    val roomName: String = "",
-    val invoiceDate: String = "",
-    val dueDate: String = "",
-    var idHopdong: String = "",
-    val feeDefault: List<UtilityFeeDetail> = emptyList(),
-    val feeVariable: List<UtilityFeeDetail> = emptyList(),
-    val totalAmount: Double = 0.0,
-    val status: InvoiceStatus = InvoiceStatus.PENDING,
-    val roomprice: Double = 0.0,
-    val depositAmount: Double = 0.0,
-    val totalFeeService: Double = 0.0,
-    val type: String = "",
+    val idHoaDon: String = "",
+    val idNguoinhan: String = "",
+    val idNguoigui: String = "",
+    val idHopDong: String = "",
+    val tenKhachHang: String = "",
+    val tenPhong: String = "",
+    val ngayLap: String = "",
+    val kyHoaDon: String = "",
+    val phiCoDinh: List<UtilityFeeDetail> = emptyList(),
+    val phiBienDong: List<UtilityFeeDetail> = emptyList(),
+    val tongTien: Double = 0.0,
+    val trangThai: InvoiceStatus = InvoiceStatus.PENDING,
+    val tienPhong: Double = 0.0,
+    val tienCoc: Double = 0.0,
+    val tongTienDichVu: Double = 0.0,
+    val kieuHoadon: String = "",
     val paymentDate: String = ""
 )
 
@@ -133,17 +133,15 @@ enum class ContractStatus {
     CANCEL
 }
 
-
 data class UtilityFeeDetail(
-    val name: String,
-    val unitPrice: Double,
-    val unit: String,
-    val quantity: Int,
-    val subtotal: Double
+    val tenDichVu: String,
+    val giaTien: Double,
+    val donVi: String,
+    val soLuong: Int,
+    val thanhTien: Double,
 )
 
-
-enum class InvoiceStatus {
+enum class InvoiceStatus  {
     PENDING,
     PAID,
     OVERDUE,

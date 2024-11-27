@@ -10,6 +10,7 @@ import RoomInfo
 import UtilityFee
 import UtilityFeeDetail
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -439,10 +440,10 @@ private fun observeViewModel() {
    private fun createAndSaveContract() {
         val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
             UtilityFee(
-                name = phiDichVu.ten_dichvu,
-                amount = phiDichVu.so_tien,
-                unit = phiDichVu.don_vi,
-                isRequired = true // Có thể thêm trường này vào model PhiDichVu nếu cần
+                tenDichVu = phiDichVu.ten_dichvu,
+                giaTien = phiDichVu.so_tien,
+                donVi = phiDichVu.don_vi,
+                batBuoc = true // Có thể thêm trường này vào model PhiDichVu nếu cần
             )
         } ?: emptyList()
 
@@ -459,9 +460,9 @@ private fun observeViewModel() {
         } ?: emptyList()
         val roomDetail = viewModel.chiTietList.value?.map { tt ->
             RoomDetail(
-                name = tt.ten_thongtin,
-                value = tt.so_luong_donvi,
-                unit = tt.don_vi,
+                ten = tt.ten_thongtin,
+                giaTri = tt.so_luong_donvi,
+                donVi = tt.don_vi,
             )
         } ?: emptyList()
 
@@ -474,72 +475,72 @@ private fun observeViewModel() {
 
         // Tạo đối tượng hợp đồng từ dữ liệu form
         val contract = HopDong(
-            contractId = "",
-            createdDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-            startDate = tvStartDate.text.toString(),
-            endDate = tvEndDate.text.toString(),
-            rentDuration = tvMonth.text.toString(),
-            paymentDay = txtNgayThanhToan.text.toString().toInt(),
-            note = note.text.toString(),
-            peopleCount = soNguoio.text.toString().toIntOrNull() ?: 1,
-            roomInfo = RoomInfo(
-                roomId = maPhongTro,
-                roomName = tvNameRoom.text.toString(),
-                address = tvAddress.text.toString(),
-                area = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
-                details = roomDetail
+            maHopDong = "",
+            ngayTao = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+            ngayBatDau = tvStartDate.text.toString(),
+            ngayKetThuc = tvEndDate.text.toString(),
+            thoiHanThue = tvMonth.text.toString(),
+            ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
+            ghiChu = note.text.toString(),
+            soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
+            maPhong = RoomInfo(
+                maPhongTro = maPhongTro,
+                tenPhong = tvNameRoom.text.toString(),
+                diaChiPhong = tvAddress.text.toString(),
+                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
+                thongTinChiTiet = roomDetail
             ),
-            landlordInfo = PersonInfo(
-                userId = auth.currentUser?.uid ?: "",
-                fullName = txtHoTenCT.text.toString(),
-                idNumber = txtSoCCDCT.text.toString(),
-                phone = txtSoDienThoaiCT.text.toString(),
-                address = txtDiaChiCT.text.toString(),
-                idIssueDate = txtNgayCapCT.text.toString(),
-                dateOfBirth = txtNgaySinhCT.text.toString()
+            chuNha = PersonInfo(
+                maNguoiDung = auth.currentUser?.uid ?: "",
+                hoTen = txtHoTenCT.text.toString(),
+                soCCCD = txtSoCCDCT.text.toString(),
+                soDienThoai = txtSoDienThoaiCT.text.toString(),
+                diaChi = txtDiaChiCT.text.toString(),
+                ngayCapCCCD = txtNgayCapCT.text.toString(),
+                ngaySinh = txtNgaySinhCT.text.toString()
                 // Thêm các thông tin khác
             ),
-            tenantInfo = PersonInfo(
-                userId = maNguoiThue,
-                fullName = txtHoTenNT.text.toString(),
-                idNumber = txtSoCCDNT.text.toString(),
-                phone = txtSoDienThoaiNT.text.toString(),
-                address = txtDiaChiNT.text.toString(),
-                idIssueDate = txtNgayCapNT.text.toString(),
-                dateOfBirth = txtNgaySinhNT.text.toString()
+            nguoiThue = PersonInfo(
+                maNguoiDung = maNguoiThue,
+                hoTen = txtHoTenNT.text.toString(),
+                soCCCD = txtSoCCDNT.text.toString(),
+                soDienThoai = txtSoDienThoaiNT.text.toString(),
+                diaChi = txtDiaChiNT.text.toString(),
+                ngayCapCCCD = txtNgayCapNT.text.toString(),
+                ngaySinh = txtNgaySinhNT.text.toString()
                 // Thêm các thông tin khác
             ),
-            financialInfo = FinancialInfo(
-               monthlyRent = giaPhong,
-                deposit = tienCoc,
-                sodienht = edSodien.text.toString().toInt(),
-                songuoio = soNguoio.text.toString().toInt(),
-                sonuocht = edSonuoc.text.toString().toInt(),
-                utilities = utilityFees
+            thongTinTaiChinh = FinancialInfo(
+               giaThue = giaPhong,
+                tienCoc = tienCoc,
+                soDienht = edSodien.text.toString().toInt(),
+                soNguoio = soNguoio.text.toString().toInt(),
+                soNuocht = edSonuoc.text.toString().toInt(),
+                phiDichVu = utilityFees
             ),
-            invoice = Invoice(
-                idHoadon =  UUID.randomUUID().toString(),
-                invoiceDate = tvStartDate.text.toString(),
-                dueDate = tvEndDate.text.toString(),
-                customerName =txtHoTenNT.text.toString(),
-                roomName = tvNameRoom.text.toString(),
-                feeDefault =feeDetails,
-                feeVariable = extractVariableFees,
-                totalAmount = giaPhong+tienCoc,
-                status = InvoiceStatus.PENDING,
-                roomprice = giaPhong,
-                depositAmount = tienCoc,
-                totalFeeService = totalFee,
-                type = "HoaDonHopDong",
-                idnguoinhan = maNguoiThue,
-                idnguoigui = auth.currentUser?.uid ?: "",
+            hoaDonHopDong = Invoice(
+                idHoaDon =  UUID.randomUUID().toString(),
+                ngayLap = tvStartDate.text.toString(),
+                kyHoaDon = tvEndDate.text.toString(),
+                tenKhachHang =txtHoTenNT.text.toString(),
+                tenPhong = tvNameRoom.text.toString(),
+                phiCoDinh =feeDetails,
+                phiBienDong = extractVariableFees,
+                tongTien = giaPhong+tienCoc,
+                trangThai = InvoiceStatus.PENDING,
+                tienPhong = giaPhong,
+                tienCoc = tienCoc,
+                tongTienDichVu = totalFee,
+                kieuHoadon = "HoaDonHopDong",
+                idNguoinhan = maNguoiThue,
+                idNguoigui = auth.currentUser?.uid ?: "",
                 paymentDate = ""
             ),
 
-            amenities = listAmenities, // Danh sách String chứa tên tiện nghi
-            furniture = listFurniture, // Danh sách String chứa tên nội thất
+            tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
+            noiThat = listFurniture, // Danh sách String chứa tên nội thất
 
-            terms = editorDieuKhoan.html,
+            dieuKhoan = editorDieuKhoan.html,
 
             // Thêm các thông tin khác
 
