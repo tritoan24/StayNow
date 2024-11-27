@@ -365,11 +365,11 @@ class ContractViewModel : ViewModel() {
     ): Pair<Double, List<UtilityFeeDetail>> {
         val feeDetails = utilityFees
             .filter {
-                (it.tenDichVu!in listOf("Điện", "Nước") || it.tenDichVu !in listOf("Số", "Khối")) &&
-                        (it.tenDichVu in listOf("Người", "Phòng") || it.tenDichVu == null)
+                (it.tenDichVu !in listOf("Điện", "Nước") || it.donVi !in listOf("Số", "Khối")) &&
+                        (it.donVi in listOf("Người", "Phòng") || it.donVi == null)
             }
             .map { fee ->
-                val quantity = when (fee.tenDichVu) {
+                val quantity = when (fee.donVi) {
                     "Người" -> peopleCount
                     "Phòng" -> 1
                     else -> 1
@@ -377,9 +377,9 @@ class ContractViewModel : ViewModel() {
                 val subtotal = fee.giaTien * quantity
 
                 UtilityFeeDetail(
-                    tenDichVu = fee.tenDichVu ?: "",
+                    tenDichVu = fee.tenDichVu,
                     giaTien = fee.giaTien,
-                    donVi = fee.donVi,
+                    donVi = fee.donVi ?: "",
                     soLuong = quantity,
                     thanhTien = subtotal
                 )
