@@ -3,6 +3,8 @@ package com.ph32395.staynow.TaoHopDong
 data class HopDong(
     val maHopDong: String = "", // ID của hợp đồng
     val ngayTao: String = "", // Ngày tạo hợp đồng
+
+    // Thông tin thời gian thuê
     val ngayBatDau: String = "", // Ngày bắt đầu thuê
     val ngayKetThuc: String = "", // Ngày kết thúc thuê
     val thoiHanThue: String = "", // Số tháng thuê
@@ -10,10 +12,9 @@ data class HopDong(
 
     // Ghi chú thêm
     val ghiChu: String = "",
-    val diaChiPhong: String = "",
 
     // Thông tin phòng
-    val maPhong: String = "",
+    val maPhong: RoomInfo = RoomInfo(),
 
     // Thông tin bên cho thuê
     val chuNha: PersonInfo = PersonInfo(),
@@ -37,20 +38,18 @@ data class HopDong(
 
     // Trạng thái hợp đồng
     val trangThai: ContractStatus = ContractStatus.PENDING,
-    val dienTich: Double = 0.0,
-    // Thông tin hóa đơn
-    val hoaDonHopDong: Invoice = Invoice(),
-    val thongTinChiTiet: List<RoomDetail> = listOf()
-)
 
+    // Thông tin hóa đơn
+    val hoaDonHopDong: Invoice = Invoice()
+)
 // Thông tin chi tiết về phòng
-//data class RoomInfo(
-//    val maPhongTro: String = "", // Mã phòng trọ
-//    val tenPhong: String = "", // Tên phòng
-//    val diaChiPhong: String = "", // Địa chỉ chi tiết
-//    val dienTich: Double = 0.0, // Diện tích (m²)
-//    val thongTinChiTiet: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
-//)
+data class RoomInfo(
+    val maPhongTro: String = "", // Mã phòng trọ
+    val tenPhong: String = "", // Tên phòng
+    val diaChiPhong: String = "", // Địa chỉ chi tiết
+    val dienTich: Double = 0.0, // Diện tích (m²)
+    val thongTinChiTiet: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
+)
 
 // Chi tiết thông tin phòng
 data class RoomDetail(
@@ -129,23 +128,20 @@ enum class ContractStatus {
     PENDING, // Chờ ký
     ACTIVE, // Đang hiệu lực
     EXPIRED, // Hết hạn
-    TERMINATED, // Đã chấm dứt
-    CANCEL
+    TERMINATED // Đã chấm dứt
 }
 
 data class UtilityFeeDetail(
-    val tenDichVu: String = "",
-    val giaTien: Double = 0.0,
-    val donVi: String = "",
-    val soLuong: Int = 0,
-    val thanhTien: Double = 0.0,
+    val tenDichVu: String,
+    val giaTien: Double,
+    val donVi: String,
+    val soLuong: Int,
+    val thanhTien: Double,
 )
 
-enum class InvoiceStatus {
+enum class InvoiceStatus  {
     PENDING,
     PAID,
     OVERDUE,
     CANCELLED
 }
-
-

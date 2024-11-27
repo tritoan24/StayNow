@@ -19,7 +19,7 @@ import kotlinx.coroutines.withTimeout
 
 class HopDongViewModel {
     private val db = FirebaseFirestore.getInstance()
-    private val contractsCollection = db.collection("HopDong")
+    private val contractsCollection = db.collection("com.ph32395.staynow.TaoHopDong.HopDong")
     private val roomsCollection = db.collection("PhongTro")
     private val appointmentsCollection = db.collection("DatPhong")
 

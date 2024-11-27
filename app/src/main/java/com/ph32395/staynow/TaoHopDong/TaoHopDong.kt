@@ -108,9 +108,11 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var maPhongTro: String
     private lateinit var maNguoiThue: String
     private lateinit var idLichhen: String
-    private lateinit var idHopDong: String
+    private lateinit var idHopDong:String
 
     private var giaPhong: Double = 0.0
+
+
 
 
     @SuppressLint("MissingInflatedId")
@@ -296,6 +298,7 @@ class TaoHopDong : AppCompatActivity() {
         }
 
 
+
         //sử lý text DieuKhoan
         editorDieuKhoan.setEditorFontSize(16) // Kích thước font chữ
         editorDieuKhoan.setEditorFontColor(
@@ -318,14 +321,18 @@ class TaoHopDong : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-            if (validateContract()) {
+            if(validateContract()) {
                 createAndSaveContract()
                 finish()
             }
         }
 
 
+
+
+
     }
+
 
 
     // Hàm chuyển đổi trạng thái hiển thị CalendarView
@@ -336,7 +343,6 @@ class TaoHopDong : AppCompatActivity() {
             calendarView.visibility = View.GONE
         }
     }
-
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerViewThongTinChiTiet() {
         findViewById<RecyclerView>(R.id.listViewThongTin).apply {
@@ -348,7 +354,6 @@ class TaoHopDong : AppCompatActivity() {
             addItemDecoration(SpacingItemDecoration(10))  // 16dp là khoảng cách giữa các item
         }
     }
-
     //    Danh sach tien nghi
     private fun setupRecyViewTienNghi() {
         findViewById<RecyclerView>(R.id.recyclerViewTienNghi).apply {
@@ -378,7 +383,6 @@ class TaoHopDong : AppCompatActivity() {
 //           addItemDecoration(SpacingItemDecoration(1))
         }
     }
-
     //hàm lấy số điện thoại người dùng từ id
     private fun getPhoneNumberFromId(id: String, callback: (String) -> Unit) {
         val ref = FirebaseDatabase.getInstance().getReference("NguoiDung").child(id)
@@ -398,7 +402,7 @@ class TaoHopDong : AppCompatActivity() {
             chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
             findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
             if (chiTietList.size > 3) {
-                tvDienTich.text = "${chiTietList[1].so_luong_donvi} m²"
+                tvDienTich.text = "${chiTietList[3].so_luong_donvi} m²"
             } else {
                 tvDienTich.text = "Không có dữ liệu"
             }
@@ -423,7 +427,6 @@ class TaoHopDong : AppCompatActivity() {
         }
 
     }
-
     //hàm lưu hợp đồng
     private fun createAndSaveContract() {
         val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
@@ -436,14 +439,15 @@ class TaoHopDong : AppCompatActivity() {
         } ?: emptyList()
 
 
+
         // Lấy danh sách tên tiện nghi
         val listAmenities = viewModel.tienNghiList.value?.map { tn ->
-            tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model com.ph32395.staynow.TaoHopDong.HopDong.amenities là List<String>
+            tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model HopDong.amenities là List<String>
         } ?: emptyList()
 
         // Lấy danh sách tên nội thất
         val listFurniture = viewModel.noiThatList.value?.map { nt ->
-            nt.Ten_noithat // Chỉ cần lấy tên nội thất vì model com.ph32395.staynow.TaoHopDong.HopDong.furniture là List<String>
+            nt.Ten_noithat // Chỉ cần lấy tên nội thất vì model HopDong.furniture là List<String>
         } ?: emptyList()
         val roomDetail = viewModel.chiTietList.value?.map { tt ->
             RoomDetail(
@@ -457,10 +461,7 @@ class TaoHopDong : AppCompatActivity() {
         // Lấy giá trị tiền cọc từ ViewModel
         val tienCoc = viewModel.getTienCocValue()
 
-        val (totalFee, feeDetails) = viewModelHopDong.extractFixedFees(
-            utilityFees,
-            soNguoio.text.toString().toInt()
-        )
+        val (totalFee, feeDetails) = viewModelHopDong.extractFixedFees(utilityFees, soNguoio.text.toString().toInt())
         val extractVariableFees = viewModelHopDong.extractVariableFees(utilityFees)
 
         // Tạo đối tượng hợp đồng từ dữ liệu form
@@ -473,9 +474,13 @@ class TaoHopDong : AppCompatActivity() {
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
             ghiChu = note.text.toString(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
-            maPhong = maPhongTro,
-            trangThai = ContractStatus.PENDING,
-            dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
+            maPhong = RoomInfo(
+                maPhongTro = maPhongTro,
+                tenPhong = tvNameRoom.text.toString(),
+                diaChiPhong = tvAddress.text.toString(),
+                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
+                thongTinChiTiet = roomDetail
+            ),
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -505,14 +510,14 @@ class TaoHopDong : AppCompatActivity() {
                 phiDichVu = utilityFees
             ),
             hoaDonHopDong = Invoice(
-                idHoaDon = UUID.randomUUID().toString(),
+                idHoaDon =  UUID.randomUUID().toString(),
                 ngayLap = tvStartDate.text.toString(),
                 kyHoaDon = tvEndDate.text.toString(),
-                tenKhachHang = txtHoTenNT.text.toString(),
+                tenKhachHang =txtHoTenNT.text.toString(),
                 tenPhong = tvNameRoom.text.toString(),
-                phiCoDinh = feeDetails,
+                phiCoDinh =feeDetails,
                 phiBienDong = extractVariableFees,
-                tongTien = giaPhong + tienCoc,
+                tongTien = giaPhong+tienCoc,
                 trangThai = InvoiceStatus.PENDING,
                 tienPhong = giaPhong,
                 tienCoc = tienCoc,
@@ -522,14 +527,17 @@ class TaoHopDong : AppCompatActivity() {
                 idNguoigui = auth.currentUser?.uid ?: "",
                 paymentDate = ""
             ),
-            thongTinChiTiet = roomDetail,
+
             tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
             noiThat = listFurniture, // Danh sách String chứa tên nội thất
+
             dieuKhoan = editorDieuKhoan.html,
-            diaChiPhong = tvAddress.text.toString()
+
+            // Thêm các thông tin khác
+
         )
         //val invoiceSchedules = generateInvoiceSchedule(contract, utilityFees)
-        viewModelHopDong.saveContract(contract, idLichhen)
+        viewModelHopDong.saveContract(contract,idLichhen)
 
 
     }
@@ -589,9 +597,7 @@ class TaoHopDong : AppCompatActivity() {
 
     private fun validateContract(): Boolean {
         //nếu ngày không phải là ngày trong một tháng
-        if (txtNgayThanhToan.text.toString().toInt() > 30 || txtNgayThanhToan.text.toString()
-                .toInt() < 1
-        ) {
+        if (txtNgayThanhToan.text.toString().toInt() > 30 || txtNgayThanhToan.text.toString().toInt() < 1){
             toast("Ngày thanh toán không hợp lệ")
             return false
         }
@@ -599,4 +605,3 @@ class TaoHopDong : AppCompatActivity() {
         return true
     }
 }
-
