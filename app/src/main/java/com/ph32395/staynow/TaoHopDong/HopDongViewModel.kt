@@ -6,6 +6,7 @@ import HopDong
 import Invoice
 import PersonInfo
 import RoomDetail
+import RoomInfo
 import UtilityFee
 import UtilityFeeDetail
 import UtilityFeeUiState
@@ -110,7 +111,7 @@ class HopDongViewModel {
                         transaction.set(contractRef, contractData, SetOptions.merge())
 
                         // Cập nhật trạng thái phòng
-                        val roomRef = roomsCollection.document(contract.maPhong.maPhongTro)
+                        val roomRef = roomsCollection.document(contract.thongtinphong.maPhongTro)
                         transaction.update(roomRef, "Trang_thaiphong", true)
 
                         // Xóa lịch hẹn
@@ -142,10 +143,8 @@ class HopDongViewModel {
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
             "ngayThanhToan" to contract.ngayThanhToan,
-            "maPhong" to contract.maPhong.maPhongTro,
-            "tenPhong" to contract.maPhong.tenPhong,
-            "diaChiPhong" to contract.maPhong.diaChiPhong,
-            "dienTich" to contract.maPhong.dienTich,
+            "thongTinPhong" to createRoomInfoMap(contract.thongtinphong),
+            "maPhong" to contract.thongtinphong.maPhongTro,
             "chuNha" to createLandlordInfoMap(contract.chuNha),
             "nguoiThue" to createTenantInfoMap(contract.nguoiThue),
             "thongTinTaiChinh" to createFinancialInfoMap(contract.thongTinTaiChinh),
@@ -154,10 +153,18 @@ class HopDongViewModel {
             "dieuKhoan" to contract.dieuKhoan,
             "soNguoiO" to contract.soNguoiO,
             "hoaDonHopDong" to createBillMap(contract.hoaDonHopDong),
-            "thongTinChiTiet" to createRoomDetailsMap(contract.maPhong.thongTinChiTiet),
             "ghiChu" to contract.ghiChu,
 
 
+        )
+    }
+    private fun createRoomInfoMap(roomInfo: RoomInfo): HashMap<String, Any> {
+        return hashMapOf(
+            "maPhongTro" to roomInfo.maPhongTro,
+            "tenPhong" to roomInfo.tenPhong,
+            "diaChiPhong" to roomInfo.diaChiPhong,
+            "dienTich" to roomInfo.dienTich,
+            "thongTinChiTiet" to createRoomDetailsMap(roomInfo.thongTinChiTiet) // Gọi hàm để xử lý danh sách RoomDetail
         )
     }
 
@@ -169,6 +176,7 @@ class HopDongViewModel {
                 "donVi" to detail.donVi
             )
         }
+
     }
 
     private fun createLandlordInfoMap(landlord: PersonInfo): HashMap<String, Any> {

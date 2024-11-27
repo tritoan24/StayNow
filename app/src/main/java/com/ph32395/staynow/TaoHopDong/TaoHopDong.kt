@@ -483,13 +483,6 @@ private fun observeViewModel() {
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
             ghiChu = note.text.toString(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
-            maPhong = RoomInfo(
-                maPhongTro = maPhongTro,
-                tenPhong = tvNameRoom.text.toString(),
-                diaChiPhong = tvAddress.text.toString(),
-                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
-                thongTinChiTiet = roomDetail
-            ),
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -517,6 +510,13 @@ private fun observeViewModel() {
                 soNguoio = soNguoio.text.toString().toInt(),
                 soNuocht = edSonuoc.text.toString().toInt(),
                 phiDichVu = utilityFees
+            ),
+            thongtinphong = RoomInfo(
+                maPhongTro = maPhongTro,
+                tenPhong = tvNameRoom.text.toString(),
+                diaChiPhong = tvAddress.text.toString(),
+                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
+                thongTinChiTiet = roomDetail
             ),
             hoaDonHopDong = Invoice(
                 idHoaDon =  UUID.randomUUID().toString(),

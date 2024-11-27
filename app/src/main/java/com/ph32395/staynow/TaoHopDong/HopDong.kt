@@ -15,7 +15,7 @@ data class HopDong(
     val ghiChu: String = "",
 
     // Thông tin phòng
-    val maPhong: RoomInfo = RoomInfo(),
+    val thongtinphong: RoomInfo = RoomInfo(),
 
     // Thông tin bên cho thuê
     val chuNha: PersonInfo = PersonInfo(),
