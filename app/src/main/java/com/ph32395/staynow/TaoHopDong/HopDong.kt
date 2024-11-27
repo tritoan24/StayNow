@@ -14,7 +14,7 @@ data class HopDong(
     val ghiChu: String = "",
 
     // Thông tin phòng
-    val maPhong: RoomInfo = RoomInfo(),
+    val thongTinPhong: RoomInfo = RoomInfo(),
 
     // Thông tin bên cho thuê
     val chuNha: PersonInfo = PersonInfo(),
@@ -132,11 +132,11 @@ enum class ContractStatus {
 }
 
 data class UtilityFeeDetail(
-    val tenDichVu: String,
-    val giaTien: Double,
-    val donVi: String,
-    val soLuong: Int,
-    val thanhTien: Double,
+    val tenDichVu: String="",
+    val giaTien: Double=0.0,
+    val donVi: String="",
+    val soLuong: Int=0,
+    val thanhTien: Double=0.0,
 )
 
 enum class InvoiceStatus  {

@@ -402,7 +402,7 @@ class TaoHopDong : AppCompatActivity() {
             chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
             findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
             if (chiTietList.size > 3) {
-                tvDienTich.text = "${chiTietList[3].so_luong_donvi} m²"
+                tvDienTich.text = "${chiTietList[1].so_luong_donvi} m²"
             } else {
                 tvDienTich.text = "Không có dữ liệu"
             }
@@ -474,13 +474,6 @@ class TaoHopDong : AppCompatActivity() {
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
             ghiChu = note.text.toString(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
-            maPhong = RoomInfo(
-                maPhongTro = maPhongTro,
-                tenPhong = tvNameRoom.text.toString(),
-                diaChiPhong = tvAddress.text.toString(),
-                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
-                thongTinChiTiet = roomDetail
-            ),
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -508,6 +501,13 @@ class TaoHopDong : AppCompatActivity() {
                 soNguoio = soNguoio.text.toString().toInt(),
                 soNuocht = edSonuoc.text.toString().toInt(),
                 phiDichVu = utilityFees
+            ),
+            thongTinPhong = RoomInfo(
+                maPhongTro = maPhongTro,
+                tenPhong = tvNameRoom.text.toString(),
+                diaChiPhong = tvAddress.text.toString(),
+                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
+                thongTinChiTiet = roomDetail
             ),
             hoaDonHopDong = Invoice(
                 idHoaDon =  UUID.randomUUID().toString(),

@@ -8,13 +8,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.MainActivity
+import com.ph32395.staynow.TaoHopDong.ContractStatus
 import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.databinding.FragmentContractBinding
+import kotlinx.coroutines.launch
 
 class ContractFragment : Fragment() {
 
@@ -23,7 +26,12 @@ class ContractFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var contractViewModel: ContractViewModel
-    private lateinit var contractAdapter: ContractAdapter // Adapter cho RecyclerView
+
+    private lateinit var activeAdapter: ContractAdapter
+    private lateinit var pendingAdapter: ContractAdapter
+    private lateinit var expireAdapter: ContractAdapter
+    private lateinit var terminatedAdapter: ContractAdapter
+
 
     private lateinit var mAuth: FirebaseAuth
 
@@ -44,32 +52,54 @@ class ContractFragment : Fragment() {
         }
 
         // Khởi tạo adapter và gán vào RecyclerView
-        contractAdapter = ContractAdapter(viewmodel = contractViewModel)
+        activeAdapter = ContractAdapter(contractViewModel, ContractStatus.ACTIVE)
+        pendingAdapter = ContractAdapter(contractViewModel, ContractStatus.PENDING)
+        expireAdapter = ContractAdapter(contractViewModel, ContractStatus.EXPIRED)
+        terminatedAdapter = ContractAdapter(contractViewModel, ContractStatus.TERMINATED)
+
         binding.rvPendingContracts.layoutManager = LinearLayoutManager(context)
-        binding.rvPendingContracts.adapter = contractAdapter
+        binding.rvPendingContracts.adapter = pendingAdapter
+
+        binding.rvActiveContracts.layoutManager = LinearLayoutManager(context)
+        binding.rvActiveContracts.adapter = activeAdapter
 
         // Khởi tạo FirebaseAuth và lấy userId
         mAuth = FirebaseAuth.getInstance()
         val userId = mAuth.currentUser?.uid
         Log.d("ContractFragment", "User ID: $userId")
 
-        // Khởi tạo Adapter
-        contractAdapter = ContractAdapter(viewmodel = contractViewModel)
-
         // Thiết lập RecyclerView
         binding.rvActiveContracts.apply {
-            adapter = contractAdapter
+            adapter = activeAdapter
             layoutManager = LinearLayoutManager(context)
         }
 
-        // Quan sát danh sách hợp đồng
-        contractViewModel.contracts.observe(viewLifecycleOwner) { contracts ->
-            // Cập nhật adapter khi có dữ liệu
-            contractAdapter.updateContractList(contracts)
+        contractViewModel.activeContracts.observe(viewLifecycleOwner) { contracts ->
+            activeAdapter.updateContractList(contracts)
         }
 
-        // Gọi hàm lấy dữ liệu
-        contractViewModel.fetchAllContracts()
+        contractViewModel.pendingContracts.observe(viewLifecycleOwner) { contracts ->
+            pendingAdapter.updateContractList(contracts)
+        }
+
+
+        contractViewModel.expireContracts.observe(viewLifecycleOwner) { contracts ->
+            expireAdapter.updateContractList(contracts)
+        }
+
+        contractViewModel.terminatedContracts.observe(viewLifecycleOwner) { contracts ->
+            terminatedAdapter.updateContractList(contracts)
+        }
+
+        if (userId != null) {
+            lifecycleScope.launch {
+                contractViewModel.fetchContractsByTenant(userId, ContractStatus.ACTIVE)
+                contractViewModel.fetchContractsByTenant(userId, ContractStatus.PENDING)
+                contractViewModel.fetchContractsByTenant(userId, ContractStatus.EXPIRED)
+                contractViewModel.fetchContractsByTenant(userId, ContractStatus.TERMINATED)
+            }
+        }
+
         // Trả về root view của binding
         return binding.root
     }
@@ -79,7 +109,6 @@ class ContractFragment : Fragment() {
         // Giải phóng binding để tránh rò rỉ bộ nhớ
         _binding = null
 
-        // Nếu activity là MainActivity, có thể gọi phương thức này để điều chỉnh hiển thị bottom navigation
         if (activity is MainActivity) {
             (activity as MainActivity).setBottomNavigationVisibility(true)
         }

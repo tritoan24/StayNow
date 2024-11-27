@@ -17,8 +17,8 @@
 // */
 //@RequiresApi(Build.VERSION_CODES.O)
 //fun generateInvoiceSchedule(
-//    contract: com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.HopDong,
-//    utilityFees: List<com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFee>
+//    contract: com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.HopDong,
+//    utilityFees: List<com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFee>
 //): List<MonthlyInvoiceSchedule> {
 //    val (fixedFees, variableFees) = categorizeUtilityFees(utilityFees)
 //    val invoiceSchedules = mutableListOf<MonthlyInvoiceSchedule>()
@@ -58,7 +58,7 @@
 //        val isFullMonth = actualStayDays > 27
 //
 //        val proRatedRoomPrice: Double
-//        val fixedUtilityDetails: List<com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail>
+//        val fixedUtilityDetails: List<com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail>
 //
 //        if (isFullMonth) {
 //            proRatedRoomPrice = contract.financialInfo.monthlyRent
@@ -68,7 +68,7 @@
 //                    "Phòng" -> 1
 //                    else -> 1
 //                }
-//                com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail(
+//                com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail(
 //                    name = fee.name,
 //                    unitPrice = fee.amount,
 //                    unit = fee.unit,
@@ -88,7 +88,7 @@
 //                }
 //                val monthlyFee = fee.amount * quantity
 //                val proRatedFee = (monthlyFee / totalDaysInMonth) * actualStayDays
-//                com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail(
+//                com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail(
 //                    name = fee.name,
 //                    unitPrice = fee.amount,
 //                    unit = fee.unit,
@@ -106,7 +106,7 @@
 //            fixedUtilityFees = fixedUtilityDetails,
 //            songayo = actualStayDays,
 //            variableUtilityFees = variableFees.map { fee ->
-//                com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail(
+//                com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail(
 //                    name = fee.name,
 //                    unitPrice = fee.amount,
 //                    unit = fee.unit,
@@ -217,7 +217,7 @@
 // */
 //fun updateVariableFeesForInvoice(
 //    invoiceId: String,
-//    variableFees: List<com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail>,
+//    variableFees: List<com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.UtilityFeeDetail>,
 //    onSuccess: () -> Unit,
 //    onFailure: (Exception) -> Unit
 //) {
@@ -240,7 +240,7 @@
 //                mapOf(
 //                    "variableUtilityFees" to variableFees,
 //                    "totalAmount" to updatedTotalAmount,
-//                    "status" to com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.InvoiceStatus.PENDING.name
+//                    "status" to com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.com.ph32395.staynow.TaoHopDong.InvoiceStatus.PENDING.name
 //                )
 //            ).await()
 //
