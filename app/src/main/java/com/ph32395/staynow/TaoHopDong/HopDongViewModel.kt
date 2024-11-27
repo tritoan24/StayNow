@@ -1,25 +1,10 @@
 package com.ph32395.staynow.TaoHopDong
 
-import ContractStatus
-import FinancialInfo
-import HopDong
-import Invoice
-import PersonInfo
-import RoomDetail
-import UtilityFee
-import UtilityFeeDetail
-import UtilityFeeUiState
-import android.content.Intent
 import android.util.Log
-import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.UserInfo
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.jetbrains.annotations.Contract
 
 class HopDongViewModel {
     private val db = FirebaseFirestore.getInstance()
@@ -54,9 +38,12 @@ class HopDongViewModel {
         onFailure: (Exception) -> Unit
     ) {
         withContext(Dispatchers.IO) {
-            var idHopDong:String = ""
+            var idHopDong: String = ""
             try {
-                Log.d("HopDongViewModel", "Starting saveContract with appointmentId: $appointmentId")
+                Log.d(
+                    "HopDongViewModel",
+                    "Starting saveContract with appointmentId: $appointmentId"
+                )
 
                 if (appointmentId.isEmpty()) {
                     onFailure(Exception("appointmentId is empty"))
@@ -81,16 +68,16 @@ class HopDongViewModel {
                             contractData["maHopDong"] = newContractId
 
                             // Tạo một bản sao của hóa đơn với ID hợp đồng được cập nhật
-                            val updatedInvoice = contract.hoaDonHopDong.copy(idHopDong = newContractId)
+                            val updatedInvoice =
+                                contract.hoaDonHopDong.copy(idHopDong = newContractId)
 
                             //chuyển sang màn chi tiết hóa đơn hợp đồng
-                             idHopDong = newContractId
+                            idHopDong = newContractId
 
 //                            //chuyển màn
 //                            val intent = Intent(requireContext(), ChiTietHoaDon::class.java)
 //                            intent.putExtra("idHopDong",idHopDong)
 //                            startActivity(intent)
-
 
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
@@ -110,11 +97,14 @@ class HopDongViewModel {
                         transaction.set(contractRef, contractData, SetOptions.merge())
 
                         // Cập nhật trạng thái phòng
-                        val roomRef = roomsCollection.document(contract.maPhong.maPhongTro)
+                        val roomRef = roomsCollection.document(contract.maPhong)
                         transaction.update(roomRef, "Trang_thaiphong", true)
 
                         // Xóa lịch hẹn
-                        Log.d("HopDongViewModel", "Attempting to delete appointment: $appointmentId")
+                        Log.d(
+                            "HopDongViewModel",
+                            "Attempting to delete appointment: $appointmentId"
+                        )
                         transaction.delete(appointmentRef)
                     }.await()
                 }
@@ -129,7 +119,6 @@ class HopDongViewModel {
     }
 
 
-
     /**
      * Tạo Map dữ liệu từ RentalContract để lưu vào Firestore.
      */
@@ -142,10 +131,9 @@ class HopDongViewModel {
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
             "ngayThanhToan" to contract.ngayThanhToan,
-            "maPhong" to contract.maPhong.maPhongTro,
-            "tenPhong" to contract.maPhong.tenPhong,
-            "diaChiPhong" to contract.maPhong.diaChiPhong,
-            "dienTich" to contract.maPhong.dienTich,
+            "maPhong" to contract.maPhong,
+            "diaChiPhong" to contract.diaChiPhong,
+            "dienTich" to contract.dienTich,
             "chuNha" to createLandlordInfoMap(contract.chuNha),
             "nguoiThue" to createTenantInfoMap(contract.nguoiThue),
             "thongTinTaiChinh" to createFinancialInfoMap(contract.thongTinTaiChinh),
@@ -154,11 +142,11 @@ class HopDongViewModel {
             "dieuKhoan" to contract.dieuKhoan,
             "soNguoiO" to contract.soNguoiO,
             "hoaDonHopDong" to createBillMap(contract.hoaDonHopDong),
-            "thongTinChiTiet" to createRoomDetailsMap(contract.maPhong.thongTinChiTiet),
+            "thongTinChiTiet" to createRoomDetailsMap(contract.thongTinChiTiet),
             "ghiChu" to contract.ghiChu,
 
 
-        )
+            )
     }
 
     private fun createRoomDetailsMap(details: List<RoomDetail>): List<HashMap<String, Any>> {
@@ -215,6 +203,7 @@ class HopDongViewModel {
             }
         )
     }
+
     private fun createBillMap(ivoices: Invoice): HashMap<String, Any> {
         return hashMapOf(
             "idHoaDon" to ivoices.idHoaDon,
@@ -267,8 +256,11 @@ class HopDongViewModel {
     /**
      * Lấy danh sách hợp đồng theo người thuê.
      */
-    suspend fun getContractsByTenant(tenantId: String): List<HopDong> {
-        return getContracts("nguoiThue.maNguoiDung", tenantId)
+    suspend fun getContractsByTenant(
+        tenantId: String,
+        status: String? = null
+    ): List<HopDong> {
+        return getContracts("nguoiThue.maNguoiDung", tenantId, status)
     }
 
     /**
@@ -278,14 +270,42 @@ class HopDongViewModel {
         return getContracts("chuNha.maNguoiDung", landlordId)
     }
 
-    private suspend fun getContracts(field: String, value: String): List<HopDong> {
+    private suspend fun getContracts(
+        field: String,
+        value: String,
+        status: String? = null
+    ): List<HopDong> {
         return try {
-            contractsCollection
-                .whereEqualTo(field, value)
-                .get()
+            var query = contractsCollection.whereEqualTo(field, value)
+
+            // Nếu status được cung cấp, thêm điều kiện lọc theo trạng thái
+            status?.let {
+                query = query.whereEqualTo("trangThai", status)
+            }
+
+            query.get()
                 .await()
                 .toObjects(HopDong::class.java)
         } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    suspend fun getAllContracts(): List<HopDong> {
+        return try {
+            val querySnapshot = contractsCollection.get().await()
+            Log.d("HopDongViewModel", "CONTRACTCOLLECTION: $contractsCollection")
+            Log.d("HopDongViewModel", "Total documents: ${querySnapshot.size()}")
+
+            // In chi tiết từng document để kiểm tra
+            querySnapshot.documents.forEach { document ->
+                Log.d("HopDongViewModel", "Document ID: ${document.id}")
+                Log.d("HopDongViewModel", "Document Data: ${document.data}")
+            }
+
+            querySnapshot.toObjects(HopDong::class.java)
+        } catch (e: Exception) {
+            Log.e("HopDongViewModel", "Error fetching all contracts: ${e.message}")
             emptyList()
         }
     }
@@ -310,10 +330,14 @@ class HopDongViewModel {
     }
 
 }
+
 class ContractViewModel : ViewModel() {
     private val contractRepository = HopDongViewModel()
     private val _saveResult = MutableLiveData<Result<Unit>>()
     val saveResult: LiveData<Result<Unit>> = _saveResult
+
+    private val _contracts = MutableLiveData<List<HopDong>>()
+    val contracts: LiveData<List<HopDong>> = _contracts
 
     //hóa đơn hợp đồng
     private val _uiState = MutableStateFlow(UtilityFeeUiState())
@@ -365,7 +389,10 @@ class ContractViewModel : ViewModel() {
     ): Pair<Double, List<UtilityFeeDetail>> {
         val feeDetails = utilityFees
             .filter {
-                (it.tenDichVu!in listOf("Điện", "Nước") || it.tenDichVu !in listOf("Số", "Khối")) &&
+                (it.tenDichVu !in listOf("Điện", "Nước") || it.tenDichVu !in listOf(
+                    "Số",
+                    "Khối"
+                )) &&
                         (it.tenDichVu in listOf("Người", "Phòng") || it.tenDichVu == null)
             }
             .map { fee ->
@@ -389,5 +416,16 @@ class ContractViewModel : ViewModel() {
         return Pair(totalFee, feeDetails)
     }
 
+    fun fetchAllContracts() {
+        viewModelScope.launch {
+            try {
+                val contractsList = contractRepository.getAllContracts()
+                Log.d("ContractViewModel", "Fetched contracts: $contractsList")
+                _contracts.postValue(contractsList)
+            } catch (e: Exception) {
+                _contracts.postValue(emptyList())
+            }
+        }
+    }
 
 }

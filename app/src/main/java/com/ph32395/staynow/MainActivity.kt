@@ -3,6 +3,7 @@ package com.ph32395.staynow
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -263,6 +264,19 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.popBackStack()
         } else {
             super.onBackPressed()
+        }
+    }
+
+    fun setBottomNavigationVisibility(isVisible: Boolean) {
+        val bottomNavigationView = binding.bottomNavigation
+        val fabSearch = binding.fabSearch
+
+        if (isVisible) {
+            bottomNavigationView.visibility = View.VISIBLE
+            fabSearch.visibility = View.VISIBLE // Hiện FAB khi cần
+        } else {
+            bottomNavigationView.visibility = View.GONE
+            fabSearch.visibility = View.GONE // Ẩn FAB khi cần
         }
     }
 

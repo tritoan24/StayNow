@@ -1,17 +1,7 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
-import FinancialInfo
-import HopDong
-import Invoice
-import PersonInfo
-import RoomDetail
-import RoomInfo
-import UtilityFee
-import UtilityFeeDetail
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,8 +36,10 @@ import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 class TaoHopDong : AppCompatActivity() {
 
@@ -117,11 +108,9 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var maPhongTro: String
     private lateinit var maNguoiThue: String
     private lateinit var idLichhen: String
-    private lateinit var idHopDong:String
+    private lateinit var idHopDong: String
 
     private var giaPhong: Double = 0.0
-
-
 
 
     @SuppressLint("MissingInflatedId")
@@ -307,7 +296,6 @@ class TaoHopDong : AppCompatActivity() {
         }
 
 
-
         //sử lý text DieuKhoan
         editorDieuKhoan.setEditorFontSize(16) // Kích thước font chữ
         editorDieuKhoan.setEditorFontColor(
@@ -330,18 +318,14 @@ class TaoHopDong : AppCompatActivity() {
         }
 
         btnSave.setOnClickListener {
-            if(validateContract()) {
+            if (validateContract()) {
                 createAndSaveContract()
                 finish()
             }
         }
 
 
-
-
-
     }
-
 
 
     // Hàm chuyển đổi trạng thái hiển thị CalendarView
@@ -352,6 +336,7 @@ class TaoHopDong : AppCompatActivity() {
             calendarView.visibility = View.GONE
         }
     }
+
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerViewThongTinChiTiet() {
         findViewById<RecyclerView>(R.id.listViewThongTin).apply {
@@ -363,6 +348,7 @@ class TaoHopDong : AppCompatActivity() {
             addItemDecoration(SpacingItemDecoration(10))  // 16dp là khoảng cách giữa các item
         }
     }
+
     //    Danh sach tien nghi
     private fun setupRecyViewTienNghi() {
         findViewById<RecyclerView>(R.id.recyclerViewTienNghi).apply {
@@ -392,6 +378,7 @@ class TaoHopDong : AppCompatActivity() {
 //           addItemDecoration(SpacingItemDecoration(1))
         }
     }
+
     //hàm lấy số điện thoại người dùng từ id
     private fun getPhoneNumberFromId(id: String, callback: (String) -> Unit) {
         val ref = FirebaseDatabase.getInstance().getReference("NguoiDung").child(id)
@@ -405,39 +392,40 @@ class TaoHopDong : AppCompatActivity() {
         }
     }
 
-private fun observeViewModel() {
-    //        Quan sat chi tiet thong tin
-    viewModel.chiTietList.observe(this) { chiTietList ->
-        chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
-        findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
-        if (chiTietList.size > 3) {
-            tvDienTich.text = "${chiTietList[3].so_luong_donvi} m²"
-        } else {
-            tvDienTich.text = "Không có dữ liệu"
+    private fun observeViewModel() {
+        //        Quan sat chi tiet thong tin
+        viewModel.chiTietList.observe(this) { chiTietList ->
+            chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
+            findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
+            if (chiTietList.size > 3) {
+                tvDienTich.text = "${chiTietList[1].so_luong_donvi} m²"
+            } else {
+                tvDienTich.text = "Không có dữ liệu"
+            }
+
+        }
+        //        Quan sat du lieu phi dich vu
+        viewModel.phiDichVuList.observe(this) { phiDichVuList ->
+            phiDichVuAdapter = PhiDichVuAdapter(phiDichVuList)
+            findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).adapter = phiDichVuAdapter
+        }
+
+//        Quan sat du lieu noi that
+        viewModel.noiThatList.observe(this) { noiThatList ->
+            noiThatAdapter = NoiThatAdapter(noiThatList)
+            findViewById<RecyclerView>(R.id.recyclerViewNoiThat).adapter = noiThatAdapter
+        }
+
+//        Quan sat du lieu tien nghi
+        viewModel.tienNghiList.observe(this) { tienNghiList ->
+            tienNghiAdapter = TienNghiAdapter(tienNghiList)
+            findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
         }
 
     }
-    //        Quan sat du lieu phi dich vu
-    viewModel.phiDichVuList.observe(this) { phiDichVuList ->
-        phiDichVuAdapter = PhiDichVuAdapter(phiDichVuList)
-        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).adapter = phiDichVuAdapter
-    }
 
-//        Quan sat du lieu noi that
-    viewModel.noiThatList.observe(this) { noiThatList ->
-        noiThatAdapter = NoiThatAdapter(noiThatList)
-        findViewById<RecyclerView>(R.id.recyclerViewNoiThat).adapter = noiThatAdapter
-    }
-
-//        Quan sat du lieu tien nghi
-    viewModel.tienNghiList.observe(this) { tienNghiList ->
-        tienNghiAdapter = TienNghiAdapter(tienNghiList)
-        findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
-    }
-
-}
     //hàm lưu hợp đồng
-   private fun createAndSaveContract() {
+    private fun createAndSaveContract() {
         val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
             UtilityFee(
                 tenDichVu = phiDichVu.ten_dichvu,
@@ -448,15 +436,14 @@ private fun observeViewModel() {
         } ?: emptyList()
 
 
-
         // Lấy danh sách tên tiện nghi
         val listAmenities = viewModel.tienNghiList.value?.map { tn ->
-            tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model HopDong.amenities là List<String>
+            tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model com.ph32395.staynow.TaoHopDong.HopDong.amenities là List<String>
         } ?: emptyList()
 
         // Lấy danh sách tên nội thất
         val listFurniture = viewModel.noiThatList.value?.map { nt ->
-            nt.Ten_noithat // Chỉ cần lấy tên nội thất vì model HopDong.furniture là List<String>
+            nt.Ten_noithat // Chỉ cần lấy tên nội thất vì model com.ph32395.staynow.TaoHopDong.HopDong.furniture là List<String>
         } ?: emptyList()
         val roomDetail = viewModel.chiTietList.value?.map { tt ->
             RoomDetail(
@@ -470,7 +457,10 @@ private fun observeViewModel() {
         // Lấy giá trị tiền cọc từ ViewModel
         val tienCoc = viewModel.getTienCocValue()
 
-        val (totalFee, feeDetails) = viewModelHopDong.extractFixedFees(utilityFees, soNguoio.text.toString().toInt())
+        val (totalFee, feeDetails) = viewModelHopDong.extractFixedFees(
+            utilityFees,
+            soNguoio.text.toString().toInt()
+        )
         val extractVariableFees = viewModelHopDong.extractVariableFees(utilityFees)
 
         // Tạo đối tượng hợp đồng từ dữ liệu form
@@ -483,13 +473,9 @@ private fun observeViewModel() {
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
             ghiChu = note.text.toString(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
-            maPhong = RoomInfo(
-                maPhongTro = maPhongTro,
-                tenPhong = tvNameRoom.text.toString(),
-                diaChiPhong = tvAddress.text.toString(),
-                dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
-                thongTinChiTiet = roomDetail
-            ),
+            maPhong = maPhongTro,
+            trangThai = ContractStatus.PENDING,
+            dienTich = tvDienTich.text.toString().replace("m²", "").trim().toDouble(),
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -511,7 +497,7 @@ private fun observeViewModel() {
                 // Thêm các thông tin khác
             ),
             thongTinTaiChinh = FinancialInfo(
-               giaThue = giaPhong,
+                giaThue = giaPhong,
                 tienCoc = tienCoc,
                 soDienht = edSodien.text.toString().toInt(),
                 soNguoio = soNguoio.text.toString().toInt(),
@@ -519,14 +505,14 @@ private fun observeViewModel() {
                 phiDichVu = utilityFees
             ),
             hoaDonHopDong = Invoice(
-                idHoaDon =  UUID.randomUUID().toString(),
+                idHoaDon = UUID.randomUUID().toString(),
                 ngayLap = tvStartDate.text.toString(),
                 kyHoaDon = tvEndDate.text.toString(),
-                tenKhachHang =txtHoTenNT.text.toString(),
+                tenKhachHang = txtHoTenNT.text.toString(),
                 tenPhong = tvNameRoom.text.toString(),
-                phiCoDinh =feeDetails,
+                phiCoDinh = feeDetails,
                 phiBienDong = extractVariableFees,
-                tongTien = giaPhong+tienCoc,
+                tongTien = giaPhong + tienCoc,
                 trangThai = InvoiceStatus.PENDING,
                 tienPhong = giaPhong,
                 tienCoc = tienCoc,
@@ -536,17 +522,14 @@ private fun observeViewModel() {
                 idNguoigui = auth.currentUser?.uid ?: "",
                 paymentDate = ""
             ),
-
+            thongTinChiTiet = roomDetail,
             tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
             noiThat = listFurniture, // Danh sách String chứa tên nội thất
-
             dieuKhoan = editorDieuKhoan.html,
-
-            // Thêm các thông tin khác
-
+            diaChiPhong = tvAddress.text.toString()
         )
         //val invoiceSchedules = generateInvoiceSchedule(contract, utilityFees)
-        viewModelHopDong.saveContract(contract,idLichhen)
+        viewModelHopDong.saveContract(contract, idLichhen)
 
 
     }
@@ -606,7 +589,9 @@ private fun observeViewModel() {
 
     private fun validateContract(): Boolean {
         //nếu ngày không phải là ngày trong một tháng
-        if (txtNgayThanhToan.text.toString().toInt() > 30 || txtNgayThanhToan.text.toString().toInt() < 1){
+        if (txtNgayThanhToan.text.toString().toInt() > 30 || txtNgayThanhToan.text.toString()
+                .toInt() < 1
+        ) {
             toast("Ngày thanh toán không hợp lệ")
             return false
         }

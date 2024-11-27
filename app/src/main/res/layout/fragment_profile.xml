@@ -356,6 +356,7 @@
                     android:background="@android:color/darker_gray" />
                 <!-- Menu Item: Hợp đồng -->
                 <LinearLayout
+                    android:id="@+id/ll_hopdong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
