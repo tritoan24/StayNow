@@ -3,21 +3,26 @@ package com.ph32395.staynow.TaoHopDong
 
 import FinancialInfo
 import HopDong
+import Invoice
 import PersonInfo
 import RoomDetail
 import RoomInfo
 import UtilityFee
+import UtilityFeeDetail
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CalendarView
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -41,6 +46,7 @@ import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 class TaoHopDong : AppCompatActivity() {
@@ -49,6 +55,7 @@ class TaoHopDong : AppCompatActivity() {
     private val viewModelHopDong: ContractViewModel by viewModels()
     private lateinit var viewModel: RoomDetailViewModel
     private lateinit var viewModelCccd: CccdViewModel
+    private var utilityFees: List<UtilityFee> = listOf()
 
     // Khai báo phần lịch
     private lateinit var calendarView: CalendarView
@@ -73,6 +80,11 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var tvPrice: TextView
     private lateinit var imageRoom: ImageView
     private lateinit var tvDienTich: TextView
+
+    private lateinit var edSodien: EditText
+    private lateinit var edSonuoc: EditText
+    private lateinit var soNguoio: EditText
+
 
     private lateinit var tvStartDate: TextView
     private lateinit var tvEndDate: TextView
@@ -103,6 +115,8 @@ class TaoHopDong : AppCompatActivity() {
 
     private lateinit var maPhongTro: String
     private lateinit var maNguoiThue: String
+    private lateinit var idLichhen: String
+    private lateinit var idHopDong:String
 
     private var giaPhong: Double = 0.0
 
@@ -136,6 +150,8 @@ class TaoHopDong : AppCompatActivity() {
         //lấy mã phòng trọ và lấy thông tin phòng trọ
         maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         maNguoiThue = intent.getStringExtra("maNguoiThue") ?: ""
+        idLichhen = intent.getStringExtra("idLichhen") ?: ""
+
 
         //gọi hàm lấy số điện thoại người dùng
         getPhoneNumberFromId(auth.currentUser?.uid ?: "") { phoneNumber1 ->
@@ -315,6 +331,7 @@ class TaoHopDong : AppCompatActivity() {
         btnSave.setOnClickListener {
             if(validateContract()) {
                 createAndSaveContract()
+                finish()
             }
         }
 
@@ -428,6 +445,9 @@ private fun observeViewModel() {
                 isRequired = true // Có thể thêm trường này vào model PhiDichVu nếu cần
             )
         } ?: emptyList()
+
+
+
         // Lấy danh sách tên tiện nghi
         val listAmenities = viewModel.tienNghiList.value?.map { tn ->
             tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model HopDong.amenities là List<String>
@@ -444,19 +464,24 @@ private fun observeViewModel() {
                 unit = tt.don_vi,
             )
         } ?: emptyList()
+
+
         // Lấy giá trị tiền cọc từ ViewModel
         val tienCoc = viewModel.getTienCocValue()
 
+        val (totalFee, feeDetails) = viewModelHopDong.extractFixedFees(utilityFees, soNguoio.text.toString().toInt())
+        val extractVariableFees = viewModelHopDong.extractVariableFees(utilityFees)
 
         // Tạo đối tượng hợp đồng từ dữ liệu form
         val contract = HopDong(
-            contractId = "", // Để trống để tạo mới
+            contractId = "",
             createdDate = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
             startDate = tvStartDate.text.toString(),
             endDate = tvEndDate.text.toString(),
             rentDuration = tvMonth.text.toString(),
             paymentDay = txtNgayThanhToan.text.toString().toInt(),
             note = note.text.toString(),
+            peopleCount = soNguoio.text.toString().toIntOrNull() ?: 1,
             roomInfo = RoomInfo(
                 roomId = maPhongTro,
                 roomName = tvNameRoom.text.toString(),
@@ -487,20 +512,42 @@ private fun observeViewModel() {
             financialInfo = FinancialInfo(
                monthlyRent = giaPhong,
                 deposit = tienCoc,
+                sodienht = edSodien.text.toString().toInt(),
+                songuoio = soNguoio.text.toString().toInt(),
+                sonuocht = edSonuoc.text.toString().toInt(),
                 utilities = utilityFees
             ),
+            invoice = Invoice(
+                idHoadon =  UUID.randomUUID().toString(),
+                invoiceDate = tvStartDate.text.toString(),
+                dueDate = tvEndDate.text.toString(),
+                customerName =txtHoTenNT.text.toString(),
+                roomName = tvNameRoom.text.toString(),
+                feeDefault =feeDetails,
+                feeVariable = extractVariableFees,
+                totalAmount = 0.0,
+                status = InvoiceStatus.PENDING,
+                roomprice = giaPhong,
+                depositAmount = tienCoc,
+                totalFeeService = totalFee,
+                type = "HoaDonHopDong",
+                idnguoinhan = maNguoiThue,
+                idnguoigui = auth.currentUser?.uid ?: "",
+                paymentDate = ""
+            ),
+
             amenities = listAmenities, // Danh sách String chứa tên tiện nghi
             furniture = listFurniture, // Danh sách String chứa tên nội thất
 
             terms = editorDieuKhoan.html,
 
-
-
             // Thêm các thông tin khác
 
         )
-        // Lưu hợp đồng
-        viewModelHopDong.saveContract(contract)
+        //val invoiceSchedules = generateInvoiceSchedule(contract, utilityFees)
+        viewModelHopDong.saveContract(contract,idLichhen)
+
+
     }
 
     private fun initViews() {
@@ -510,6 +557,11 @@ private fun observeViewModel() {
         tvPrice = findViewById(R.id.tvGiaThue)
         imageRoom = findViewById(R.id.imagePhongTro)
         tvDienTich = findViewById(R.id.txtDienTich)
+
+        edSodien = findViewById(R.id.editTextSoDien)
+        edSonuoc = findViewById(R.id.editTextSoNuoc)
+        soNguoio = findViewById(R.id.editTextSoNguoi)
+
 
         // Thời gian
         tvStartDate = findViewById(R.id.tvStartDate)

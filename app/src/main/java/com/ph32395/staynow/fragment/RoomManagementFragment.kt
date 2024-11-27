@@ -75,7 +75,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 updateStatusRoom(it.roomScheduleId, CANCELED)
             },
             onClickCreateContract = {
-               createContract(it.roomId,it.renterId);
+               createContract(it.roomId,it.tenantId,it.roomScheduleId);
             }
 
         )
@@ -133,7 +133,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         startActivity(intent)
     }
 
-    private fun createContract(maPhongTro: String, maNguoiThue: String) {
+    private fun createContract(maPhongTro: String, maNguoiThue: String, idLichhen: String){
     //lấy id của người dùng hiện tại
     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         //lấy 2 trường statusCCCD và statusPTTT từ database realtime bảng NguoiDung
@@ -166,10 +166,8 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 //chuyển mã phòng trọ sang màn hình tạo hợp đồng
                 intent.putExtra("maPhongTro",maPhongTro )
                 intent.putExtra("maNguoiThue",maNguoiThue )
-
+                intent.putExtra("idLichhen",idLichhen)
                     startActivity(intent)
-
-
                 }
 
             }
