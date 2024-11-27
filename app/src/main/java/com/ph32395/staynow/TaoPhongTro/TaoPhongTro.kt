@@ -69,8 +69,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     private lateinit var gioitinhViewModel: GioiTinhViewModel
     private lateinit var gioitinhAdapter: GioiTinhAdapter
 
-    // Khai báo pricesMap như một mutableMap để lưu thông tin mã dịch vụ và giá
-    private val pricesMap = mutableMapOf<String, Pair<DichVu, Int>>()
+    private var listPhiDichVu = mutableListOf<PhiDichVu>()
     // Khai bao bien luu tru du lieu thong tin
 
     private val pricesMapThongTin = mutableMapOf<String, Pair<ThongTin, Int>>()
@@ -98,6 +97,12 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     var Ma_loaiphong = ""
     var Ma_gioiTinh = ""
     var TrangThaiPhong = false
+    //Phí thông tin
+    var tendichvu = ""
+    var giadichvu = 0
+    var icondichvu = ""
+    var donvidv = ""
+    var soluongdv = 0
 
 
     private lateinit var loadingAnimation: LottieAnimationView
@@ -283,11 +288,11 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         })
     }
 
-    override fun onAllPricesEntered(prices: List<Pair<DichVu, Int>>) {
-        prices.forEach { (dichVu, price) ->
-            // Lưu thông tin dịch vụ và giá vào pricesMap
-            pricesMap[dichVu.Ma_dichvu.toString()] = Pair(dichVu, price)
-        }
+    override fun onAllPricesEntered(prices: List<PhiDichVu>) {
+        // Lưu toàn bộ danh sách vào biến
+        listPhiDichVu = prices.toMutableList()
+        Log.d("PhiDichVu", "Số lượng dịch vụ: ${listPhiDichVu.size}")
+        soluongdv = listPhiDichVu.size
     }
 
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
@@ -380,7 +385,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             return
         }
         //nếu chưa nhập đủ giá cho 4 dịch vụ thì thông báo
-        if (pricesMap.size < 4) {
+        if (soluongdv < 4) {
             Toast.makeText(this, "Vui lòng nhập giá dịch vụ", Toast.LENGTH_SHORT).show()
             return
         }
@@ -419,7 +424,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
 
         val Trang_thailuu = if (isSaved) true else false
-        val Trang_thaiduyet = if (isSaved) "" else "Cho duyet"
+        val Trang_thaiduyet = if (isSaved) "" else "ChoDuyet"
 
 
         // Tạo danh sách để chứa URL của các ảnh đã tải lên
@@ -604,26 +609,18 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     }
 
     fun savePhiDichVuToFirestore(maPhongTro: String) {
-        val totalTasks = pricesMap.size
-
-        pricesMap.forEach { (maDichVu, pair) ->
-            val dichVu = pair.first
-            val price = pair.second
-
-            val phiDichVu = PhiDichVu(
-                So_tien = price,
-                Ma_phongtro = maPhongTro,
-                Ten_dichvu = dichVu.Ten_dichvu,
-                Icon_dichvu = dichVu.Icon_dichvu,
-                Don_vi = dichVu.Don_vi
-            )
+        // Sử dụng listPhiDichVu đã lưu
+        listPhiDichVu.forEach { phiDichVu ->
+            // Tạo một bản copy với mã phòng trọ mới
+            val newPhiDichVu = phiDichVu.copy(Ma_phongtro = maPhongTro)
 
             firestore.collection("PhiDichVu")
-                .add(phiDichVu)
+                .add(newPhiDichVu)
                 .addOnSuccessListener {
-
+                    Log.d("Firestore", "Thêm phí dịch vụ thành công")
                 }
                 .addOnFailureListener { exception ->
+                    Log.e("Firestore", "Lỗi khi thêm phí dịch vụ", exception)
                 }
         }
     }

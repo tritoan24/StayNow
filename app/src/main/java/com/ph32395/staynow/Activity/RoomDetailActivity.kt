@@ -1,13 +1,17 @@
 package com.ph32395.staynow.Activity
 
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,6 +19,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
@@ -22,8 +28,11 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.R
+import com.ph32395.staynow.TaoHopDong.TaoHopDong
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.fragment.showWarningDialog
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
@@ -38,6 +47,7 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var phiDichVuAdapter: PhiDichVuAdapter
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var tienNghiAdapter: TienNghiAdapter
+    private var ManHome = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,16 +64,43 @@ class RoomDetailActivity : AppCompatActivity() {
 
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+         ManHome = intent.getStringExtra("ManHome") ?: ""
+
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
-            launchActivity(
-                Bundle().apply {
-                    putSerializable(ROOM_DETAIL, viewModel.room.value)
-                    putString(ROOM_ID, maPhongTro)
-                },
-                ScheduleRoomActivity::class.java
-            )
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            // Lấy dữ liệu từ Firebase Realtime Database
+            val database = FirebaseDatabase.getInstance().reference
+            val userRef = database.child("NguoiDung").child(userId)
+            userRef.get().addOnSuccessListener { snapshot ->
+                val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
+                val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+                Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
+                Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
+
+                // Kiểm tra trạng thái CCCD và PTTT
+                if (!statusCCCD) {
+                    showWarningDialog(
+                        context = this,
+                        title = "Bạn chưa cập nhật CCCD",
+                        content = "Hãy cập nhật CCCD để tiếp tục",
+                        confirmAction = { navigateToUpdateCCCD() }
+                    )
+                } else {
+                    launchActivity(
+                        Bundle().apply {
+                            putSerializable(ROOM_DETAIL, viewModel.room.value)
+                            putString(ROOM_ID, maPhongTro)
+                        },
+                        ScheduleRoomActivity::class.java
+                    )
+                }
+            }.addOnFailureListener { exception ->
+                // Xử lý lỗi nếu có
+                Log.e("RoomManagementFragment", "Error fetching user data", exception)
+            }
         }
+
 //        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
@@ -93,6 +130,7 @@ class RoomDetailActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//            layoutManager = GridLayoutManager(context, 4)
             adapter = chiTietAdapter
 
             // Thêm SpacingItemDecoration để tạo khoảng cách đều giữa các item
@@ -160,6 +198,22 @@ class RoomDetailActivity : AppCompatActivity() {
                 "${String.format("%,.0f", room.Gia_phong)} VND"
             findViewById<TextView>(R.id.txtChiTietThem).text = room.Mota_chitiet
 
+            val trangThaiDuyet = room.Trang_thaiduyet
+            val trangThaiLuu = room.Trang_thailuu
+            val trangThaiPhong = room.Trang_thaiphong
+
+
+            //tritoan code dựa vào 3 trạng thái này để hiển thị botton của phòng trọ
+            if(ManHome == "Home") {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
+            }else if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+            }else if(trangThaiLuu == true) {
+                findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
+            }else if(trangThaiDuyet == "BiHuy") {
+                findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
+            }
+
 //            Cap nhat hinh anh
             room.imageUrls?.let {
                 viewPagerAdapter.setImages(it)
@@ -213,5 +267,9 @@ class RoomDetailActivity : AppCompatActivity() {
             findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
         }
 
+    }
+    private fun navigateToUpdateCCCD() {
+        val intent = Intent(this, CCCD::class.java)
+        startActivity(intent)
     }
 }

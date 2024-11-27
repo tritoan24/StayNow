@@ -38,8 +38,53 @@ class HomeViewModel : ViewModel() {
     private val _imageList = MutableLiveData<List<SlideModel>>()
     val imageList: LiveData<List<SlideModel>> get() = _imageList
 
+//    LiveData lay phong tro theo trang thai
+    private val _phongDaDang = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDaDang: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaDang
+
+    private val _phongDangLuu = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDangLuu: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDangLuu
+
+    private val _phongChoDuyet = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongChoDuyet: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongChoDuyet
+
+    private val _phongDaHuy = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDaHuy: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaHuy
+
+    private val _phongDaChoThue = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val phongDaChoThue: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaChoThue
+
     fun selectLoaiPhongTro(idLoaiPhong: String) {
         _selectedLoaiPhongTro.value = idLoaiPhong
+    }
+
+//    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    fun loadRoomByStatus(maNguoiDung: String) {
+        firestore.collection("PhongTro")
+            .whereEqualTo("Ma_nguoidung", maNguoiDung) //Loc theo ma nguoi dung
+            .addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    Log.e("HomeViewModel", "Error fetching rooms: ", exception)
+                    return@addSnapshotListener
+                }
+
+                snapshot?.let {
+                    Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
+                    val allRooms = it.documents.mapNotNull { doc ->
+                        doc.toObject(PhongTroModel::class.java)?.let { room ->
+                            Pair(doc.id, room)
+                        }
+                    }
+
+//                    Phan loai phong tro theo trang thai
+                    _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
+                    _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
+                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                    _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
+                    _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
+
+                }
+            }
     }
 
     // Hàm để cập nhật số lượt xem phòng trong Firestore

@@ -113,5 +113,21 @@ dependencies {
     // Thư viện Volley
     implementation("com.android.volley:volley:1.2.1")
 
+    implementation ("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation ("androidx.camera:camera-core:1.2.2")
+    implementation ("androidx.camera:camera-camera2:1.2.2")
+    implementation ("androidx.camera:camera-lifecycle:1.2.2")
+    implementation ("androidx.camera:camera-view:1.2.2")
+
+    implementation ("com.itextpdf:itext7-core:7.2.3")
+    implementation ("com.afollestad.material-dialogs:core:3.3.0")
+
+    //thư viện custom text
+    implementation ("jp.wasabeef:richeditor-android:2.0.0")
+
+
+
+
+
 
 }

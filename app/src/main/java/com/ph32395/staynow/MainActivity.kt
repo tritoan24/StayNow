@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
@@ -16,6 +17,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
+import com.ph32395.staynow.ThongBao.NotificationViewModel
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
 import com.ph32395.staynow.fragment.home.HomeFragment
@@ -23,6 +25,10 @@ import com.ph32395.staynow.fragment.MessageFragment
 import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
 import com.ph32395.staynow.fragment.RoomManagementFragment
+import com.ph32395.staynow.fragment.home.HomeFragment
+import com.ph32395.staynow.fragment.home.HomeViewModel
+import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -46,36 +52,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(
-                object : OnCompleteListener<String?> {
-                    override fun onComplete(task: Task<String?>) {
-                        if (!task.isSuccessful) {
-                            Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
-                            return
-                        }
-
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        //lưu token này vào database
-                        if (currentUser != null) {
-                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-                                .setValue(token)
-
-
-                        }
-                        //nếu không có người dùng nào đăng nhập thì không lưu token
-
-                    }
-                })
-
-
         onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
             }
         })
+
+
+
 
 
 
@@ -242,6 +226,9 @@ class MainActivity : AppCompatActivity() {
             activeFragment = fragment
         }
     }
+
+
+
     override fun onStart() {
         super.onStart()
         setUserOnline()
@@ -260,6 +247,7 @@ class MainActivity : AppCompatActivity() {
         setUserOffline()
     }
 
+
     private fun setUserOnline() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
@@ -275,6 +263,15 @@ class MainActivity : AppCompatActivity() {
             val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
             userRef.child("status").setValue("offline")
             userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+
+//nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
         }
     }
 

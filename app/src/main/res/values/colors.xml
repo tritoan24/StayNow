@@ -19,5 +19,6 @@
     <color name="red">#FF0808</color>
     <color name="color_line">#EEEDED</color>
     <color name="color_text">#532CA6</color>
+    <color name="gray">#808080</color>
 
 </resources>
