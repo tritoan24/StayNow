@@ -39,7 +39,6 @@ class NotificationFragment : Fragment() {
         viewModel = ViewModelProvider(this)[NotificationViewModel::class.java]
 
 
-
         // Khởi tạo RecyclerView
         val rvNotifications = binding.rvNotifications
         rvNotifications.layoutManager = LinearLayoutManager(context)
@@ -54,10 +53,8 @@ class NotificationFragment : Fragment() {
         mDatabase = FirebaseDatabase.getInstance().reference
 
 
-
         // Lấy UID của người dùng đã đăng nhập
         val userId = mAuth.currentUser?.uid
-
 
         viewModel.fetchNotifications(userId!!)
 
