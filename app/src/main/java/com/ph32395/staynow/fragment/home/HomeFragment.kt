@@ -13,8 +13,6 @@ import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,7 +22,6 @@ import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.ThongBao.NotificationActivity
 import com.ph32395.staynow.ThongBao.NotificationViewModel

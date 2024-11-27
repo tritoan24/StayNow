@@ -129,7 +129,8 @@ enum class ContractStatus {
     PENDING, // Chờ ký
     ACTIVE, // Đang hiệu lực
     EXPIRED, // Hết hạn
-    TERMINATED // Đã chấm dứt
+    TERMINATED, // Đã chấm dứt
+    CANCEL
 }
 
 

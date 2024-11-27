@@ -525,7 +525,7 @@ private fun observeViewModel() {
                 roomName = tvNameRoom.text.toString(),
                 feeDefault =feeDetails,
                 feeVariable = extractVariableFees,
-                totalAmount = 0.0,
+                totalAmount = giaPhong+tienCoc,
                 status = InvoiceStatus.PENDING,
                 roomprice = giaPhong,
                 depositAmount = tienCoc,

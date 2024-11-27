@@ -20,21 +20,21 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logoapp"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StayNow">
+        android:theme="@style/Theme.StayNow"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".ThongBao.NotificationActivity"
             android:exported="false" />
 
-        android:theme="@style/Theme.StayNow"
-        android:usesCleartextTraffic="true">
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+
         <activity
             android:name=".Maps.MapsActivity"
-            android:exported="true">
-        </activity>
+            android:exported="true"/>
         <activity
             android:name=".BaoMat.Xacminh_OTP"
             android:exported="false" />
@@ -67,6 +67,9 @@
             android:exported="false" />
         <activity
             android:name=".CCCD.CCCD"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.OTPActivity"
             android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
