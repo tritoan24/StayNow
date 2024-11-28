@@ -63,6 +63,9 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
@@ -90,6 +93,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     var min: Int = 0
     var max: Int = 0
     private val TAG = "zzzzzzMapsActivityzzzzzz"
+    private val apiKeys = mutableListOf<String>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapsBinding.inflate(layoutInflater)
@@ -97,29 +101,63 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         // Khởi tạo FusedLocationProviderClient
         fusedLocationClient =
             LocationServices.getFusedLocationProviderClient(this)
-
+        val apiKey = applicationContext.getString(R.string.api_key_1)
+        val apiKey2 = applicationContext.getString(R.string.api_key_2)
+        val apiKey3 = applicationContext.getString(R.string.api_key_3)
+        val apiKey4 = applicationContext.getString(R.string.api_key_4)
+        val apiKey5 = applicationContext.getString(R.string.api_key_5)
+        val apiKey6 = applicationContext.getString(R.string.api_key_6)
+        val apiKey7 = applicationContext.getString(R.string.api_key_7)
+        val apiKey8 = applicationContext.getString(R.string.api_key_8)
+        val apiKey9 = applicationContext.getString(R.string.api_key_9)
+        val apiKey10 = applicationContext.getString(R.string.api_key_10)
+        val apiKey11 = applicationContext.getString(R.string.api_key_11)
+        val apiKey12 = applicationContext.getString(R.string.api_key_12)
+        val apiKey13 = applicationContext.getString(R.string.api_key_13)
+        val apiKey14 = applicationContext.getString(R.string.api_key_14)
+        val apiKey15 = applicationContext.getString(R.string.api_key_15)
+        val apiKey16 = applicationContext.getString(R.string.api_key_16)
+        val apiKey17 = applicationContext.getString(R.string.api_key_17)
+        val apiKey18 = applicationContext.getString(R.string.api_key_18)
+        val apiKey19 = applicationContext.getString(R.string.api_key_19)
+        val apiKey20 = applicationContext.getString(R.string.api_key_20)
+        val apiKey21 = applicationContext.getString(R.string.api_key_21)
+        val apiKey22 = applicationContext.getString(R.string.api_key_22)
+        val apiKey23 = applicationContext.getString(R.string.api_key_23)
+        val apiKey24 = applicationContext.getString(R.string.api_key_24)
+        apiKeys.add(apiKey)
+        apiKeys.add(apiKey2)
+        apiKeys.add(apiKey3)
+        apiKeys.add(apiKey4)
+        apiKeys.add(apiKey5)
+        apiKeys.add(apiKey6)
+        apiKeys.add(apiKey7)
+        apiKeys.add(apiKey8)
+        apiKeys.add(apiKey9)
+        apiKeys.add(apiKey10)
+        apiKeys.add(apiKey11)
+        apiKeys.add(apiKey12)
+        apiKeys.add(apiKey13)
+        apiKeys.add(apiKey14)
+        apiKeys.add(apiKey15)
+        apiKeys.add(apiKey16)
+        apiKeys.add(apiKey17)
+        apiKeys.add(apiKey18)
+        apiKeys.add(apiKey19)
+        apiKeys.add(apiKey20)
+        apiKeys.add(apiKey21)
+        apiKeys.add(apiKey22)
+        apiKeys.add(apiKey23)
+        apiKeys.add(apiKey24)
         //Goi y tim kiem start
         autoCompleteTextView = binding.autoComplete
-//        autoCompleteTextView.addTextChangedListener(object : android.text.TextWatcher {
-//            override fun afterTextChanged(s: android.text.Editable?) {
-//                val query = s.toString()
-//                Log.d("zzzzz", "afterTextChanged: $query")
-//
-//                if (query.isNotEmpty() && query != lastText) {
-//                    // Hủy bỏ tất cả các yêu cầu API trước đó
-//                    handler.removeCallbacksAndMessages(null)
-//                    // Cập nhật lại văn bản cuối cùng
-//                    lastText = query
-//                    // Gọi API ngay lập tức với độ trễ nhỏ
-//                    handler.postDelayed({
-//                        getLocationSuggestions(query)
-//                    }, delay)
-//                }
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-//        })
+        autoCompleteTextView.addTextChangedListener(object : android.text.TextWatcher {
+            override fun afterTextChanged(s: android.text.Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                fetchSuggestions(s.toString())
+            }
+        })
         //Goi y tim kiem end
 
 
@@ -214,6 +252,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
 
     }
+
+    private var currentKeyIndex = 0
+    private var usageMap = mutableMapOf<String, Int>() // Theo dõi số lượng requests mỗi key
+
+    init {
+        apiKeys.forEach { usageMap[it] = 0 } // Khởi tạo bộ đếm cho mỗi key
+    }
+
+    private fun getCurrentApiKey(): String {
+        return apiKeys[currentKeyIndex]
+    }
+
+    private fun rotateApiKey() {
+        currentKeyIndex = (currentKeyIndex + 1) % apiKeys.size
+        Log.d("API_KEY_SWITCH", "Chuyển sang API Key: ${apiKeys[currentKeyIndex]}")
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<out String>, grantResults: IntArray
@@ -392,6 +447,62 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
+
+    fun getCoordinatesUsingNominatimGoong(address: String, onResult: (LatLng?) -> Unit) {
+
+        val apiKey = getCurrentApiKey()
+        RetrofitInstance.api.getGeocode(apiKey, address)
+            .enqueue(object : Callback<GeocodeResponse> {
+                override fun onResponse(
+                    call: Call<GeocodeResponse>,
+                    response: Response<GeocodeResponse>
+                ) {
+                    val currentKey = getCurrentApiKey()
+
+                    // Kiểm tra giới hạn trong header
+                    val remainingRequests =
+                        response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
+                    if (remainingRequests != null) {
+                        usageMap[currentKey] = 998 - remainingRequests
+                        Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
+                    }
+
+                    // Nếu vượt quá giới hạn, chuyển sang key mới
+                    if (remainingRequests != null && remainingRequests <= 0) {
+                        rotateApiKey()
+                        getCoordinatesUsingNominatim(address, onResult) // Gọi lại với key mới
+                        return
+                    }
+                    Log.d(TAG, "onResponse:getCoordinatesUsingNominatim $response")
+                    if (response.isSuccessful || response.body()?.status == "OK") {
+
+                        val data = response.body()?.results
+                        val firstResult = data?.first()
+                        Log.d(TAG, "onResponse getCoordinatesUsingNominatim: address $address")
+                        Log.d(TAG, "onResponse getCoordinatesUsingNominatim: data $data")
+                        onResult(
+                            LatLng(
+                                firstResult!!.geometry.location.lat.toDouble(),
+                                firstResult.geometry.location.lng.toDouble()
+                            )
+                        )
+
+
+                    } else {
+                        Log.e(TAG, "onResponse: Error Retrofit")
+                    }
+
+                }
+
+                override fun onFailure(call: Call<GeocodeResponse>, t: Throwable) {
+                    Log.e(TAG, "onFailure: Error ${t.message.toString()}")
+                }
+            })
+
+
+    }
+
+
     fun createCustomMarkerWithLayoutXML(
         context: Context,
         text: String,
@@ -440,7 +551,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         Log.d("zzzzzzzzzz", "addMarkersFromAddresses: $addresses")
         for (address in addresses) {
             val newAddressRoom = address.Dia_chi.removePrefix("Xã")
-            getCoordinatesUsingNominatim(newAddressRoom) { latLng ->
+            getCoordinatesUsingNominatimGoong(newAddressRoom) { latLng ->
                 latLng?.let {
                     val marker = map.addMarker(
                         MarkerOptions()
@@ -513,7 +624,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     // Hàm tìm kiếm địa chỉ
     fun addMarkersFromAddressesSearch(map: GoogleMap, address: String, context: Context) {
-        getCoordinatesUsingNominatim(address) { latLng ->
+        getCoordinatesUsingNominatimGoong(address) { latLng ->
             latLng?.let {
                 map.addMarker(
                     MarkerOptions()
@@ -536,142 +647,58 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
 
     // goi ý tim kiem
-//    v3
-    private fun getLocationSuggestions(query: String) {
-        Log.d("zzzzz", "getLocationSuggestions: $query ")
-        val client = OkHttpClient()
-        val url =
-            "https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5&countrycodes=VN"
 
-        val request = Request.Builder()
-            .url(url)
-            .addHeader("User-Agent", "YourAppName/1.0 (nguyencong04@email.com)")
-            .build()
+    private fun fetchSuggestions(query: String) {
+        if (query.length < 2) return
 
-        client.newCall(request).enqueue(object : okhttp3.Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this@MapsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT)
-                        .show()
-                    Log.d("TAGzzzz", "onFailure: Error: ${e.message}")
-                }
-            }
+        val apiKey = getCurrentApiKey()
+        RetrofitInstance.api.getPlace(apiKey, query)
+            .enqueue(object : Callback<SuggestionResponse> {
+                override fun onResponse(
+                    call: Call<SuggestionResponse>,
+                    response: Response<SuggestionResponse>
+                ) {
+                    val currentKey = getCurrentApiKey()
 
-            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-                Log.d("TAGzzzzzzzzz", "onResponse:suggestions $response")
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    val suggestions = parseSuggestions(responseBody)
-                    Log.d("TAGzzzzzzzzz", "onResponse:suggestionsList $suggestions")
-                    runOnUiThread {
+                    // Kiểm tra giới hạn trong header
+                    val remainingRequests =
+                        response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
+                    if (remainingRequests != null) {
+                        usageMap[currentKey] = 998 - remainingRequests
+                        Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
+                    }
+
+                    // Nếu vượt quá giới hạn, chuyển sang key mới
+                    if (remainingRequests != null && remainingRequests <= 0) {
+                        rotateApiKey()
+                        fetchSuggestions(query) // Gọi lại với key mới
+                        return
+                    }
+                    Log.d(TAG, "onResponse: response $response")
+                    if (response.isSuccessful && response.body()?.status == "OK") {
+                        val suggestions = response.body()?.predictions ?: emptyList()
+                        Log.d(TAG, "onResponse: suggestions $suggestions ")
+                        val list = suggestions.map { it.description }
+                        Log.d(TAG, "onResponse: list $list")
                         val adapter = ArrayAdapter(
                             this@MapsActivity,
-                            android.R.layout.simple_dropdown_item_1line,
-                            suggestions
+                            android.R.layout.simple_list_item_1,
+                            list
                         )
-                        autoCompleteTextView.setAdapter(adapter)
+                        binding.autoComplete.setAdapter(adapter)
                         adapter.notifyDataSetChanged()
+                    } else {
+                        Log.e("Retrofit", "Response error: ${response.errorBody()?.string()}")
                     }
                 }
-            }
-        })
-    }
 
-    private fun parseSuggestions(responseBody: String?): List<String> {
-        val suggestions = mutableListOf<String>()
-        Log.d("TAGzzzzzz", "parseSuggestions: suggestions mutableListOf $suggestions")
-        if (responseBody != null) {
-            val jsonArray = JSONArray(responseBody)
-            for (i in 0 until jsonArray.length()) {
-                val jsonObject = jsonArray.getJSONObject(i)
-                val displayName = jsonObject.optString("display_name")
-                val newDisplayName = getBasicAddress(displayName)
-                Log.d("TAGzzzzzz", "parseSuggestions: newDisplayName $newDisplayName ")
-                if (displayName.isNotEmpty()) {
-                    suggestions.add(newDisplayName)
+                override fun onFailure(call: Call<SuggestionResponse>, t: Throwable) {
+                    Log.e("Retrofit", "API call failed: ${t.message}")
                 }
-            }
-        }
-        return suggestions
-    }
-
-    private fun getBasicAddress(displayName: String): String {
-        val parts = displayName.split(",")
-        return if (parts.size >= 3) {
-            parts.dropLast(2).joinToString(", ").trim()
-        } else {
-            displayName
-        }
+            })
     }
 
 
-    //v2
-//    private fun getLocationSuggestions(query: String) {
-//        Log.d("zzzzz", "getLocationSuggestions: $query ")
-//        val client = OkHttpClient()
-//        val url =
-//            "https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5&countrycodes=VN"
-//
-//        val request = Request.Builder()
-//            .url(url)
-//            .addHeader("User-Agent", "YourAppName/1.0 (nguyencong04@email.com)")
-//            .build()
-//
-//        client.newCall(request).enqueue(object : okhttp3.Callback {
-//            override fun onFailure(call: okhttp3.Call, e: IOException) {
-//                runOnUiThread {
-//                    Toast.makeText(this@MapsActivity, "Error: ${e.message}", Toast.LENGTH_SHORT)
-//                        .show()
-//                    Log.d("TAGzzzz", "onFailure: Error: ${e.message}")
-//                }
-//            }
-//
-//            override fun onResponse(call: okhttp3.Call, response: okhttp3.Response) {
-//                Log.d("TAGzzzzzzzzz", "onResponse:suggestions $response")
-//                if (response.isSuccessful) {
-//                    val responseBody = response.body?.string()
-//                    val suggestions = parseSuggestions(responseBody)
-//                    Log.d("TAGzzzzzzzzz", "onResponse:suggestions $suggestions")
-//                    runOnUiThread {
-//                        val adapter = ArrayAdapter(
-//                            this@MapsActivity,
-//                            android.R.layout.simple_dropdown_item_1line,
-//                            suggestions
-//                        )
-//                        autoCompleteTextView.setAdapter(adapter)
-//                        adapter.notifyDataSetChanged()
-//                    }
-//                }
-//            }
-//        })
-//    }
-//
-//    private fun parseSuggestions(responseBody: String?): List<String> {
-//        val suggestions = mutableListOf<String>()
-//        Log.d("TAGzzzzzz", "parseSuggestions: suggestions $suggestions")
-//        if (responseBody != null) {
-//            val jsonArray = JSONArray(responseBody)
-//            for (i in 0 until jsonArray.length()) {
-//                val jsonObject = jsonArray.getJSONObject(i)
-//                val displayName = jsonObject.optString("display_name")
-//                val newDisplayName = getBasicAddress(displayName)
-//                Log.d("TAGzzzzzz", "parseSuggestions: newDisplayName $newDisplayName ")
-//                if (newDisplayName.isNotEmpty()) {
-//                    suggestions.add(newDisplayName)
-//                }
-//            }
-//        }
-//        return suggestions
-//    }
-//
-//    private fun getBasicAddress(displayName: String): String {
-//        val parts = displayName.split(",")
-//        return if (parts.size >= 3) {
-//            parts.dropLast(2).joinToString(", ").trim()
-//        } else {
-//            displayName
-//        }
-//    }
     private fun hideKeyClearFocus() { // dung de clear focus va an ban phim khi nhan search
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.autoComplete.windowToken, 0)
@@ -967,10 +994,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             }
         Tasks.whenAllComplete(tasks).addOnSuccessListener {
 
-            if (it.isEmpty()){
+            if (it.isEmpty()) {
                 Log.d(TAG, "onFilterSelected: not null room")
-            }else{
-                addMarkersFromAddresses(mMap,addresses2,this)
+            } else {
+                addMarkersFromAddresses(mMap, addresses2, this)
             }
 
         }.addOnSuccessListener {
