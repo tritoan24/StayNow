@@ -2,8 +2,6 @@ package com.ph32395.staynow.fragment.contract_tenant
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
