@@ -8,7 +8,6 @@
     android:padding="16dp">
 
     <LinearLayout
-        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginBottom="16dp"
@@ -16,27 +15,52 @@
         android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
-            android:src="@drawable/ic_back_black"
-            tools:ignore="ContentDescription" />
-
-        <TextView
+        <LinearLayout
+            android:id="@+id/toolbar"
             android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables,UselessParent">
+
+            <ImageView
+                android:id="@+id/iv_back"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_back_black"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gilroy_bold"
+                android:text="Hợp đồng"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/gilroy_bold"
-            android:text="Hợp đồng"
-            android:textColor="@color/black"
-            android:textSize="22sp"
-            tools:ignore="HardcodedText" />
+            android:gravity="end"
+            android:orientation="horizontal"
+            tools:ignore="UselessLeaf">
+
+            <ImageView
+                android:id="@+id/iv_menu"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Menu"
+                android:src="@drawable/icon_filter"
+                tools:ignore="ContentDescription,HardcodedText" />
+        </LinearLayout>
+
     </LinearLayout>
 
-    <!-- Tiêu đề list 1 -->
     <TextView
-        android:id="@+id/tv_pending_contracts_title"
+        android:id="@+id/tv_contracts_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -48,26 +72,19 @@
 
     <!-- List 1: RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_pending_contracts"
+        android:id="@+id/rv_contracts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!-- Tiêu đề list 2 -->
-    <TextView
-        android:id="@+id/tv_active_contracts_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
-        android:text="Danh sách hợp đồng đang hoạt động"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:ignore="HardcodedText" />
+    <ImageView
+        android:id="@+id/ic_empty_list"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="150dp"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_empty_list"
+        tools:ignore="ContentDescription" />
 
-    <!-- List 2: RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="5dp"
-        android:id="@+id/rv_active_contracts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
 </LinearLayout>

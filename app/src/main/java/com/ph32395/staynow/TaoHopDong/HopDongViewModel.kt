@@ -270,56 +270,52 @@ class HopDongViewModel {
     }
 
     /**
-     * Lấy danh sách hợp đồng theo người thuê.
+     * Lấy danh sách hợp đồng theo người thuê và trạng thái
      */
 
-    suspend fun getContractsByTenant(
+    fun getContractsByTenant(
         tenantId: String,
-        status: ContractStatus? = null
-    ): List<HopDong> {
-        return getContracts("nguoiThue.maNguoiDung", tenantId, status)
+        status: ContractStatus? = null,
+        onContractsChanged: (List<HopDong>) -> Unit
+    ) {
+        getContracts("nguoiThue.maNguoiDung", tenantId, status, onContractsChanged)
     }
 
-    /**
-     * Lấy danh sách hợp đồng theo chủ nhà.
-     */
-
-    private suspend fun getContracts(
+    private fun getContracts(
         field: String,
         value: String,
-        status: ContractStatus? = null
-    ): List<HopDong> {
-        return try {
+        status: ContractStatus? = null,
+        onContractsChanged: (List<HopDong>) -> Unit
+    ) {
+        try {
             var query = contractsCollection.whereEqualTo(field, value)
 
             // Nếu status được cung cấp, thêm điều kiện lọc theo trạng thái
             status?.let {
-                query = query.whereEqualTo("trangThai", status)
+                query = query.whereEqualTo(
+                    "trangThai",
+                    status.name
+                )  // Giả sử bạn đang lưu trạng thái dưới dạng String
             }
 
-            query.get()
-                .await()
-                .toObjects(HopDong::class.java)
-        } catch (e: Exception) {
-            emptyList()
-        }
-    }
+            // Lắng nghe sự thay đổi dữ liệu trong Firestore
+            query.addSnapshotListener { snapshot, exception ->
+                if (exception != null) {
+                    Log.w("ContractViewModel", "Listen failed.", exception)
+                    return@addSnapshotListener
+                }
 
-    suspend fun getAllContracts(): List<HopDong> {
-        return try {
-            val querySnapshot = contractsCollection.get().await()
-            Log.d("HopDongViewModel", "Total documents: ${querySnapshot.size()}")
+                // Nếu dữ liệu thay đổi, parse và gọi callback
+                val contracts = snapshot?.documents?.mapNotNull { document ->
+                    document.toObject(HopDong::class.java)
+                } ?: emptyList()
 
-            // In chi tiết từng document để kiểm tra
-            querySnapshot.documents.forEach { document ->
-                Log.d("HopDongViewModel", "Document ID: ${document.id}")
-                Log.d("HopDongViewModel", "Document Data: ${document.data}")
+                // Gọi callback để cập nhật danh sách hợp đồng trong UI
+                onContractsChanged(contracts)
             }
-
-            querySnapshot.toObjects(HopDong::class.java)
         } catch (e: Exception) {
-            Log.e("HopDongViewModel", "Error fetching all contracts: ${e.message}")
-            emptyList()
+            Log.e("ContractViewModel", "Error fetching contracts", e)
+            onContractsChanged(emptyList())
         }
     }
 
@@ -354,6 +350,7 @@ class HopDongViewModel {
         }
     }
 
+
 }
 
 class ContractViewModel : ViewModel() {
@@ -365,6 +362,8 @@ class ContractViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(UtilityFeeUiState())
     val uiState: StateFlow<UtilityFeeUiState> = _uiState.asStateFlow()
 
+    private val _updateResult = MutableLiveData<Result<Unit>>()
+    val updateResult: LiveData<Result<Unit>> = _updateResult
 
     private val _activeContracts = MutableLiveData<List<HopDong>>()
     val activeContracts: LiveData<List<HopDong>> get() = _activeContracts
@@ -372,8 +371,8 @@ class ContractViewModel : ViewModel() {
     private val _pendingContracts = MutableLiveData<List<HopDong>>()
     val pendingContracts: LiveData<List<HopDong>> get() = _pendingContracts
 
-    private val _expireContracts = MutableLiveData<List<HopDong>>()
-    val expireContracts: LiveData<List<HopDong>> get() = _expireContracts
+    private val _expiredContracts = MutableLiveData<List<HopDong>>()
+    val expiredContracts: LiveData<List<HopDong>> get() = _expiredContracts
 
     private val _terminatedContracts = MutableLiveData<List<HopDong>>()
     val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
@@ -402,7 +401,6 @@ class ContractViewModel : ViewModel() {
             }
         }
     }
-
 
     fun extractVariableFees(utilityFees: List<UtilityFee>): List<UtilityFeeDetail> {
         return utilityFees
@@ -448,37 +446,49 @@ class ContractViewModel : ViewModel() {
         return Pair(totalFee, feeDetails)
     }
 
-    suspend fun fetchContractsByTenant(userId: String, status: ContractStatus) {
-        // Giả sử gọi API hoặc query database để lấy danh sách hợp đồng theo trạng thái
-        when (status) {
-            ContractStatus.ACTIVE -> {
-                // Lấy dữ liệu ACTIVE
-                val activeList =
-                    contractRepository.getContractsByTenant(userId, ContractStatus.ACTIVE)
-                _activeContracts.postValue(activeList)
-            }
-
-            ContractStatus.PENDING -> {
-                // Lấy dữ liệu PENDING
-                val pendingList =
-                    contractRepository.getContractsByTenant(userId, ContractStatus.PENDING)
-                _pendingContracts.postValue(pendingList)
-            }
-
-            ContractStatus.EXPIRED -> {
-                // Lấy dữ liệu COMPLETED
-                val expireList =
-                    contractRepository.getContractsByTenant(userId, ContractStatus.EXPIRED)
-                _expireContracts.postValue(expireList)
-            }
-
-            ContractStatus.TERMINATED -> {
-                // Lấy dữ liệu CANCELLED
-                val terminatedList =
-                    contractRepository.getContractsByTenant(userId, ContractStatus.TERMINATED)
-                _terminatedContracts.postValue(terminatedList)
+    fun fetchContractsByTenant(userId: String, status: ContractStatus) {
+        contractRepository.getContractsByTenant(userId, status) { contracts ->
+            // Khi có thay đổi, cập nhật vào LiveData
+            when (status) {
+                ContractStatus.ACTIVE -> _activeContracts.postValue(contracts)
+                ContractStatus.PENDING -> _pendingContracts.postValue(contracts)
+                ContractStatus.EXPIRED -> _expiredContracts.postValue(contracts)
+                ContractStatus.TERMINATED -> _terminatedContracts.postValue(contracts)
             }
         }
     }
+
+    // Hàm cập nhật trạng thái hợp đồng
+    fun updateContractStatus(
+        contractId: String,
+        newStatus: ContractStatus
+    ) {
+        viewModelScope.launch {
+            try {
+                contractRepository.updateContractStatus(
+                    contractId = contractId,
+                    newStatus = newStatus,
+                    onSuccess = {
+                        _updateResult.postValue(Result.success(Unit)) // Cập nhật trạng thái thành công
+                        Log.d("ContractViewModel", "Cập nhật trạng thái hợp đồng thành công")
+                    },
+                    onFailure = { exception ->
+                        _updateResult.postValue(Result.failure(exception)) // Cập nhật trạng thái thất bại
+                        Log.e(
+                            "ContractViewModel",
+                            "Lỗi khi cập nhật trạng thái hợp đồng: ${exception.message}"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _updateResult.postValue(Result.failure(e)) // Xử lý lỗi ngoài ý muốn
+                Log.e(
+                    "ContractViewModel",
+                    "Lỗi không mong muốn khi cập nhật trạng thái: ${e.message}"
+                )
+            }
+        }
+    }
+
 
 }
