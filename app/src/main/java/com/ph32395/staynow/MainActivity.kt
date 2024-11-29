@@ -14,7 +14,6 @@ import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
-import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.ProfileFragment
 import com.ph32395.staynow.fragment.RoomManagementFragment
 import com.ph32395.staynow.fragment.home.HomeFragment
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val homeFragment = HomeFragment()
-    private val notificationFragment = NotificationFragment()
     private val roomManagementFragment = RoomManagementFragment() //Man quan ly cua chu tro
     private val homeNguoiChoThueFragment = HomeNguoiChoThueFragment() //Nguoi cho thue
     private val messageFragment = MessageFragment()
@@ -56,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
             add(R.id.fragment_container, messageFragment, "MESSAGE").hide(messageFragment)
-            add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
+//            add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
             add(R.id.fragment_container, homeFragment, "HOME").hide(homeFragment)
         }.commit()
 
@@ -76,10 +74,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-                R.id.bottom_notification -> {
-                    showFragment(notificationFragment)
-                    true
-                }
+//                R.id.bottom_notification -> {
+//                    showFragment(notificationFragment)
+//                    true
+//                }
 
                 R.id.bottom_message -> {
                     showFragment(messageFragment)

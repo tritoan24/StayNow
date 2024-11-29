@@ -54,10 +54,16 @@
             android:name=".CapNhatViTriPhong.CapNhatViTri"
             android:exported="false" />
         <activity
+            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.RoomDetailActivity"
             android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ThongBao.NotificationActivity"
             android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.schedule_room.ScheduleRoomActivity"
