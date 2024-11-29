@@ -78,6 +78,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private val dataRoom = firestore.collection("PhongTro")
     var addresses2 = mutableListOf<PhongTroModel>()
     var listRoom = mutableListOf<PhongTroModel>()
+    var listQuan = mutableListOf<String>(
+        "Quận Ba Đình",
+        "Quận Cầu Giấy",
+        "Quận Hoàn Kiếm",
+        "Quận Hai Bà Trưng",
+        "Quận Hoàng Mai",
+        "Quận Đống Đa",
+        "Quận Tây Hồ",
+        "Quận Thanh Xuân",
+        "Quận Bắc Từ Liêm",
+        "Quận Hà Đông",
+        "Quận Long Biên",
+        "Quận Nam Từ Liêm"
+    )
     val suggestionRoom = mutableListOf<PhongTroModel>()
     private val currentMarkers = mutableListOf<Marker>()
     var selectedTypesViewModel: MutableList<String> = mutableListOf()
@@ -149,7 +163,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 //                fetchSuggestions(s.toString())
-                suggestionsRoom(s.toString().trim(), listRoom)
+//                suggestionsRoom(s.toString().trim(), listRoom)
+                suggestionQuan(s.toString().trim(), listQuan)
 
             }
         })
@@ -194,7 +209,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             val address = binding.autoComplete.text.toString()
             if (address.isNotEmpty()) {
 //                addMarkersFromAddressesSearch(mMap, address, this)
-                searchRoomByNameOrDescription(address)
+//                searchRoomByNameOrDescription(address)
+                searchRoomRecently(address)
             } else {
                 Toast.makeText(this, "Vui lòng nhập địa chỉ", Toast.LENGTH_SHORT).show()
             }
@@ -738,6 +754,47 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     }
 
+    private fun suggestionQuan(query: String, listQuan: List<String>) {
+
+        if (query == "") {
+            return
+        }
+
+        val nameQuan = listQuan.filter {
+            it.contains(query, ignoreCase = true)
+        }
+
+        if (nameQuan.isEmpty()) {
+            Log.d(TAG, "suggestionQuan: name quan is Empty")
+        } else {
+            val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, nameQuan)
+            binding.autoComplete.setAdapter(adapter)
+            binding.autoComplete.showDropDown()
+        }
+
+
+    }
+
+
+    //Tìm kiếm room gan day
+    private fun searchRoomRecently(query: String) {
+
+        Log.d(TAG, "searchRoomRecently:query $query")
+        Log.d(TAG, "searchRoomRecently: ${listRoom.map { it.Ten_phongtro }}")
+        val nameQuan = query.removePrefix("Quận")
+
+        val listRoomNew = listRoom.filter {
+            Log.d(TAG, "searchRoomRecently: ${it.Dia_chichitiet}")
+            it.Dia_chichitiet.contains(nameQuan,ignoreCase = true)
+        }
+        Log.d(TAG, "searchRoomRecently: list room new $listRoomNew")
+        Log.d(TAG, "searchRoomRecently: list room new ${listRoomNew.map { "${it.Ten_phongtro} -- ${it.Dia_chi}" }}")
+        addresses2 = listRoomNew.toMutableList()
+        addMarkersFromAddresses(mMap,addresses2,this)
+
+
+    }
+
 
     //Search name room
     @SuppressLint("NotifyDataSetChanged")
@@ -822,7 +879,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     //readList room
-    private fun readListRoomPingMap(){
+    private fun readListRoomPingMap() {
         dataRoom.get().addOnSuccessListener {
             Log.d("TAGzzzz", "onMapReady: it ${it.documents}")
             Log.d("TAGzzzz", "onMapReady: it.toObjects ${it.toObjects(PhongTroModel::class.java)}")
@@ -1147,10 +1204,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 addMarkersFromAddresses(mMap, addresses2, this)
             }
 
-        }.addOnSuccessListener {
-
+        }.addOnFailureListener {
+            Log.d(TAG, "onFilterSelected: ${it.message.toString()}")
         }
-
     }
 
 
