@@ -43,6 +43,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:hint="Tìm kiếm......."
+                android:completionThreshold="1"
                 android:padding="10dp"
                 android:textSize="11sp" />
 
@@ -104,7 +105,7 @@
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:src="@drawable/icon_mobile_data1" />
+                android:src="@drawable/reset_search_maps" />
         </LinearLayout>
 
         <ImageView
