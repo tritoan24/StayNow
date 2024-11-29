@@ -6,4 +6,7 @@ object Constants {
     const val URL_SERVER_QUYET_LOCAL="http://192.168.2.3:${PORT}"
 
     const val URL_SERVER_QUYET="https://staynow-server.onrender.com"
+    const val ENDPOINT_VERIFY_OTP="otp/verify-otp"
+    const val ENDPOINT_RESEND_OTP="otp/resend-otp"
+    const val ENDPOINT_VERIFY_TOKEN="otp/verify-token"
 }

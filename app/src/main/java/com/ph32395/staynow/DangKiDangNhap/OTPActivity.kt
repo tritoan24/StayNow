@@ -33,6 +33,8 @@ class OTPActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOtpactivityBinding
     private val baseUrl = Constants.URL_SERVER_QUYET
+    private val endpointVerifyOtp = Constants.ENDPOINT_VERIFY_OTP
+    private val endpointResendOtp = Constants.ENDPOINT_RESEND_OTP
     private var countDownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -140,7 +142,7 @@ class OTPActivity : AppCompatActivity() {
         )
         // Tạo request
         val request = Request.Builder()
-            .url("$baseUrl/verify-otp")
+            .url("$baseUrl/$endpointVerifyOtp")
             .post(requestBody)
             .build()
 
@@ -183,7 +185,7 @@ class OTPActivity : AppCompatActivity() {
 
         // Tạo request
         val request = Request.Builder()
-            .url("$baseUrl/resend-otp")
+            .url("$baseUrl/$endpointResendOtp")
             .post(requestBody)
             .build()
 

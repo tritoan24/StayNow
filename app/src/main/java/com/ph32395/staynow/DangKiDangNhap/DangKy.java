@@ -157,12 +157,11 @@ public class DangKy extends AppCompatActivity {
                 } else if (!password.equals(rppassword)) {
                     rppass.setError("Mật khẩu không trùng khớp");
                 } else if (avatarUri == null) {
-                        Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
-                    }else {
-                        signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
-                    }
+                    Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
+                } else {
+                    signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
                 }
-
+            }
 
 
         });
@@ -180,24 +179,23 @@ public class DangKy extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
 
-                            com.ph32395.staynow.Utils.ImageUploader imageUploader = new com.ph32395.staynow.Utils.ImageUploader();
-                            assert user != null;
-                            imageUploader.uploadImage(avatarUri, user.getUid(), new com.ph32395.staynow.Utils.ImageUploader.UploadCallback() {
-                                @Override
-                                public void onSuccess(String imageUrl) {
-                                    // Lưu thông tin người dùng với URL ảnh
-                                    saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
+                        com.ph32395.staynow.Utils.ImageUploader imageUploader = new com.ph32395.staynow.Utils.ImageUploader();
+                        assert user != null;
+                        imageUploader.uploadImage(avatarUri, user.getUid(), new com.ph32395.staynow.Utils.ImageUploader.UploadCallback() {
+                            @Override
+                            public void onSuccess(String imageUrl) {
+                                // Lưu thông tin người dùng với URL ảnh
+                                saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
-                                }
+                            }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Log.d("OTP", "Lỗi tải ảnh: " + e.getMessage());
-                                }
-                            });
-                            //lấy token request lên server
-                            proceedToOtpActivity(user);
-
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.d("OTP", "Lỗi tải ảnh: " + e.getMessage());
+                            }
+                        });
+                        //lấy token request lên server
+                        proceedToOtpActivity(user);
 
 
                     } else {
@@ -242,7 +240,7 @@ public class DangKy extends AppCompatActivity {
         RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.get("application/json; charset=utf-8"));
 
         Request request = new Request.Builder()
-                .url(Constants.URL_SERVER_QUYET + "/verify-token") // API endpoint cho xác minh
+                .url(Constants.URL_SERVER_QUYET + "/" + Constants.ENDPOINT_VERIFY_TOKEN) // API endpoint cho xác minh
                 .post(body)
                 .build();
         client.newCall(request).enqueue(new Callback() {
