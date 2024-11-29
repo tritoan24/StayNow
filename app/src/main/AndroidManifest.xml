@@ -6,8 +6,6 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
-    <uses-feature android:name="android.hardware.camera" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -79,9 +77,7 @@
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
             android:exported="false" />
-        <activity
-            android:name=".ThongBao.NotificationActivity"
-            android:exported="false" />
+
         <activity
             android:name=".hieunt.view.feature.schedule_room.ScheduleRoomActivity"
             android:exported="false"
@@ -119,9 +115,6 @@
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
             android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
-        <activity
-            android:name=".DangKiDangNhap.OTPActivity"
-            android:exported="false" />
 
         <!-- Thêm cấu hình cho Google Sign-In -->
         <meta-data
