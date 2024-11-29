@@ -1,7 +1,6 @@
 package com.ph32395.staynow.Activity
 
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,10 +8,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,10 +26,17 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.CheckRoleActivity
+import com.ph32395.staynow.MainActivity
+import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
+import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHopDong.TaoHopDong
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.fragment.home.HomeViewModel
 import com.ph32395.staynow.fragment.showWarningDialog
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
@@ -54,7 +59,7 @@ class RoomDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_room_detail)
 
         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
-            finish() //Quay lai man hinh truoc
+            finish()
         }
 
 

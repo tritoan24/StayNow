@@ -53,6 +53,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class DangNhap extends AppCompatActivity {
+    private Button btnDangNhap, btnDangNhapGoogle;
     private EditText edMail, edPass;
     private FirebaseAuth mAuth;
     private RegisterWithGoogle registerWithGoogle;
@@ -69,12 +70,12 @@ public class DangNhap extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dang_nhap);
 
-        Button btnDangNhap = findViewById(R.id.loginButton);
+        btnDangNhap = findViewById(R.id.loginButton);
         TextView txtdangky = findViewById(R.id.txtdangky);
         edMail = findViewById(R.id.username);
         edPass = findViewById(R.id.password);
         img_anhienpass = findViewById(R.id.img_anhienpass);
-        Button btnDangNhapGoogle = findViewById(R.id.loginWithGGButton);
+        btnDangNhapGoogle = findViewById(R.id.loginWithGGButton);
         TextView txtquenmk = findViewById(R.id.Txtquenmk);
         CheckBox cbremember = findViewById(R.id.Cbremember);
 
@@ -110,79 +111,72 @@ public class DangNhap extends AppCompatActivity {
             editor.apply();
         });
 
+//        btnDangNhap sau khi merger
         btnDangNhap.setOnClickListener(v -> {
             String email = edMail.getText().toString().trim();
             String password = edPass.getText().toString().trim();
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
-            }
-            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 edMail.setError("Email không hợp lệ");
             } else {
-                // Đăng nhập Firebase Auth trước
+                //Dang nhap Firebase Auth truoc
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(DangNhap.this, task -> {
                             if (task.isSuccessful()) {
-                                // Nếu đăng nhập Firebase thành công, kiểm tra thông tin người dùng trong Realtime Database
                                 FirebaseUser currentUser = mAuth.getCurrentUser();
                                 if (currentUser != null) {
                                     FirebaseDatabase database = FirebaseDatabase.getInstance();
-                                    DatabaseReference usersRef = database.getReference("NguoiDung");
+                                    DatabaseReference userRef = database.getReference("NguoiDung");
 
-                                    // Tìm kiếm người dùng qua UID trong Realtime Database
-                                    usersRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//                                    Tim kiem nguoi dung qua UID trong Realtime Database
+                                    userRef.child(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.exists()) {
                                                 String status = dataSnapshot.child("trang_thaitaikhoan").getValue(String.class);
                                                 Boolean daXacThucValue = dataSnapshot.child("daXacThuc").getValue(Boolean.class);
-                                                boolean daXacThuc = daXacThucValue != null && daXacThucValue;
+                                                boolean daXacthuc = daXacThucValue != null && daXacThucValue;
                                                 String loaiTaiKhoan = dataSnapshot.child("loai_taikhoan").getValue(String.class);
 
                                                 if ("HoatDong".equals(status)) {
-                                                    assert loaiTaiKhoan != null;
-                                                    if (daXacThuc) {
-                                                        // Nếu đã xác thực và loại tài khoản không phải "ChuaChon", vào MainActivity
+                                                    if (daXacthuc) {
                                                         if (!loaiTaiKhoan.equals("ChuaChon")) {
-                                                            // Lưu trạng thái đã đăng nhập vào SharedPreferences
+//                                                            Luu trang thai da dang nhap vao SharedPreferences
                                                             SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = prefs.edit();
                                                             editor.putBoolean("is_logged_in", true);
+                                                            editor.putString("check", loaiTaiKhoan);
                                                             editor.apply();
 
-                                                            // Chuyển sang MainActivity
+//                                                            Chuyen sang man Main
                                                             startActivity(new Intent(DangNhap.this, MainActivity.class));
                                                             finish();
                                                         } else {
-                                                            // Nếu loại tài khoản là "ChuaChon", chuyển đến ChonLoaiTK
-                                                            Intent intent = new Intent(DangNhap.this, ChonLoaiTK.class);
-                                                            startActivity(intent);
+//                                                            neu loai tai khoan chua chon thi den man loai tai khoan
+                                                            startActivity(new Intent(DangNhap.this, ChonLoaiTK.class));
                                                         }
                                                     } else {
                                                         proceedToOtpActivity(currentUser);
                                                     }
                                                 } else {
-                                                    // Nếu tài khoản bị khóa
                                                     showFailureAnimation("Tài khoản của bạn đã bị khóa");
                                                 }
                                             } else {
-                                                // Nếu không tìm thấy người dùng
                                                 showFailureAnimation("Không tìm thấy thông tin người dùng");
                                             }
                                         }
 
                                         @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            // Xử lý lỗi kết nối
-                                            showFailureAnimation("Lỗi kết nối tới máy chủ");
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            showFailureAnimation("ỗi kết nối tới máy chủ");
                                         }
                                     });
                                 } else {
                                     showFailureAnimation("Lỗi xác thực người dùng");
                                 }
                             } else {
-                                // Đăng nhập Firebase thất bại
                                 showFailureAnimation("Email hoặc mật khẩu không đúng");
                             }
                         });
@@ -283,6 +277,7 @@ public class DangNhap extends AppCompatActivity {
         });
     }
 
+//    xu ly dang nhap bang Google
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -315,6 +310,11 @@ public class DangNhap extends AppCompatActivity {
                                                     assert loaiTaiKhoan != null;
                                                     Intent intent;
                                                     if (!loaiTaiKhoan.equals("ChuaChon")) {
+                                                        SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
+                                                        SharedPreferences.Editor editor = prefs.edit();
+                                                        editor.putBoolean("is_logged_in", true);
+                                                        editor.putString("check", loaiTaiKhoan);
+                                                        editor.apply();
                                                         intent = new Intent(DangNhap.this, MainActivity.class);
                                                     } else {
                                                         intent = new Intent(DangNhap.this, ChonLoaiTK.class);
@@ -393,4 +393,6 @@ public class DangNhap extends AppCompatActivity {
             dialog.dismiss();
         }, 1500);
     }
+
+
 }

@@ -1,8 +1,11 @@
 package com.ph32395.staynow.QuanLyPhongTro
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +14,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.ph32395.staynow.CheckRoleActivity
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.home.HomeViewModel
 
@@ -20,7 +25,7 @@ class QuanLyPhongTroActivity : AppCompatActivity() {
         setContentView(R.layout.activity_quan_ly_phong_tro)
 
         findViewById<ImageView>(R.id.imgBackQLPhong).setOnClickListener {
-            finish() //Quay lai man hinh truoc
+            startActivity(Intent(this@QuanLyPhongTroActivity, MainActivity::class.java))
         }
 
         val viewPagerQLPhong: ViewPager2 = findViewById(R.id.viewPagerQLPhong)
@@ -30,16 +35,59 @@ class QuanLyPhongTroActivity : AppCompatActivity() {
         viewPagerQLPhong.adapter = ViewPagerQLPhongAdapter(this)
 
 //        Ket noiTabLayout voi viewPager
-        TabLayoutMediator(tabLayoutQLPhong, viewPagerQLPhong) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Phòng đã đăng"
-                1 -> "Đang lưu"
-                2 -> "Chờ duyệt"
-                3 -> "Đã bị hủy"
-                4 -> "Đã cho thuê"
-                else -> null
-            }
+
+        TabLayoutMediator(tabLayoutQLPhong, viewPagerQLPhong) {tab, position ->
+            val tabTitles = arrayOf("Phòng đã đăng", "Đang lưu", "Chờ duyệt", "Đã bị hủy", "Đã cho thuê")
+            val customTab = LayoutInflater.from(this).inflate(R.layout.custom_tab_layout, null)
+
+//            Cai dat tieu de cho tung tabLayout
+            val tabTitle = customTab.findViewById<TextView>(R.id.tabTitle)
+            val tabCount = customTab.findViewById<TextView>(R.id.tabCount)
+
+            tabTitle.text = tabTitles[position]
+            tabCount.text = "(0)"
+
+//            Gan layout tuy chinh vao Tab
+            tab.customView = customTab
         }.attach()
 
+//        Khoi tao ViewModel
+        val viewModel: HomeViewModel by viewModels()
+        viewModel.loadRoomByStatus()
+
+        updateTabCount(viewModel, tabLayoutQLPhong)
+
+    }
+
+    private fun updateTabCount(viewModel: HomeViewModel, tabLayout: TabLayout) {
+        viewModel.phongDaDang.observe(this) {roomList ->
+            val customTab = tabLayout.getTabAt(0)?.customView
+            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+            tabCount?.text = "(${roomList.size})"
+        }
+
+        viewModel.phongDangLuu.observe(this) {roomList ->
+            val customTab = tabLayout.getTabAt(1)?.customView
+            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+            tabCount?.text = "(${roomList.size})"
+        }
+
+        viewModel.phongChoDuyet.observe(this) {roomList ->
+            val customTab = tabLayout.getTabAt(2)?.customView
+            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+            tabCount?.text = "(${roomList.size})"
+        }
+
+        viewModel.phongDaHuy.observe(this) {roomList ->
+            val customTab = tabLayout.getTabAt(3)?.customView
+            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+            tabCount?.text = "(${roomList.size})"
+        }
+
+        viewModel.phongDaChoThue.observe(this) {roomList ->
+            val customTab = tabLayout.getTabAt(4)?.customView
+            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+            tabCount?.text = "(${roomList.size})"
+        }
     }
 }
