@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
-            android:name=".TaoHopDong.ChiTietHoaDon"
+            android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
             android:name=".Activity.SplashActivity"
@@ -80,7 +80,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".DangKiDangNhap.DangNhap"
+            android:name=".TaoHopDong.ChiTietHoaDon"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

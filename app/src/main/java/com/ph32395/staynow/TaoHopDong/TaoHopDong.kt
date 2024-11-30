@@ -25,7 +25,10 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -46,6 +49,7 @@ import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
@@ -137,6 +141,8 @@ class TaoHopDong : AppCompatActivity() {
         if (txtNgayThanhToan.text.toString().isEmpty()) {
             txtNgayThanhToan.text = startDate.get(Calendar.DAY_OF_MONTH).toString()
         }
+
+
 
 
         calendarView = findViewById(R.id.calendarViewStartDate)
@@ -332,14 +338,8 @@ class TaoHopDong : AppCompatActivity() {
         btnSave.setOnClickListener {
             if(validateContract()) {
                 createAndSaveContract()
-                finish()
             }
         }
-
-
-
-
-
     }
 
 
@@ -534,6 +534,7 @@ private fun observeViewModel() {
                 kieuHoadon = "HoaDonHopDong",
                 idNguoinhan = maNguoiThue,
                 idNguoigui = auth.currentUser?.uid ?: "",
+                ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
                 paymentDate = ""
             ),
 
@@ -545,8 +546,24 @@ private fun observeViewModel() {
             // Thêm các thông tin khác
 
         )
-        //val invoiceSchedules = generateInvoiceSchedule(contract, utilityFees)
         viewModelHopDong.saveContract(contract,idLichhen)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModelHopDong.navigateToContractDetail.collect { contractId ->
+                    contractId?.let {
+                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
+                        intent.putExtra("idHopDong", it)
+                        startActivity(intent)
+                        // Reset giá trị sau khi chuyển màn
+                        viewModelHopDong.resetNavigation()
+                        // Đóng màn hình hiện tại sau khi chuyển màn
+                        finish()
+                    }
+                }
+            }
+        }
+
 
 
     }

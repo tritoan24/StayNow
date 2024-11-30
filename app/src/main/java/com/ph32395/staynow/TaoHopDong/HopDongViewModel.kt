@@ -23,6 +23,7 @@ import com.google.firebase.auth.UserInfo
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import gun0912.tedimagepicker.util.ToastUtil.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,6 +34,8 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import org.jetbrains.annotations.Contract
+import java.text.NumberFormat
+import java.util.Locale
 
 class HopDongViewModel {
     private val db = FirebaseFirestore.getInstance()
@@ -153,6 +156,7 @@ class HopDongViewModel {
             "dieuKhoan" to contract.dieuKhoan,
             "soNguoiO" to contract.soNguoiO,
             "hoaDonHopDong" to createBillMap(contract.hoaDonHopDong),
+            "ngayThanhToan" to contract.ngayThanhToan,
             "ghiChu" to contract.ghiChu,
 
 
@@ -319,13 +323,17 @@ class HopDongViewModel {
 
 }
 class ContractViewModel : ViewModel() {
+    // Thêm ViewModel để xử lý logic liên quan đến hợp đồng
     private val contractRepository = HopDongViewModel()
     private val _saveResult = MutableLiveData<Result<Unit>>()
     val saveResult: LiveData<Result<Unit>> = _saveResult
+    // Thêm StateFlow để theo dõi việc
+    private val _navigateToContractDetail = MutableStateFlow<String?>(null)
+    val navigateToContractDetail: StateFlow<String?> = _navigateToContractDetail.asStateFlow()
+    // Thêm LiveData để theo dõi dữ liệu hóa đơn
+    private val _invoiceDetails = MutableLiveData<Invoice>()
+    val invoiceDetails: LiveData<Invoice> = _invoiceDetails
 
-    //hóa đơn hợp đồng
-    private val _uiState = MutableStateFlow(UtilityFeeUiState())
-    val uiState: StateFlow<UtilityFeeUiState> = _uiState.asStateFlow()
 
     fun saveContract(contract: HopDong, appointmentId: String) {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
@@ -334,10 +342,9 @@ class ContractViewModel : ViewModel() {
                     contractRepository.saveContract(
                         contract = contract,
                         appointmentId = appointmentId,
-                        onSuccess = {
-                            _saveResult.postValue(Result.success(Unit))
-                            Log.d("ContractViewModel", "Lưu hợp đồng thành công")
-
+                        onSuccess = { contractId ->
+                            // Thay vì startActivity, cập nhật LiveData/StateFlow
+                            _navigateToContractDetail.value = contractId
                         },
                         onFailure = { exception ->
                             _saveResult.postValue(Result.failure(exception))
@@ -397,5 +404,27 @@ class ContractViewModel : ViewModel() {
         return Pair(totalFee, feeDetails)
     }
 
+    // Thêm phương thức resetNavigation
+    fun resetNavigation() {
+        _navigateToContractDetail.value = null
+    }
+
+    // Thêm phương thức fetchInvoiceDetails
+    fun fetchInvoiceDetails(contractId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("HopDong")
+            .document(contractId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                val hopDong = documentSnapshot.toObject(HopDong::class.java)
+                hopDong?.hoaDonHopDong?.let { invoice ->
+                    _invoiceDetails.value = invoice
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("ContractViewModel", "Lỗi khi lấy chi tiết hóa đơn", exception)
+            }
+    }
 
 }

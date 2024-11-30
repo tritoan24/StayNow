@@ -121,7 +121,8 @@ data class Invoice(
     val tienCoc: Double = 0.0,
     val tongTienDichVu: Double = 0.0,
     val kieuHoadon: String = "",
-    val paymentDate: String = ""
+    val paymentDate: String = "",
+    val ngayThanhToan: Int = 1,
 )
 
 // Trạng thái hợp đồng
@@ -133,12 +134,15 @@ enum class ContractStatus {
 }
 
 data class UtilityFeeDetail(
-    val tenDichVu: String,
-    val giaTien: Double,
-    val donVi: String,
-    val soLuong: Int,
-    val thanhTien: Double,
-)
+    val tenDichVu: String = "",
+    val giaTien: Double = 0.0,
+    val donVi: String = "",
+    val soLuong: Int = 0,
+    val thanhTien: Double = 0.0
+) {
+    // No-argument constructor for Firestore
+    constructor() : this("", 0.0, "", 0, 0.0)
+}
 
 enum class InvoiceStatus  {
     PENDING,
