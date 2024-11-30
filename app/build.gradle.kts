@@ -126,9 +126,14 @@ dependencies {
     //thư viện custom text
     implementation ("jp.wasabeef:richeditor-android:2.0.0")
 
-
-
-
+    // Socket
+    implementation ("io.socket:socket.io-client:2.0.0")
+    // zalo sdk
+    implementation(fileTree(mapOf(
+        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf<String>()
+    )))
 
 
 }

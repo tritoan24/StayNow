@@ -36,7 +36,7 @@ import com.ph32395.staynow.BaoMat.QuenMK;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
-import com.ph32395.staynow.utils.constants.Constants;
+import com.ph32395.staynow.utils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;

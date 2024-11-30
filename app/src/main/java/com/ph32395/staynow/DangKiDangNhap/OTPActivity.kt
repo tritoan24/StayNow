@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.databinding.ActivityOtpactivityBinding
-import com.ph32395.staynow.utils.constants.Constants
+import com.ph32395.staynow.utils.Constants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

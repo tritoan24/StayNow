@@ -34,6 +34,15 @@
             android:textColor="@color/black"
             android:textSize="14sp"
             tools:ignore="HardcodedText" />
+        <!-- Địa chỉ phòng -->
+        <TextView
+            android:id="@+id/tv_room_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Địa chỉ: cầu giấy"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
 
         <!-- Ngày bắt đầu -->
         <TextView
@@ -67,11 +76,11 @@
 
         <LinearLayout
             android:id="@+id/ll_btn"
-            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
+            android:visibility="gone"
             tools:ignore="DisableBaselineAlignment">
 
             <!-- Nút Xác nhận bên trái -->

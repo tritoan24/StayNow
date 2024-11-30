@@ -53,6 +53,7 @@ class ContractAdapter(
 
         private val tvContractId: TextView = itemView.tvContractCode
         private val tvRoomName: TextView = itemView.tvRoomName
+        private val tvRoomAddress: TextView = itemView.tvRoomAddress
         private val tvStartDate: TextView = itemView.tvStartDate
         private val tvEndDate: TextView = itemView.tvEndDate
         private val tvRentDuration: TextView = itemView.tvRentDuration
@@ -68,6 +69,7 @@ class ContractAdapter(
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongTinPhong.tenPhong}"
+            tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongTinPhong.diaChiPhong}"
             tvStartDate.text = "Ngày Bắt Đầu: ${contract.ngayBatDau}"
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
@@ -90,19 +92,11 @@ class ContractAdapter(
                     tvRemainingTime.visibility = View.GONE
                     llBtn.visibility = View.VISIBLE
                     btnXacNhan.setOnClickListener {
-                        onStatusUpdated(
-                            contract.maHopDong,
-                            ContractStatus.ACTIVE
-                        )
-                        updateContractList(contractList)
-                        val intent=Intent(itemView.context,BillContractActivity::class.java)
 
-                        intent.putExtra("hoaDonHopDong",contract.hoaDonHopDong)
-                        intent.putExtra("thongTinPhong",contract.thongTinPhong)
-                        intent.putExtra("chuNha",contract.chuNha)
-                        intent.putExtra("nguoiThue",contract.nguoiThue)
-                        intent.putExtra("hopDong",contract)
+                        val intent = Intent(itemView.context, BillContractActivity::class.java)
 
+                        intent.putExtra("hoaDonHopDong", contract.hoaDonHopDong)
+                        intent.putExtra("hopDong", contract)
 
                         itemView.context.startActivity(intent)
                     }

@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
-import com.ph32395.staynow.DangKiDangNhap.ChonLoaiTK
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
@@ -38,24 +37,18 @@ class MainActivity : AppCompatActivity() {
     private var userRole: String = ""
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
-        onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
             }
         })
-
-
-
-
-
-
+        
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
@@ -129,10 +122,16 @@ class MainActivity : AppCompatActivity() {
 
                 // Khởi tạo Fragment nếu chưa được thêm
                 if (!roomManagementFragment.isAdded) {
-                    add(R.id.fragment_container, roomManagementFragment, "ROOM_MANAGEMENT").hide(roomManagementFragment)
+                    add(R.id.fragment_container, roomManagementFragment, "ROOM_MANAGEMENT").hide(
+                        roomManagementFragment
+                    )
                 }
                 if (!homeNguoiChoThueFragment.isAdded) {
-                    add(R.id.fragment_container, homeNguoiChoThueFragment, "HOME_NGUOICHOTHUE").hide(homeNguoiChoThueFragment)
+                    add(
+                        R.id.fragment_container,
+                        homeNguoiChoThueFragment,
+                        "HOME_NGUOICHOTHUE"
+                    ).hide(homeNguoiChoThueFragment)
                 }
 
                 // Hiển thị Fragment mặc định cho NguoiChoThue
@@ -169,7 +168,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     override fun onStart() {
         super.onStart()
         setUserOnline()
@@ -179,10 +177,12 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         setUserOffline()
     }
+
     override fun onPause() {
         super.onPause()
         setUserOffline()
     }
+
     override fun onDestroy() {
         super.onDestroy()
         setUserOffline()
@@ -207,7 +207,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã
+    //nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
