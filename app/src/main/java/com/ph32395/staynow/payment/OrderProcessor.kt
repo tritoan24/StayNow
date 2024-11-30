@@ -5,11 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
-import com.ph32395.staynow.TaoHopDong.Invoice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
-import com.ph32395.staynow.TaoHopDong.PersonInfo
 import com.ph32395.staynow.databinding.ActivityBillContractBinding
 import com.ph32395.staynow.payment.OrderProcessor
 import com.ph32395.staynow.payment.SocketManager
