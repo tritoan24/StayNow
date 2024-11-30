@@ -23,6 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
+            android:name=".TaoHopDong.ChiTietHoaDon"
+            android:exported="false" />
+        <activity
             android:name=".Activity.SplashActivity"
             android:exported="false" />
         <activity
