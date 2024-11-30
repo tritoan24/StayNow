@@ -88,8 +88,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 //Thư viện format tgian tạo phòng trọ
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
-
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+//
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     //calendar
@@ -128,9 +128,14 @@ dependencies {
     //thư viện custom text
     implementation ("jp.wasabeef:richeditor-android:2.0.0")
 
-
-
-
+    // Socket
+    implementation ("io.socket:socket.io-client:2.0.0")
+    // zalo sdk
+    implementation(fileTree(mapOf(
+        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf<String>()
+    )))
 
 
 }

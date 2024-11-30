@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <!--thông tin phòng -->
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="30dp"
         android:elevation="8dp"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="18dp"
-        android:layout_marginTop="30dp"
-        >
+        app:cardCornerRadius="18dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:padding="8dp">
 
             <!-- Phần hiển thị ảnh của phòng trọ -->
@@ -37,8 +36,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginLeft="12dp">
+                android:layout_marginLeft="12dp"
+                android:orientation="vertical">
                 <!-- Phần tên của phòng trọ -->
 
                 <!-- Phần giá thuê -->
@@ -93,12 +92,11 @@
 
                 <!--                Dien tich phong-->
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal"
                     android:layout_marginTop="8dp"
-                    tools:ignore="UseCompoundDrawables">
+                    android:orientation="horizontal"
+                    tools:ignore="InefficientWeight,UseCompoundDrawables">
 
                     <ImageView
                         android:layout_width="16dp"
@@ -109,15 +107,13 @@
 
                     <TextView
                         android:id="@+id/txtDienTich"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:text="25m²"
                         android:textColor="@android:color/black"
                         android:textSize="12sp"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
-
-
 
 
             </LinearLayout>
@@ -491,14 +487,15 @@
                 android:text="Ngày thanh toán hàng tháng"
                 android:textColor="@color/purple"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                />
-                <EditText
-                    android:id="@+id/editTextNgayThanhToan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/cardview_border"
-                    android:inputType="number" />
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editTextNgayThanhToan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/cardview_border"
+                android:inputType="number" />
+
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -506,14 +503,15 @@
                 android:text="chỉ số điện hiện tại: "
                 android:textColor="@color/purple"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/editTextSoDien"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cardview_border"
                 android:inputType="number" />
+
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -521,14 +519,15 @@
                 android:text="chỉ số nước hiện tại: "
                 android:textColor="@color/purple"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/editTextSoNuoc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cardview_border"
                 android:inputType="number" />
+
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -536,8 +535,8 @@
                 android:text="số người ở: "
                 android:textColor="@color/purple"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
+
             <EditText
                 android:id="@+id/editTextSoNguoi"
                 android:layout_width="match_parent"
@@ -619,8 +618,8 @@
                 android:textColor="@color/purple"
                 android:textSize="16sp"
                 android:textStyle="bold" />
-            <FrameLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -628,10 +627,9 @@
                 <jp.wasabeef.richeditor.RichEditor
                     android:id="@+id/editorDieuKhoan"
                     android:layout_width="match_parent"
+                    android:layout_height="250dp"
                     android:background="@drawable/custom_edittext"
-                     android:layout_height="250dp"
-                    android:padding="10dp"
-                    />
+                    android:padding="10dp" />
 
 
                 <!-- Button nằm trên góc phải -->
@@ -655,8 +653,7 @@
                 android:text="Ghi chú thêm"
                 android:textColor="@color/purple"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                />
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/note"

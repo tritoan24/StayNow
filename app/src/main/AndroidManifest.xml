@@ -6,7 +6,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -21,13 +20,32 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logoapp"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StayNow">
+        android:theme="@style/Theme.StayNow"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Activity.ChoosePaymentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.SuccessPaymentActivity"
+            android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
-            android:name=".Activity.SplashActivity"
-            android:exported="false" />
+            android:name=".fragment.contract_tenant.BillContractActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="app"
+                    android:scheme="demozpdk" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ThongBao.NotificationActivity"
             android:exported="false" />
@@ -52,9 +70,6 @@
             android:name=".BaoMat.DoiMK"
             android:exported="false" />
         <activity
-            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activity.FullScreenImageActivity"
             android:exported="false" />
         <activity
@@ -62,6 +77,9 @@
             android:exported="false" />
         <activity
             android:name=".CapNhatViTriPhong.CapNhatViTri"
+            android:exported="false" />
+        <activity
+            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
             android:exported="false" />
         <activity
             android:name=".Activity.RoomDetailActivity"
@@ -73,6 +91,9 @@
             android:name=".CCCD.CCCD"
             android:exported="false" />
         <activity
+            android:name=".DangKiDangNhap.OTPActivity"
+            android:exported="false" />
+        <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
             android:exported="false" />
         <activity
@@ -80,14 +101,14 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".TaoHopDong.ChiTietHoaDon"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Thêm cấu hình cho Google Sign-In -->
+        </activity>
         <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"

@@ -77,8 +77,7 @@
             android:layout_marginTop="150dp"
             android:elevation="8dp"
             app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="18dp"
-            >
+            app:cardCornerRadius="18dp">
 
             <include
                 android:id="@+id/view_location_search"
@@ -102,16 +101,27 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/cardView"
             android:layout_marginTop="5dp"
-            app:tabRippleColor="@android:color/transparent"
-            android:background="@color/grey_bg"/>
+            android:background="@color/transparent"
+            app:tabGravity="fill"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@android:color/transparent" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPagerHome"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/tabLayoutHome"
-            android:background="@android:color/transparent"
-            />
-
+            android:visibility="gone"
+            android:background="@android:color/transparent" />
+        <!-- ProgressBar (Initially Visible) -->
+        <ProgressBar
+            android:layout_below="@+id/viewPagerHome"
+            android:id="@+id/loadingIndicator"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="50dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:progressBackgroundTint="@color/transparent"
+            android:visibility="visible" />
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

@@ -1,7 +1,5 @@
 package com.ph32395.staynow.TaoHopDong
 
-import InvoiceStatus
-import UtilityFeeDetail
 import java.util.UUID
 
 data class MonthlyInvoice(

@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.ph32395.staynow.DangKiDangNhap.DangKy;
 import com.ph32395.staynow.DangKiDangNhap.DangNhap;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.ManGioiThieu.OnboardingActivity;
@@ -28,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         boolean isFirstTime = prefs.getBoolean(FIRST_TIME_KEY, true);
         boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
-
 
         new Handler().postDelayed(() -> {
             if (isFirstTime) {

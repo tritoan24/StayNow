@@ -1,5 +1,6 @@
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+package com.ph32395.staynow.TaoHopDong
+
+import java.io.Serializable
 
 data class HopDong(
     val maHopDong: String = "", // ID của hợp đồng
@@ -144,11 +145,9 @@ data class UtilityFeeDetail(
     constructor() : this("", 0.0, "", 0, 0.0)
 }
 
-enum class InvoiceStatus  {
+enum class InvoiceStatus {
     PENDING,
     PAID,
     OVERDUE,
     CANCELLED
 }
-
-

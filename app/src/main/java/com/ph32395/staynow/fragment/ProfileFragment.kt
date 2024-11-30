@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -24,8 +26,8 @@ import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
+import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
-import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 
@@ -36,12 +38,14 @@ class ProfileFragment : Fragment() {
     private lateinit var profileImageView: ImageView
     private lateinit var logoutButton: LinearLayout
     private lateinit var llScheduleRoom: LinearLayout
+    private lateinit var llContract: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
 
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +59,7 @@ class ProfileFragment : Fragment() {
         logoutButton = view.findViewById(R.id.LogoutButton)
         nextDoiMK = view.findViewById(R.id.next_caidat)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
+        llContract = view.findViewById(R.id.ll_hopdong)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -136,6 +141,9 @@ class ProfileFragment : Fragment() {
         llScheduleRoom.tap {
             launchActivity(TenantManageScheduleRoomActivity::class.java)
         }
+        llContract.tap {
+            replaceFragment(ContractFragment())
+        }
         return view
     }
 
@@ -152,6 +160,23 @@ class ProfileFragment : Fragment() {
                 }
             }
             userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+    private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
+        if (context is androidx.fragment.app.FragmentActivity) {
+            val activity = context as androidx.fragment.app.FragmentActivity
+
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment) // fragment_container là ID của ViewGroup chứa Fragment
+                .addToBackStack(null) // Để quay lại màn hình trước
+                .commit()
+
+            // Ẩn Bottom Navigation
+            if (activity is MainActivity) {
+                activity.setBottomNavigationVisibility(false)
+            }
+        } else {
+            Toast.makeText(context, "Không thể chuyển Fragment", Toast.LENGTH_SHORT).show()
         }
     }
 

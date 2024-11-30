@@ -1,17 +1,7 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
-import FinancialInfo
-import HopDong
-import Invoice
-import PersonInfo
-import RoomDetail
-import RoomInfo
-import UtilityFee
-import UtilityFeeDetail
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -51,8 +40,10 @@ import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 class TaoHopDong : AppCompatActivity() {
 
@@ -141,8 +132,6 @@ class TaoHopDong : AppCompatActivity() {
         if (txtNgayThanhToan.text.toString().isEmpty()) {
             txtNgayThanhToan.text = startDate.get(Calendar.DAY_OF_MONTH).toString()
         }
-
-
 
 
         calendarView = findViewById(R.id.calendarViewStartDate)
@@ -437,7 +426,7 @@ private fun observeViewModel() {
 
 }
     //hàm lưu hợp đồng
-   private fun createAndSaveContract() {
+    private fun createAndSaveContract() {
         val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
             UtilityFee(
                 tenDichVu = phiDichVu.ten_dichvu,
@@ -504,7 +493,7 @@ private fun observeViewModel() {
                 // Thêm các thông tin khác
             ),
             thongTinTaiChinh = FinancialInfo(
-               giaThue = giaPhong,
+                giaThue = giaPhong,
                 tienCoc = tienCoc,
                 soDienht = edSodien.text.toString().toInt(),
                 soNguoio = soNguoio.text.toString().toInt(),
@@ -631,4 +620,3 @@ private fun observeViewModel() {
         return true
     }
 }
-
