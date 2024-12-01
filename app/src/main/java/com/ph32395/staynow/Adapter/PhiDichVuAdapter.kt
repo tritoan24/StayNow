@@ -38,7 +38,7 @@ class PhiDichVuAdapter(
         fun bind(phiDichVu: PhiDichVuModel) {
             Glide.with(itemView.context).load(phiDichVu.icon_dichvu).into(iconDichVu)
             tenDichVu.text = phiDichVu.ten_dichvu
-            soTien.text = "${String.format("%,.0f", phiDichVu.so_tien)}"
+            soTien.text = "${String.format("%,.0f", phiDichVu.so_tien)}đ"
             donViPhiDichVu.text = phiDichVu.don_vi
         }
     }

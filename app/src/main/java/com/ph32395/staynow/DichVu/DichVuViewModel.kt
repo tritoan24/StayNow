@@ -8,7 +8,7 @@ import com.ph32395.staynow.TienNghi.TienNghi
 
 class DichVuViewModel : ViewModel() {
 
-    private val listDichVu= MutableLiveData<List<DichVu>>()
+    private val listDichVu = MutableLiveData<List<DichVu>>()
 
     init {
         // Lấy dữ liệu từ Firestore
@@ -22,7 +22,9 @@ class DichVuViewModel : ViewModel() {
                     val maDichvu = document.id
                     val tenDichvu = document.getString("Ten_dichvu") ?: ""
                     val iconDichvu = document.getString("Icon_dichvu") ?: ""
-                    val donVi = document.getString("Don_vi") ?: ""
+
+                    // Lấy Don_vi dưới dạng mảng
+                    val donViList = document.get("Don_vi") as? List<String> ?: emptyList()
                     val status = document.getBoolean("Status") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
@@ -32,7 +34,7 @@ class DichVuViewModel : ViewModel() {
                                 Ma_dichvu = maDichvu,
                                 Ten_dichvu = tenDichvu,
                                 Icon_dichvu = iconDichvu,
-                                Don_vi = donVi,
+                                Don_vi = donViList,  // Lưu mảng Don_vi vào đối tượng DichVu
                                 Status = status
                             )
                         )

@@ -7,14 +7,64 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <com.denzcoskun.imageslider.ImageSlider
-            android:id="@+id/imageSlider"
+        android:layout_height="match_parent"
+        android:background="@color/grey_bg">
+
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            app:iss_auto_cycle="true"
-            app:iss_corner_radius="5"
-            app:iss_period="3000" />
+            android:layout_marginBottom="10dp">
+
+
+            <!-- ImageSlider -->
+            <com.denzcoskun.imageslider.ImageSlider
+                android:id="@+id/imageSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:iss_auto_cycle="true"
+                app:iss_corner_radius="5"
+                app:iss_period="3000" />
+
+            <FrameLayout
+                android:id="@+id/fNotification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="10dp"
+
+                >
+
+
+                <!-- Icon thông báo -->
+                <ImageView
+                    android:id="@+id/iconNotification"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="7dp"
+                    android:contentDescription="iconNoti"
+                    android:elevation="4dp"
+                    android:padding="5dp"
+                    android:src="@drawable/icon_notification" />
+
+                <!-- Số lượng thông báo -->
+                <TextView
+                    android:id="@+id/notificationBadge"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="end|top"
+                    android:background="@drawable/cardview_border"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="#FF3232"
+                    android:textSize="14sp"
+                    android:visibility="gone"
+
+
+                    />
+
+            </FrameLayout>
+
+        </FrameLayout>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
@@ -48,6 +98,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/cardView"
             android:layout_marginTop="5dp"
+            android:background="@color/transparent"
+            app:tabGravity="fill"
+            app:tabMode="scrollable"
             app:tabRippleColor="@android:color/transparent" />
 
         <androidx.viewpager2.widget.ViewPager2
@@ -56,7 +109,18 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/tabLayoutHome"
             android:background="@android:color/transparent"
-            />
+            android:visibility="gone" />
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingIndicator"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_below="@+id/viewPagerHome"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="90dp"
+            android:visibility="visible"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="loading.json"
+            app:lottie_loop="true" />
     </RelativeLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

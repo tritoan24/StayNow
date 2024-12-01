@@ -13,10 +13,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:clickable="true"
+        android:focusable="true"
         android:gravity="center"
-        android:layout_gravity="center"
         android:orientation="vertical"
-        tools:ignore="KeyboardInaccessibleWidget,UseCompoundDrawables">
+        tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="24dp"
@@ -27,8 +27,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:minHeight="40dp"
             android:text="Tìm xung quanh"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -52,8 +53,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:minHeight="40dp"
             android:text="Tìm người ở ghép"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -61,7 +63,7 @@
     <LinearLayout
         android:id="@+id/item_van_chuyen_do"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:clickable="true"
         android:gravity="center"
@@ -77,8 +79,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:minHeight="40dp"
             android:text="Vận chuyển đồ"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -86,7 +89,7 @@
     <LinearLayout
         android:id="@+id/item_doi_binh_gas"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:clickable="true"
         android:gravity="center"
@@ -102,10 +105,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:minHeight="40dp"
             android:text="Đổi bình gas"
             tools:ignore="HardcodedText" />
     </LinearLayout>
-
 </LinearLayout>

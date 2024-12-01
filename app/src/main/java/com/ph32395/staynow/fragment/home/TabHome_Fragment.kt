@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Model.PhongTroModel
@@ -48,6 +49,14 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         }
 
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        homeViewModel.selectedLoaiPhongTro.observe(viewLifecycleOwner) { idloaiPhongTro ->
+            homeViewModel.updateRoomList(idloaiPhongTro)
+        }
     }
 
     private fun setupRecyclerView() {
