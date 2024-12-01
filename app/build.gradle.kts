@@ -43,7 +43,7 @@ android {
 
     buildFeatures {
         viewBinding = true
-        dataBinding = true
+//        dataBinding = true
     }
 
 }
@@ -106,13 +106,10 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
+
     //Thu vien khoang gia
     implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
 
-    // Firebase Cloud Messaging
-    implementation("com.google.firebase:firebase-messaging:24.1.0")
-    // Thư viện Volley
-    implementation("com.android.volley:volley:1.2.1")
 
     implementation ("com.google.mlkit:barcode-scanning:17.3.0")
     implementation ("androidx.camera:camera-core:1.2.2")

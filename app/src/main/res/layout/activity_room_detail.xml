@@ -25,7 +25,8 @@
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="250dp"
+                tools:ignore="MissingClass">
 
                 <!-- ViewPager -->
                 <androidx.viewpager.widget.ViewPager
@@ -70,7 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                android:layout_marginStart="10dp"/>
+                android:layout_marginStart="10dp"
+                tools:ignore="MissingClass" />
 
             <!--        Loai phong va gioi tinh-->
             <LinearLayout
@@ -88,7 +90,8 @@
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="4dp"
                     android:layout_marginBottom="10dp"
-                    app:cardCornerRadius="10dp">
+                    app:cardCornerRadius="10dp"
+                    tools:ignore="MissingClass">
 
                     <TextView
                         android:id="@+id/txtLoaiPhong"
@@ -110,7 +113,8 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_gender"
                         android:layout_width="25dp"
-                        android:layout_height="25dp" />
+                        android:layout_height="25dp"
+                        tools:ignore="MissingClass" />
                     <TextView
                         android:id="@+id/txtGioiTinh"
                         android:layout_marginTop="2dp"
@@ -186,7 +190,8 @@
                     app:cardElevation="4dp"
                     app:cardCornerRadius="20dp"
                     android:layout_marginTop="30dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    tools:ignore="MissingClass">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -229,6 +234,7 @@
 
                         <!--                    Nut xem chi tiet-->
                         <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/viewInfor"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:text="Xem chi tiết"

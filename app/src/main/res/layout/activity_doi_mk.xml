@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".BaoMat.ThongTinNguoiDung">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,11 +27,13 @@
                 android:layout_marginBottom="24dp">
 
                 <ImageButton
-                    android:layout_height="30dp"
-                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_width="48dp"
                     android:id="@+id/button_backDoiMK"
                     android:src="@drawable/arrow_back"
-                    android:background="?attr/selectableItemBackgroundBorderless"/>
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Back Screen"
+                    />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -114,5 +117,4 @@
         </LinearLayout>
 
     </ScrollView>
-
 </LinearLayout>

@@ -1,13 +1,8 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import android.util.Log
 import android.view.ViewGroup
-import android.widget.Toast
-import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.R
-import com.ph32395.staynow.ThongBao.NotificationModel
 import com.ph32395.staynow.databinding.RenterItemRoomCanceledBinding
 import com.ph32395.staynow.databinding.RenterItemRoomConfirmedBinding
 import com.ph32395.staynow.databinding.RenterItemRoomSeenBinding
