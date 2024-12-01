@@ -43,7 +43,7 @@ android {
 
     buildFeatures {
         viewBinding = true
-//        dataBinding = true
+        dataBinding = true
     }
 
 }
@@ -88,8 +88,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 //Thư viện format tgian tạo phòng trọ
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
-
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+//
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     //calendar
@@ -106,10 +106,13 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
-
     //Thu vien khoang gia
     implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
 
+    // Firebase Cloud Messaging
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
+    // Thư viện Volley
+    implementation("com.android.volley:volley:1.2.1")
 
     implementation ("com.google.mlkit:barcode-scanning:17.3.0")
     implementation ("androidx.camera:camera-core:1.2.2")
@@ -126,5 +129,14 @@ dependencies {
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
+    // Socket
+    implementation ("io.socket:socket.io-client:2.0.0")
+    // zalo sdk
+    implementation(fileTree(mapOf(
+        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf<String>()
+    )))
+
 
 }

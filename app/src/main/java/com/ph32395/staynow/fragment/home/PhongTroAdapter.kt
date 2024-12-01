@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
@@ -45,14 +47,7 @@ class PhongTroAdapter(
         notifyItemRangeChanged(0, roomList.size)  // Thay vì notifyDataSetChanged()
     }
 
-//    Them phuong thuc xoa hoac thay doi du lieu khi can
-    fun removeRoomAt(position: Int) {
-        if (position in roomList.indices) {
-            roomList.removeAt(position)
-            notifyItemRemoved(position)
-        }
-    }
-
+//    Lay thoi gian tao phong
     fun getFormattedTimeCustom(thoiGianTaoPhong: Long?): String {
         if (thoiGianTaoPhong == null || thoiGianTaoPhong == 0L) return "Không có thời gian"
         val prettyTime = PrettyTimeHelper.createCustomPrettyTime()
@@ -68,6 +63,7 @@ class PhongTroAdapter(
         private val roomArea: TextView = itemView.tvDienTich
         private val roomViews: TextView = itemView.tvSoLuotXem
         private val roomTime: TextView = itemView.tvTgianTao
+        private var loaiTaiKhoan: String = ""
 
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(room: PhongTroModel, roomId: String) {
@@ -96,12 +92,21 @@ class PhongTroAdapter(
 
             roomTime.text = formattedTime
 
+            val userId = FirebaseAuth.getInstance().currentUser?.uid?: ""
+            if (userId.equals(room.Ma_nguoidung)) {
+                loaiTaiKhoan = "ManCT"
+            } else {
+                loaiTaiKhoan = "ManND"
+            }
+
+
 //            Xu ly su kien khi click item sang man chi tiet
             itemView.setOnClickListener {
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
-                intent.putExtra("ManHome", "Home")
+                Log.d("PTAdapter", loaiTaiKhoan)
+                intent.putExtra("ManHome", loaiTaiKhoan)
                 context.startActivity(intent)
                 viewmodel.incrementRoomViewCount(roomId)
 

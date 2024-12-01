@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -14,7 +16,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- permission notifications -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -23,13 +24,31 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/logoapp"
         android:supportsRtl="true"
-        android:theme="@style/Theme.StayNow">
+        android:theme="@style/Theme.StayNow"
+        android:usesCleartextTraffic="true">
+
         <activity
-            android:name=".BaoMat.PhanHoi"
-            android:exported="false" />
+            android:name=".Activity.SuccessPaymentActivity"
+            android:exported="true" />
         <activity
-            android:name=".BaoMat.CapNhatThongTin"
-            android:exported="false" />
+            android:name=".Activity.ThanhToanActivity"
+            android:exported="true" />
+        <activity
+            android:name=".fragment.contract_tenant.BillContractActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="app"
+                    android:scheme="demozpdk" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".BaoMat.ThongTinNguoiDung"
             android:exported="false" />
@@ -52,9 +71,6 @@
             android:name=".BaoMat.DoiMK"
             android:exported="false" />
         <activity
-            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
-            android:exported="false" />
-        <activity
             android:name=".Activity.FullScreenImageActivity"
             android:exported="false" />
         <activity
@@ -64,16 +80,19 @@
             android:name=".CapNhatViTriPhong.CapNhatViTri"
             android:exported="false" />
         <activity
-            android:name=".Activity.RoomDetailActivity"
+            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
             android:exported="false" />
         <activity
-            android:name=".TaoHopDong.ChiTietHoaDon"
+            android:name=".Activity.RoomDetailActivity"
             android:exported="false" />
         <activity
             android:name=".ThongTinThanhToan.PaymentInfoActivity"
             android:exported="false" />
         <activity
             android:name=".CCCD.CCCD"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.OTPActivity"
             android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
@@ -112,12 +131,10 @@
         <activity
             android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
             android:exported="true" />
-
         <activity
             android:name=".TaoPhongTro.TaoPhongTro"
-            android:exported="false" />
+            android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
         <!-- Thêm cấu hình cho Google Sign-In -->
-
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"
             android:value="@string/default_web_client_id" />

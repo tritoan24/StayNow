@@ -18,7 +18,6 @@ import com.ph32395.staynow.ThongBao.NotificationActivity
 import com.ph32395.staynow.ThongBao.NotificationViewModel
 import com.ph32395.staynow.databinding.FragmentHomeBinding
 import com.ph32395.staynow.databinding.FragmentHomeNguoiChoThueBinding
-import com.ph32395.staynow.fragment.NotificationFragment
 import com.ph32395.staynow.fragment.home.HomeViewModel
 
 class HomeNguoiChoThueFragment : Fragment() {

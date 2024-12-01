@@ -1,17 +1,8 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
-import FinancialInfo
-import HopDong
-import Invoice
-import PersonInfo
-import RoomDetail
-import RoomInfo
-import UtilityFee
-import UtilityFeeDetail
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -23,7 +14,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -51,8 +41,10 @@ import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.UUID
 
 class TaoHopDong : AppCompatActivity() {
 
@@ -338,6 +330,7 @@ class TaoHopDong : AppCompatActivity() {
         btnSave.setOnClickListener {
             if(validateContract()) {
                 createAndSaveContract()
+                finish()
             }
         }
     }
@@ -405,39 +398,39 @@ class TaoHopDong : AppCompatActivity() {
         }
     }
 
-private fun observeViewModel() {
-    //        Quan sat chi tiet thong tin
-    viewModel.chiTietList.observe(this) { chiTietList ->
-        chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
-        findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
-        if (chiTietList.size > 3) {
-            tvDienTich.text = "${chiTietList[3].so_luong_donvi} m²"
-        } else {
-            tvDienTich.text = "Không có dữ liệu"
+    private fun observeViewModel() {
+        //        Quan sat chi tiet thong tin
+        viewModel.chiTietList.observe(this) { chiTietList ->
+            chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
+            findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
+            if (chiTietList.size > 3) {
+                tvDienTich.text = "${chiTietList[1].so_luong_donvi} m²"
+            } else {
+                tvDienTich.text = "Không có dữ liệu"
+            }
+
+        }
+        //        Quan sat du lieu phi dich vu
+        viewModel.phiDichVuList.observe(this) { phiDichVuList ->
+            phiDichVuAdapter = PhiDichVuAdapter(phiDichVuList)
+            findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).adapter = phiDichVuAdapter
+        }
+
+//        Quan sat du lieu noi that
+        viewModel.noiThatList.observe(this) { noiThatList ->
+            noiThatAdapter = NoiThatAdapter(noiThatList)
+            findViewById<RecyclerView>(R.id.recyclerViewNoiThat).adapter = noiThatAdapter
+        }
+
+//        Quan sat du lieu tien nghi
+        viewModel.tienNghiList.observe(this) { tienNghiList ->
+            tienNghiAdapter = TienNghiAdapter(tienNghiList)
+            findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
         }
 
     }
-    //        Quan sat du lieu phi dich vu
-    viewModel.phiDichVuList.observe(this) { phiDichVuList ->
-        phiDichVuAdapter = PhiDichVuAdapter(phiDichVuList)
-        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).adapter = phiDichVuAdapter
-    }
-
-//        Quan sat du lieu noi that
-    viewModel.noiThatList.observe(this) { noiThatList ->
-        noiThatAdapter = NoiThatAdapter(noiThatList)
-        findViewById<RecyclerView>(R.id.recyclerViewNoiThat).adapter = noiThatAdapter
-    }
-
-//        Quan sat du lieu tien nghi
-    viewModel.tienNghiList.observe(this) { tienNghiList ->
-        tienNghiAdapter = TienNghiAdapter(tienNghiList)
-        findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
-    }
-
-}
     //hàm lưu hợp đồng
-   private fun createAndSaveContract() {
+    private fun createAndSaveContract() {
         val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
             UtilityFee(
                 tenDichVu = phiDichVu.ten_dichvu,
@@ -504,7 +497,7 @@ private fun observeViewModel() {
                 // Thêm các thông tin khác
             ),
             thongTinTaiChinh = FinancialInfo(
-               giaThue = giaPhong,
+                giaThue = giaPhong,
                 tienCoc = tienCoc,
                 soDienht = edSodien.text.toString().toInt(),
                 soNguoio = soNguoio.text.toString().toInt(),
@@ -631,4 +624,3 @@ private fun observeViewModel() {
         return true
     }
 }
-
