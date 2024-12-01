@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
@@ -25,10 +27,16 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.CCCD.CCCD
+import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
+import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.fragment.home.HomeViewModel
+import com.ph32395.staynow.fragment.showWarningDialog
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
