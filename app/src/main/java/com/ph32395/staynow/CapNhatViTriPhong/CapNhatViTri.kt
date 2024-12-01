@@ -43,6 +43,11 @@ class CapNhatViTri : AppCompatActivity() {
         binding.updateButton.setOnClickListener {
             doiToaDoRaViTriCuThe(it)
         }
+
+        val check = intent.getStringExtra("check") ?: ""
+        if (check == "a") {
+
+        }
         // Kiểm tra Intent
         phongTroId = intent.getStringExtra("PHONG_TRO_ID")
         Log.d("DebugIntent", "Received PHONG_TRO_ID: $phongTroId")

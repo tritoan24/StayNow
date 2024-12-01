@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,7 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
 import com.ph32395.staynow.CheckRoleActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
@@ -49,6 +51,10 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var tienNghiAdapter: TienNghiAdapter
     private var ManHome = ""
 
+    private lateinit var viewmodelHome:HomeViewModel
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_detail)
@@ -58,14 +64,20 @@ class RoomDetailActivity : AppCompatActivity() {
         }
 
 
-
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
+
+//
+        viewmodelHome = ViewModelProvider(this)[HomeViewModel::class.java]
 
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
          ManHome = intent.getStringExtra("ManHome") ?: ""
 
+
+        if (ManHome == "ManND") {
+            viewmodelHome.incrementRoomViewCount(maPhongTro)
+        }
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
             launchActivity(
@@ -184,19 +196,20 @@ class RoomDetailActivity : AppCompatActivity() {
 
             Log.d("RoomDetailActivity", "Home: $ManHome")
             //tritoan code dựa vào 3 trạng thái này để hiển thị botton của phòng trọ
-            if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
-                findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
-                findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
-            }
-            else if(ManHome == "ManND") {
+            if (ManHome == "ManND") {
                 findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
-            }else if(trangThaiLuu == true) {
-                findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
-                findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
-            }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
-                findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
-                findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+            } else if (ManHome == "ManCT") {
+                if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+                }
+                else if(trangThaiLuu == true) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
+                }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
+                }
             }
+
+
 
 //            Chuc nang Cap nhat thong tin phong
             findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
@@ -251,23 +264,27 @@ class RoomDetailActivity : AppCompatActivity() {
                 val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
-                val dialog = CustomConfirmationDialog(
-                    message = "Bạn có chắc chắn muốn đăng phòng không?",
-                    onConfirm = {
-//                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatus(roomId, "DaDuyet", false)
-                        // Hiển thị thông báo
-                        Toast.makeText(this, "Phòng trọ đã được đăng!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
-                        finish() // Đóng màn hình hiện tại
-                    },
-                    onCancel = {
-
-                    }
-                )
-                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+//                val dialog = CustomConfirmationDialog(
+//                    message = "Bạn có chắc chắn muốn đăng phòng không?",
+//                    onConfirm = {
+////                        Nguoi dung nhan xac nhan
+////                        viewModel.updateRoomStatus(roomId, "DaDuyet", false)
+//
+//                        // Hiển thị thông báo
+//                        Toast.makeText(this, "Phòng trọ đã được đăng!", Toast.LENGTH_SHORT).show()
+//                        // Chuyển đến Fragment "Phòng Đang Lưu"
+//                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+//                        startActivity(intent)
+//                        finish() // Đóng màn hình hiện tại
+//                    },
+//                    onCancel = {
+//
+//                    }
+//                )
+//                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+                val intent = Intent(this, CapNhatViTri::class.java)
+                intent.putExtra("check", "a")
+                startActivity(intent)
             }
 
             //            Chuc ang go phong chuyen sang man huy phong

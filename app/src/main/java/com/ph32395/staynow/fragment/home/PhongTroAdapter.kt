@@ -108,7 +108,7 @@ class PhongTroAdapter(
                 Log.d("PTAdapter", loaiTaiKhoan)
                 intent.putExtra("ManHome", loaiTaiKhoan)
                 context.startActivity(intent)
-                viewmodel.incrementRoomViewCount(roomId)
+
 
             }
         }
