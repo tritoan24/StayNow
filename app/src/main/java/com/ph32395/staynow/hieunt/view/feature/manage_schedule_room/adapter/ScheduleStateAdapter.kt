@@ -1,5 +1,6 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
+import android.annotation.SuppressLint
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
@@ -14,10 +15,11 @@ class ScheduleStateAdapter(
     private val onClickState: (Int) -> Unit
 ) : BaseAdapter<ScheduleStateModel, ScheduleStateAdapter.ScheduleStateVH>() {
     inner class ScheduleStateVH(binding: ItemScheduleStateBinding) : BaseViewHolder<ScheduleStateModel, ItemScheduleStateBinding>(binding) {
+        @SuppressLint("SetTextI18n")
         override fun bindData(data: ScheduleStateModel) {
             super.bindData(data)
             binding.apply {
-                tvState.text = data.name
+                tvState.text = "${data.name} (${data.count})"
                 vSelect.visibility = if (data.isSelected) VISIBLE else INVISIBLE
             }
         }

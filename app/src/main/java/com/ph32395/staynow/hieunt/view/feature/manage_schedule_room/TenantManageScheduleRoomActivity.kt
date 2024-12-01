@@ -19,11 +19,14 @@ import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageScheduleRoomBinding, ManageScheduleRoomVM>() {
+class TenantManageScheduleRoomActivity :
+    BaseActivity<ActivityTenantManageScheduleRoomBinding, ManageScheduleRoomVM>() {
     private var manageScheduleRoomAdapter: TenantManageScheduleRoomAdapter? = null
-    private var scheduleStateAdapter : ScheduleStateAdapter?= null
+    private var scheduleStateAdapter: ScheduleStateAdapter? = null
     override fun setViewBinding(): ActivityTenantManageScheduleRoomBinding {
         return ActivityTenantManageScheduleRoomBinding.inflate(layoutInflater)
     }
@@ -31,7 +34,7 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
     override fun initViewModel(): Class<ManageScheduleRoomVM> = ManageScheduleRoomVM::class.java
 
     override fun initView() {
-        scheduleStateAdapter =  ScheduleStateAdapter { status ->
+        scheduleStateAdapter = ScheduleStateAdapter { status ->
             viewModel.filerScheduleRoomState(status)
         }.apply {
             addList(listScheduleState)
@@ -46,9 +49,13 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
                 updateStatusRoom(it.roomScheduleId, CANCELED)
             },
             onClickLeaveSchedule = {
-                UpdateRoomScheduleDialog(it,onClickConfirm = { newTime, newDate ->
+                UpdateRoomScheduleDialog(it, onClickConfirm = { newTime, newDate ->
                     showLoading()
-                    viewModel.updateScheduleRoom(it.roomScheduleId, newTime, newDate) { updateSuccess ->
+                    viewModel.updateScheduleRoom(
+                        it.roomScheduleId,
+                        newTime,
+                        newDate
+                    ) { updateSuccess ->
                         if (updateSuccess) {
                             viewModel.filerScheduleRoomState(0) {
                                 scheduleStateAdapter?.setSelectedState(0)
@@ -81,30 +88,44 @@ class TenantManageScheduleRoomActivity : BaseActivity<ActivityTenantManageSchedu
 
     override fun dataObserver() {
         showLoading()
-        viewModel.fetchAllScheduleByTenant(FirebaseAuth.getInstance().currentUser?.uid.toString()){
+        viewModel.fetchAllScheduleByTenant(FirebaseAuth.getInstance().currentUser?.uid.toString()) {
             viewModel.filerScheduleRoomState(WAIT)
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.scheduleRoomState.collect {
-                    if (it.isNotEmpty()) {
-                        binding.tvNoData.gone()
-                    } else {
-                        binding.tvNoData.visible()
+                launch {
+                    viewModel.scheduleRoomState.collect {
+                        if (it.isNotEmpty()) {
+                            binding.tvNoData.gone()
+                        } else {
+                            binding.tvNoData.visible()
+                        }
+                        manageScheduleRoomAdapter?.addListObserver(it)
+                        dismissLoading()
                     }
-                    manageScheduleRoomAdapter?.addListObserver(it)
-                    dismissLoading()
+                }
+                launch {
+                    viewModel.allScheduleRoomState.collect { allRoomStates ->
+                        val newList = async(Dispatchers.IO) {
+                            listScheduleState.map { scheduleState ->
+                                val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
+                                scheduleState.copy(count = count)
+                            }
+                        }.await()
+                        scheduleStateAdapter?.addListObserver(newList)
+                    }
                 }
             }
         }
     }
 
-    private fun updateStatusRoom(roomScheduleId: String, status: Int){
+    private fun updateStatusRoom(roomScheduleId: String, status: Int) {
         showLoading()
         viewModel.updateScheduleRoomStatus(roomScheduleId, status) { updateSuccess ->
             if (updateSuccess) {
                 viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
+                    if (status == 3) binding.rvState.scrollToPosition(status)
                 }
             } else {
                 lifecycleScope.launch {
