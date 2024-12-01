@@ -105,6 +105,7 @@
                     </LinearLayout>
 
                     <ImageButton
+                        android:id="@+id/next_UpdateInfor"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -132,7 +133,7 @@
                     android:background="@color/white"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="16dp">
+                    android:padding="15dp">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -156,7 +157,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -176,7 +177,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -196,7 +197,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="10dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -485,6 +486,7 @@
                     android:background="@android:color/darker_gray" />
 
                 <LinearLayout
+                    android:id="@+id/phanhoiButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

@@ -1,18 +1,26 @@
 package com.ph32395.staynow.hieunt.view_model
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.ph32395.staynow.hieunt.helper.Default.Collection.CHANGED_SCHEDULE_BY_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DATE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
+import com.ph32395.staynow.hieunt.helper.Default.Collection.MAP_LINK
+import com.ph32395.staynow.hieunt.helper.Default.Collection.MESSAGE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.RENTER_ID
 import com.ph32395.staynow.hieunt.helper.Default.Collection.ROOM_SCHEDULE_ID
 import com.ph32395.staynow.hieunt.helper.Default.Collection.STATUS
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TENANT_ID
+import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME_STAMP
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TITLE
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,15 +31,16 @@ import kotlinx.coroutines.withContext
 
 class ManageScheduleRoomVM : ViewModel() {
     private val _allScheduleRoomState = MutableStateFlow<List<ScheduleRoomModel>>(emptyList())
+    val allScheduleRoomState: StateFlow<List<ScheduleRoomModel>> = _allScheduleRoomState
     private val _scheduleRoomState = MutableStateFlow<List<ScheduleRoomModel>>(emptyList())
     val scheduleRoomState: StateFlow<List<ScheduleRoomModel>> = _scheduleRoomState
 
     private val firestore = FirebaseFirestore.getInstance()
 
-    fun filerScheduleRoomState(status: Int,onCompletion: () -> Unit = {}) {
-        viewModelScope.launch (Dispatchers.IO) {
+    fun filerScheduleRoomState(status: Int, onCompletion: () -> Unit = {}) {
+        viewModelScope.launch(Dispatchers.IO) {
             _scheduleRoomState.value = _allScheduleRoomState.value.filter { it.status == status }
-            withContext(Dispatchers.Main){
+            withContext(Dispatchers.Main) {
                 onCompletion.invoke()
             }
         }
@@ -80,10 +89,15 @@ class ManageScheduleRoomVM : ViewModel() {
         }
     }
 
-    fun updateScheduleRoomStatus(roomScheduleId: String, status: Int, onCompletion: (Boolean) -> Unit = {}) {
+    fun updateScheduleRoomStatus(
+        roomScheduleId: String,
+        status: Int,
+        onCompletion: (Boolean) -> Unit = {}
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val documentRef = firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
+                val documentRef =
+                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
                 val querySnapshot = documentRef.get().await()
                 if (querySnapshot.isEmpty) {
                     onCompletion.invoke(false)
@@ -112,10 +126,17 @@ class ManageScheduleRoomVM : ViewModel() {
         }
     }
 
-    fun updateScheduleRoom(roomScheduleId: String,newTime: String, newDate: String, isChangedScheduleByRenter : Boolean = false, onCompletion: (Boolean) -> Unit = {}) {
+    fun updateScheduleRoom(
+        roomScheduleId: String,
+        newTime: String,
+        newDate: String,
+        isChangedScheduleByRenter: Boolean = false,
+        onCompletion: (Boolean) -> Unit = {}
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val documentRef = firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
+                val documentRef =
+                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
                 val querySnapshot = documentRef.get().await()
                 if (querySnapshot.isEmpty) {
                     onCompletion.invoke(false)
@@ -132,7 +153,12 @@ class ManageScheduleRoomVM : ViewModel() {
                     .addOnSuccessListener {
                         _allScheduleRoomState.value = _allScheduleRoomState.value.map {
                             if (it.roomScheduleId == roomScheduleId) {
-                                it.copy(time = newTime, date = newDate, status = 0, changedScheduleByRenter = isChangedScheduleByRenter)
+                                it.copy(
+                                    time = newTime,
+                                    date = newDate,
+                                    status = 0,
+                                    changedScheduleByRenter = isChangedScheduleByRenter
+                                )
                             } else {
                                 it
                             }
@@ -145,6 +171,40 @@ class ManageScheduleRoomVM : ViewModel() {
             } catch (e: Exception) {
                 Log.d("ManageScheduleRoomVM", "Error update status: ${e.message}")
                 onCompletion.invoke(false)
+            }
+        }
+    }
+
+    fun pushNotification(
+        titleNotification: String,
+        data: ScheduleRoomModel,
+        onCompletion: (Boolean) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val mapLink = if (titleNotification == TITLE_CANCELED_BY_RENTER) null else "geo:0,0?q=${Uri.encode(data.roomAddress)}"
+            val notificationData = hashMapOf(
+                TITLE to titleNotification,
+                MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
+                DATE to data.date,
+                TIME to data.time,
+                MAP_LINK to mapLink,
+                TIME_STAMP to System.currentTimeMillis()
+            )
+            val database = FirebaseDatabase.getInstance()
+            val thongBaoRef = database.getReference(THONG_BAO)
+
+            val userId = data.tenantId
+            val userThongBaoRef = thongBaoRef.child(userId)
+
+            val newThongBaoId = userThongBaoRef.push().key
+            if (newThongBaoId != null) {
+                userThongBaoRef.child(newThongBaoId).setValue(notificationData)
+                    .addOnSuccessListener {
+                        onCompletion.invoke(true)
+                    }
+                    .addOnFailureListener {
+                        onCompletion.invoke(false)
+                    }
             }
         }
     }

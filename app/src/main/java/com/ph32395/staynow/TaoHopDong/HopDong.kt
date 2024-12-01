@@ -16,7 +16,7 @@ data class HopDong(
     val ghiChu: String = "",
 
     // Thông tin phòng
-    val thongTinPhong: RoomInfo = RoomInfo(),
+    val thongtinphong: RoomInfo = RoomInfo(),
 
     // Thông tin bên cho thuê
     val chuNha: PersonInfo = PersonInfo(),
@@ -123,7 +123,8 @@ data class Invoice(
     val tienCoc: Double = 0.0,
     val tongTienDichVu: Double = 0.0,
     val kieuHoadon: String = "",
-    val paymentDate: String = ""
+    val paymentDate: String = "",
+    val ngayThanhToan: Int = 1,
 ) : Serializable
 
 // Trạng thái hợp đồng
@@ -139,8 +140,11 @@ data class UtilityFeeDetail(
     val giaTien: Double = 0.0,
     val donVi: String = "",
     val soLuong: Int = 0,
-    val thanhTien: Double = 0.0,
-) : Serializable
+    val thanhTien: Double = 0.0
+): Serializable {
+    // No-argument constructor for Firestore
+    constructor() : this("", 0.0, "", 0, 0.0)
+}
 
 enum class InvoiceStatus {
     PENDING,

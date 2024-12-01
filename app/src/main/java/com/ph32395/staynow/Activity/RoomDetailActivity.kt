@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
@@ -24,6 +27,9 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
+import com.ph32395.staynow.CCCD.CCCD
+import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
 import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
@@ -31,6 +37,7 @@ import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.fragment.home.HomeViewModel
+import com.ph32395.staynow.fragment.showWarningDialog
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
@@ -47,6 +54,10 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var tienNghiAdapter: TienNghiAdapter
     private var ManHome = ""
 
+    private lateinit var viewmodelHome:HomeViewModel
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_detail)
@@ -60,20 +71,60 @@ class RoomDetailActivity : AppCompatActivity() {
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
 
+//
+        viewmodelHome = ViewModelProvider(this)[HomeViewModel::class.java]
+
 //        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         ManHome = intent.getStringExtra("ManHome") ?: ""
 
 
-        findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
-            launchActivity(
-                Bundle().apply {
-                    putSerializable(ROOM_DETAIL, viewModel.room.value)
-                    putString(ROOM_ID, maPhongTro)
-                },
-                ScheduleRoomActivity::class.java
-            )
+        if (ManHome == "ManND") {
+            viewmodelHome.incrementRoomViewCount(maPhongTro)
         }
+
+        findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            // Lấy dữ liệu từ Firebase Realtime Database
+            val database = FirebaseDatabase.getInstance().reference
+            val userRef = database.child("NguoiDung").child(userId)
+            userRef.get().addOnSuccessListener { snapshot ->
+                val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
+                val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+                Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
+                Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
+
+                // Kiểm tra trạng thái CCCD và PTTT
+                if (!statusCCCD) {
+                    showWarningDialog(
+                        context = this,
+                        title = "Bạn chưa cập nhật CCCD",
+                        content = "Hãy cập nhật CCCD để tiếp tục",
+                        confirmAction = { navigateToUpdateCCCD() }
+                    )
+                } else {
+                    launchActivity(
+                        Bundle().apply {
+                            putSerializable(ROOM_DETAIL, viewModel.room.value)
+                            putString(ROOM_ID, maPhongTro)
+                        },
+                        ScheduleRoomActivity::class.java
+                    )
+                }
+            }.addOnFailureListener { exception ->
+                // Xử lý lỗi nếu có
+                Log.e("RoomManagementFragment", "Error fetching user data", exception)
+            }
+        }
+        findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
+            val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
+            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
+                intent.putExtra("idUser",ma_NguoiDung)
+            }
+            startActivity(intent)
+            finish()
+        }
+
 //        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
@@ -182,19 +233,20 @@ class RoomDetailActivity : AppCompatActivity() {
 
             Log.d("RoomDetailActivity", "Home: $ManHome")
             //tritoan code dựa vào 3 trạng thái này để hiển thị botton của phòng trọ
-            if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
-                findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
-                findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
-            }
-            else if(ManHome == "ManND") {
+            if (ManHome == "ManND") {
                 findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
-            }else if(trangThaiLuu == true) {
-                findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
-                findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
-            }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
-                findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
-                findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+            } else if (ManHome == "ManCT") {
+                if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+                }
+                else if(trangThaiLuu == true) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
+                }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
+                }
             }
+
+
 
 //            Chuc nang Cap nhat thong tin phong
             findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
@@ -249,23 +301,27 @@ class RoomDetailActivity : AppCompatActivity() {
                 val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
-                val dialog = CustomConfirmationDialog(
-                    message = "Bạn có chắc chắn muốn đăng phòng không?",
-                    onConfirm = {
-//                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatus(roomId, "DaDuyet", false)
-                        // Hiển thị thông báo
-                        Toast.makeText(this, "Phòng trọ đã được đăng!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
-                        finish() // Đóng màn hình hiện tại
-                    },
-                    onCancel = {
-
-                    }
-                )
-                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+//                val dialog = CustomConfirmationDialog(
+//                    message = "Bạn có chắc chắn muốn đăng phòng không?",
+//                    onConfirm = {
+////                        Nguoi dung nhan xac nhan
+////                        viewModel.updateRoomStatus(roomId, "DaDuyet", false)
+//
+//                        // Hiển thị thông báo
+//                        Toast.makeText(this, "Phòng trọ đã được đăng!", Toast.LENGTH_SHORT).show()
+//                        // Chuyển đến Fragment "Phòng Đang Lưu"
+//                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+//                        startActivity(intent)
+//                        finish() // Đóng màn hình hiện tại
+//                    },
+//                    onCancel = {
+//
+//                    }
+//                )
+//                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+                val intent = Intent(this, CapNhatViTri::class.java)
+                intent.putExtra("check", "a")
+                startActivity(intent)
             }
 
             //            Chuc ang go phong chuyen sang man huy phong
@@ -396,5 +452,9 @@ class RoomDetailActivity : AppCompatActivity() {
             findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
         }
 
+    }
+    private fun navigateToUpdateCCCD() {
+        val intent = Intent(this, CCCD::class.java)
+        startActivity(intent)
     }
 }

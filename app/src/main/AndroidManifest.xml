@@ -16,6 +16,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/logoapp"
@@ -32,8 +34,8 @@
             android:name=".Activity.ThanhToanActivity"
             android:exported="true" />
         <activity
-            android:name=".DangKiDangNhap.DangNhap"
-            android:exported="false" />
+            android:name=".ThongBao.NotificationActivity"
+            android:exported="true" />
         <activity
             android:name=".fragment.contract_tenant.BillContractActivity"
             android:exported="true"
@@ -51,13 +53,11 @@
         </activity>
 
         <activity
-            android:name=".ThongBao.NotificationActivity"
+            android:name=".BaoMat.ThongTinNguoiDung"
             android:exported="false" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
-
         <activity
             android:name=".Maps.MapsActivity"
             android:exported="true" />
@@ -112,13 +112,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- Thêm cấu hình cho Google Sign-In -->
         <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
         <activity
-            android:name=".TaoHopDong.TaoHopDong"
+            android:name=".DangKiDangNhap.DangNhap"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
         <activity

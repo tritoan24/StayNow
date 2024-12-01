@@ -16,6 +16,9 @@ import com.ph32395.staynow.TaoHopDong.TaoHopDong
 import com.ph32395.staynow.ThongTinThanhToan.PaymentInfoActivity
 import com.ph32395.staynow.databinding.FragmentRoomManagementBinding
 import com.ph32395.staynow.hieunt.base.BaseFragment
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CANCELED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WAIT
@@ -28,6 +31,8 @@ import com.ph32395.staynow.hieunt.view_model.ManageScheduleRoomVM
 import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, ManageScheduleRoomVM>() {
@@ -52,16 +57,27 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             onClickWatched = {
                 updateStatusRoom(it.roomScheduleId, WATCHED)
             },
-            onClickConfirm = {
-                updateStatusRoom(it.roomScheduleId, CONFIRMED)
+            onClickConfirm = { data ->
+                updateStatusRoom(data.roomScheduleId, CONFIRMED)
+                viewModel.pushNotification(TITLE_CONFIRMED, data){ isCompletion ->
+                    toastNotification(isCompletion)
+                }
             },
             onClickLeaveSchedule = {
-                UpdateRoomScheduleDialog(it,onClickConfirm = { newTime, newDate ->
-                    showLoading()
-                        viewModel.updateScheduleRoom(it.roomScheduleId, newTime, newDate, isChangedScheduleByRenter = true) { updateSuccess ->
+                UpdateRoomScheduleDialog(it, onClickConfirm = { newTime, newDate ->
+                    showLoadingIfNotBaseActivity()
+                    viewModel.updateScheduleRoom(
+                        it.roomScheduleId,
+                        newTime,
+                        newDate,
+                        isChangedScheduleByRenter = true
+                    ) { updateSuccess ->
                         if (updateSuccess) {
                             viewModel.filerScheduleRoomState(0) {
                                 scheduleStateAdapter?.setSelectedState(0)
+                            }
+                            viewModel.pushNotification(TITLE_LEAVED_BY_RENTER, it.copy(time = newTime, date = newDate)){ isCompletion ->
+                                toastNotification(isCompletion)
                             }
                         } else {
                             lifecycleScope.launch {
@@ -73,6 +89,9 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             },
             onClickCancelSchedule = {
                 updateStatusRoom(it.roomScheduleId, CANCELED)
+                viewModel.pushNotification(TITLE_CANCELED_BY_RENTER, it){ isCompletion ->
+                    toastNotification(isCompletion)
+                }
             },
             onClickCreateContract = {
                createContract(it.roomId,it.tenantId,it.roomScheduleId);
@@ -97,14 +116,27 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.scheduleRoomState.collect {
-                    if (it.isNotEmpty()) {
-                        binding.tvNoData.gone()
-                    } else {
-                        binding.tvNoData.visible()
+                launch {
+                    viewModel.scheduleRoomState.collect {
+                        if (it.isNotEmpty()) {
+                            binding.tvNoData.gone()
+                        } else {
+                            binding.tvNoData.visible()
+                        }
+                        manageScheduleRoomAdapter?.addListObserver(it)
+                        dismissLoadingIfNotBaseActivity()
                     }
-                    manageScheduleRoomAdapter?.addListObserver(it)
-                    dismissLoadingIfNotBaseActivity()
+                }
+                launch {
+                    viewModel.allScheduleRoomState.collect {allRoomStates->
+                        val newList = async(Dispatchers.IO) {
+                            listScheduleState.map { scheduleState ->
+                                val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
+                                scheduleState.copy(count = count)
+                            }
+                        }.await()
+                        scheduleStateAdapter?.addListObserver(newList)
+                    }
                 }
             }
         }
@@ -116,12 +148,22 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             if (updateSuccess) {
                 viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
+                    if (status == 3) binding.rvState.scrollToPosition(status)
                 }
             } else {
                 lifecycleScope.launch {
-                    toast("Có lỗi khi hủy!")
+                    toast("Có lỗi xảy ra!")
                 }
             }
+        }
+    }
+
+    private fun toastNotification (isCompletion: Boolean){
+        lifecycleScope.launch {
+            if (isCompletion)
+                toast("Thông báo đã được gửi đến người thuê")
+            else
+                toast("Có lỗi xảy ra!")
         }
     }
     private fun navigateToUpdateCCCD() {

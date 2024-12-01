@@ -1,6 +1,7 @@
 package com.ph32395.staynow.hieunt.base
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -36,8 +37,7 @@ abstract class BaseAdapter<M : Any, VH : BaseViewHolder<M, *>> : RecyclerView.Ad
 
             override fun getNewListSize() = newList.size
 
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
-                listData[oldItemPosition] == newList[newItemPosition]
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) = listData[oldItemPosition] == newList[newItemPosition]
 
             override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
                 listData[oldItemPosition] == newList[newItemPosition]

@@ -2,6 +2,7 @@
 package com.ph32395.staynow.TaoHopDong
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -14,7 +15,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +39,7 @@ import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -128,6 +133,8 @@ class TaoHopDong : AppCompatActivity() {
         if (txtNgayThanhToan.text.toString().isEmpty()) {
             txtNgayThanhToan.text = startDate.get(Calendar.DAY_OF_MONTH).toString()
         }
+
+
 
 
         calendarView = findViewById(R.id.calendarViewStartDate)
@@ -326,11 +333,6 @@ class TaoHopDong : AppCompatActivity() {
                 finish()
             }
         }
-
-
-
-
-
     }
 
 
@@ -502,7 +504,7 @@ class TaoHopDong : AppCompatActivity() {
                 soNuocht = edSonuoc.text.toString().toInt(),
                 phiDichVu = utilityFees
             ),
-            thongTinPhong = RoomInfo(
+            thongtinphong = RoomInfo(
                 maPhongTro = maPhongTro,
                 tenPhong = tvNameRoom.text.toString(),
                 diaChiPhong = tvAddress.text.toString(),
@@ -525,6 +527,7 @@ class TaoHopDong : AppCompatActivity() {
                 kieuHoadon = "HoaDonHopDong",
                 idNguoinhan = maNguoiThue,
                 idNguoigui = auth.currentUser?.uid ?: "",
+                ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
                 paymentDate = ""
             ),
 
@@ -536,8 +539,24 @@ class TaoHopDong : AppCompatActivity() {
             // Thêm các thông tin khác
 
         )
-        //val invoiceSchedules = generateInvoiceSchedule(contract, utilityFees)
         viewModelHopDong.saveContract(contract,idLichhen)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModelHopDong.navigateToContractDetail.collect { contractId ->
+                    contractId?.let {
+                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
+                        intent.putExtra("idHopDong", it)
+                        startActivity(intent)
+                        // Reset giá trị sau khi chuyển màn
+                        viewModelHopDong.resetNavigation()
+                        // Đóng màn hình hiện tại sau khi chuyển màn
+                        finish()
+                    }
+                }
+            }
+        }
+
 
 
     }

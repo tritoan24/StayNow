@@ -1,0 +1,155 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    tools:context=".BaoMat.CapNhatThongTin">
+
+    <!-- Header with Back Button and Title -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="24dp">
+
+        <ImageButton
+            android:id="@+id/backScreen"
+            android:layout_height="48dp"
+            android:layout_width="48dp"
+            android:src="@drawable/arrow_back"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cập nhật thông tin"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginStart="16dp"
+            android:textColor="@android:color/black"/>
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:id="@+id/update_avatar"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="0dp"
+                android:src="@drawable/addavatar" />
+
+            <ImageButton
+                android:id="@+id/choseImg"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/white"
+                android:layout_marginStart="300dp"
+                android:src="@drawable/camera" />
+
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginTop="0dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <EditText
+                    android:id="@+id/update_ten"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/profile"
+                    android:drawablePadding="12dp"
+                    android:hint="Họ và Tên"
+                    android:padding="10dp"
+
+                    />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <EditText
+                    android:id="@+id/update_sdt"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/imgphone"
+                    android:drawablePadding="12dp"
+                    android:hint="Số điện thoại"
+                    android:inputType="phone"
+                    android:padding="10dp"
+
+                    />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <EditText
+                    android:id="@+id/update_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/iconemail"
+                    android:drawablePadding="12dp"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:padding="10dp" />
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="2dp"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="4dp">
+
+                <Spinner
+                    android:id="@+id/spinner_gender"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:entries="@array/gender_options"
+                    android:background="@android:color/transparent"
+                    android:spinnerMode="dropdown"
+                    android:drawableLeft="@drawable/gioi_tinh"
+                    android:gravity="center_vertical" />
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:id="@+id/btnUpdateInfor"
+                android:layout_width="match_parent"
+                android:layout_height="61dp"
+                android:layout_marginTop="30dp"
+                android:text="Cập nhật"
+                android:background="@drawable/button_background_doimk"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
+
+</LinearLayout>

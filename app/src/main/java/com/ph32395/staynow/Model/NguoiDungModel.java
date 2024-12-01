@@ -6,6 +6,7 @@ public class NguoiDungModel {
     private String Sdt;
     private String Email;
     private String Anh_daidien;
+    private String GioiTinh;
     private Integer So_luotdatlich;
     private String Loai_taikhoan;
     private String Trang_thaitaikhoan;
@@ -28,6 +29,14 @@ public class NguoiDungModel {
         DaXacThuc = daXacThuc;
         Ngay_taotaikhoan = ngay_taotaikhoan;
         Ngay_capnhat = ngay_capnhat;
+    }
+
+    public String getGioiTinh() {
+        return GioiTinh;
+    }
+
+    public void setGioiTinh(String gioiTinh) {
+        GioiTinh = gioiTinh;
     }
 
     public String getMa_nguoidung() {

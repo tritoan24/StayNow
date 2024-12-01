@@ -68,8 +68,8 @@ class ContractAdapter(
         fun bind(contract: HopDong, type: ContractStatus) {
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
-            tvRoomName.text = "Tên phòng: ${contract.thongTinPhong.tenPhong}"
-            tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongTinPhong.diaChiPhong}"
+            tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
+            tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongtinphong.diaChiPhong}"
             tvStartDate.text = "Ngày Bắt Đầu: ${contract.ngayBatDau}"
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
