@@ -1,38 +1,14 @@
 package com.ph32395.staynow.TaoHopDong
 
-import ContractStatus
-import FinancialInfo
-import HopDong
-import Invoice
-import PersonInfo
-import RoomDetail
-import RoomInfo
-import UtilityFee
-import UtilityFeeDetail
-import UtilityFeeUiState
-import android.content.Intent
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import gun0912.tedimagepicker.util.ToastUtil.context
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.jetbrains.annotations.Contract
-import java.text.NumberFormat
-import java.util.Locale
 
-class HopDongViewModel {
+class RoomContract {
     private val db = FirebaseFirestore.getInstance()
     private val contractsCollection = db.collection("HopDong")
     private val roomsCollection = db.collection("PhongTro")
@@ -360,169 +336,5 @@ class HopDongViewModel {
             onFailure(e)
         }
     }
-
-}
-class ContractViewModel : ViewModel() {
-    // Thêm ViewModel để xử lý logic liên quan đến hợp đồng
-    private val contractRepository = HopDongViewModel()
-    private val _saveResult = MutableLiveData<Result<Unit>>()
-    val saveResult: LiveData<Result<Unit>> = _saveResult
-    // Thêm StateFlow để theo dõi việc
-    private val _navigateToContractDetail = MutableStateFlow<String?>(null)
-    val navigateToContractDetail: StateFlow<String?> = _navigateToContractDetail.asStateFlow()
-    // Thêm LiveData để theo dõi dữ liệu hóa đơn
-    private val _invoiceDetails = MutableLiveData<Invoice>()
-    val invoiceDetails: LiveData<Invoice> = _invoiceDetails
-
-
-    private val _updateResult = MutableLiveData<Result<Unit>>()
-    val updateResult: LiveData<Result<Unit>> = _updateResult
-
-    private val _activeContracts = MutableLiveData<List<HopDong>>()
-    val activeContracts: LiveData<List<HopDong>> get() = _activeContracts
-
-    private val _pendingContracts = MutableLiveData<List<HopDong>>()
-    val pendingContracts: LiveData<List<HopDong>> get() = _pendingContracts
-
-    private val _expiredContracts = MutableLiveData<List<HopDong>>()
-    val expiredContracts: LiveData<List<HopDong>> get() = _expiredContracts
-
-    private val _terminatedContracts = MutableLiveData<List<HopDong>>()
-    val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
-
-    fun saveContract(contract: HopDong, appointmentId: String) {
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
-            try {
-                withTimeout(30000) { // Set timeout 30 giây
-                    contractRepository.saveContract(
-                        contract = contract,
-                        appointmentId = appointmentId,
-                        onSuccess = { contractId ->
-                            // Thay vì startActivity, cập nhật LiveData/StateFlow
-                            _navigateToContractDetail.value = contractId
-                        },
-                        onFailure = { exception ->
-                            _saveResult.postValue(Result.failure(exception))
-                            Log.e("ContractViewModel", "Lỗi khi lưu hợp đồng: ${exception.message}")
-                        }
-                    )
-                }
-            } catch (e: Exception) {
-                _saveResult.postValue(Result.failure(e))
-                Log.e("ContractViewModel", "Lỗi không mong muốn: ${e.message}")
-            }
-        }
-    }
-
-    fun extractVariableFees(utilityFees: List<UtilityFee>): List<UtilityFeeDetail> {
-        return utilityFees
-            .filter { it.tenDichVu in listOf("Điện", "Nước") && it.donVi in listOf("Số", "Khối") }
-            .map { fee ->
-                UtilityFeeDetail(
-                    tenDichVu = fee.tenDichVu,
-                    giaTien = fee.giaTien,
-                    donVi = fee.donVi,
-                    soLuong = 1, // Có thể thay đổi dựa trên thực tế
-                    thanhTien = fee.giaTien // Có thể thay đổi dựa trên số lượng
-                )
-            }
-    }
-
-    fun extractFixedFees(
-        utilityFees: List<UtilityFee>,
-        peopleCount: Int,
-    ): Pair<Double, List<UtilityFeeDetail>> {
-        val feeDetails = utilityFees
-            .filter {
-                (it.tenDichVu !in listOf("Điện", "Nước") || it.donVi !in listOf("Số", "Khối")) &&
-                        (it.donVi in listOf("Người", "Phòng") || it.donVi == null)
-            }
-            .map { fee ->
-                val quantity = when (fee.donVi) {
-                    "Người" -> peopleCount
-                    "Phòng" -> 1
-                    else -> 1
-                }
-                val subtotal = fee.giaTien * quantity
-
-                UtilityFeeDetail(
-                    tenDichVu = fee.tenDichVu,
-                    giaTien = fee.giaTien,
-                    donVi = fee.donVi ?: "",
-                    soLuong = quantity,
-                    thanhTien = subtotal
-                )
-            }
-
-        val totalFee = feeDetails.sumOf { it.thanhTien }
-        return Pair(totalFee, feeDetails)
-    }
-
-    // Thêm phương thức resetNavigation
-    fun resetNavigation() {
-        _navigateToContractDetail.value = null
-    }
-
-    // Thêm phương thức fetchInvoiceDetails
-    fun fetchInvoiceDetails(contractId: String) {
-        val db = FirebaseFirestore.getInstance()
-
-        db.collection("HopDong")
-            .document(contractId)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                val hopDong = documentSnapshot.toObject(HopDong::class.java)
-                hopDong?.hoaDonHopDong?.let { invoice ->
-                    _invoiceDetails.value = invoice
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.e("ContractViewModel", "Lỗi khi lấy chi tiết hóa đơn", exception)
-            }
-    }
-    fun fetchContractsByTenant(userId: String, status: ContractStatus) {
-        contractRepository.getContractsByTenant(userId, status) { contracts ->
-            // Khi có thay đổi, cập nhật vào LiveData
-            when (status) {
-                ContractStatus.ACTIVE -> _activeContracts.postValue(contracts)
-                ContractStatus.PENDING -> _pendingContracts.postValue(contracts)
-                ContractStatus.EXPIRED -> _expiredContracts.postValue(contracts)
-                ContractStatus.TERMINATED -> _terminatedContracts.postValue(contracts)
-            }
-        }
-    }
-
-    // Hàm cập nhật trạng thái hợp đồng
-    fun updateContractStatus(
-        contractId: String,
-        newStatus: ContractStatus
-    ) {
-        viewModelScope.launch {
-            try {
-                contractRepository.updateContractStatus(
-                    contractId = contractId,
-                    newStatus = newStatus,
-                    onSuccess = {
-                        _updateResult.postValue(Result.success(Unit)) // Cập nhật trạng thái thành công
-                        Log.d("ContractViewModel", "Cập nhật trạng thái hợp đồng thành công")
-                    },
-                    onFailure = { exception ->
-                        _updateResult.postValue(Result.failure(exception)) // Cập nhật trạng thái thất bại
-                        Log.e(
-                            "ContractViewModel",
-                            "Lỗi khi cập nhật trạng thái hợp đồng: ${exception.message}"
-                        )
-                    }
-                )
-            } catch (e: Exception) {
-                _updateResult.postValue(Result.failure(e)) // Xử lý lỗi ngoài ý muốn
-                Log.e(
-                    "ContractViewModel",
-                    "Lỗi không mong muốn khi cập nhật trạng thái: ${e.message}"
-                )
-            }
-        }
-    }
-
 
 }

@@ -22,7 +22,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvLandlordInfo.text = contract.hoaDonHopDong.idNguoinhan
         binding.tvTenantInfo.text = contract.hoaDonHopDong.idNguoigui
         binding.tvAmount.text = contract.hoaDonHopDong.tongTien.toString()
-        binding.tvAddress.text = contract.thongTinPhong.diaChiPhong
+        binding.tvAddress.text = contract.thongtinphong.diaChiPhong
         binding.tvStartDate.text = contract.ngayBatDau
         binding.tvEndDate.text = contract.ngayKetThuc
         binding.tvDate.text = contract.ngayThanhToan.toString()

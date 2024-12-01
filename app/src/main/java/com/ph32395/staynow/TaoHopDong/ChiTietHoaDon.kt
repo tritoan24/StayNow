@@ -1,6 +1,6 @@
 package com.ph32395.staynow.TaoHopDong
 
-import Invoice
+import ContractViewModel
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -30,8 +30,7 @@ class ChiTietHoaDon : AppCompatActivity() {
         binding = ActivityChiTietHoaDonBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val idHopDong = "sioLvT4Lh6AeV4hljlJd"
-//            intent.getStringExtra("idHopDong")
+        val idHopDong = intent.getStringExtra("idHopDong")
 
         idHopDong?.let {
             viewModelHopDong.fetchInvoiceDetails(it)

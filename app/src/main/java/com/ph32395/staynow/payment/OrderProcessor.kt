@@ -14,9 +14,9 @@ import kotlinx.coroutines.tasks.await
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import vn.zalopay.sdk.ZaloPayError
-import vn.zalopay.sdk.ZaloPaySDK
-import vn.zalopay.sdk.listeners.PayOrderListener
+//import vn.zalopay.sdk.ZaloPayError
+//import vn.zalopay.sdk.ZaloPaySDK
+//import vn.zalopay.sdk.listeners.PayOrderListener
 
 class OrderProcessor(private val context: Context) {
     private val db = FirebaseFirestore.getInstance()
@@ -92,38 +92,38 @@ class OrderProcessor(private val context: Context) {
         })
     }
 
-    fun startPayment(zpToken: String?, contract: HopDong?) {
-        zpToken?.let {
-            ZaloPaySDK.getInstance()
-                .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
-                    override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
-                        Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
-
-                        CoroutineScope(Dispatchers.IO).launch {
-                            updateContractStatus(
-                                contract!!.maHopDong,
-                                contract.hoaDonHopDong.idHoaDon
-                            )
-                        }
-                        val intent = Intent(context, SuccessPaymentActivity::class.java)
-                        intent.putExtra("itemData", contract)
-                        context.startActivity(intent)
-                    }
-
-                    override fun onPaymentCanceled(s: String?, s1: String?) {
-                        Toast.makeText(context, "Thanh toán bị hủy", Toast.LENGTH_SHORT).show()
-                    }
-
-                    override fun onPaymentError(
-                        zaloPayError: ZaloPayError?,
-                        s: String?,
-                        s1: String?
-                    ) {
-                        Toast.makeText(context, "Lỗi thanh toán", Toast.LENGTH_SHORT).show()
-                    }
-                })
-        }
-    }
+//    fun startPayment(zpToken: String?, contract: HopDong?) {
+//        zpToken?.let {
+//            ZaloPaySDK.getInstance()
+//                .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
+//                    override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
+//                        Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
+//
+//                        CoroutineScope(Dispatchers.IO).launch {
+//                            updateContractStatus(
+//                                contract!!.maHopDong,
+//                                contract.hoaDonHopDong.idHoaDon
+//                            )
+//                        }
+//                        val intent = Intent(context, SuccessPaymentActivity::class.java)
+//                        intent.putExtra("itemData", contract)
+//                        context.startActivity(intent)
+//                    }
+//
+//                    override fun onPaymentCanceled(s: String?, s1: String?) {
+//                        Toast.makeText(context, "Thanh toán bị hủy", Toast.LENGTH_SHORT).show()
+//                    }
+//
+//                    override fun onPaymentError(
+//                        zaloPayError: ZaloPayError?,
+//                        s: String?,
+//                        s1: String?
+//                    ) {
+//                        Toast.makeText(context, "Lỗi thanh toán", Toast.LENGTH_SHORT).show()
+//                    }
+//                })
+//        }
+//    }
 
     suspend fun updateContractStatus(contractId: String, billId: String) {
         val db = FirebaseFirestore.getInstance()

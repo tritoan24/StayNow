@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
+import ContractViewModel
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -16,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHopDong.ContractStatus
-import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.databinding.FragmentContractBinding
 import kotlinx.coroutines.launch
 

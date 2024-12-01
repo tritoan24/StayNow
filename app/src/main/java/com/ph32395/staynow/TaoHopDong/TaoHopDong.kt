@@ -1,7 +1,9 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
+import ContractViewModel
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -536,6 +538,7 @@ private fun observeViewModel() {
 
         )
         viewModelHopDong.saveContract(contract,idLichhen)
+        viewModelHopDong.saveMessageStatus(maNguoiThue,auth.currentUser?.uid ?: "")
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

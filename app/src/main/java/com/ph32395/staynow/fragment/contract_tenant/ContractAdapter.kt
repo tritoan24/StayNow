@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
+import ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
@@ -11,7 +12,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.TaoHopDong.ContractStatus
-import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ItemContractBinding
 import java.time.LocalDate
@@ -68,8 +68,8 @@ class ContractAdapter(
         fun bind(contract: HopDong, type: ContractStatus) {
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
-            tvRoomName.text = "Tên phòng: ${contract.thongTinPhong.tenPhong}"
-            tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongTinPhong.diaChiPhong}"
+            tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
+            tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongtinphong.diaChiPhong}"
             tvStartDate.text = "Ngày Bắt Đầu: ${contract.ngayBatDau}"
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
