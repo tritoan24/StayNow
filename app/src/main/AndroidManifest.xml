@@ -24,19 +24,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".Activity.ChoosePaymentActivity"
-            android:exported="false" />
+
         <activity
             android:name=".Activity.SuccessPaymentActivity"
-            android:exported="false" />
+            android:exported="true" />
+        <activity
+            android:name=".Activity.ThanhToanActivity"
+            android:exported="true" />
         <activity
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false" />
         <activity
             android:name=".fragment.contract_tenant.BillContractActivity"
             android:exported="true"
-            android:launchMode="singleTop">
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -48,6 +49,7 @@
                     android:scheme="demozpdk" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".ThongBao.NotificationActivity"
             android:exported="false" />

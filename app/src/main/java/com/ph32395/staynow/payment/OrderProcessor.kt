@@ -3,9 +3,11 @@ package com.ph32395.staynow.payment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
+import com.ph32395.staynow.Activity.ThanhToanActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -92,19 +94,27 @@ class OrderProcessor(private val context: Context) {
         })
     }
 
-    fun startPayment(zpToken: String?, contract: HopDong?) {
+    fun startPayment(zpToken: String?, contract: HopDong) {
         zpToken?.let {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
                         Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
 
-                        CoroutineScope(Dispatchers.IO).launch {
-                            updateContractStatus(
-                                contract!!.maHopDong,
-                                contract.hoaDonHopDong.idHoaDon
-                            )
-                        }
+//                        val contractService = ContractService()
+//
+//                        contractService.updatePaymentStatusAndContractStatus(
+//                            contract.maHopDong,
+//                            contract.hoaDonHopDong.idHoaDon
+//                        ) { success, message ->
+//                            if (success) {
+//                                // Cập nhật thành công
+//                                Log.d("ContractUpdate", message)
+//                            } else {
+//                                // Cập nhật thất bại
+//                                Log.d("ContractUpdate", message)
+//                            }
+//                        }
                         val intent = Intent(context, SuccessPaymentActivity::class.java)
                         intent.putExtra("itemData", contract)
                         context.startActivity(intent)
@@ -125,21 +135,4 @@ class OrderProcessor(private val context: Context) {
         }
     }
 
-    suspend fun updateContractStatus(contractId: String, billId: String) {
-        val db = FirebaseFirestore.getInstance()
-
-        try {
-            val hopDongRef = db.collection("HopDong").document(contractId)
-            val hoaDonHopDongRef = db.collection("hoaDonHopDong").document(billId)
-
-            db.runBatch { batch ->
-                batch.update(hopDongRef, "status", "ACTIVE")
-                batch.update(hoaDonHopDongRef, "status", "PAID")
-            }.await()
-
-            println("Trạng thái đã được cập nhật.")
-        } catch (e: Exception) {
-            println("Lỗi khi cập nhật trạng thái: ${e.message}")
-        }
-    }
 }

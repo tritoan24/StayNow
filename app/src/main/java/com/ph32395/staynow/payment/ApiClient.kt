@@ -14,7 +14,7 @@ interface ApiClient {
     companion object {
         fun create(): ApiClient {
             return Retrofit.Builder()
-                .baseUrl(Constants.URL_PAYMENT)
+                .baseUrl(Constants.URL_SERVER_QUYET)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(ApiClient::class.java)

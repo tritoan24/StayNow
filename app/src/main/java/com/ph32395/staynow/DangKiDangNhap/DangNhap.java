@@ -38,19 +38,7 @@ import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 import com.ph32395.staynow.utils.Constants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.Objects;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class DangNhap extends AppCompatActivity {
     private Button btnDangNhap, btnDangNhapGoogle;
@@ -69,6 +57,7 @@ public class DangNhap extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dang_nhap);
+        ServerWakeUpService.INSTANCE.wakeUpServer();
 
         btnDangNhap = findViewById(R.id.loginButton);
         TextView txtdangky = findViewById(R.id.txtdangky);
@@ -84,7 +73,6 @@ public class DangNhap extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         // Khởi tạo RegisterWithGoogle để xử lý đăng nhập với Google
         registerWithGoogle = new RegisterWithGoogle(this);
-
 
         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
 
@@ -228,56 +216,42 @@ public class DangNhap extends AppCompatActivity {
                 });
     }
 
-    private void sendTokenToServer(String token) {
-        OkHttpClient client = new OkHttpClient();
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("idToken", token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.get("application/json; charset=utf-8"));
-
-        Request request = new Request.Builder()
-                .url(Constants.URL_SERVER_QUYET + "/verify-token") // API endpoint cho xác minh
-                .post(body)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() -> Log.d("OTP", "Lỗi kết nối: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    runOnUiThread(() -> Log.d("OTP", "Xác minh token thành công"));
-                } else {
-                    runOnUiThread(() -> Log.d("OTP", "Xác minh token thất bại"));
-                }
-            }
-        });
-    }
 
     // Hàm xử lý chuyển sang OTP Activity
     private void proceedToOtpActivity(FirebaseUser user) {
+        Toast.makeText(this, "Đang xác minh tài khoản, đợi chút nha!", Toast.LENGTH_SHORT).show();
         user.getIdToken(true).addOnCompleteListener(tokenTask -> {
             if (tokenTask.isSuccessful()) {
                 String token = tokenTask.getResult().getToken();
-                assert token != null;
-                sendTokenToServer(token);
+                if (token != null) {
+                    String url = Constants.URL_SERVER_QUYET + "/" + Constants.ENDPOINT_VERIFY_TOKEN;
+                    TokenService.INSTANCE.sendTokenToServer(token, url, new TokenService.TokenCallback() {
+                        @Override
+                        public void onSuccess() {
+                            runOnUiThread(() -> {
+                                Intent intent = new Intent(DangNhap.this, OTPActivity.class);
+                                intent.putExtra("uid", user.getUid());
+                                intent.putExtra("email", user.getEmail());
+                                startActivity(intent);
+                            });
+                        }
 
-                Intent intent = new Intent(DangNhap.this, OTPActivity.class);
-                intent.putExtra("uid", user.getUid());
-                intent.putExtra("email", user.getEmail());
-                startActivity(intent);
+                        @Override
+                        public void onFailure(@NonNull String errorMessage) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(DangNhap.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                }
+
             } else {
                 Log.d("OTP", "Lỗi lấy token: " + Objects.requireNonNull(tokenTask.getException()).getMessage());
             }
         });
     }
 
-//    xu ly dang nhap bang Google
+    //    xu ly dang nhap bang Google
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

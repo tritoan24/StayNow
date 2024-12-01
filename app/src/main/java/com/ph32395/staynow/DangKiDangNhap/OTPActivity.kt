@@ -60,15 +60,50 @@ class OTPActivity : AppCompatActivity() {
         binding.btnVerifyOtp.setOnClickListener {
             val otp = getOtpFromInputs()
             if (otp.length == 6) {
-                sendOtpToServer(uid, otp)
+
+                OtpService.sendOtpToServer(
+                    this,
+                    uid,
+                    otp,
+                    baseUrl,
+                    endpointVerifyOtp,
+                    object : OtpService.OtpCallback {
+                        override fun onSuccess() {
+                            checkAccountTypeInRealtimeDatabase(uid) // Xử lý logic thành công
+                        }
+
+                        override fun onFailure(errorMessage: String) {
+                            Log.d("OTP", "Lỗi gửi OTP: $errorMessage")
+                        }
+
+                    })
+
             } else {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ mã OTP", Toast.LENGTH_SHORT).show()
             }
         }
         binding.btnResendOtp.setOnClickListener {
-            reSendOtpToServer(uid)
+            binding.btnResendOtp.isClickable = false  // Vô hiệu hóa nút "Resend OTP" ngay khi bấm
+
+            OtpService.reSendOtpToServer(
+                this,
+                uid,
+                baseUrl,
+                endpointResendOtp,
+                object : OtpService.OtpCallback {
+                    override fun onSuccess() {
+                        runOnUiThread {
+                            Log.d("OTP", "Gửi lại OTP thành công")
+                        }
+                    }
+
+                    override fun onFailure(errorMessage: String) {
+                        Log.d("OTP", "Lỗi gửi lại OTP: $errorMessage")
+                    }
+                })
             startTimer()
         }
+
     }
 
     // Hàm bắt đầu bộ đếm ngược
@@ -125,98 +160,6 @@ class OTPActivity : AppCompatActivity() {
                 binding.edtOtp6.text.toString()
     }
 
-    // request gửi otp
-    private fun sendOtpToServer(uid: String, otp: String) {
-        val jsonObject = JSONObject()
-        try {
-            jsonObject.put("uid", uid)
-            jsonObject.put("otpCode", otp.toInt())
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        // Tạo requestBody với kiểu JSON
-        val requestBody = RequestBody.create(
-            "application/json;charset=utf-8".toMediaTypeOrNull(),
-            jsonObject.toString()
-        )
-        // Tạo request
-        val request = Request.Builder()
-            .url("$baseUrl/$endpointVerifyOtp")
-            .post(requestBody)
-            .build()
-
-        val client = OkHttpClient()
-
-        // Thực hiện request
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this@OTPActivity, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    checkAccountTypeInRealtimeDatabase(uid)
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this@OTPActivity, "OTP chưa đúng", Toast.LENGTH_SHORT)
-                            .show()
-                    }
-                }
-            }
-        })
-    }
-
-    // request gửi lại otp
-    private fun reSendOtpToServer(uid: String) {
-        val jsonObject = JSONObject()
-        try {
-            jsonObject.put("uid", uid)
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-        val requestBody = RequestBody.create(
-            "application/json;charset=utf-8".toMediaTypeOrNull(),
-            jsonObject.toString()
-        )
-
-        // Tạo request
-        val request = Request.Builder()
-            .url("$baseUrl/$endpointResendOtp")
-            .post(requestBody)
-            .build()
-
-        val client = OkHttpClient()
-
-        // Thực hiện request
-        client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this@OTPActivity, "Lỗi kết nối", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    // Xử lý kết quả từ server
-                    runOnUiThread {
-                        Log.d("OTP", response.message);
-                    }
-                } else {
-                    runOnUiThread {
-                        Log.d("OTP", response.message);
-                    }
-                }
-            }
-        })
-
-        binding.btnResendOtp.isClickable = false  // Vô hiệu hóa nút "Resend OTP" ngay khi bấm
-
-    }
-
     private fun checkAccountTypeInRealtimeDatabase(uid: String) {
         val databaseReference = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
 
@@ -230,16 +173,25 @@ class OTPActivity : AppCompatActivity() {
                     }
                 } else {
                     CoroutineScope(Dispatchers.Main).launch {
-                        Toast.makeText(this@OTPActivity, "Người dùng không tồn tại", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@OTPActivity,
+                            "Người dùng không tồn tại",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
             } catch (e: Exception) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    Toast.makeText(this@OTPActivity, "Lỗi khi kiểm tra tài khoản: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@OTPActivity,
+                        "Lỗi khi kiểm tra tài khoản: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
     }
+
     // Điều hướng dựa trên loại tài khoản
     private fun navigateBasedOnAccountType(accountType: String) {
         if (accountType == "ChuaChon") {
