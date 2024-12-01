@@ -108,7 +108,7 @@ dependencies {
     implementation ("com.google.android.libraries.places:places:4.1.0")
 
     //Thu vien khoang gia
-    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
+    implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
 
 
     implementation ("com.google.mlkit:barcode-scanning:17.3.0")

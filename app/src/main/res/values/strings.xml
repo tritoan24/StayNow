@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">StayNow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
@@ -59,9 +59,6 @@
     <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature" translatable="false">You must allow all Permission to use this app with full feature.</string>
     <string name="go_to_setting" translatable="false">Go to setting</string>
     <string name="t_ph_ng" translatable="false">Đặt phòng</string>
-    <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature">You must allow all Permission to use this app with full feature.</string>
-    <string name="go_to_setting">Go to setting</string>
-    <string name="t_ph_ng">Đặt phòng</string>
 
 
 

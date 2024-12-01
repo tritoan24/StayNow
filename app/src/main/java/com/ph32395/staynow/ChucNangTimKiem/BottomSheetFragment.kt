@@ -10,10 +10,7 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.jaygoo.widget.OnRangeChangedListener
 import com.jaygoo.widget.RangeSeekBar
-import com.mohammedalaa.seekbar.DoubleValueSeekBarView
-import com.mohammedalaa.seekbar.OnDoubleValueSeekBarChangeListener
 import com.ph32395.staynow.databinding.FragmentPriceRangeBinding
-import com.ph32395.staynow.fragment.home.PhongTroAdapter
 import java.text.NumberFormat
 import java.util.Locale
 

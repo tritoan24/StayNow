@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
@@ -28,6 +29,7 @@ import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
+import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHopDong.TaoHopDong
@@ -99,6 +101,14 @@ class RoomDetailActivity : AppCompatActivity() {
                 // Xử lý lỗi nếu có
                 Log.e("RoomManagementFragment", "Error fetching user data", exception)
             }
+        }
+        findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
+            val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
+            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
+                intent.putExtra("idUser",ma_NguoiDung)
+            }
+            startActivity(intent)
+            finish()
         }
 
 //        khoi tao Adapter
