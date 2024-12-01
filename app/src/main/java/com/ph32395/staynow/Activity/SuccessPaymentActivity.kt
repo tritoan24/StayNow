@@ -32,13 +32,13 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvInvoiceId.text = "ID hợp đồng: " + contract!!.maHopDong
         binding.tvLandlordInfo.text = "Người cho thuê: " + contract.chuNha.hoTen
         binding.tvTenantInfo.text = "Người thuê: " + contract.nguoiThue.hoTen
-        binding.tvNameRoom.text = "Tên phòng: " + contract.thongTinPhong.tenPhong
+        binding.tvNameRoom.text = "Tên phòng: " + contract.thongtinphong.tenPhong
         binding.tvAmount.text = "Tổng tiền: " + formatCurrency(contract.hoaDonHopDong.tongTien)
         binding.tvAmountRoom.text =
             "Tiền phòng: " + formatCurrency(contract.hoaDonHopDong.tienPhong)
         binding.tvAmountDeposit.text =
             "Tiền cọc: " + formatCurrency(contract.hoaDonHopDong.tienCoc)
-        binding.tvAddress.text = "Địa chỉ: " + contract.thongTinPhong.diaChiPhong
+        binding.tvAddress.text = "Địa chỉ: " + contract.thongtinphong.diaChiPhong
         binding.tvStartDate.text = "Ngày bắt đầu: " + contract.ngayBatDau
         binding.tvEndDate.text = "Ngày kết thúc: " + contract.ngayKetThuc
         binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue

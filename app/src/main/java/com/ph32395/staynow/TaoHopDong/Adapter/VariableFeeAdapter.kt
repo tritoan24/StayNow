@@ -1,9 +1,9 @@
 package com.ph32395.staynow.TaoHopDong.Adapter
 
-import UtilityFeeDetail
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.ph32395.staynow.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow.databinding.ItemVariableFeeBinding
 import java.text.NumberFormat
 import java.util.Locale

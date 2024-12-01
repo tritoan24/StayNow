@@ -34,6 +34,9 @@
             android:name=".Activity.ThanhToanActivity"
             android:exported="true" />
         <activity
+            android:name=".ThongBao.NotificationActivity"
+            android:exported="true" />
+        <activity
             android:name=".fragment.contract_tenant.BillContractActivity"
             android:exported="true"
             android:launchMode="singleTask">

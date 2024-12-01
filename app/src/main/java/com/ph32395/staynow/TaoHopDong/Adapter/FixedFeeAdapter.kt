@@ -1,12 +1,12 @@
 package com.ph32395.staynow.TaoHopDong.Adapter
 
-import UtilityFeeDetail
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.R
+import com.ph32395.staynow.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow.databinding.ItemFixedFeeBinding
 import java.text.NumberFormat
 import java.util.Locale
