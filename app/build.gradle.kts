@@ -103,8 +103,6 @@ dependencies {
 
     implementation("io.github.ParkSangGwon:tedimagepicker:1.6.1")
 
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
@@ -128,9 +126,8 @@ dependencies {
     //thư viện custom text
     implementation ("jp.wasabeef:richeditor-android:2.0.0")
 
-
-
-
-
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
 
 }
