@@ -21,4 +21,7 @@ interface NotificationDao {
 
     @Query("SELECT COUNT(*) FROM NotificationModel WHERE timestamp = :timestamp")
     fun isNotificationExists(timestamp: Long): Int
+
+    @Query("SELECT COUNT(*) FROM NotificationModel WHERE isRead = 0")
+    fun countNotificationNotSeen(): Int
 }

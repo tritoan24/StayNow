@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     private val PREFS_NAME: String = "MyAppPrefs"
     private var userRole: String = ""
 
-
     override fun onResume() {
         super.onResume()
         if (!SystemUtils.isServiceRunning(this, NotificationService::class.java)){

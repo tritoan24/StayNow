@@ -132,7 +132,7 @@ dependencies {
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
     implementation(fileTree(mapOf(
-        "dir" to "C:\\DuAnTotNghiep\\StayNow",
+        "dir" to "F:\\StayNow",
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf<String>()
     )))

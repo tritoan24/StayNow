@@ -31,6 +31,7 @@ class NotificationService : Service() {
     private val serviceScope = CoroutineScope(Dispatchers.IO)
     private val dao by lazy { AppDatabase.getInstance(this@NotificationService).notificationDao() }
     private val realtimeNotification by lazy { FirebaseDatabase.getInstance().reference.child(THONG_BAO) }
+
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }

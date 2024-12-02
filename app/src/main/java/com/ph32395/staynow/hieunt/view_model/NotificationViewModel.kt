@@ -22,4 +22,12 @@ class NotificationViewModel(private val dao: NotificationDao) : ViewModel() {
         }
     }
 
+    fun updateNotification(notification: NotificationModel, onCompletion: () -> Unit){
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.updateNotification(notification)
+        }.invokeOnCompletion {
+            onCompletion.invoke()
+        }
+    }
+
 }
