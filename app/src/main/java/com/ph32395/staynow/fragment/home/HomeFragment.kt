@@ -23,9 +23,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.Model.LoaiPhongTro
-import com.ph32395.staynow.ThongBao.NotificationActivity
-import com.ph32395.staynow.ThongBao.NotificationViewModel
+import com.ph32395.staynow.hieunt.view.feature.notification.NotificationActivity
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.databinding.FragmentHomeBinding
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -94,21 +95,20 @@ class HomeFragment : Fragment() {
         }
         //đếm số thông báo chưa đọc
 
-        notificationViewModel =
-            ViewModelProvider(requireActivity()).get(NotificationViewModel::class.java)
+        notificationViewModel = ViewModelProvider(requireActivity(), ViewModelFactory(requireContext()))[NotificationViewModel::class.java]
 // Trong Fragment
-        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
-            Log.d("Notification", "Unread count: $count")
-            if (count > 0) {
-                binding.notificationBadge.text = count.toString()
-                binding.notificationBadge.visibility = View.VISIBLE
-            } else {
-                binding.notificationBadge.visibility = View.GONE
-            }
-        }
+//        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
+//            Log.d("Notification", "Unread count: $count")
+//            if (count > 0) {
+//                binding.notificationBadge.text = count.toString()
+//                binding.notificationBadge.visibility = View.VISIBLE
+//            } else {
+//                binding.notificationBadge.visibility = View.GONE
+//            }
+//        }
 
 // Gọi fetchNotifications sau khi set observer
-        notificationViewModel.fetchNotifications(currentUser?.uid ?: "")
+//        notificationViewModel.fetchNotifications(currentUser?.uid ?: "")
 
 
         return binding.root

@@ -42,7 +42,7 @@
             android:name=".Activity.ThanhToanActivity"
             android:exported="true" />
         <activity
-            android:name=".ThongBao.NotificationActivity"
+            android:name=".hieunt.view.feature.notification.NotificationActivity"
             android:exported="true" />
         <activity
             android:name=".fragment.contract_tenant.BillContractActivity"

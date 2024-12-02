@@ -357,6 +357,7 @@ class HopDongViewModel {
     }
 
 }
+
 class ContractViewModel : ViewModel() {
     // Thêm ViewModel để xử lý logic liên quan đến hợp đồng
     private val contractRepository = HopDongViewModel()

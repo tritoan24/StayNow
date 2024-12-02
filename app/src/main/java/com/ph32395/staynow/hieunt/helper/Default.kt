@@ -51,6 +51,7 @@ object Default {
         const val MESSAGE = "message"
         const val CHANGED_SCHEDULE_BY_RENTER = "changedScheduleByRenter"
         const val ROOM_SCHEDULE_ID = "roomScheduleId"
+        const val IS_PUSHED = "isPushed"
     }
 
     object StatusRoom {

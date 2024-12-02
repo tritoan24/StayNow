@@ -135,8 +135,7 @@ class ManageScheduleRoomVM : ViewModel() {
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val documentRef =
-                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
+                val documentRef = firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
                 val querySnapshot = documentRef.get().await()
                 if (querySnapshot.isEmpty) {
                     onCompletion.invoke(false)

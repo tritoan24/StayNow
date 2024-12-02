@@ -5,8 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
     id ("kotlin-parcelize")
-
-
+    kotlin("kapt")
 }
 
 android {
@@ -133,10 +132,13 @@ dependencies {
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
     implementation(fileTree(mapOf(
-        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "dir" to "C:\\DuAnTotNghiep\\StayNow",
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf<String>()
     )))
-
+    //room
+    implementation("androidx.room:room-runtime:2.4.3")
+    kapt("androidx.room:room-compiler:2.4.3")
+    implementation("androidx.room:room-ktx:2.4.3")
 
 }

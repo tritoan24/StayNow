@@ -107,12 +107,12 @@ class TenantManageScheduleRoomActivity :
                 launch {
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
-                            listScheduleState.map { scheduleState ->
+                            scheduleStateAdapter?.listData?.map { scheduleState ->
                                 val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
-                        scheduleStateAdapter?.addListObserver(newList)
+                        scheduleStateAdapter?.addListObserver(newList ?: listScheduleState)
                     }
                 }
             }

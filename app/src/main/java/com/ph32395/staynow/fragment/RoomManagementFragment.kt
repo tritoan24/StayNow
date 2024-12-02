@@ -24,6 +24,7 @@ import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WAIT
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WATCHED
 import com.ph32395.staynow.hieunt.helper.Default.listScheduleState
+import com.ph32395.staynow.hieunt.model.ScheduleStateModel
 import com.ph32395.staynow.hieunt.view.dialog.UpdateRoomScheduleDialog
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.RenterManageScheduleRoomAdapter
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.ScheduleStateAdapter
@@ -59,7 +60,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             },
             onClickConfirm = { data ->
                 updateStatusRoom(data.roomScheduleId, CONFIRMED)
-                viewModel.pushNotification(TITLE_CONFIRMED, data){ isCompletion ->
+                viewModel.pushNotification(TITLE_CONFIRMED, data) { isCompletion ->
                     toastNotification(isCompletion)
                 }
             },
@@ -76,7 +77,10 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                             viewModel.filerScheduleRoomState(0) {
                                 scheduleStateAdapter?.setSelectedState(0)
                             }
-                            viewModel.pushNotification(TITLE_LEAVED_BY_RENTER, it.copy(time = newTime, date = newDate)){ isCompletion ->
+                            viewModel.pushNotification(
+                                TITLE_LEAVED_BY_RENTER,
+                                it.copy(time = newTime, date = newDate)
+                            ) { isCompletion ->
                                 toastNotification(isCompletion)
                             }
                         } else {
@@ -89,14 +93,13 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             },
             onClickCancelSchedule = {
                 updateStatusRoom(it.roomScheduleId, CANCELED)
-                viewModel.pushNotification(TITLE_CANCELED_BY_RENTER, it){ isCompletion ->
+                viewModel.pushNotification(TITLE_CANCELED_BY_RENTER, it) { isCompletion ->
                     toastNotification(isCompletion)
                 }
             },
             onClickCreateContract = {
-               createContract(it.roomId,it.tenantId,it.roomScheduleId);
+                createContract(it.roomId, it.tenantId, it.roomScheduleId);
             }
-
         )
 
         binding.rvState.adapter = scheduleStateAdapter
@@ -128,14 +131,14 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                     }
                 }
                 launch {
-                    viewModel.allScheduleRoomState.collect {allRoomStates->
+                    viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
-                            listScheduleState.map { scheduleState ->
+                            scheduleStateAdapter?.listData?.map { scheduleState ->
                                 val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
-                        scheduleStateAdapter?.addListObserver(newList)
+                        scheduleStateAdapter?.addListObserver(newList ?: listScheduleState)
                     }
                 }
             }
@@ -158,7 +161,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         }
     }
 
-    private fun toastNotification (isCompletion: Boolean){
+    private fun toastNotification(isCompletion: Boolean) {
         lifecycleScope.launch {
             if (isCompletion)
                 toast("Thông báo đã được gửi đến người thuê")
@@ -166,18 +169,20 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 toast("Có lỗi xảy ra!")
         }
     }
+
     private fun navigateToUpdateCCCD() {
         val intent = Intent(requireContext(), CCCD::class.java)
         startActivity(intent)
     }
+
     private fun navigateToUpdatePTTT() {
-        val intent = Intent(requireContext(),PaymentInfoActivity::class.java)
+        val intent = Intent(requireContext(), PaymentInfoActivity::class.java)
         startActivity(intent)
     }
 
-    private fun createContract(maPhongTro: String, maNguoiThue: String, idLichhen: String){
-    //lấy id của người dùng hiện tại
-    val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+    private fun createContract(maPhongTro: String, maNguoiThue: String, idLichhen: String) {
+        //lấy id của người dùng hiện tại
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         //lấy 2 trường statusCCCD và statusPTTT từ database realtime bảng NguoiDung
         val database = FirebaseDatabase.getInstance().reference
         val userRef = database.child("NguoiDung").child(userId)
@@ -201,20 +206,17 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                     content = "Hãy cập nhật PTTT để tiếp tục",
                     confirmAction = { navigateToUpdatePTTT() }
                 )
-            }
-                else{
-                    //nếu đã cập nhật cả 2 thông tin CCCD và PTTT thì chuyển sang màn hình tạo hợp đồng
-                    val intent = Intent(requireContext(), TaoHopDong::class.java)
+            } else {
+                //nếu đã cập nhật cả 2 thông tin CCCD và PTTT thì chuyển sang màn hình tạo hợp đồng
+                val intent = Intent(requireContext(), TaoHopDong::class.java)
                 //chuyển mã phòng trọ sang màn hình tạo hợp đồng
-                intent.putExtra("maPhongTro",maPhongTro )
-                intent.putExtra("maNguoiThue",maNguoiThue )
-                intent.putExtra("idLichhen",idLichhen)
-                    startActivity(intent)
-                }
-
+                intent.putExtra("maPhongTro", maPhongTro)
+                intent.putExtra("maNguoiThue", maNguoiThue)
+                intent.putExtra("idLichhen", idLichhen)
+                startActivity(intent)
             }
-        }
 
+        }
     }
 
     fun showWarningDialog(
@@ -237,6 +239,9 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
             }
             .show()
     }
+}
+
+
 
 
 

@@ -15,6 +15,7 @@ import com.ph32395.staynow.hieunt.helper.PermissionHelper
 import com.ph32395.staynow.hieunt.helper.SystemUtils
 import com.ph32395.staynow.hieunt.view.dialog.LoadingDialog
 import com.ph32395.staynow.hieunt.view.feature.no_internet.NoInternetActivity
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow.hieunt.widget.currentBundle
 import com.ph32395.staynow.hieunt.widget.hideNavigation
 import com.ph32395.staynow.hieunt.widget.hideStatusBar
@@ -51,7 +52,7 @@ abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivit
         }
         setContentView(binding.root)
         //view_model
-        viewModel = ViewModelProvider(this)[initViewModel()]
+        viewModel = ViewModelProvider(this, ViewModelFactory(this))[initViewModel()]
         //internet
         networkCallback = NetworkCallbackHandler {
             if (!it) {
