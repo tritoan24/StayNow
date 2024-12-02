@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
+    id ("kotlin-parcelize")
+
+
 }
 
 android {
@@ -100,18 +103,40 @@ dependencies {
 
     implementation("io.github.ParkSangGwon:tedimagepicker:1.6.1")
 
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
     //Thu vien khoang gia
-    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
+    implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
 
     // Firebase Cloud Messaging
     implementation("com.google.firebase:firebase-messaging:24.1.0")
     // Thư viện Volley
     implementation("com.android.volley:volley:1.2.1")
+
+    implementation ("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation ("androidx.camera:camera-core:1.2.2")
+    implementation ("androidx.camera:camera-camera2:1.2.2")
+    implementation ("androidx.camera:camera-lifecycle:1.2.2")
+    implementation ("androidx.camera:camera-view:1.2.2")
+
+    implementation ("com.itextpdf:itext7-core:7.2.3")
+    implementation ("com.afollestad.material-dialogs:core:3.3.0")
+
+    //thư viện custom text
+    implementation ("jp.wasabeef:richeditor-android:2.0.0")
+
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
+    // Socket
+    implementation ("io.socket:socket.io-client:2.0.0")
+    // zalo sdk
+    implementation(fileTree(mapOf(
+        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf<String>()
+    )))
 
 
 }

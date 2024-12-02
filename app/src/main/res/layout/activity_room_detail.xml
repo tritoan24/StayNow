@@ -25,7 +25,8 @@
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="250dp"
+                tools:ignore="MissingClass">
 
                 <!-- ViewPager -->
                 <androidx.viewpager.widget.ViewPager
@@ -70,7 +71,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                android:layout_marginStart="10dp"/>
+                android:layout_marginStart="10dp"
+                tools:ignore="MissingClass" />
 
             <!--        Loai phong va gioi tinh-->
             <LinearLayout
@@ -88,7 +90,8 @@
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="4dp"
                     android:layout_marginBottom="10dp"
-                    app:cardCornerRadius="10dp">
+                    app:cardCornerRadius="10dp"
+                    tools:ignore="MissingClass">
 
                     <TextView
                         android:id="@+id/txtLoaiPhong"
@@ -110,7 +113,8 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/img_gender"
                         android:layout_width="25dp"
-                        android:layout_height="25dp" />
+                        android:layout_height="25dp"
+                        tools:ignore="MissingClass" />
                     <TextView
                         android:id="@+id/txtGioiTinh"
                         android:layout_marginTop="2dp"
@@ -181,12 +185,14 @@
 
                 <!--            Thong tin chu tro-->
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cardThongTinChuTro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:cardElevation="4dp"
                     app:cardCornerRadius="20dp"
                     android:layout_marginTop="30dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    tools:ignore="MissingClass">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -229,6 +235,7 @@
 
                         <!--                    Nut xem chi tiet-->
                         <androidx.appcompat.widget.AppCompatButton
+                            android:id="@+id/viewInfor"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:text="Xem chi tiết"
@@ -249,8 +256,9 @@
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/white"
                     android:layout_marginTop="25dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewChiTietThongTin"
@@ -277,8 +285,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardElevation="4dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewPhiDichVu"
@@ -306,8 +315,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardElevation="4dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewNoiThat"
@@ -335,8 +345,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardElevation="4dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardBackgroundColor="@color/white">
+                    app:cardBackgroundColor="@color/white"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerViewTienNghi"
@@ -364,8 +375,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp">
+                    app:cardElevation="4dp"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
 
                     <TextView
                         android:id="@+id/txtChiTietThem"
@@ -401,45 +413,25 @@
                         android:textSize="15sp"
                         />
                 </LinearLayout>
-
-                <!--            Liem he dat lich va chi duong-->
+                <!--    đây là phần chức năng cho phòng đã đc đăng -->
                 <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
+                    android:id="@+id/cardViewChucNangPhongTrenHone"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/white"
                     android:layout_marginTop="25dp"
-                    app:cardCornerRadius="20dp"
+                    app:cardCornerRadius="18dp"
                     android:layout_marginBottom="15dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
                     app:cardElevation="4dp">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginVertical="8dp"
                         android:layout_marginHorizontal="10dp">
-
-                        <!--                    Chi duong-->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:background="?attr/selectableItemBackground"
-                            android:layout_weight="1">
-
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/icon_chi_duong"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Chỉ Đưởng"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
 
                         <!--                    Đặt Phòng-->
                         <LinearLayout
@@ -464,8 +456,34 @@
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
-                        <!--                    chat-->
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+<!--                Chuc nang dang dang-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongDangDang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Go phong-->
                         <LinearLayout
+                            android:id="@+id/btnGoPhong"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:orientation="vertical"
@@ -478,11 +496,264 @@
                             <ImageView
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
-                                android:src="@drawable/icon_chat"/>
+                                android:src="@drawable/ic_go_phong"/>
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Chat"
+                                android:text="Gỡ Phòng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Sua phong-->
+                        <LinearLayout
+                            android:id="@+id/btnSuaPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_chinh_sua"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sửa Phòng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Sao chep-->
+                        <LinearLayout
+                            android:id="@+id/btnSaoChep"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_sao_chep"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sao Chép"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Tao hop dong-->
+                        <LinearLayout
+                            android:id="@+id/btnTaoHopDong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_tao_hop_dong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tạo Họp Đồng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Huy Phong-->
+                        <LinearLayout
+                            android:id="@+id/btnHuyPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_huy_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hủy Phòng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--                Chuc nang duoc luu-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongDangLuu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Dang phong-->
+                        <LinearLayout
+                            android:id="@+id/btnDangPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_dang_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Đăng Phòng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Sua phong-->
+                        <LinearLayout
+                            android:id="@+id/btnSuaPhongLuu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_chinh_sua"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Sửa Phòng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Tao hop dong-->
+                        <LinearLayout
+                            android:id="@+id/btnTaoHopDongLuu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_tao_hop_dong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Tạo Họp Đồng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Huy Phong-->
+                        <LinearLayout
+                            android:id="@+id/btnHuyPhongLuu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_huy_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Hủy Phòng"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--                Chuc nang da bi huy-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongDaBiHuy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Luu phong-->
+                        <LinearLayout
+                            android:id="@+id/btnLuuPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_luu_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Lưu Phòng"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 

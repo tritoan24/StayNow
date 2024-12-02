@@ -1,10 +1,7 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
 import android.annotation.SuppressLint
-import android.net.Uri
 import android.view.ViewGroup
-import android.widget.Toast
-import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.RenterItemRoomCanceledBinding
 import com.ph32395.staynow.databinding.RenterItemRoomConfirmedBinding
@@ -34,6 +31,7 @@ class RenterManageScheduleRoomAdapter(
                 tvNameRoom.text = "Tên phòng: ${data.roomName}"
                 tvPhoneNumber.text = "SDT: ${data.tenantPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
+
                 tvConfirm.tap {
                     onClickConfirm.invoke(data)
                 }

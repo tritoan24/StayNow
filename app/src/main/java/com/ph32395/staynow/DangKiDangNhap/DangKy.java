@@ -33,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
-import com.ph32395.staynow.utils.constants.Constants;
+import com.ph32395.staynow.utils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -66,10 +66,11 @@ public class DangKy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dang_ky);
 
+        ServerWakeUpService.INSTANCE.wakeUpServer();
+
         // Khởi tạo Firebase Auth và Realtime Database
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
 
         // Liên kết các thành phần giao diện
         tenEditText = findViewById(R.id.ten);
@@ -158,18 +159,20 @@ public class DangKy extends AppCompatActivity {
                 } else if (!password.equals(rppassword)) {
                     rppass.setError("Mật khẩu không trùng khớp");
                 } else if (avatarUri == null) {
-                        Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
-                    }else {
-                        signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
-                    }
+                    Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
+                } else {
+                    signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
                 }
-
+            }
 
 
         });
 
         // Đăng ký sự kiện cho nút "Đăng ký bằng Google"
         registerButtonWithGoogle.setOnClickListener(view -> {
+            //đánh thức server mỗi lần run
+            ServerWakeUpService.INSTANCE.wakeUpServer();
+
             Intent signInIntent = registerWithGoogle.getGoogleSignInClient().getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN_REGISTER);
         });
@@ -181,24 +184,23 @@ public class DangKy extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
 
-                            com.ph32395.staynow.Utils.ImageUploader imageUploader = new com.ph32395.staynow.Utils.ImageUploader();
-                            assert user != null;
-                            imageUploader.uploadImage(avatarUri, user.getUid(), new com.ph32395.staynow.Utils.ImageUploader.UploadCallback() {
-                                @Override
-                                public void onSuccess(String imageUrl) {
-                                    // Lưu thông tin người dùng với URL ảnh
-                                    saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
+                        com.ph32395.staynow.Utils.ImageUploader imageUploader = new com.ph32395.staynow.Utils.ImageUploader();
+                        assert user != null;
+                        imageUploader.uploadImage(avatarUri, user.getUid(), new com.ph32395.staynow.Utils.ImageUploader.UploadCallback() {
+                            @Override
+                            public void onSuccess(String imageUrl) {
+                                // Lưu thông tin người dùng với URL ảnh
+                                saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
-                                }
+                            }
 
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Log.d("OTP", "Lỗi tải ảnh: " + e.getMessage());
-                                }
-                            });
-                            //lấy token request lên server
-                            proceedToOtpActivity(user);
-
+                            @Override
+                            public void onFailure(Exception e) {
+                                Log.d("OTP", "Lỗi tải ảnh: " + e.getMessage());
+                            }
+                        });
+                        //lấy token request lên server
+                        proceedToOtpActivity(user);
 
 
                     } else {
@@ -231,50 +233,37 @@ public class DangKy extends AppCompatActivity {
                 });
     }
 
-    //hàm gửi token đến server
-    private void sendTokenToServer(String token) {
-        OkHttpClient client = new OkHttpClient();
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("idToken", token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        RequestBody body = RequestBody.create(jsonObject.toString(), MediaType.get("application/json; charset=utf-8"));
-
-        Request request = new Request.Builder()
-                .url(Constants.URL_SERVER_QUYET + "/verify-token") // API endpoint cho xác minh
-                .post(body)
-                .build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() -> Log.d("OTP", "Lỗi kết nối: " + e.getMessage()));
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    runOnUiThread(() -> Log.d("OTP", "Xác minh token thành công"));
-                } else {
-                    runOnUiThread(() -> Log.d("OTP", "Xác minh token thất bại"));
-                }
-            }
-        });
-    }
 
     // Hàm xử lý chuyển sang OTP Activity
     private void proceedToOtpActivity(FirebaseUser user) {
+        Toast.makeText(this, "Đang xác minh tài khoản, đợi chút nha!", Toast.LENGTH_SHORT).show();
         user.getIdToken(true).addOnCompleteListener(tokenTask -> {
             if (tokenTask.isSuccessful()) {
                 String token = tokenTask.getResult().getToken();
-                assert token != null;
-                sendTokenToServer(token);
+                if (token != null) {
+                    String url = Constants.URL_SERVER_QUYET + "/" + Constants.ENDPOINT_VERIFY_TOKEN;
+                    TokenService.INSTANCE.sendTokenToServer(token, url, new TokenService.TokenCallback() {
+                        @Override
+                        public void onSuccess() {
+                            runOnUiThread(() -> {
 
-                Intent intent = new Intent(DangKy.this, OTPActivity.class);
-                intent.putExtra("uid", user.getUid());
-                intent.putExtra("email", user.getEmail());
-                startActivity(intent);
+                                Intent intent = new Intent(DangKy.this, OTPActivity.class);
+                                intent.putExtra("uid", user.getUid());
+                                intent.putExtra("email", user.getEmail());
+                                startActivity(intent);
+
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull String errorMessage) {
+                            runOnUiThread(() -> {
+                                Toast.makeText(DangKy.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            });
+                        }
+                    });
+                }
+
             } else {
                 Log.d("OTP", "Lỗi lấy token: " + Objects.requireNonNull(tokenTask.getException()).getMessage());
             }
@@ -309,8 +298,8 @@ public class DangKy extends AppCompatActivity {
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
 
+                                                assert loaiTaiKhoan != null;
                                                 if (daXacThuc) {
-                                                    assert loaiTaiKhoan != null;
                                                     Intent intent;
                                                     if (!loaiTaiKhoan.equals("ChuaChon")) {
                                                         intent = new Intent(DangKy.this, MainActivity.class);
@@ -319,8 +308,9 @@ public class DangKy extends AppCompatActivity {
                                                     }
                                                     startActivity(intent);
                                                 } else {
-                                                    Intent intent = new Intent(DangKy.this, OTPActivity.class);
-                                                    startActivity(intent);
+                                                    // nếu tài khoản chưa xác thực
+                                                    proceedToOtpActivity(user);
+
                                                 }
 
                                             } else {

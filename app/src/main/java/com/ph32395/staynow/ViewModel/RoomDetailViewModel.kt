@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.toObject
 import com.ph32395.staynow.Model.ChiTietThongTinModel
 import com.ph32395.staynow.Model.NoiThatModel
 import com.ph32395.staynow.Model.PhiDichVuModel
@@ -31,6 +30,11 @@ class RoomDetailViewModel : ViewModel() {
     private val _userInfo = MutableLiveData<Pair<String, String>>()
     val userInfo: LiveData<Pair<String, String>> get() = _userInfo
 
+    // paste
+
+    private val _userId = MutableLiveData<Pair<String, String>>()
+    val userId: LiveData<Pair<String, String>> get() = _userId
+
     private val _roomStatus = MutableLiveData<String>()
     val roomStatus: LiveData<String> get() = _roomStatus
 
@@ -48,6 +52,10 @@ class RoomDetailViewModel : ViewModel() {
 
     private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> get() = _isLoading
+
+    // LiveData cho thông tin tiền cọc
+    private val _tienCocInfo = MutableLiveData<ChiTietThongTinModel?>()
+    val tienCocInfo: LiveData<ChiTietThongTinModel?> = _tienCocInfo
 
 //    lay danh sach tien nghi
     fun fetchTienNghi(maPhongTro: String) {
@@ -107,6 +115,7 @@ class RoomDetailViewModel : ViewModel() {
             .addOnSuccessListener { document ->
                 val list = document.mapNotNull { it.toObject(ChiTietThongTinModel::class.java) }
                 _chiTietList.value = list
+                updateTienCocInfo()
             }
             .addOnFailureListener { exception ->
                 Log.e("RoomDetailViewModel", "Lỗi khi lấy dữ liệu chi tiết thông tin", exception)
@@ -184,9 +193,20 @@ class RoomDetailViewModel : ViewModel() {
                     dataSnapshot?.let {
                         val anhDaiDien = it.child("anh_daidien").value as? String ?: ""
                         val hoTen = it.child("ho_ten").value as? String ?: ""
+                        val ma_NguoiDung = room.Ma_nguoidung
+                        _userId.value = Pair(ma_NguoiDung,hoTen)
                         _userInfo.value = Pair(anhDaiDien, hoTen)
                     }
                 }
         }
+    }
+    // Hàm lấy thông tin tiền cọc từ danh sách chi tiết
+    private fun updateTienCocInfo() {
+        _tienCocInfo.value = _chiTietList.value?.find { it.ten_thongtin == "Tiền cọc" }
+    }
+
+    // Hàm public để lấy giá trị tiền cọc
+    fun getTienCocValue(): Double {
+        return _tienCocInfo.value?.so_luong_donvi?.toDouble() ?: 0.0
     }
 }

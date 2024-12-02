@@ -79,6 +79,7 @@
             android:id="@+id/edtOtp1"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:imeOptions="actionNext"
             android:layout_margin="4dp"
             android:background="@drawable/otp_input_background"
             android:gravity="center"

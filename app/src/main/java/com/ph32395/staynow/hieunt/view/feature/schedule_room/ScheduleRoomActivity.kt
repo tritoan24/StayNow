@@ -157,8 +157,6 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                             data?.let {
                                 renterNameByGetInfo = it.child(HO_TEN).value as? String ?: ""
                                 renterPhoneNumberByGetInfo = it.child(SO_DIEN_THOAI).value as? String ?: ""
-                                Log.d("getAllInfo", "renterName : $renterNameByGetInfo")
-                                Log.d("getAllInfo", "renterPhoneNumber : $renterPhoneNumberByGetInfo")
                             }
                         }
                         .addOnFailureListener {
@@ -177,8 +175,6 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                                 data?.let {
                                     tenantNameByGetInfo = data.child(HO_TEN).value as? String ?: ""
                                     tenantPhoneNumberByGetInfo = data.child(SO_DIEN_THOAI).value as? String ?: ""
-                                    Log.d("getAllInfo", "tenantName : $tenantNameByGetInfo")
-                                    Log.d("getAllInfo", "tenantPhoneNumber : $tenantPhoneNumberByGetInfo")
                                 }
                             }.addOnFailureListener {
                                 isSuccess = false
@@ -188,6 +184,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     isSuccess = false
                 }
             }
+
             awaitAll(jobCallInfoRenter, jobCallInfoTenant)
             withContext(Dispatchers.Main) {
                 onCompletion.invoke(isSuccess)

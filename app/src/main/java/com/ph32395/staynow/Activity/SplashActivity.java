@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.ph32395.staynow.DangKiDangNhap.DangNhap;
+import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.ManGioiThieu.OnboardingActivity;
 import com.ph32395.staynow.R;
@@ -21,6 +23,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        //đánh thức server ngay khi run
+        ServerWakeUpService.INSTANCE.wakeUpServer();
 
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         boolean isFirstTime = prefs.getBoolean(FIRST_TIME_KEY, true);

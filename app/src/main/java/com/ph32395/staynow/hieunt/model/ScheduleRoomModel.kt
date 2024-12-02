@@ -18,4 +18,5 @@ data class ScheduleRoomModel (
     @PropertyName("ghi_chu") var notes: String = "",
     @PropertyName("trang_thai") var status: Int = 0,
     @PropertyName("chu_tro_thay_doi_lich") var changedScheduleByRenter: Boolean = false,
-)
+
+    )
