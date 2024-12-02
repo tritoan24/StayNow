@@ -17,9 +17,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/find_house"
+        android:icon="@drawable/logo_app"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/find_house"
+        android:roundIcon="@drawable/logo_app"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow">
         <activity
@@ -30,7 +30,8 @@
             android:exported="false" />
         <activity
             android:name=".BaoMat.ThongTinNguoiDung"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -62,7 +63,17 @@
             android:exported="false" />
         <activity
             android:name=".Activity.RoomDetailActivity"
-            android:exported="false" />
+            android:exported="true"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="staynowshare.page.link" />
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
             android:exported="false" />
