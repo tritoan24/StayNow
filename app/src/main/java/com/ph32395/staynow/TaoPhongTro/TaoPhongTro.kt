@@ -161,7 +161,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
         // Logic khi nhấn nút "Lưu"
         binding.addRoomButton.setOnClickListener {
-            TrangThaiPhong = true
+            TrangThaiPhong = false
             // Gọi hàm lưu phòng với trạng thái là "Lưu"
             saveRoomToFirestore(isSaved = true, trangThaiPhong = TrangThaiPhong)
         }

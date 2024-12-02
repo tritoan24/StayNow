@@ -7,11 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.firebase.auth.FirebaseAuth
-import com.ph32395.staynow.Model.LoaiPhongTro
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.ph32395.staynow.Model.ChiTietThongTin
+import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.Model.PhongTroModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ class HomeViewModel : ViewModel() {
     private val _imageList = MutableLiveData<List<SlideModel>>()
     val imageList: LiveData<List<SlideModel>> get() = _imageList
 
-//    LiveData lay phong tro theo trang thai
+    //    LiveData lay phong tro theo trang thai
     private val _phongDaDang = MutableLiveData<List<Pair<String, PhongTroModel>>>()
     val phongDaDang: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaDang
 
@@ -59,7 +59,7 @@ class HomeViewModel : ViewModel() {
         _selectedLoaiPhongTro.value = idLoaiPhong
     }
 
-//    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
     fun loadRoomByStatus() {
         val maNguoiDung = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         firestore.collection("PhongTro")
@@ -85,7 +85,8 @@ class HomeViewModel : ViewModel() {
 //                    Phan loai phong tro theo trang thai
                     _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
                     _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
-                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                    _phongChoDuyet.value =
+                        allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
                     _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
                     _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
 
@@ -93,13 +94,15 @@ class HomeViewModel : ViewModel() {
             }
     }
 
-//    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
+    //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
     fun updateRoomStatus(roomId: String, trangThaiDuyet: String, trangThaiLuu: Boolean) {
         firestore.collection("PhongTro").document(roomId)
-            .update(mapOf(
-                "Trang_thaiduyet" to trangThaiDuyet,
-                "Trang_thailuu" to trangThaiLuu
-            ))
+            .update(
+                mapOf(
+                    "Trang_thaiduyet" to trangThaiDuyet,
+                    "Trang_thailuu" to trangThaiLuu
+                )
+            )
             .addOnSuccessListener {
                 Log.d("HomeViewModel", "Room status updated successfully")
             }
@@ -108,12 +111,14 @@ class HomeViewModel : ViewModel() {
             }
     }
 
-//    Doi trang thai de huy phong
+    //    Doi trang thai de huy phong
     fun updateRoomStatusHuyPhong(roomId: String, trangThaiDuyet: String) {
         firestore.collection("PhongTro").document(roomId)
-            .update(mapOf(
-                "Trang_thaiduyet" to trangThaiDuyet
-            ))
+            .update(
+                mapOf(
+                    "Trang_thaiduyet" to trangThaiDuyet
+                )
+            )
             .addOnSuccessListener {
                 Log.d("HomeViewModel", "Room status updated successfully")
             }
@@ -162,7 +167,7 @@ class HomeViewModel : ViewModel() {
     }
 
 
-//    lay anh tu Store de hien thi len banner
+    //    lay anh tu Store de hien thi len banner
     fun loadImagesFromFirebase() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -206,15 +211,19 @@ class HomeViewModel : ViewModel() {
                         loaiPhongSnapshot?.documents?.firstOrNull()?.getString("Ten_loaiphong")
                     if (tenLoaiPhong != null) {
                         val roomsRef = firestore.collection("PhongTro")
-                        val query = if (tenLoaiPhong == "Tất cả") roomsRef.whereEqualTo(
-                            "Trang_thaiduyet",
-                            "DaDuyet"
-                        ) else roomsRef.whereEqualTo(
-                            "Ma_loaiphong", maloaiPhongTro
-                        ).whereEqualTo(
-                            "Trang_thaiduyet",
-                            "DaDuyet"
-                        )
+                        val query = if (tenLoaiPhong == "Tất cả")
+                            roomsRef.whereEqualTo(
+                                "Trang_thaiduyet",
+                                "DaDuyet"
+                            ).whereEqualTo("Trang_thaiphong", false)
+                        else {
+                            roomsRef.whereEqualTo(
+                                "Ma_loaiphong", maloaiPhongTro
+                            ).whereEqualTo(
+                                "Trang_thaiduyet",
+                                "DaDuyet"
+                            ).whereEqualTo("Trang_thaiphong", false)
+                        }
                         query.addSnapshotListener { snapshot, exception ->
 
                             if (exception != null) {
@@ -314,7 +323,8 @@ class HomeViewModel : ViewModel() {
                         }
 
                         // Nếu có thay đổi thông tin diện tích, cập nhật lại vào phòng trọ
-                        val chiTiet = documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
+                        val chiTiet =
+                            documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
                         chiTiet?.let {
                             room.Dien_tich = it.so_luong_donvi
                         }
@@ -365,7 +375,8 @@ class HomeViewModel : ViewModel() {
                         }
 
                         // Nếu có thay đổi thông tin diện tích, cập nhật lại vào phòng trọ
-                        val chiTiet = documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
+                        val chiTiet =
+                            documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
                         chiTiet?.let {
                             room.Dien_tich = it.so_luong_donvi
                         }

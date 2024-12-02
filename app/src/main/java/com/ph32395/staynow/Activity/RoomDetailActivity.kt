@@ -154,11 +154,8 @@ class RoomDetailActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-//            layoutManager = GridLayoutManager(context, 4)
+            layoutManager = GridLayoutManager(context, 4)
             adapter = chiTietAdapter
-
-            // Thêm SpacingItemDecoration để tạo khoảng cách đều giữa các item
-            addItemDecoration(SpacingItemDecoration(16))  // 16dp là khoảng cách giữa các item
         }
     }
 
