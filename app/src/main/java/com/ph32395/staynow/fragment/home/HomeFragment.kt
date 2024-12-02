@@ -26,6 +26,7 @@ import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.ThongBao.NotificationActivity
 import com.ph32395.staynow.ThongBao.NotificationViewModel
 import com.ph32395.staynow.databinding.FragmentHomeBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
@@ -83,13 +84,13 @@ class HomeFragment : Fragment() {
             refreshData()
         }
 
-        binding.viewLocationSearch.searchLayout.setOnClickListener {
+        binding.viewLocationSearch.searchLayout.tap {
             Toast.makeText(context, "Tính năng đang chờ phát triển", Toast.LENGTH_SHORT).show()
         }
 
 
         //màn hình thông báo tritoancode
-        binding.fNotification.setOnClickListener {
+        binding.fNotification.tap {
             startActivity(Intent(context, NotificationActivity::class.java))
         }
         //đếm số thông báo chưa đọc

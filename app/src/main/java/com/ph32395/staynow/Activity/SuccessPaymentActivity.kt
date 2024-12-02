@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ActivitySuccessPaymentBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -30,8 +31,10 @@ class SuccessPaymentActivity : AppCompatActivity() {
         val contract = intent.getSerializableExtra("itemData") as? HopDong
 
         binding.tvInvoiceId.text = "ID hợp đồng: " + contract!!.maHopDong
-        binding.tvLandlordInfo.text = "Người cho thuê: " + contract.chuNha.hoTen
-        binding.tvTenantInfo.text = "Người thuê: " + contract.nguoiThue.hoTen
+        binding.tvLandlordInfo.text =contract.chuNha.hoTen
+        binding.tvLandlordPhone.text =contract.chuNha.soDienThoai
+        binding.tvTenantInfo.text = contract.nguoiThue.hoTen
+        binding.tvTenantPhone.text = contract.nguoiThue.soDienThoai
         binding.tvNameRoom.text = "Tên phòng: " + contract.thongtinphong.tenPhong
         binding.tvAmount.text = "Tổng tiền: " + formatCurrency(contract.hoaDonHopDong.tongTien)
         binding.tvAmountRoom.text =
@@ -44,7 +47,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue
         binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
 
-        binding.btnGoHome.setOnClickListener {
+        binding.btnGoHome.tap {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -60,7 +63,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
     }
 
     private fun formatServerTime(serverTime: String): String {
-        val date = Date(serverTime)
+        val date = Date(serverTime.toLong())
 
         // Định dạng ngày giờ theo chuẩn mong muốn
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())

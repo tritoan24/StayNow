@@ -35,19 +35,7 @@ import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 import com.ph32395.staynow.utils.Constants;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.Objects;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class DangKy extends AppCompatActivity {
 
@@ -65,8 +53,6 @@ public class DangKy extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dang_ky);
-
-        ServerWakeUpService.INSTANCE.wakeUpServer();
 
         // Khởi tạo Firebase Auth và Realtime Database
         mAuth = FirebaseAuth.getInstance();
@@ -171,8 +157,6 @@ public class DangKy extends AppCompatActivity {
         // Đăng ký sự kiện cho nút "Đăng ký bằng Google"
         registerButtonWithGoogle.setOnClickListener(view -> {
             //đánh thức server mỗi lần run
-            ServerWakeUpService.INSTANCE.wakeUpServer();
-
             Intent signInIntent = registerWithGoogle.getGoogleSignInClient().getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN_REGISTER);
         });

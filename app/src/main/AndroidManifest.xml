@@ -31,7 +31,7 @@
             android:name=".Activity.SuccessPaymentActivity"
             android:exported="true" />
         <activity
-            android:name=".Activity.ThanhToanActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="true" />
         <activity
             android:name=".ThongBao.NotificationActivity"
@@ -105,7 +105,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".Activity.ChoosePaymentActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -127,6 +127,9 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TaoHopDong.TaoHopDong"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"

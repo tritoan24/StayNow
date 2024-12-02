@@ -3,11 +3,9 @@ package com.ph32395.staynow.payment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
-import com.ph32395.staynow.Activity.ThanhToanActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

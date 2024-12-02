@@ -137,7 +137,7 @@ class HopDongViewModel {
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
             "ngayThanhToan" to contract.ngayThanhToan,
-            "thongTinPhong" to createRoomInfoMap(contract.thongtinphong),
+            "thongtinphong" to createRoomInfoMap(contract.thongtinphong),
             "maPhong" to contract.thongtinphong.maPhongTro,
             "chuNha" to createLandlordInfoMap(contract.chuNha),
             "nguoiThue" to createTenantInfoMap(contract.nguoiThue),

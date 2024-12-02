@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
-import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService
+import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
+import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
 import com.ph32395.staynow.databinding.ActivityBillContractBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
 import com.ph32395.staynow.payment.SocketManager
 import com.ph32395.staynow.utils.Constants
@@ -33,7 +36,6 @@ class BillContractActivity : AppCompatActivity() {
         binding = ActivityBillContractBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //đánh thức server
-        ServerWakeUpService.wakeUpServer()
         // Khởi tạo socket
         socketManager = SocketManager()
         socketManager.initSocket(Constants.URL_PAYMENT)
@@ -49,12 +51,12 @@ class BillContractActivity : AppCompatActivity() {
 
         updateUI(invoice!!, contract!!)
 
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.tap {
             onBackPressed()
             finish()
         }
 
-        binding.btnThanhtoan.setOnClickListener {
+        binding.btnThanhtoan.tap {
             Toast.makeText(this, "Đang chuyển hướng", Toast.LENGTH_SHORT).show()
             val orderProcessor = OrderProcessor(this)
             orderProcessor.checkAndCreateOrder(
@@ -92,14 +94,14 @@ class BillContractActivity : AppCompatActivity() {
         binding.tvRoomDeposit.text = formatCurrency(invoice.tienCoc)
 
         // Phí cố định
-//        val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
-//        binding.rcvFixedFees.adapter = fixedFeeAdapter
-//        binding.rcvFixedFees.layoutManager = LinearLayoutManager(this)
+        val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
+        binding.rcvFixedFees.adapter = fixedFeeAdapter
+        binding.rcvFixedFees.layoutManager = LinearLayoutManager(this)
 
         // Phí biến động
-//        val variableFeeAdapter = VariableFeeAdapter(invoice.phiBienDong)
-//        binding.rcvVariableFees.adapter = variableFeeAdapter
-//        binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
+        val variableFeeAdapter = VariableFeeAdapter(invoice.phiBienDong)
+        binding.rcvVariableFees.adapter = variableFeeAdapter
+        binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
 
     }
 

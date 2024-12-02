@@ -14,6 +14,7 @@ import com.ph32395.staynow.TaoHopDong.ContractStatus
 import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ItemContractBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -91,7 +92,7 @@ class ContractAdapter(
                 ContractStatus.PENDING -> {
                     tvRemainingTime.visibility = View.GONE
                     llBtn.visibility = View.VISIBLE
-                    btnXacNhan.setOnClickListener {
+                    btnXacNhan.tap {
 
                         val intent = Intent(itemView.context, BillContractActivity::class.java)
 
@@ -100,7 +101,7 @@ class ContractAdapter(
 
                         itemView.context.startActivity(intent)
                     }
-                    btnCancel.setOnClickListener {
+                    btnCancel.tap {
                         onStatusUpdated(
                             contract.maHopDong,
                             ContractStatus.TERMINATED
@@ -119,8 +120,13 @@ class ContractAdapter(
             }
 
             // sự kiện ấn vào item
-            itemView.setOnClickListener {
+            itemView.tap {
+                val intent = Intent(itemView.context, BillContractActivity::class.java)
 
+                intent.putExtra("hoaDonHopDong", contract.hoaDonHopDong)
+                intent.putExtra("hopDong", contract)
+
+                itemView.context.startActivity(intent)
             }
 
         }

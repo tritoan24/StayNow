@@ -541,24 +541,6 @@ class TaoHopDong : AppCompatActivity() {
         )
         viewModelHopDong.saveContract(contract,idLichhen)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModelHopDong.navigateToContractDetail.collect { contractId ->
-                    contractId?.let {
-                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
-                        intent.putExtra("idHopDong", it)
-                        startActivity(intent)
-                        // Reset giá trị sau khi chuyển màn
-                        viewModelHopDong.resetNavigation()
-                        // Đóng màn hình hiện tại sau khi chuyển màn
-                        finish()
-                    }
-                }
-            }
-        }
-
-
-
     }
 
     private fun initViews() {

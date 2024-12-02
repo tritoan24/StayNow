@@ -17,6 +17,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import java.util.Date
 
 class PhongTroAdapter(
@@ -101,7 +102,7 @@ class PhongTroAdapter(
 
 
 //            Xu ly su kien khi click item sang man chi tiet
-            itemView.setOnClickListener {
+            itemView.tap {
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
