@@ -22,8 +22,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
 
+
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -137,5 +138,7 @@ dependencies {
         "exclude" to listOf<String>()
     )))
 
+    implementation("com.itextpdf:itext7-core:7.2.3")
+    implementation ("androidx.appcompat:appcompat:1.7.0")
 
 }

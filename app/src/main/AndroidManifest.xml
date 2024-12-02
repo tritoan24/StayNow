@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/logoapp"
@@ -22,6 +21,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
+<!--        <provider-->
+<!--            android:name="androidx.core.content.FileProvider"-->
+<!--            android:authorities="com.ph32395.staynow.fileprovider"-->
+<!--            android:exported="false"-->
+<!--            android:grantUriPermissions="true">-->
+<!--            <meta-data-->
+<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
+<!--                android:resource="@xml/file_paths" />-->
+<!--        </provider>-->
+
+        <activity
+            android:name=".Activity.SplashActivity"
+            android:exported="false" />
         <activity
             android:name=".TaoHopDong.ChiTietHoaDon"
             android:exported="false" />
@@ -104,7 +116,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".TaoHopDong.ChiTietHopDong"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

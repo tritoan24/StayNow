@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.ImageButton
@@ -110,6 +111,7 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var txtNgayThanhToan: TextView
     private lateinit var editorDieuKhoan: RichEditor
     private lateinit var note: TextView
+    private lateinit var btnBack: Button
 
     private lateinit var maPhongTro: String
     private lateinit var maNguoiThue: String
@@ -326,6 +328,11 @@ class TaoHopDong : AppCompatActivity() {
             editorDieuKhoan.setBullets()
         }
 
+        //back button
+        btnBack.setOnClickListener {
+            finish()
+        }
+        // Lưu hợp đồng
         btnSave.setOnClickListener {
             if(validateContract()) {
                 createAndSaveContract()
@@ -600,6 +607,9 @@ private fun observeViewModel() {
 
         // Lưu hợp đồng
         btnSave = findViewById(R.id.btnSaveContract)
+
+        // Quay lại
+        btnBack = findViewById(R.id.btnBack)
 
         // Ngày thanh toán
         txtNgayThanhToan = findViewById(R.id.editTextNgayThanhToan)

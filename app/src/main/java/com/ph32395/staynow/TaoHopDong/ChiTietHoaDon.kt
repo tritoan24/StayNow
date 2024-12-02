@@ -1,6 +1,7 @@
 package com.ph32395.staynow.TaoHopDong
 
 import ContractViewModel
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -43,6 +44,13 @@ class ChiTietHoaDon : AppCompatActivity() {
 
         // Sự kiện quay lại
         binding.btnBack.setOnClickListener { finish() }
+        // Sự kiện xem hợp đồng
+        binding.btnContract.setOnClickListener {
+            //chuyển id hợp đồng sao màn hình hợp đồng
+            val intent = Intent(this, HopDong::class.java)
+            intent.putExtra("idHopDong", idHopDong)
+            startActivity(intent)
+        }
     }
 
     private fun updateUI(invoice: Invoice) {

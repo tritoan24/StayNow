@@ -480,69 +480,97 @@
                 android:layout_gravity="center"
                 android:background="@drawable/cardview_border" />
 
-            <androidx.constraintlayout.utils.widget.MotionLabel
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Ngày thanh toán hàng tháng"
-                android:textColor="@color/purple"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/editTextNgayThanhToan"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cardview_border"
-                android:inputType="number" />
+                android:layout_marginBottom="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxStrokeColor="@color/purple"
+                app:hintTextColor="@color/purple">
 
-            <androidx.constraintlayout.utils.widget.MotionLabel
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="chỉ số điện hiện tại: "
-                android:textColor="@color/purple"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextNgayThanhToan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ngày thanh toán hàng tháng"
+                    android:inputType="number"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/purple" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <EditText
-                android:id="@+id/editTextSoDien"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cardview_border"
-                android:inputType="number" />
+                android:orientation="horizontal"
+                android:layout_marginBottom="8dp">
 
-            <androidx.constraintlayout.utils.widget.MotionLabel
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="chỉ số nước hiện tại: "
-                android:textColor="@color/purple"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxStrokeColor="@color/purple"
+                    app:hintTextColor="@color/purple">
 
-            <EditText
-                android:id="@+id/editTextSoNuoc"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextSoDien"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Chỉ số điện"
+                        android:inputType="number"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/purple" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxStrokeColor="@color/purple"
+                    app:hintTextColor="@color/purple">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextSoNuoc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Chỉ số nước"
+                        android:inputType="number"
+                        android:textColor="@android:color/black"
+                        android:textColorHint="@color/purple" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/cardview_border"
-                android:inputType="number" />
+                android:layout_marginBottom="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxStrokeColor="@color/purple"
+                app:hintTextColor="@color/purple">
 
-            <androidx.constraintlayout.utils.widget.MotionLabel
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="số người ở: "
-                android:textColor="@color/purple"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/editTextSoNguoi"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/cardview_border"
-                android:inputType="number" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextSoNguoi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Số người ở"
+                    android:inputType="number"
+                    android:textColor="@android:color/black"
+                    android:textColorHint="@color/purple" />
+            </com.google.android.material.textfield.TextInputLayout>
             <!--ListThongTin-->
             <androidx.constraintlayout.utils.widget.MotionLabel
                 android:layout_width="wrap_content"
@@ -662,17 +690,33 @@
                 android:layout_marginTop="16dp"
                 android:background="@drawable/custom_edittext"
                 android:padding="8dp" />
-
-            <!-- Nút lưu -->
-            <Button
-                android:id="@+id/btnSaveContract"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@drawable/bg_button"
-                android:text="Lưu hợp đồng"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp">
+                <Button
+                    android:id="@+id/btnBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button"
+                    android:text="Quay Lại"
 
-                />
+                    />
+                <!-- Nút lưu -->
+                <Button
+                    android:id="@+id/btnSaveContract"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button"
+                    android:text="Xác nhận"
+
+                    />
+            </LinearLayout>
+
+
+
 
 
         </LinearLayout>
