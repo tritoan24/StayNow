@@ -5,4 +5,6 @@ data class NoiThat(
     val Ten_noithat: String,
     val Icon_noithat: String,
     val Status: Boolean,
-)
+) {
+    constructor() : this("", "", "", false)
+}

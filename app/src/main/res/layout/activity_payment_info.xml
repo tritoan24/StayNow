@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Tiêu đề -->
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Khai báo thông tin thanh toán"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="16dp" />
+
+        <!-- Nhập số điện thoại ZaloPay -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Số điện thoại liên kết ZaloPay"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập số điện thoại"
+            android:inputType="phone"
+            android:padding="12dp"
+            android:background="@drawable/cardview_border"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Nhập tên tài khoản ZaloPay -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên tài khoản ZaloPay"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etAccountName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nhập tên tài khoản"
+            android:inputType="text"
+            android:padding="12dp"
+            android:background="@drawable/cardview_border"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Upload mã QR -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mã QR ZaloPay (tùy chọn)"
+            android:textSize="16sp"
+            android:paddingBottom="8dp" />
+
+        <ImageView
+            android:id="@+id/ivQrCode"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/rounded_background"
+            android:contentDescription="Mã QR"
+            android:scaleType="centerInside"
+            android:src="@drawable/qrcode"
+            android:layout_marginTop="36dp"
+            android:padding="20dp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/btnUploadQr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tải mã QR lên"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/bg_button_detail"
+            />
+
+
+
+        <!-- Nút lưu thông tin -->
+        <Button
+            android:id="@+id/btnSavePaymentInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lưu thông tin"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:background="@drawable/bg_button_detail"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,9 +9,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -21,11 +24,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
+import com.ph32395.staynow.BaoMat.PhanHoi
+import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
+import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
-import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 
@@ -36,12 +41,16 @@ class ProfileFragment : Fragment() {
     private lateinit var profileImageView: ImageView
     private lateinit var logoutButton: LinearLayout
     private lateinit var llScheduleRoom: LinearLayout
+    private lateinit var llContract: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
+    private lateinit var nextUpdate: ImageButton
+    private lateinit var nextPhanhoi: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
 
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,7 +63,10 @@ class ProfileFragment : Fragment() {
         profileImageView = view.findViewById(R.id.profile_image)
         logoutButton = view.findViewById(R.id.LogoutButton)
         nextDoiMK = view.findViewById(R.id.next_caidat)
+        nextUpdate = view.findViewById(R.id.next_UpdateInfor)
+        nextPhanhoi = view.findViewById(R.id.phanhoiButton)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
+        llContract = view.findViewById(R.id.ll_hopdong)
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -97,11 +109,14 @@ class ProfileFragment : Fragment() {
                     }
                     val accountType = snapshot.child("loai_taikhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
                     val registerLayout = view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
+                    val scheduleRoom = view.findViewById<LinearLayout>(R.id.ll_schedule_room)
                     if (registerLayout != null) {
                         if ("ChuNha".equals(accountType)) {
                             registerLayout.visibility = View.GONE
+                            scheduleRoom.visibility = View.GONE
                         } else {
                             registerLayout.visibility = View.VISIBLE
+                            scheduleRoom.visibility = View.VISIBLE
                         }
                     } else {
                         Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.");
@@ -128,13 +143,24 @@ class ProfileFragment : Fragment() {
             activity?.finish()
         }
 
+        nextUpdate.setOnClickListener{
+            startActivity(Intent(requireActivity(), ThongTinNguoiDung::class.java))
+            requireActivity().finish()
+        }
         nextDoiMK.setOnClickListener {
             startActivity(Intent(requireActivity(),CaiDat::class.java))
+            requireActivity().finish()
+        }
+        nextPhanhoi.setOnClickListener {
+            startActivity(Intent(requireActivity(), PhanHoi::class.java))
             requireActivity().finish()
         }
 
         llScheduleRoom.tap {
             launchActivity(TenantManageScheduleRoomActivity::class.java)
+        }
+        llContract.tap {
+            replaceFragment(ContractFragment())
         }
         return view
     }
@@ -152,6 +178,23 @@ class ProfileFragment : Fragment() {
                 }
             }
             userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+        }
+    }
+    private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
+        if (context is androidx.fragment.app.FragmentActivity) {
+            val activity = context as androidx.fragment.app.FragmentActivity
+
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment) // fragment_container là ID của ViewGroup chứa Fragment
+                .addToBackStack(null) // Để quay lại màn hình trước
+                .commit()
+
+            // Ẩn Bottom Navigation
+            if (activity is MainActivity) {
+                activity.setBottomNavigationVisibility(false)
+            }
+        } else {
+            Toast.makeText(context, "Không thể chuyển Fragment", Toast.LENGTH_SHORT).show()
         }
     }
 

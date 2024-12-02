@@ -22,4 +22,5 @@
     <style name="BaseBottomSheetDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
 </resources>

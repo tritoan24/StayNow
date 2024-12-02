@@ -140,7 +140,6 @@ class HomeViewModel : ViewModel() {
     }
 
 
-//    lay loai phong
     fun loadLoaiPhongTro() {
         _isLoading.value = true  // Bắt đầu tải dữ liệu, set loading = true
         viewModelScope.launch(Dispatchers.IO) {
