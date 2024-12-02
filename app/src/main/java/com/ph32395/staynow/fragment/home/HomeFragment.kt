@@ -11,7 +11,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieAnimationView
@@ -22,11 +25,17 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.databinding.FragmentHomeBinding
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
+import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view.feature.notification.NotificationActivity
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow.hieunt.widget.gone
 import com.ph32395.staynow.hieunt.widget.visible
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -35,6 +44,7 @@ class HomeFragment : Fragment() {
     private lateinit var swipeFresh: SwipeRefreshLayout
     private lateinit var imageSlider: ImageSlider
     private lateinit var loadingIndicator: LottieAnimationView
+    private lateinit var notificationViewModel: NotificationViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,11 +54,24 @@ class HomeFragment : Fragment() {
         swipeFresh = binding.swipeRefreshLayout
         imageSlider = binding.imageSlider
         loadingIndicator = binding.loadingIndicator
-
-
         // Load dữ liệu ban đầu
         loadData()
-
+        notificationViewModel = ViewModelProvider(this,ViewModelFactory(requireContext()))[NotificationViewModel::class.java]
+        lifecycleScope.launch (Dispatchers.IO){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                notificationViewModel.notificationsState.collect {
+                    val countNotificationNotSeen = async { it.filter { notificationModel -> !notificationModel.isRead }.size }.await()
+                    withContext(Dispatchers.Main){
+                        if (countNotificationNotSeen > 0){
+                            binding.notificationBadge.visible()
+                            binding.notificationBadge.text = countNotificationNotSeen.toString()
+                        } else {
+                            binding.notificationBadge.gone()
+                        }
+                    }
+                }
+            }
+        }
 
         // Quan sát LiveData từ ViewModel
         homeViewModel.loaiPhongTroList.observe(viewLifecycleOwner) { loaiPhongTroList ->
@@ -136,17 +159,6 @@ class HomeFragment : Fragment() {
         Handler(Looper.getMainLooper()).postDelayed({
             swipeFresh.isRefreshing = false
         }, 0)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val countNotificationNotSeen = AppDatabase.getInstance(requireContext()).notificationDao().countNotificationNotSeen()
-        if (countNotificationNotSeen > 0){
-            binding.notificationBadge.visible()
-            binding.notificationBadge.text = countNotificationNotSeen.toString()
-        } else {
-            binding.notificationBadge.gone()
-        }
     }
 
 }

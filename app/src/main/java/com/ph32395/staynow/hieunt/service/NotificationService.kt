@@ -30,7 +30,11 @@ class NotificationService : Service() {
     private lateinit var notificationManager: NotificationManager
     private val serviceScope = CoroutineScope(Dispatchers.IO)
     private val dao by lazy { AppDatabase.getInstance(this@NotificationService).notificationDao() }
-    private val realtimeNotification by lazy { FirebaseDatabase.getInstance().reference.child(THONG_BAO) }
+    private val realtimeNotification by lazy {
+        FirebaseDatabase.getInstance().reference.child(
+            THONG_BAO
+        )
+    }
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
@@ -39,7 +43,15 @@ class NotificationService : Service() {
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        startForeground(2004, getNotification(NotificationModel(title = "Notification Manager", message = "Notification service is running...")))
+        startForeground(
+            2004,
+            getNotification(
+                NotificationModel(
+                    title = "Notification Manager",
+                    message = "Notification service is running..."
+                )
+            )
+        )
     }
 
     private fun createNotificationChannel() {
@@ -83,13 +95,16 @@ class NotificationService : Service() {
                     for (data in snapshot.children) {
                         data.getValue(NotificationModel::class.java)?.let { notification ->
                             serviceScope.launch {
-                                if (dao.isNotificationExists(notification.timestamp) == 0 && !notification.isPushed){
-                                    updateNotificationIsPushed(notification){ isCompletion ->
-                                        if (isCompletion){
-                                            dao.insertNotification(notification)
-                                            pushNotification(notification)
+                                if (dao.isNotificationExists(notification.timestamp) == 0 && !notification.isPushed) {
+                                    dao.insertNotification(notification)
+                                    pushNotification(notification)
+                                    updateNotificationIsPushed(notification) { isCompletion ->
+                                        if (isCompletion) {
+                                            launch(Dispatchers.Main) {
+                                                Toast.makeText(this@NotificationService, "Thông báo mới", Toast.LENGTH_SHORT).show()
+                                            }
                                         } else {
-                                            launch (Dispatchers.Main){
+                                            launch(Dispatchers.Main) {
                                                 Toast.makeText(this@NotificationService, "Lỗi khi hiển thị thông báo", Toast.LENGTH_SHORT).show()
                                             }
                                         }
@@ -108,27 +123,30 @@ class NotificationService : Service() {
         }
     }
 
-    fun updateNotificationIsPushed(notification: NotificationModel, onCompletion: (Boolean) -> Unit) {
+    fun updateNotificationIsPushed(
+        notification: NotificationModel,
+        onCompletion: (Boolean) -> Unit
+    ) {
         FirebaseAuth.getInstance().currentUser?.uid?.let { userId ->
             val notificationsRef = realtimeNotification.child(userId)
-
             notificationsRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (dataSnapshot in snapshot.children) {
-                        val existingNotification = dataSnapshot.getValue(NotificationModel::class.java)
+                        val existingNotification =
+                            dataSnapshot.getValue(NotificationModel::class.java)
                         if (existingNotification != null && existingNotification.timestamp == notification.timestamp) {
                             val notificationRef = dataSnapshot.ref
                             val updates = mapOf<String, Any>(
                                 IS_PUSHED to true
                             )
-                            notificationRef.updateChildren(updates)
-                                .addOnSuccessListener {
+                            notificationRef.updateChildren(updates).addOnSuccessListener {
                                     onCompletion.invoke(true)
                                     Log.d("NotificationServiceZZZ", "Notification isPushed updated successfully.")
-                                }
+
+                            }
                                 .addOnFailureListener { exception ->
-                                    onCompletion.invoke(false)
-                                    Log.e("NotificationServiceZZZ", "Failed to update isPushed: ${exception.message}")
+                                        onCompletion.invoke(false)
+                                        Log.e("NotificationServiceZZZ", "Failed to update isPushed: ${exception.message}")
                                 }
                         }
                     }
