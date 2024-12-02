@@ -20,7 +20,7 @@
 
         <ImageView
             android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_height="17dp"
             android:src="@drawable/ic_tim_xung_quanh"
             tools:ignore="ContentDescription" />
 
