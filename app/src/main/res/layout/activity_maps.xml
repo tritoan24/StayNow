@@ -1,33 +1,40 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context=".Maps.MapsActivity">
 
+    <!-- Google Map -->
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Thanh tìm kiếm -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
+        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
-
+        >
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="30dp"
+            android:layout_marginStart="10dp"
             android:layout_height="30dp"
             android:src="@drawable/icon_back_search" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:background="@drawable/custom_edittext_search"
-            android:gravity="center_vertical"
+            android:layout_margin="15dp"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:background="@drawable/custom_edittext_search"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="top">
+
+
 
             <AutoCompleteTextView
                 android:id="@+id/autoComplete"
@@ -35,11 +42,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:fontFamily="serif"
                 android:hint="Tìm kiếm......."
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:lines="1"
+                android:completionThreshold="1"
                 android:padding="10dp"
                 android:textSize="11sp" />
 
@@ -63,29 +67,188 @@
                     android:layout_height="17dp"
                     android:src="@drawable/icon_search_white" />
             </LinearLayout>
-
         </LinearLayout>
-
-
     </LinearLayout>
 
-    <androidx.cardview.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
+
+    <!-- Bộ lọc và sắp xếp -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        map:cardCornerRadius="30dp"
-        map:cardElevation="4dp">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal"
+        android:layout_marginTop="80dp"
+        >
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            map:uiRotateGestures="true"
-            map:uiZoomControls="true" />
-    </androidx.cardview.widget.CardView>
+        <Button
+            android:id="@+id/btnKhoangGia"
+            android:layout_width="106dp"
+            android:layout_height="36dp"
+            android:background="@drawable/custom_edittext_khoang_gia"
+            android:text="Khoảng giá"
+            android:textColor="#471BC4"
+            android:textSize="10sp"
+            android:textStyle="italic" />
+
+        <LinearLayout
+            android:id="@+id/btn_city"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/custom_btn_mobile_data"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/reset_search_maps" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivFilter"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/icon_filter" />
+    </LinearLayout>
+</FrameLayout>
 
 
 
-</LinearLayout>
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    android:gravity="center"-->
+<!--    android:orientation="vertical"-->
+<!--    tools:context=".Maps.MapsActivity">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="15dp"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/ivBack"-->
+<!--            android:layout_width="30dp"-->
+<!--            android:layout_height="30dp"-->
+<!--            android:src="@drawable/icon_back_search" />-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="15dp"-->
+<!--            android:background="@drawable/custom_edittext_search"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:padding="5dp">-->
+
+<!--            <AutoCompleteTextView-->
+<!--                android:id="@+id/autoComplete"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:background="@android:color/transparent"-->
+<!--                android:fontFamily="serif"-->
+<!--                android:hint="Tìm kiếm......."-->
+<!--                android:imeOptions="actionSearch"-->
+<!--                android:inputType="text"-->
+<!--                android:lines="1"-->
+<!--                android:padding="10dp"-->
+<!--                android:textSize="11sp" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/ivClearText"-->
+<!--                android:layout_width="19dp"-->
+<!--                android:layout_height="19dp"-->
+<!--                android:src="@drawable/icon_close"-->
+<!--                android:visibility="gone" />-->
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/btnSearch"-->
+<!--                android:layout_width="36dp"-->
+<!--                android:layout_height="36dp"-->
+<!--                android:layout_marginStart="15dp"-->
+<!--                android:background="@drawable/custom_loupe"-->
+<!--                android:gravity="center">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="17dp"-->
+<!--                    android:layout_height="17dp"-->
+<!--                    android:src="@drawable/icon_search_white" />-->
+<!--            </LinearLayout>-->
+
+<!--        </LinearLayout>-->
+
+<!--    </LinearLayout>-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="15dp"-->
+<!--        android:layout_marginEnd="15dp"-->
+<!--        android:layout_marginBottom="15dp"-->
+<!--        android:gravity="center_vertical|end"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btnKhoangGia"-->
+<!--            android:layout_width="106dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:background="@drawable/custom_edittext_khoang_gia"-->
+<!--            android:fontFamily="serif"-->
+<!--            android:text="Khoảng giá"-->
+<!--            android:textColor="#471BC4"-->
+<!--            android:textSize="10sp"-->
+<!--            android:textStyle="italic" />-->
+
+<!--        <LinearLayout-->
+<!--            android:id="@+id/btn_city"-->
+<!--            android:layout_width="36dp"-->
+<!--            android:layout_height="36dp"-->
+<!--            android:layout_marginStart="15dp"-->
+<!--            android:layout_marginEnd="15dp"-->
+<!--            android:background="@drawable/custom_btn_mobile_data"-->
+<!--            android:gravity="center">-->
+
+<!--            <ImageView-->
+<!--                android:layout_width="16dp"-->
+<!--                android:layout_height="16dp"-->
+<!--                android:src="@drawable/icon_mobile_data1" />-->
+
+<!--        </LinearLayout>-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/ivFilter"-->
+<!--            android:layout_width="35dp"-->
+<!--            android:layout_height="35dp"-->
+<!--            android:src="@drawable/icon_filter" />-->
+
+
+<!--    </LinearLayout>-->
+
+
+<!--    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--        xmlns:map="http://schemas.android.com/apk/res-auto"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        map:cardCornerRadius="30dp"-->
+<!--        map:cardElevation="4dp">-->
+
+<!--        <fragment-->
+<!--            android:id="@+id/map"-->
+<!--            android:name="com.google.android.gms.maps.SupportMapFragment"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            map:uiRotateGestures="true"-->
+<!--            map:uiZoomControls="true" />-->
+<!--    </androidx.cardview.widget.CardView>-->
+
+
+<!--</LinearLayout>-->

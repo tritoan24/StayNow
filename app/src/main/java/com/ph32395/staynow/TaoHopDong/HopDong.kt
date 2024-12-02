@@ -44,6 +44,7 @@ data class HopDong(
     // Thông tin hóa đơn
     val hoaDonHopDong: Invoice = Invoice()
 ):Serializable
+
 // Thông tin chi tiết về phòng
 data class RoomInfo(
     val maPhongTro: String = "", // Mã phòng trọ
@@ -51,14 +52,14 @@ data class RoomInfo(
     val diaChiPhong: String = "", // Địa chỉ chi tiết
     val dienTich: Double = 0.0, // Diện tích (m²)
     val thongTinChiTiet: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
-):Serializable
+) : Serializable
 
 // Chi tiết thông tin phòng
 data class RoomDetail(
     val ten: String = "", // Tên thông tin
     val giaTri: Long = 0L, // Giá trị
     val donVi: String = "" // Đơn vị
-):Serializable
+) : Serializable
 
 // Thông tin cá nhân (dùng cho cả chủ nhà và người thuê)
 data class PersonInfo(
@@ -70,7 +71,7 @@ data class PersonInfo(
     val soDienThoai: String = "", // Số điện thoại
     val diaChi: String = "", // Địa chỉ
     val ngayCapCCCD: String = "" // Ngày cấp CCCD
-): Serializable
+) : Serializable
 
 // Thông tin tài chính
 data class FinancialInfo(
@@ -86,7 +87,7 @@ data class FinancialInfo(
     val phuongThucThanhToan: String = "",
 
 
-): Serializable
+    ) : Serializable
 
 
 // Chi tiết phí dịch vụ
@@ -95,7 +96,7 @@ data class UtilityFee(
     val giaTien: Double = 0.0, // Số tiền
     val donVi: String = "", // Đơn vị tính
     val batBuoc: Boolean = true // Bắt buộc hay không
-): Serializable
+) : Serializable
 
 data class UtilityFeeUiState(
     val depositAmount: Double = 0.0, // Số tiền cọc
@@ -103,7 +104,7 @@ data class UtilityFeeUiState(
     val contractUtilityFees: List<UtilityFeeDetail> = listOf(),
     val totalContractPrice: Double = 0.0, // Tổng giá trị hợp đồng
     val invoiceStatus: InvoiceStatus = InvoiceStatus.PENDING // Trạng thái hóa đơn
-):Serializable
+) : Serializable
 
 data class Invoice(
     val idHoaDon: String = "",
@@ -124,7 +125,7 @@ data class Invoice(
     val kieuHoadon: String = "",
     val paymentDate: String = "",
     val ngayThanhToan: Int = 1,
-): Serializable
+) : Serializable
 
 // Trạng thái hợp đồng
 enum class ContractStatus {
@@ -151,3 +152,5 @@ enum class InvoiceStatus {
     OVERDUE,
     CANCELLED
 }
+
+

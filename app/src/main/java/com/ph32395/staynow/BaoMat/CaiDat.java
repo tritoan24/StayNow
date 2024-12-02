@@ -12,6 +12,7 @@ import com.ph32395.staynow.R;
 public class CaiDat extends AppCompatActivity {
 
     private LinearLayout nextDoiMK;
+    private LinearLayout updateNguoiDung;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,11 +20,19 @@ public class CaiDat extends AppCompatActivity {
         setContentView(R.layout.activity_cai_dat);
 
         nextDoiMK = findViewById(R.id.nextDoiMK);
+        updateNguoiDung = findViewById(R.id.updateNguoiDung);
 
         nextDoiMK.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(CaiDat.this, DoiMK.class));
+                finish();
+            }
+        });
+        updateNguoiDung.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CaiDat.this, CapNhatThongTin.class));
                 finish();
             }
         });

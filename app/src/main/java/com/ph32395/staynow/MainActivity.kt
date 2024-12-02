@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
+import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
@@ -42,13 +43,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
             }
         })
-        
+
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)

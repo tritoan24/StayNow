@@ -1,13 +1,8 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter
 
 import android.annotation.SuppressLint
-import android.net.Uri
-import android.util.Log
 import android.view.ViewGroup
-import android.widget.Toast
-import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow.R
-import com.ph32395.staynow.ThongBao.NotificationModel
 import com.ph32395.staynow.databinding.RenterItemRoomCanceledBinding
 import com.ph32395.staynow.databinding.RenterItemRoomConfirmedBinding
 import com.ph32395.staynow.databinding.RenterItemRoomSeenBinding
@@ -37,66 +32,9 @@ class RenterManageScheduleRoomAdapter(
                 tvPhoneNumber.text = "SDT: ${data.tenantPhoneNumber}"
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
 
-                val renterID = data.renterId
                 tvConfirm.tap {
                     onClickConfirm.invoke(data)
-//                    // Tạo đối tượng NotificationModel với dữ liệu cần thiết
-//                    val notificationData = NotificationModel(
-//                        id = "", // Firebase sẽ tự động tạo ID khi push
-//                        title = "Lịch hẹn đã được xác nhận",
-//                        message = "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
-//                        date = data.date,
-//                        time = data.time,
-//                        mapLink = "geo:0,0?q=${Uri.encode(data.roomAddress)}",
-//                        timestamp = System.currentTimeMillis(),
-//                        isRead = false,
-//                        readTime = "" // Có thể để trống, sẽ cập nhật sau khi đọc
-//                    )
-//
-//                    // Lấy reference tới Firebase
-//                    val database = FirebaseDatabase.getInstance().getReference("ThongBao")
-//                    val userId = data.tenantId // ID của người thuê, lấy từ dữ liệu
-//
-//                    val userThongBaoRef = database.child(userId)
-//
-//// Firebase tự động tạo ID với push()
-//                    val newNotificationRef = userThongBaoRef.push() // Tạo mới một ID tự động
-//                    val newNotificationId = newNotificationRef.key // Lấy ID tự động tạo từ push()
-//
-//// Kiểm tra xem ID có hợp lệ không
-//                    if (newNotificationId != null) {
-//                        // Cập nhật ID vào NotificationModel
-//                        val notificationWithId = notificationData.copy(id = newNotificationId)
-//
-//                        // Lưu thông báo vào Firebase với ID đã được tạo
-//                        newNotificationRef.setValue(notificationWithId)
-//                            .addOnSuccessListener {
-//                                Toast.makeText(
-//                                    context,
-//                                    "Thông báo đã được lưu!",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                            .addOnFailureListener { exception ->
-//                                Toast.makeText(
-//                                    context,
-//                                    "Lỗi: ${exception.message}",
-//                                    Toast.LENGTH_SHORT
-//                                ).show()
-//                            }
-//                    } else {
-//                        Toast.makeText(
-//                            context,
-//                            "Không thể tạo ID cho thông báo",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-
-                    // Xác nhận lịch hẹn
-
-
                 }
-
                 tvCancel.tap {
                     onClickCancelSchedule.invoke(data)
                 }

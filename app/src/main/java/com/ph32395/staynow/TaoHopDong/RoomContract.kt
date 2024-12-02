@@ -7,6 +7,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
+import org.jetbrains.annotations.Contract
+import java.text.NumberFormat
+import java.util.Locale
 
 class RoomContract {
     private val db = FirebaseFirestore.getInstance()
@@ -59,16 +62,16 @@ class RoomContract {
                             contractData["maHopDong"] = newContractId
 
                             // Tạo một bản sao của hóa đơn với ID hợp đồng được cập nhật
-                            val updatedInvoice = contract.hoaDonHopDong.copy(idHopDong = newContractId)
+                            val updatedInvoice =
+                                contract.hoaDonHopDong.copy(idHopDong = newContractId)
 
                             //chuyển sang màn chi tiết hóa đơn hợp đồng
-                             idHopDong = newContractId
+                            idHopDong = newContractId
 
 //                            //chuyển màn
 //                            val intent = Intent(requireContext(), ChiTietHoaDon::class.java)
 //                            intent.putExtra("idHopDong",idHopDong)
 //                            startActivity(intent)
-
 
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
@@ -92,7 +95,10 @@ class RoomContract {
                         transaction.update(roomRef, "Trang_thaiphong", true)
 
                         // Xóa lịch hẹn
-                        Log.d("HopDongViewModel", "Attempting to delete appointment: $appointmentId")
+                        Log.d(
+                            "HopDongViewModel",
+                            "Attempting to delete appointment: $appointmentId"
+                        )
                         transaction.delete(appointmentRef)
                     }.await()
                 }
@@ -105,7 +111,6 @@ class RoomContract {
             }
         }
     }
-
 
 
     /**
@@ -134,7 +139,7 @@ class RoomContract {
             "ghiChu" to contract.ghiChu,
 
 
-        )
+            )
     }
     private fun createRoomInfoMap(roomInfo: RoomInfo): HashMap<String, Any> {
         return hashMapOf(
@@ -200,6 +205,7 @@ class RoomContract {
             }
         )
     }
+
     private fun createBillMap(ivoices: Invoice): HashMap<String, Any> {
         return hashMapOf(
             "idHoaDon" to ivoices.idHoaDon,

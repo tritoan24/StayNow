@@ -2,6 +2,7 @@ package com.ph32395.staynow.TaoHopDong
 
 import ContractViewModel
 import android.content.Intent
+
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge

@@ -104,13 +104,11 @@ dependencies {
 
     implementation("io.github.ParkSangGwon:tedimagepicker:1.6.1")
 
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
     //Thu vien khoang gia
-    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
+    implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
 
     // Firebase Cloud Messaging
     implementation("com.google.firebase:firebase-messaging:24.1.0")
@@ -129,11 +127,14 @@ dependencies {
     //thư viện custom text
     implementation ("jp.wasabeef:richeditor-android:2.0.0")
 
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
     // Socket
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
     implementation(fileTree(mapOf(
-        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "dir" to "D:\\StayNow",
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf<String>()
     )))

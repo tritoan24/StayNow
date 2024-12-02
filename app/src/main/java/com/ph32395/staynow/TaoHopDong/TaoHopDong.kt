@@ -336,6 +336,7 @@ class TaoHopDong : AppCompatActivity() {
         btnSave.setOnClickListener {
             if(validateContract()) {
                 createAndSaveContract()
+                finish()
             }
         }
     }

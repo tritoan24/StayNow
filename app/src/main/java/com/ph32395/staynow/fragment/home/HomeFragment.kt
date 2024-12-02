@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -17,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.airbnb.lottie.LottieAnimationView
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.google.android.material.tabs.TabLayout
@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var swipeFresh: SwipeRefreshLayout
     private lateinit var imageSlider: ImageSlider
-    private lateinit var loadingIndicator: ProgressBar
+    private lateinit var loadingIndicator: LottieAnimationView
     private lateinit var notificationViewModel: NotificationViewModel
 
     private val currentUser = FirebaseAuth.getInstance().currentUser
@@ -69,6 +69,7 @@ class HomeFragment : Fragment() {
         homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             if (isLoading) {
                 loadingIndicator.visibility = View.VISIBLE
+                loadingIndicator.playAnimation()
                 binding.viewPagerHome.visibility = View.GONE
                 binding.tabLayoutHome.visibility = View.GONE
             } else {
@@ -87,17 +88,14 @@ class HomeFragment : Fragment() {
         }
 
 
-
-
-
-
         //màn hình thông báo tritoancode
         binding.fNotification.setOnClickListener {
             startActivity(Intent(context, NotificationActivity::class.java))
         }
         //đếm số thông báo chưa đọc
 
-        notificationViewModel = ViewModelProvider(requireActivity()).get(NotificationViewModel::class.java)
+        notificationViewModel =
+            ViewModelProvider(requireActivity()).get(NotificationViewModel::class.java)
 // Trong Fragment
         notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
             Log.d("Notification", "Unread count: $count")
