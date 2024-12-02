@@ -5,8 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.Gson
+import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
+import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
@@ -20,7 +24,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-
 @Suppress("DEPRECATION")
 class BillContractActivity : AppCompatActivity() {
 
