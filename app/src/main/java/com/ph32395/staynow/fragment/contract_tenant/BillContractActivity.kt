@@ -24,7 +24,6 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
-
 @Suppress("DEPRECATION")
 class BillContractActivity : AppCompatActivity() {
 

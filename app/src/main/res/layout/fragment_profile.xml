@@ -24,33 +24,6 @@
                 android:layout_height="72dp"
                 android:background="@drawable/circle_tim">
 
-                <LinearLayout
-                    android:layout_width="185dp"
-                    android:layout_height="40dp"
-                    android:id="@+id/viewDK"
-                    android:background="@drawable/circle"
-                    android:layout_marginLeft="180dp"
-                    android:layout_marginTop="7dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Đăng ký cho thuê"
-                        android:textStyle="italic"
-                        android:textColor="@color/white"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="1" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_crown"
-                        android:background="@null"
-                        android:layout_marginEnd="30dp" />
-
-                </LinearLayout>
 
             </LinearLayout>
 
@@ -126,94 +99,118 @@
                 app:cardBackgroundColor="@color/white"
                 android:layout_marginTop="8dp"
                 android:padding="8dp">
-
                 <LinearLayout
+                    android:id="@+id/viewDK"
                     android:layout_width="match_parent"
-                    android:layout_height="141dp"
-                    android:background="@color/white"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="12dp"
+                    tools:ignore="DisableBaselineAlignment">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/item_tim_xung_quanh"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        tools:ignore="KeyboardInaccessibleWidget,UseCompoundDrawables">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/ic_find_room" />
+                            android:layout_width="24dp"
+                            android:layout_height="17dp"
+                            android:src="@drawable/ic_tim_xung_quanh"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Tìm phòng"
-                            android:textSize="12sp" />
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:gravity="center"
+                            android:text="Tìm xung quanh"
+                            tools:ignore="HardcodedText" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/item_tim_nguoi_o_khep"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        tools:ignore="KeyboardInaccessibleWidget,UseCompoundDrawables">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/ic_find_people" />
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_tim_o_ghep"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Tìm người ở chung"
-                            android:textSize="12sp" />
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:gravity="center"
+                            android:text="Tìm người ở ghép"
+                            tools:ignore="HardcodedText" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:id="@+id/item_van_chuyen_do"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clickable="true"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        tools:ignore="KeyboardInaccessibleWidget,UseCompoundDrawables">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/ic_transport" />
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_van_chuyen"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Vận chuyển"
-                            android:textSize="12sp" />
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:gravity="center"
+                            android:text="Vận chuyển đồ"
+                            tools:ignore="HardcodedText" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:id="@+id/item_doi_binh_gas"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clickable="true"
                         android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        tools:ignore="KeyboardInaccessibleWidget,UseCompoundDrawables">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/ic_gas_exchange" />
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_doi_gas"
+                            tools:ignore="ContentDescription" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Đổi gas"
-                            android:textSize="12sp" />
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:gravity="center"
+                            android:text="Đổi bình gas"
+                            tools:ignore="HardcodedText" />
                     </LinearLayout>
+
                 </LinearLayout>
+
             </androidx.cardview.widget.CardView>
 
             <!-- Menu Options -->

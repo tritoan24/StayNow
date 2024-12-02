@@ -85,7 +85,16 @@
             android:exported="false" />
         <activity
             android:name=".Activity.RoomDetailActivity"
-            android:exported="false" />
+            android:exported="true"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="staynowshare.page.link" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".ThongTinThanhToan.PaymentInfoActivity"
             android:exported="false" />
@@ -95,6 +104,8 @@
         <activity
             android:name=".DangKiDangNhap.OTPActivity"
             android:exported="false" />
+
+
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
             android:exported="false" />

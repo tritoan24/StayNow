@@ -22,9 +22,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -73,6 +72,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
     implementation ("com.google.firebase:firebase-firestore")
+    implementation ("com.google.firebase:firebase-dynamic-links")
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.google.android.material:material:1.9.0")
