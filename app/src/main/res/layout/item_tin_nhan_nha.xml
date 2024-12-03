@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="7dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/transparent"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="5dp"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ivAvatarItemTinNhan"
+            android:src="@drawable/ic_user"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thang thue tro"
+                android:fontFamily="serif"
+                android:textSize="11sp"
+                android:id="@+id/userName"
+                android:textColor="@color/black"
+                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Co nha tro khong dang cho thue"
+                    android:fontFamily="serif"
+                    android:id="@+id/tvTexting"
+                    android:textSize="9sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="#6E6C6C"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="0.2"
+                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:text="17:00"
+                    android:fontFamily="serif"
+                    android:textSize="9sp"
+                    android:id="@+id/tvTimeGuiTexting"
+                    android:textColor="#6E6C6C"
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

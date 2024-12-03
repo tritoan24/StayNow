@@ -1,10 +1,12 @@
 package com.ph32395.staynow.BaoMat
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.home.HomeViewModel
 
@@ -27,6 +30,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
     private lateinit var phoneInfor: TextView
     private lateinit var emailInfor: TextView
     private lateinit var rcListRoom: RecyclerView
+    private lateinit var btnNhanTin: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var homViewModel: HomeViewModel
@@ -40,6 +44,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
+        btnNhanTin = findViewById(R.id.btnNhanTin)
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
@@ -86,6 +91,16 @@ class ThongTinNguoiDung : AppCompatActivity() {
         }else {
             Log.e("ThongTinNguoiDung","Người dùng đăng nhập ")
         }
+
+        //Chuyen den man nhan tin
+        btnNhanTin.setOnClickListener {
+            val intent = Intent(this,TextingMessengeActivity::class.java)
+            intent.putExtra("userId",userId)
+            startActivity(intent)
+        }
+
+
+
     }
 
     fun maskPhone(phone: String?): String? {
