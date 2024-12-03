@@ -1,5 +1,6 @@
 package com.ph32395.staynow.Activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -150,6 +151,8 @@ class RoomDetailActivity : AppCompatActivity() {
         viewModel.fetchRoomDetail(maPhongTro)
     }
 
+
+
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
@@ -238,11 +241,19 @@ class RoomDetailActivity : AppCompatActivity() {
             } else if (ManHome == "ManCT") {
                 if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                     findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
                 }
                 else if(trangThaiLuu == true) {
                     findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
                 }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
                     findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                } else if (trangThaiDuyet == "ChoDuyet") {
+                    findViewById<CardView>(R.id.cardViewChucNangChoDuyet).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                } else if (trangThaiPhong == true) {
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
                 }
             }
 
@@ -295,32 +306,36 @@ class RoomDetailActivity : AppCompatActivity() {
                 dialog.show(supportFragmentManager, "CustomConfirmationDialog")
             }
 
-            //            Chuc ang go phong chuyen sang man da  dang
-            findViewById<LinearLayout>(R.id.btnDangPhong).setOnClickListener {
+//            Chuc nang cho duyet -> dang luu
+            findViewById<LinearLayout>(R.id.btnXacNhanHuy).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
                 val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
-//                val dialog = CustomConfirmationDialog(
-//                    message = "Bạn có chắc chắn muốn đăng phòng không?",
-//                    onConfirm = {
-////                        Nguoi dung nhan xac nhan
-////                        viewModel.updateRoomStatus(roomId, "DaDuyet", false)
-//
-//                        // Hiển thị thông báo
-//                        Toast.makeText(this, "Phòng trọ đã được đăng!", Toast.LENGTH_SHORT).show()
-//                        // Chuyển đến Fragment "Phòng Đang Lưu"
-//                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-//                        startActivity(intent)
-//                        finish() // Đóng màn hình hiện tại
-//                    },
-//                    onCancel = {
-//
-//                    }
-//                )
-//                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn hủy chờ duyệt không?",
+                    onConfirm = {
+//                        Nguoi dung nhan xac nhan
+                        viewModel.updateRoomStatus(roomId, "", true)
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Đã hủy chờ duyệt!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+            }
+
+            //            Chuc ang go phong chuyen sang man da  dang
+            findViewById<LinearLayout>(R.id.btnDangPhong).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
                 val intent = Intent(this, CapNhatViTri::class.java)
-                intent.putExtra("check", "a")
+                intent.putExtra("PHONG_TRO_ID", roomId)
                 startActivity(intent)
             }
 

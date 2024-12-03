@@ -224,27 +224,25 @@
                 android:layout_marginTop="20dp"
                 >
 
-                <!-- Menu Item: Lịch hẹn xem phòng -->
+                <!-- Lich su xem phong -->
 
                 <LinearLayout
+                    android:id="@+id/btnPhongTroDaXem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:padding="16dp"
                     android:background="?attr/selectableItemBackground">
-
-                    <!-- Icon Exit (Bên trái) -->
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_qlpt" />
 
-                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Quản lý phòng trọ"
+                        android:text="Lịch sử phòng trọ đã xem"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"

@@ -1,6 +1,7 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
@@ -64,6 +66,7 @@ class PhongTroAdapter(
         private val roomViews: TextView = itemView.tvSoLuotXem
         private val roomTime: TextView = itemView.tvTgianTao
         private var loaiTaiKhoan: String = ""
+        private val firestore = FirebaseFirestore.getInstance()
 
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(room: PhongTroModel, roomId: String) {
@@ -102,14 +105,41 @@ class PhongTroAdapter(
 
 //            Xu ly su kien khi click item sang man chi tiet
             itemView.setOnClickListener {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
+                saveRoomToHistory(userId, roomId)
+
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
                 Log.d("PTAdapter", loaiTaiKhoan)
                 intent.putExtra("ManHome", loaiTaiKhoan)
                 context.startActivity(intent)
+            }
+        }
 
+//        Lưu thong tin phong tro da xem
+        fun saveRoomToHistory(userId: String, roomId: String) {
+            val historyRef = firestore.collection("PhongTroDaXem")
+                .whereEqualTo("Id_nguoidung", userId)
+                .whereEqualTo("Id_phongtro", roomId)
 
+            historyRef.get().addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Phòng trọ đã tồn tại -> Cập nhật thời gian xem
+                    val documentId = documents.documents[0].id
+                    firestore.collection("PhongTroDaXem").document(documentId)
+                        .update("Thoi_gianxem", System.currentTimeMillis())
+                } else {
+                    // Phòng trọ chưa tồn tại -> Thêm mới
+                    val newHistory = mapOf(
+                        "Id_nguoidung" to userId,
+                        "Id_phongtro" to roomId,
+                        "Thoi_gianxem" to System.currentTimeMillis()
+                    )
+                    firestore.collection("PhongTroDaXem").add(newHistory)
+                }
+            }.addOnFailureListener {
+                Log.e("Firestore", "Error saving room to history", it)
             }
         }
     }
