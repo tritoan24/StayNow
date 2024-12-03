@@ -75,12 +75,15 @@ class TextingMessengeActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val userName = snapshot.child("ho_ten").value.toString()
                     val anhDaiDien = snapshot.child("anh_daidien").value.toString()
-
-                    binding.tvNameUser.text = userName
-                    Glide.with(this@TextingMessengeActivity)
-                        .load(anhDaiDien)
-                        .circleCrop()
-                        .into(binding.ivAvatar)
+                    if (!this@TextingMessengeActivity.isDestroyed && !this@TextingMessengeActivity.isFinishing) {
+                        binding.tvNameUser.text = userName
+                        Glide.with(this@TextingMessengeActivity)
+                            .load(anhDaiDien)
+                            .circleCrop()
+                            .into(binding.ivAvatar)
+                    } else {
+                        Log.d(TAG, "fetchUser: Activity destroyed, skipping image load")
+                    }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
@@ -111,7 +114,12 @@ class TextingMessengeActivity : AppCompatActivity() {
     }
 
     // Gửi tin nhắn
-    private fun sendMessage(chatId: String, senderId: String, receiverId: String, messageText: String) {
+    private fun sendMessage(
+        chatId: String,
+        senderId: String,
+        receiverId: String,
+        messageText: String
+    ) {
         val database = Firebase.database.reference
         val timestamp = System.currentTimeMillis()
 
@@ -122,12 +130,40 @@ class TextingMessengeActivity : AppCompatActivity() {
         // Lưu tin nhắn
         database.child("Chats").child(chatId).child("messages").child(messageId).setValue(message)
 
-        // Cập nhật ChatList cho sender
-        val senderChat = Chat(chatId, messageText, timestamp, 0, receiverId)
-        database.child("ChatList").child(senderId).child(chatId).setValue(senderChat)
 
-        // Cập nhật ChatList cho receiver
-        val receiverChat = Chat(chatId, messageText, timestamp, 1, senderId)
-        database.child("ChatList").child(receiverId).child(chatId).setValue(receiverChat)
+        // Lấy số tin nhắn chưa đọc hiện tại của người nhận
+        database.child("ChatList").child(receiverId).child(chatId).get()
+            .addOnSuccessListener { snapshot ->
+                val currentUnreadCount =
+                    snapshot.child("unreadCount").getValue(Int::class.java) ?: 0
+
+                // Cập nhật ChatList cho receiver (tăng unreadCount)
+                val receiverChat =
+                    Chat(chatId, messageText, timestamp, currentUnreadCount + 1, senderId)
+                database.child("ChatList").child(receiverId).child(chatId).setValue(receiverChat)
+
+                // Cập nhật ChatList cho sender (không tăng unreadCount)
+                val senderChat = Chat(chatId, messageText, timestamp, 0, receiverId)
+                database.child("ChatList").child(senderId).child(chatId).setValue(senderChat)
+            }
     }
+
+    private fun markMessagesAsRead(chatId: String, userId: String) {
+        val database = Firebase.database.reference
+
+        // Đặt unreadCount về 0 trong ChatList của người dùng
+        database.child("ChatList").child(userId).child(chatId).child("unreadCount").setValue(0)
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+        val userIdNguoiGui = FirebaseAuth.getInstance().currentUser?.uid // ID của user hiện tại
+        val userIdNguoiNhan = intent.getStringExtra("userId") // ID của người nhận (nếu có)
+        val userChat = intent.getStringExtra("userChat") // ID người chat (từ danh sách chat)
+        val chatId = getChatId(userIdNguoiGui, userIdNguoiNhan ?: userChat)
+        markMessagesAsRead(chatId, userIdNguoiGui!!)
+    }
+
+
 }
