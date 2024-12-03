@@ -60,8 +60,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:gravity="center_horizontal"
                 android:background="@drawable/border_qrcode"
+                android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <ImageView
@@ -73,6 +73,16 @@
 
             </LinearLayout>
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="Bạn có thể nhờ người khác quét hộ"
+                android:textColor="@color/gray"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                tools:ignore="HardcodedText" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -92,6 +102,7 @@
                 tools:ignore="UseCompoundDrawables">
 
                 <TextView
+                    android:id="@+id/con"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"

@@ -89,11 +89,13 @@ class ChoosePaymentActivity : AppCompatActivity() {
                 val minutes = millisUntilFinished / 60000
                 val seconds = (millisUntilFinished % 60000) / 1000
                 // Cập nhật UI để hiển thị thời gian còn lại
+                binding.con.visibility = View.VISIBLE
                 binding.remainTime.text = "$minutes:$seconds"
             }
 
             @SuppressLint("SetTextI18n")
             override fun onFinish() {
+                binding.con.visibility = View.GONE
                 binding.remainTime.text = "Đơn hàng đã hết hạn\nHãy quay lại và tạo đơn mới!"
                 binding.btnThanhtoan.isEnabled = false
             }

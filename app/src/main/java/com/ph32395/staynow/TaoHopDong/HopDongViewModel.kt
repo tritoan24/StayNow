@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import gun0912.tedimagepicker.util.ToastUtil.context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,9 +16,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.jetbrains.annotations.Contract
-import java.text.NumberFormat
-import java.util.Locale
 
 class HopDongViewModel {
     private val db = FirebaseFirestore.getInstance()
@@ -84,7 +80,6 @@ class HopDongViewModel {
 //                            startActivity(intent)
 
 
-
                             // Lưu hóa đơn vào subcollection của hợp đồng
                             val invoiceRef = newDoc.collection("hoaDonhopdong").document()
                             val invoiceData = createBillMap(updatedInvoice)
@@ -124,7 +119,6 @@ class HopDongViewModel {
     }
 
 
-
     /**
      * Tạo Map dữ liệu từ RentalContract để lưu vào Firestore.
      */
@@ -153,6 +147,7 @@ class HopDongViewModel {
 
             )
     }
+
     private fun createRoomInfoMap(roomInfo: RoomInfo): HashMap<String, Any> {
         return hashMapOf(
             "maPhongTro" to roomInfo.maPhongTro,
@@ -350,6 +345,20 @@ class HopDongViewModel {
             contractsCollection.document(contractId)
                 .update("trangThai", newStatus.name)
                 .await()
+
+            if (newStatus == ContractStatus.EXPIRED || newStatus == ContractStatus.TERMINATED) {
+                // Lấy thông tin hợp đồng để tìm mã phòng
+                val contractSnapshot = contractsCollection.document(contractId).get().await()
+                val roomId = contractSnapshot.getString("maPhong")
+
+                if (roomId != null) {
+                    // Cập nhật trạng thái phòng trọ
+                    roomsCollection.document(roomId)
+                        .update("Trang_thaiphong", false)
+                        .await()
+                }
+            }
+
             onSuccess()
         } catch (e: Exception) {
             onFailure(e)
@@ -357,14 +366,17 @@ class HopDongViewModel {
     }
 
 }
+
 class ContractViewModel : ViewModel() {
     // Thêm ViewModel để xử lý logic liên quan đến hợp đồng
     private val contractRepository = HopDongViewModel()
     private val _saveResult = MutableLiveData<Result<Unit>>()
     val saveResult: LiveData<Result<Unit>> = _saveResult
+
     // Thêm StateFlow để theo dõi việc
     private val _navigateToContractDetail = MutableStateFlow<String?>(null)
     val navigateToContractDetail: StateFlow<String?> = _navigateToContractDetail.asStateFlow()
+
     // Thêm LiveData để theo dõi dữ liệu hóa đơn
     private val _invoiceDetails = MutableLiveData<Invoice>()
     val invoiceDetails: LiveData<Invoice> = _invoiceDetails
@@ -475,6 +487,7 @@ class ContractViewModel : ViewModel() {
                 Log.e("ContractViewModel", "Lỗi khi lấy chi tiết hóa đơn", exception)
             }
     }
+
     fun fetchContractsByTenant(userId: String, status: ContractStatus) {
         contractRepository.getContractsByTenant(userId, status) { contracts ->
             // Khi có thay đổi, cập nhật vào LiveData

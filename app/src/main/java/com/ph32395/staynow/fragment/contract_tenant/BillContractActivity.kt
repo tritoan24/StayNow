@@ -155,7 +155,7 @@ class BillContractActivity : AppCompatActivity() {
 
 
     private fun showLoading() {
-        binding.container.setBackgroundColor(Color.parseColor("#80000000"))
+        binding.container.setBackgroundColor(Color.parseColor("#A9A9A9"));
         loadingIndicator.visibility = View.VISIBLE
         loadingIndicator.playAnimation()
     }
