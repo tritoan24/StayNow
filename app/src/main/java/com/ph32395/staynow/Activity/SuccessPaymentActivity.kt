@@ -31,10 +31,12 @@ class SuccessPaymentActivity : AppCompatActivity() {
         val contract = intent.getSerializableExtra("itemData") as? HopDong
 
         binding.tvInvoiceId.text = "ID hợp đồng: " + contract!!.maHopDong
-        binding.tvLandlordInfo.text =contract.chuNha.hoTen
-        binding.tvLandlordPhone.text =contract.chuNha.soDienThoai
+        binding.tvLandlordInfo.text = contract.chuNha.hoTen
+        binding.tvLandlordAddress.text = contract.chuNha.diaChi
+        binding.tvLandlordBd.text = contract.chuNha.ngaySinh
         binding.tvTenantInfo.text = contract.nguoiThue.hoTen
-        binding.tvTenantPhone.text = contract.nguoiThue.soDienThoai
+        binding.tvTenantAddress.text = contract.nguoiThue.diaChi
+        binding.tvTenantBd.text = contract.nguoiThue.ngaySinh
         binding.tvNameRoom.text = "Tên phòng: " + contract.thongtinphong.tenPhong
         binding.tvAmount.text = "Tổng tiền: " + formatCurrency(contract.hoaDonHopDong.tongTien)
         binding.tvAmountRoom.text =
@@ -44,6 +46,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvAddress.text = "Địa chỉ: " + contract.thongtinphong.diaChiPhong
         binding.tvStartDate.text = "Ngày bắt đầu: " + contract.ngayBatDau
         binding.tvEndDate.text = "Ngày kết thúc: " + contract.ngayKetThuc
+        binding.tvClause.text = "Điều khoản: " + contract.dieuKhoan
         binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue
         binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
 

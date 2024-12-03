@@ -1,10 +1,11 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/container"
     android:background="@android:color/white"
-    android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="16dp">
 
     <LinearLayout
         android:id="@+id/toolbar"
@@ -34,11 +35,22 @@
     </LinearLayout>
 
 
+    <!-- Lottie Animation -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingIndicator"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        app:lottie_autoPlay="false"
+        app:lottie_fileName="loading.json"
+        app:lottie_loop="true" />
+
     <!-- Content (Cuộn được) -->
     <ScrollView
+        android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -85,6 +97,7 @@
                 </LinearLayout>
 
             </LinearLayout>
+
 
             <TextView
                 android:layout_width="match_parent"
@@ -409,16 +422,16 @@
         </LinearLayout>
 
     </ScrollView>
-
     <!-- Footer (Cố định) -->
     <Button
         android:id="@+id/btn_thanhtoan"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_marginTop="30dp"
         android:background="@drawable/custom_buttom"
-        android:text="Thanh toán"
+        android:text="Đi đến thanh toán"
         android:textSize="14sp"
         tools:ignore="HardcodedText" />
 
-</LinearLayout>
+</RelativeLayout>

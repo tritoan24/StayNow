@@ -53,15 +53,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
-            android:gravity="center_horizontal"
+            android:gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_marginVertical="10dp"
                 android:gravity="center_horizontal"
+                android:background="@drawable/border_qrcode"
                 android:orientation="vertical">
 
                 <ImageView
@@ -130,8 +130,8 @@
                     tools:ignore="HardcodedText" />
 
                 <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
                     android:src="@drawable/ic_zalopay"
                     tools:ignore="ContentDescription" />
 
@@ -146,6 +146,12 @@
 
             </LinearLayout>
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/hintthanhtoan"
+                tools:ignore="ContentDescription" />
 
         </LinearLayout>
 

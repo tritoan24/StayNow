@@ -2,12 +2,17 @@ package com.ph32395.staynow.fragment.contract_tenant
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
+import com.ph32395.staynow.Activity.ChoosePaymentActivity
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.TaoHopDong.HopDong
@@ -15,7 +20,6 @@ import com.ph32395.staynow.TaoHopDong.Invoice
 import com.ph32395.staynow.databinding.ActivityBillContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
-import com.ph32395.staynow.payment.SocketManager
 import com.ph32395.staynow.utils.Constants
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPaySDK
@@ -28,17 +32,15 @@ import java.util.concurrent.TimeUnit
 class BillContractActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBillContractBinding
-    private lateinit var socketManager: SocketManager
+    private lateinit var loadingIndicator: LottieAnimationView
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBillContractBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //đánh thức server
-        // Khởi tạo socket
-        socketManager = SocketManager()
-        socketManager.initSocket(Constants.URL_PAYMENT)
+        loadingIndicator = binding.loadingIndicator
+
         initZaloPay()
 
         // nhận intent từ contractAdapter
@@ -57,16 +59,26 @@ class BillContractActivity : AppCompatActivity() {
         }
 
         binding.btnThanhtoan.tap {
-            Toast.makeText(this, "Đang chuyển hướng", Toast.LENGTH_SHORT).show()
+            showLoading()
             val orderProcessor = OrderProcessor(this)
             orderProcessor.checkAndCreateOrder(
                 invoice.tongTien,
                 contract.maHopDong,
                 contract.hoaDonHopDong.idHoaDon,
                 itemsArrStr
-            ) { token ->
-                if (token != null) {
-                    orderProcessor.startPayment(token, contract)
+            ) { token, orderUrl,remainTime ->
+                hideLoading()
+                if (token != null && orderUrl != null) {
+                    val intent = Intent(this, ChoosePaymentActivity::class.java)
+                    intent.putExtra("contract", contract)
+                    intent.putExtra("itemsArrStr", itemsArrStr)
+                    intent.putExtra("zpToken", token)
+                    intent.putExtra("orderUrl", orderUrl)
+                    intent.putExtra("remainTime", remainTime)
+                    Log.d("remainTimeBillContract", remainTime.toString())
+
+                    startActivity(intent)
+
                 } else {
                     Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show()
                 }
@@ -141,6 +153,18 @@ class BillContractActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun showLoading() {
+        binding.container.setBackgroundColor(Color.parseColor("#80000000"))
+        loadingIndicator.visibility = View.VISIBLE
+        loadingIndicator.playAnimation()
+    }
+
+    private fun hideLoading() {
+        binding.container.setBackgroundColor(Color.TRANSPARENT)
+        loadingIndicator.visibility = View.GONE
+    }
+
     private fun initZaloPay() {
         StrictMode.ThreadPolicy.Builder().permitAll().build()
             .also { StrictMode.setThreadPolicy(it) }
@@ -153,8 +177,5 @@ class BillContractActivity : AppCompatActivity() {
         ZaloPaySDK.getInstance().onResult(intent)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        socketManager.disconnect()
-    }
+
 }

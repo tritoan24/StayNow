@@ -138,5 +138,7 @@ dependencies {
         "exclude" to listOf<String>()
     )))
 
+    //generate qr
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
 }
