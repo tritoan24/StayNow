@@ -17,6 +17,7 @@ import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
+import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ActivityBillContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
@@ -58,6 +59,10 @@ class BillContractActivity : AppCompatActivity() {
             finish()
         }
 
+        if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID) {
+            binding.btnThanhtoan.visibility = View.GONE
+        }
+
         binding.btnThanhtoan.tap {
             showLoading()
             val orderProcessor = OrderProcessor(this)
@@ -66,7 +71,7 @@ class BillContractActivity : AppCompatActivity() {
                 contract.maHopDong,
                 contract.hoaDonHopDong.idHoaDon,
                 itemsArrStr
-            ) { token, orderUrl,remainTime ->
+            ) { token, orderUrl, remainTime ->
                 hideLoading()
                 if (token != null && orderUrl != null) {
                     val intent = Intent(this, ChoosePaymentActivity::class.java)
