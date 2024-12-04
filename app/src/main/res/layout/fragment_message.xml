@@ -21,13 +21,24 @@
             android:padding="15dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
                 android:gravity="center"
                 android:text="Tin nhắn"
                 android:textSize="20sp"
+                android:paddingLeft="20dp"
                 android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnAdminSuport"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:background="#fff"
+                android:src="@drawable/ic_customer_support"
+                />
 
         </LinearLayout>
 
