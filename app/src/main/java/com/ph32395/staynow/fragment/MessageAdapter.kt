@@ -2,6 +2,7 @@ package com.ph32395.staynow.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Typeface
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -47,7 +48,7 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
                         .load(avatar)
                         .circleCrop()
                         .into(holder.image)
-                }else{
+                } else {
                     Log.d(TAG, "onDataChange: nulll content")
                 }
 
@@ -59,10 +60,20 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
 
             }
         })
+        if (item.unreadCount == 0) {
+            holder.nameUser.setTypeface(Typeface.SERIF, Typeface.NORMAL)
+            holder.texting.setTypeface(Typeface.SERIF, Typeface.NORMAL)
+            holder.timeGuiTin.setTypeface(Typeface.SERIF, Typeface.NORMAL)
+        } else {
+            holder.nameUser.setTypeface(Typeface.SERIF, Typeface.BOLD)
+            holder.texting.setTypeface(Typeface.SERIF, Typeface.BOLD)
+            holder.timeGuiTin.setTypeface(Typeface.SERIF, Typeface.BOLD)
+        }
         val time = convertTimestampToTime(item.lastMessageTime!!)
         Log.d(TAG, "onBindViewHolder: time $time")
         holder.texting.text = item.lastMessage
         holder.timeGuiTin.text = time
+        holder.tvNumberTexting.text = if (item.unreadCount != 0) item.unreadCount.toString() else " "
 
         holder.itemView.setOnClickListener {
             onClickItem(item)
@@ -76,6 +87,7 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
         val image = itemView.ivAvatarItemTinNhan
         val texting = itemView.tvTexting
         val timeGuiTin = itemView.tvTimeGuiTexting
+        val tvNumberTexting = itemView.tvNumberTexting
 
     }
 

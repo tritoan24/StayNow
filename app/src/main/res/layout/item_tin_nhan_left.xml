@@ -22,5 +22,17 @@
             android:textSize="12sp" />
 
     </LinearLayout>
+    <TextView
+        android:layout_gravity="bottom"
+        android:layout_marginStart="5dp"
+        android:id="@+id/tvTimeLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="serif"
+        android:textColor="#515050"
+        android:text="1:11:11"
+        android:textSize="9sp"
+        android:textStyle="italic" />
+
 
 </LinearLayout>

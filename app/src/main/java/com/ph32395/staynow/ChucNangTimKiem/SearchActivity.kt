@@ -164,7 +164,10 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         Log.d(TAG, "onDataChange: queryWords $queryWords")
         Log.d(TAG, "onDataChange: query $query")
         binding.layoutLoading.visibility = View.VISIBLE
+        binding.rvListRoom.visibility = View.GONE
         // Truy vấn tất cả các phòng trọ một lần
+        listFullRoom.clear()
+
         dataRoom.get().addOnSuccessListener { snapshot ->
             val tasks = mutableListOf<Task<QuerySnapshot>>()
 
@@ -203,11 +206,21 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                         // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
                         if (queryInDescriptionOrName || allWordsMatch) {
-                            listSearch.add(Pair(id, roomData!!))
+                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
                             Log.d(
                                 TAG,
-                                "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)"
+                                "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
                             )
+                            if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                listSearch.add(Pair(id, roomData!!))
+                                Log.d(
+                                    TAG,
+                                    "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)"
+                                )
+                            }
+
                         }
                         Log.d(TAG, "searchRoomByNameOrDescription: listSearch $listSearch")
                     }
@@ -223,7 +236,6 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 // Sau khi tất cả các truy vấn hoàn thành, cập nhật giao diện
                 Log.d(TAG, "searchRoomByNameOrDescription: listSearch Tasks $listSearch")
                 if (listSearch.isNotEmpty()) {
-                    listFullRoom.clear()
                     listFullRoom.addAll(listSearch)
                     binding.layoutNullMsg.visibility = View.GONE
                     binding.rvListRoom.visibility = View.VISIBLE
@@ -237,6 +249,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             Log.e(TAG, "Error getting documents: ", exception)
         }.addOnCompleteListener {
             binding.layoutLoading.visibility = View.GONE
+            binding.rvListRoom.visibility = View.VISIBLE
         }
     }
 
@@ -244,6 +257,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     private fun readListRoom() {
         //firestore
         binding.layoutLoading.visibility = View.VISIBLE
+        binding.rvListRoom.visibility = View.GONE
         dataRoom.get().addOnSuccessListener { it ->
             listFullRoom.clear()
             Log.d(TAG, "readListRoom: it read room ${it.toObjects(PhongTroModel::class.java)}")
@@ -262,23 +276,37 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                         // Cập nhật diện tích vào đối tượng phòng
                         roomList.Dien_tich = dienTich?.toLong()
 
-                        // Thêm vào danh sách hiển thị
-                        listFullRoom.add(Pair(id, roomList))
-                        Log.d(TAG, "Room added: $roomList")
+                        val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                        val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                        val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                        Log.d(
+                            TAG,
+                            "readListRoom: trangThaiDuyet $trangThaiDuyet trangThaiLuu $trangThaiLuu trangThaiPhong $trangThaiPhong"
+                        )
+                        if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                            Log.d(TAG, "readListRoom: if ${roomList.Ten_phongtro}")
+                            // Thêm vào danh sách hiển thị
+                            listFullRoom.add(Pair(id, roomList))
+                            Log.d(TAG, "Room added: $roomList")
+
+                        }
                         // Cập nhật giao diện sau khi hoàn tất
-                        if (listFullRoom.size == it.documents.size) {
+                        if (listFullRoom.size > 0) {
                             adapter.notifyDataSetChanged()
                         }
+                        Log.d(TAG, "readListRoom:listFullRoom $listFullRoom")
+                        Log.d(TAG, "readListRoom:listFullRoom ${listFullRoom.size}")
+
                     }
                     .addOnFailureListener { exception ->
                         Log.e(TAG, "Error fetching room details: ${exception.message}")
                     }
             }
-            adapter.notifyDataSetChanged()
         }.addOnFailureListener {
             Log.e(TAG, "readListRoom: ${it.message.toString()}")
         }.addOnCompleteListener {
             binding.layoutLoading.visibility = View.GONE
+            binding.rvListRoom.visibility = View.VISIBLE
             Log.d(TAG, "readListRoom:  complete")
         }
 
@@ -513,7 +541,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
             .get()
             .addOnSuccessListener { querySnapshot ->
-                val tasks = mutableListOf<Task<QuerySnapshot>>() // Danh sách các tác vụ truy vấn phụ
+                val tasks =
+                    mutableListOf<Task<QuerySnapshot>>() // Danh sách các tác vụ truy vấn phụ
 
                 for (document in querySnapshot) {
                     val id = document.id
@@ -528,9 +557,19 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                             val chiTiet = detailSnapshot.documents.firstOrNull()
                             val dienTich = chiTiet?.getDouble("so_luong_donvi")
                             roomData.Dien_tich = dienTich?.toLong()
+                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                            Log.d(
+                                TAG,
+                                "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
+                            )
 
-                            // Thêm dữ liệu vào danh sách
-                            listFilterPrice.add(Pair(id, roomData))
+                            if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                // Thêm dữ liệu vào danh sách
+                                listFilterPrice.add(Pair(id, roomData))
+                            }
+
                         }
                         .addOnFailureListener { e ->
                             Log.e(TAG, "Error fetching ChiTietThongTin for room $id: ${e.message}")
@@ -635,6 +674,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     binding.layoutLoading.visibility = View.VISIBLE
                     binding.rvListRoom.visibility = View.GONE
                     binding.layoutNullMsg.visibility = View.GONE
+                    listFullRoom.clear()
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
                         .whereIn("Ma_loaiphong", maLoaiPhongList)
@@ -680,7 +720,6 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                             } else {
                                                 binding.layoutNullMsg.visibility = View.GONE
                                                 binding.rvListRoom.visibility = View.VISIBLE
-                                                listFullRoom.clear()
                                                 firestore.collection("PhongTro")
                                                     .whereIn(
                                                         FieldPath.documentId(),
@@ -716,20 +755,47 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                     // Cập nhật diện tích vào đối tượng phòng
                                                                     roomData.Dien_tich =
                                                                         dienTich?.toLong()
-
-                                                                    // Thêm vào danh sách hiển thị
-                                                                    listFullRoom.add(
-                                                                        Pair(
-                                                                            id,
-                                                                            roomData
-                                                                        )
+                                                                    val trangThaiDuyet =
+                                                                        document.getString("Trang_thaiduyet")
+                                                                    val trangThaiLuu =
+                                                                        document.getBoolean("Trang_thailuu")
+                                                                    val trangThaiPhong =
+                                                                        document.getBoolean("Trang_thaiphong")
+                                                                    Log.d(
+                                                                        TAG,
+                                                                        "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
                                                                     )
+
+                                                                    if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                                                        // Thêm vào danh sách hiển thị
+                                                                        listFullRoom.add(
+                                                                            Pair(
+                                                                                id,
+                                                                                roomData
+                                                                            )
+                                                                        )
+                                                                    }
+
                                                                     // Cập nhật giao diện sau khi hoàn tất
-                                                                    if (listFullRoom.size == querySnapshot.documents.size) {
+                                                                    if (listFullRoom.size > 0) {
+                                                                        binding.layoutLoading.visibility =
+                                                                            View.GONE
+                                                                        binding.layoutNullMsg.visibility = View.GONE
+                                                                        binding.rvListRoom.visibility =
+                                                                            View.VISIBLE
                                                                         updateUI(
                                                                             listFullRoom,
                                                                             homeViewModel
                                                                         )
+                                                                    }else{
+                                                                        Log.d(
+                                                                            TAG,
+                                                                            "onFilterSelected: else $listFullRoom"
+                                                                        )
+                                                                        binding.rvListRoom.visibility =
+                                                                            View.GONE
+                                                                        binding.layoutLoading.visibility = View.GONE
+                                                                        binding.layoutNullMsg.visibility = View.VISIBLE
                                                                     }
                                                                 }
                                                                 .addOnFailureListener { exception ->
@@ -737,9 +803,6 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                         TAG,
                                                                         "Error fetching room details: ${exception.message}"
                                                                     )
-                                                                }.addOnCompleteListener {
-                                                                    binding.layoutLoading.visibility = View.GONE
-                                                                    binding.rvListRoom.visibility = View.VISIBLE
                                                                 }
                                                         }
 

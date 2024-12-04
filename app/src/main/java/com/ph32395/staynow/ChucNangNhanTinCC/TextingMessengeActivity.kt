@@ -57,6 +57,9 @@ class TextingMessengeActivity : AppCompatActivity() {
                 binding.edtSoanNhanTin.setText("")
             }
         }
+        binding.btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     // Hàm tạo chatId duy nhất

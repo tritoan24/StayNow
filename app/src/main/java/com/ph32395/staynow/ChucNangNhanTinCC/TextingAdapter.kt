@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.databinding.ItemTinNhanLeftBinding
 import com.ph32395.staynow.databinding.ItemTinNhanRightBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TextingAdapter(private val messages: List<Messenger>, private val currentUserId: String) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -58,16 +61,45 @@ class TextingAdapter(private val messages: List<Messenger>, private val currentU
     class SendViewHolder(itemView: ItemTinNhanRightBinding) :
         RecyclerView.ViewHolder(itemView.root) {
         private val textMessageSend = itemView.tvTinNhanRight
+        private val tvTimeRight = itemView.tvTimeRight
         fun bind(message: Messenger) {
+            val time = convertTimestampToTime(message.timestamp!!.toLong())
             textMessageSend.text = message.message
+            tvTimeRight.text = time
+
+        }
+
+        fun convertTimestampToTime(timestamp: Long): String {
+            // Chuyển đổi timestamp thành đối tượng Date
+            val date = Date(timestamp)
+
+            // Đặt định dạng thời gian bạn muốn hiển thị
+            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+            // Chuyển đổi Date thành chuỗi theo định dạng đã chỉ định
+            return dateFormat.format(date)
         }
     }
 
     class ReceiveViewHolder(itemView: ItemTinNhanLeftBinding) :
         RecyclerView.ViewHolder(itemView.root) {
         private val textMessageReceive = itemView.tvTinNhanLeft
+        private val tvTimeLeft = itemView.tvTimeLeft
         fun bind(message: Messenger) {
+            val time = convertTimestampToTime(message.timestamp!!.toLong())
             textMessageReceive.text = message.message
+            tvTimeLeft.text = time
+        }
+
+        fun convertTimestampToTime(timestamp: Long): String {
+            // Chuyển đổi timestamp thành đối tượng Date
+            val date = Date(timestamp)
+
+            // Đặt định dạng thời gian bạn muốn hiển thị
+            val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+            // Chuyển đổi Date thành chuỗi theo định dạng đã chỉ định
+            return dateFormat.format(date)
         }
     }
 
