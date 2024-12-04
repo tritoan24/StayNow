@@ -20,7 +20,7 @@ import com.ph32395.staynow.hieunt.widget.currentBundle
 import com.ph32395.staynow.hieunt.widget.hideNavigation
 import com.ph32395.staynow.hieunt.widget.hideStatusBar
 import com.ph32395.staynow.hieunt.widget.launchActivity
-import com.ph32395.staynow.network.NetworkCallbackHandler
+import com.ph32395.staynow.hieunt.network.NetworkCallbackHandler
 
 
 abstract class BaseActivity<VB : ViewBinding, VM : ViewModel> : AppCompatActivity() {

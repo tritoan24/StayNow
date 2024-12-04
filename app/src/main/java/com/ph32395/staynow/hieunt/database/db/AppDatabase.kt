@@ -9,7 +9,7 @@ import com.ph32395.staynow.hieunt.model.NotificationModel
 
 @Database(
     entities = [NotificationModel::class],
-    version = 3,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {

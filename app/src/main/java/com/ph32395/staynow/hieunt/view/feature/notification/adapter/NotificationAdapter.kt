@@ -11,8 +11,10 @@ import com.ph32395.staynow.databinding.ItemNotificationBinding
 import com.ph32395.staynow.hieunt.base.BaseAdapter
 import com.ph32395.staynow.hieunt.base.BaseViewHolder
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.widget.layoutInflate
 import com.ph32395.staynow.hieunt.widget.visible
@@ -30,10 +32,10 @@ class NotificationAdapter(
                     TITLE_CONFIRMED -> {
                         tvTitle.setTextColor(Color.parseColor("#00FF00"))
                     }
-                    TITLE_CANCELED_BY_RENTER -> {
+                    TITLE_CANCELED_BY_RENTER, TITLE_CANCELED_BY_TENANT -> {
                         tvTitle.setTextColor(Color.parseColor("#FF0000"))
                     }
-                    TITLE_LEAVED_BY_RENTER -> {
+                    TITLE_LEAVED_BY_RENTER, TITLE_LEAVED_BY_TENANT -> {
                         tvTitle.setTextColor(Color.parseColor("#FFCC00"))
                     }
                 }
@@ -41,6 +43,7 @@ class NotificationAdapter(
                 tvMessage.text = data.message
                 tvDateTime.text = "${data.date} at ${data.time}"
                 vSeen.visibility = if (data.isRead) GONE else VISIBLE
+
             }
         }
 

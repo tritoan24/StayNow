@@ -23,6 +23,7 @@ import com.ph32395.staynow.fragment.ProfileFragment
 import com.ph32395.staynow.fragment.RoomManagementFragment
 import com.ph32395.staynow.fragment.home.HomeFragment
 import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
+import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.SystemUtils
 import com.ph32395.staynow.hieunt.service.NotificationService
 
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (!SystemUtils.isServiceRunning(this, NotificationService::class.java)){
+        if (!SystemUtils.isServiceRunning(this, NotificationService::class.java)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(Intent(this, NotificationService::class.java))
             } else {
@@ -69,7 +70,11 @@ class MainActivity : AppCompatActivity() {
                 object : OnCompleteListener<String?> {
                     override fun onComplete(task: Task<String?>) {
                         if (!task.isSuccessful) {
-                            Log.w(ContentValues.TAG, "Fetching FCM registration token failed", task.exception)
+                            Log.w(
+                                ContentValues.TAG,
+                                "Fetching FCM registration token failed",
+                                task.exception
+                            )
                             return
                         }
 
@@ -88,13 +93,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
 
-
-        onBackPressedDispatcher.addCallback(this,object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                finishAffinity()
-            }
-        })
-
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
@@ -102,7 +100,6 @@ class MainActivity : AppCompatActivity() {
 //            add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
             add(R.id.fragment_container, homeFragment, "HOME").hide(homeFragment)
         }.commit()
-
 //        Nhan vai tro tu Intent
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
         userRole = prefs.getString("check", "").toString()
@@ -181,8 +178,14 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 // Hiển thị Fragment mặc định cho NguoiChoThue
-                show(homeNguoiChoThueFragment)
-                activeFragment = homeNguoiChoThueFragment
+                if (intent.getBooleanExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION,false)){
+                    show(roomManagementFragment)
+                    activeFragment = roomManagementFragment
+                    binding.bottomNavigation.selectedItemId = R.id.bottom_management_room
+                }else{
+                    show(homeNguoiChoThueFragment)
+                    activeFragment = homeNguoiChoThueFragment
+                }
 
             }
             // Nếu là NgườiThue

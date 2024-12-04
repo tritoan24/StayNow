@@ -3,6 +3,7 @@ package com.ph32395.staynow.hieunt.service
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Build
@@ -15,11 +16,16 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
 import com.ph32395.staynow.hieunt.helper.Default.Collection.IS_PUSHED
 import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
+import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -67,13 +73,33 @@ class NotificationService : Service() {
     }
 
     private fun getNotification(notificationModel: NotificationModel): Notification {
-        return NotificationCompat.Builder(this, channelId)
+        when (notificationModel.typeNotification){
+            TYPE_SCHEDULE_ROOM_TENANT -> {
+                Intent(this, TenantManageScheduleRoomActivity::class.java)
+            }
+            TYPE_SCHEDULE_ROOM_RENTER -> {
+                Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) }
+            }
+            else -> {
+                null
+            }
+        }?.let {
+            return NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.logoapp)
+                .setContentTitle(notificationModel.title)
+                .setContentText(notificationModel.message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .setContentIntent(PendingIntent.getActivity(this, System.currentTimeMillis().toInt(), it, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+                .build()
+        } ?: return NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.logoapp)
             .setContentTitle(notificationModel.title)
             .setContentText(notificationModel.message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOnlyAlertOnce(true)
             .build()
+
     }
 
     private fun pushNotification(notificationModel: NotificationModel) {

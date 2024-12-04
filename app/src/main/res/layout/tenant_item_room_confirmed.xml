@@ -84,17 +84,8 @@
                 android:background="@drawable/bg_button_detail"
                 android:text="Đã xem"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:layout_marginEnd="12dp"/>
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/tv_create_contract"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_button"
-                android:text="Tạo hợp đồng"
-                android:textColor="@color/white"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
+
         </LinearLayout>
 
     </LinearLayout>

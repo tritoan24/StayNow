@@ -1,4 +1,4 @@
-package com.ph32395.staynow.network
+package com.ph32395.staynow.hieunt.network
 
 import android.content.Context
 import android.net.ConnectivityManager

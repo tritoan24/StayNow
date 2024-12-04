@@ -24,7 +24,6 @@ import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WAIT
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WATCHED
 import com.ph32395.staynow.hieunt.helper.Default.listScheduleState
-import com.ph32395.staynow.hieunt.model.ScheduleStateModel
 import com.ph32395.staynow.hieunt.view.dialog.UpdateRoomScheduleDialog
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.RenterManageScheduleRoomAdapter
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.adapter.ScheduleStateAdapter
@@ -98,7 +97,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 }
             },
             onClickCreateContract = {
-                createContract(it.roomId, it.tenantId, it.roomScheduleId);
+                createContract(it.roomId, it.tenantId, it.roomScheduleId)
             }
         )
 
