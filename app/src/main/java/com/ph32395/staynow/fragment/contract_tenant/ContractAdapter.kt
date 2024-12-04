@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.TaoHopDong.ContractStatus
 import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.TaoHopDong.HopDong
+import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ItemContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import java.time.LocalDate
@@ -91,7 +92,8 @@ class ContractAdapter(
 
                 ContractStatus.PENDING -> {
                     tvRemainingTime.visibility = View.GONE
-                    llBtn.visibility = View.VISIBLE
+                    llBtn.visibility =
+                        if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) View.VISIBLE else View.GONE
                     btnXacNhan.tap {
 
                         val intent = Intent(itemView.context, BillContractActivity::class.java)
