@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -23,7 +24,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -45,13 +45,13 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.ChucNangTimKiem.BottomSheetFilter
 import com.ph32395.staynow.ChucNangTimKiem.BottomSheetFragment
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityMapsBinding
 import com.ph32395.staynow.databinding.BottomSheetDialogDetaillRoomAboveMapsBinding
-import com.ph32395.staynow.fragment.home.PhongTroAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -76,8 +76,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private val firestore = FirebaseFirestore.getInstance()
     private val dataRoom = firestore.collection("PhongTro")
-    var addresses2 = mutableListOf<PhongTroModel>()
-    var listRoom = mutableListOf<PhongTroModel>()
+    var addresses2 = mutableListOf<Pair<String, PhongTroModel>>()
+    var listRoom = mutableListOf<Pair<String, PhongTroModel>>()
     var listQuan = mutableListOf<String>(
         "Quận Ba Đình",
         "Quận Cầu Giấy",
@@ -354,6 +354,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             Log.d("TAGzzzz", "onMapReady: it.toObjects ${it.toObjects(PhongTroModel::class.java)}")
             addresses2.clear()
             for (document in it.documents) {
+                val id = document.id
                 Log.d("TAGzzz", "onMapReady: document for $document.")
                 val roomData = document.toObject(PhongTroModel::class.java)
                 Log.d("TAGzzz", "onMapReady: roomData $roomData")
@@ -369,8 +370,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 )
                 if (trangThaiDiaChi == true && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                     Log.d("zzzzzzzTAGzzzzz", "onMapReady: roomData cos dk true $roomData ")
-                    addresses2.add(roomData!!)
-                    listRoom.add(roomData)
+                    addresses2.add(Pair(id, roomData!!))
+                    listRoom.add(Pair(id, roomData))
                 } else {
                     Log.d("zzzzzzzTAGzzzzz", "onMapReady: roomData cos dk false $roomData ")
                 }
@@ -380,7 +381,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             Log.d("TAGzzzzzz", "onMapReady: addresses2 $addresses2 ")
             Log.d(
                 "TAGzzzzzz",
-                "onMapReady: addresses2 name room ${addresses2.map { it.Ten_phongtro }} "
+                "onMapReady: addresses2 name room ${addresses2.map { it.second.Ten_phongtro }} "
             )
             addMarkersFromAddresses(mMap, addresses2, this)
             Log.d("TAGzzzzzz", "onMapReady: addresses $addresses ")
@@ -571,13 +572,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     // Hàm gọi hàm trên cho nhiều địa chỉ và thêm vào bản đồ
     fun addMarkersFromAddresses(
         map: GoogleMap,
-        addresses: MutableList<PhongTroModel>,
+        addresses: MutableList<Pair<String, PhongTroModel>>,
         context: Context
     ) {
         clearMarkers()
         Log.d("zzzzzzzzzz", "addMarkersFromAddresses: $addresses")
         for (address in addresses) {
-            val newAddressRoom = address.Dia_chi.removePrefix("Xã")
+            val newAddressRoom = address.second.Dia_chi.removePrefix("Xã")
             getCoordinatesUsingNominatimGoong(newAddressRoom) { latLng ->
                 latLng?.let {
                     val marker = map.addMarker(
@@ -628,19 +629,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             Log.d("zzzzzTAGzzz", "addMarkersFromAddresses:addresses map dialog $addresses")
             // Tìm phòng trọ có địa chỉ trùng với marker.title
             val matchedRoom = addresses.find { room ->
-                room.Dia_chi.removePrefix("Xã") == it.tag
+                room.second.Dia_chi.removePrefix("Xã") == it.tag
             }
             if (matchedRoom != null) {
 
                 Log.d("TAGzzzzzzzzzz", "addMarkersFromAddresses: room for $matchedRoom ")
-                binding.tvNameRoom.text = matchedRoom.Ten_phongtro
-                Glide.with(this).load(matchedRoom.imageUrls[0]).into(binding.imageRoom)
+                binding.tvNameRoom.text = matchedRoom.second.Ten_phongtro
+                Glide.with(this).load(matchedRoom.second.imageUrls[0]).into(binding.imageRoom)
                 binding.tvPriceRoom.text =
-                    "${formatToVietnameseCurrency(matchedRoom.Gia_phong)} VND"
-                binding.tvAddressRoom.text = matchedRoom.Dia_chi
+                    "${formatToVietnameseCurrency(matchedRoom.second.Gia_phong)} VND"
+                binding.tvAddressRoom.text = matchedRoom.second.Dia_chi
 
             }
-
+            val intent = Intent(this, RoomDetailActivity::class.java)
+            intent.putExtra("maPhongTro", matchedRoom?.first)
+            startActivity(intent)
             bottomSheet.show()
 
 
@@ -791,17 +794,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     private fun searchRoomRecently(query: String) {
 
         Log.d(TAG, "searchRoomRecently:query $query")
-        Log.d(TAG, "searchRoomRecently: ${listRoom.map { it.Ten_phongtro }}")
+        Log.d(TAG, "searchRoomRecently: ${listRoom.map { it.second.Ten_phongtro }}")
         val nameQuan = query.removePrefix("Quận")
 
         val listRoomNew = listRoom.filter {
-            Log.d(TAG, "searchRoomRecently: ${it.Dia_chichitiet}")
-            it.Dia_chichitiet.contains(nameQuan, ignoreCase = true)
+            Log.d(TAG, "searchRoomRecently: ${it.second.Dia_chichitiet}")
+            it.second.Dia_chichitiet.contains(nameQuan, ignoreCase = true)
         }
         Log.d(TAG, "searchRoomRecently: list room new $listRoomNew")
         Log.d(
             TAG,
-            "searchRoomRecently: list room new ${listRoomNew.map { "${it.Ten_phongtro} -- ${it.Dia_chi}" }}"
+            "searchRoomRecently: list room new ${listRoomNew.map { "${it.second.Ten_phongtro} -- ${it.second.Dia_chi}" }}"
         )
         addresses2 = listRoomNew.toMutableList()
         addMarkersFromAddresses(mMap, addresses2, this)
@@ -814,7 +817,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
     @SuppressLint("NotifyDataSetChanged")
     fun searchRoomByNameOrDescription(query: String) {
         val queryWords = query.split(" ").filter { it.isNotEmpty() }
-        val listSearch = mutableListOf<PhongTroModel>()
+        val listSearch = mutableListOf<Pair<String, PhongTroModel>>()
         Log.d(TAG, "onDataChange: queryWords $queryWords")
         Log.d(TAG, "onDataChange: query $query")
 
@@ -857,7 +860,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
                         // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
                         if (queryInDescriptionOrName || allWordsMatch) {
-                            listSearch.add(roomData!!)
+                            listSearch.add(Pair(id, roomData!!))
                             Log.d(
                                 TAG,
                                 "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)"
@@ -899,6 +902,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             Log.d("TAGzzzz", "onMapReady: it.toObjects ${it.toObjects(PhongTroModel::class.java)}")
             addresses2.clear()
             for (document in it.documents) {
+                val id = document.id
                 Log.d("TAGzzz", "onMapReady: document for $document.")
                 val roomData = document.toObject(PhongTroModel::class.java)
                 Log.d("TAGzzz", "onMapReady: roomData $roomData")
@@ -916,14 +920,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
                 if (trangThaiDiaChi == true && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                     Log.d("zzzzzzzTAGzzzzz", "onMapReady: room if $roomData ")
-                    addresses2.add(roomData!!)
+                    addresses2.add(Pair(id, roomData!!))
                 }
 
             }
             Log.d("TAGzzzzzz", "onMapReady: addresses2 list room $addresses2 ")
             Log.d(
                 "TAGzzzzzz",
-                "onMapReady: addresses2 list name ${addresses2.map { it.Ten_phongtro }} "
+                "onMapReady: addresses2 list name ${addresses2.map { it.second.Ten_phongtro }} "
             )
             addMarkersFromAddresses(mMap, addresses2, this)
         }.addOnFailureListener {
@@ -960,7 +964,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             .addOnSuccessListener { querySnapshot ->
                 val tasks =
                     mutableListOf<Task<QuerySnapshot>>() // Danh sách các tác vụ truy vấn phụ
-                val newListRoomAdds = mutableListOf<PhongTroModel>()
+                val newListRoomAdds = mutableListOf<Pair<String, PhongTroModel>>()
                 for (document in querySnapshot) {
                     val id = document.id
                     val roomData = document.toObject(PhongTroModel::class.java)
@@ -987,7 +991,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                             )
                             if (trangThaiDiaChi == true && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                                 Log.d("zzzTAGzz", "onPriceRangeSelected: Room dc true $roomData")
-                                newListRoomAdds.add(roomData)
+                                newListRoomAdds.add(Pair(id, roomData))
                                 Log.d(
                                     "zzzTAGzzz",
                                     "onPriceRangeSelected: newListRoomAdds $newListRoomAdds"
@@ -1026,7 +1030,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     } else {
                         Log.d(
                             TAG,
-                            "onPriceRangeSelected:addresses2.map { it.Ten_phongtro } ${addresses2.map { it.Ten_phongtro }}"
+                            "onPriceRangeSelected:addresses2.map { it.Ten_phongtro } ${addresses2.map { it.second.Ten_phongtro }}"
                         )
                         addMarkersFromAddresses(mMap, addresses2, this)
                     }
@@ -1041,6 +1045,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         max = maxPrice
 
     }
+
     //    Test
     override fun onFilterSelected(
         selectedTypes: MutableList<String>,
@@ -1209,7 +1214,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                                                         if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                                                                             // Thêm vào danh sách hiển thị
                                                                             addresses2.add(
-                                                                                roomData
+                                                                                Pair(id, roomData)
                                                                             )
                                                                         }
                                                                     }
@@ -1228,16 +1233,20 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                                                         )
                                                                         Log.d(
                                                                             TAG,
-                                                                            "onFilterSelected: Tasks.whenAllComplete(tasksDone) ${addresses2.map { it.Ten_phongtro }}"
+                                                                            "onFilterSelected: Tasks.whenAllComplete(tasksDone) ${addresses2.map { it.second.Ten_phongtro }}"
                                                                         )
-                                                                        addMarkersFromAddresses(mMap,addresses2,this)
+                                                                        addMarkersFromAddresses(
+                                                                            mMap,
+                                                                            addresses2,
+                                                                            this
+                                                                        )
                                                                     }
                                                                 }.addOnFailureListener {
-                                                                Log.e(
-                                                                    TAG,
-                                                                    "onFilterSelected:Tasks.whenAllComplete(tasksDone) ${it.message}"
-                                                                )
-                                                            }
+                                                                    Log.e(
+                                                                        TAG,
+                                                                        "onFilterSelected:Tasks.whenAllComplete(tasksDone) ${it.message}"
+                                                                    )
+                                                                }
                                                         }
 
 //                                                    Cập nhật UI với dữ liệu mới
