@@ -360,7 +360,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.Ten_phongtro}")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.Dia_chi}")
                 val trangThaiDiaChi = document.getBoolean("Trang_thaidc")
-                if (trangThaiDiaChi == true) {
+                val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                Log.d(
+                    TAG,
+                    "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
+                )
+                if (trangThaiDiaChi == true && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                     Log.d("zzzzzzzTAGzzzzz", "onMapReady: roomData cos dk true $roomData ")
                     addresses2.add(roomData!!)
                     listRoom.add(roomData)
@@ -371,6 +378,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
             }
             Log.d("TAGzzzzzz", "onMapReady: addresses2 $addresses2 ")
+            Log.d(
+                "TAGzzzzzz",
+                "onMapReady: addresses2 name room ${addresses2.map { it.Ten_phongtro }} "
+            )
             addMarkersFromAddresses(mMap, addresses2, this)
             Log.d("TAGzzzzzz", "onMapReady: addresses $addresses ")
         }.addOnFailureListener {
@@ -529,8 +540,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         val layout = layoutInflater.inflate(R.layout.custom_marker, null)
 
         // Cập nhật TextView với nội dung văn bản
-        val textView = layout.findViewById<TextView>(R.id.markerText)
-        textView.text = text
+//        val textView = layout.findViewById<TextView>(R.id.markerText)
+//        textView.text = text
 
         // Cập nhật ImageView với icon
         val imageView = layout.findViewById<ImageView>(R.id.markerIcon)
@@ -576,7 +587,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                 createCustomMarkerWithLayoutXML(
                                     context,
                                     newAddressRoom,
-                                    R.drawable.icon_board
+                                    R.drawable.icon_ping_map_room
                                 )
                             )
                     )
@@ -785,12 +796,15 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
         val listRoomNew = listRoom.filter {
             Log.d(TAG, "searchRoomRecently: ${it.Dia_chichitiet}")
-            it.Dia_chichitiet.contains(nameQuan,ignoreCase = true)
+            it.Dia_chichitiet.contains(nameQuan, ignoreCase = true)
         }
         Log.d(TAG, "searchRoomRecently: list room new $listRoomNew")
-        Log.d(TAG, "searchRoomRecently: list room new ${listRoomNew.map { "${it.Ten_phongtro} -- ${it.Dia_chi}" }}")
+        Log.d(
+            TAG,
+            "searchRoomRecently: list room new ${listRoomNew.map { "${it.Ten_phongtro} -- ${it.Dia_chi}" }}"
+        )
         addresses2 = listRoomNew.toMutableList()
-        addMarkersFromAddresses(mMap,addresses2,this)
+        addMarkersFromAddresses(mMap, addresses2, this)
 
 
     }
@@ -891,16 +905,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.Ten_phongtro}")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.Dia_chi}")
                 val trangThaiDiaChi = document.getBoolean("Trang_thaidc")
-                if (trangThaiDiaChi == true) {
-                    Log.d("zzzzzzzTAGzzzzz", "onMapReady: roomData cos dk true $roomData ")
+                val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                Log.d(
+                    TAG,
+                    "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
+                )
+
+
+                if (trangThaiDiaChi == true && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                    Log.d("zzzzzzzTAGzzzzz", "onMapReady: room if $roomData ")
                     addresses2.add(roomData!!)
-                } else {
-                    Log.d("zzzzzzzTAGzzzzz", "onMapReady: roomData cos dk false $roomData ")
                 }
-                Log.d("TAGzzz", "onMapReady: $trangThaiDiaChi ")
 
             }
-            Log.d("TAGzzzzzz", "onMapReady: addresses2 $addresses2 ")
+            Log.d("TAGzzzzzz", "onMapReady: addresses2 list room $addresses2 ")
+            Log.d(
+                "TAGzzzzzz",
+                "onMapReady: addresses2 list name ${addresses2.map { it.Ten_phongtro }} "
+            )
             addMarkersFromAddresses(mMap, addresses2, this)
         }.addOnFailureListener {
             Log.d("TAGzzz", "onMapReady: $it")
@@ -929,6 +953,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         Log.d("zzzTAGzzz", "onPriceRangeSelected:max cu bo $min ")
         Log.d("zzzTAGzzz", "onPriceRangeSelected:minPrice  $minPrice ")
         Log.d("zzzTAGzzz", "onPriceRangeSelected:maxPrice  $maxPrice ")
+        addresses2.clear()
         dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
             .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
             .get()
@@ -953,17 +978,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                             roomData.Dien_tich = dienTich?.toLong()
                             // Thêm dữ liệu vào danh sách
                             val trangThaiDiaChi = document.getBoolean("Trang_thaidc")
+                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
                             Log.d(
-                                "zzzzzTAGzzzzzzzz",
-                                "onPriceRangeSelected: trang thai chi tiet trong task $trangThaiDiaChi "
+                                TAG,
+                                "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
                             )
-                            if (trangThaiDiaChi == true) {
+                            if (trangThaiDiaChi == true && trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
                                 Log.d("zzzTAGzz", "onPriceRangeSelected: Room dc true $roomData")
                                 newListRoomAdds.add(roomData)
-                                Log.d("zzzTAGzzz", "onPriceRangeSelected: $newListRoomAdds")
+                                Log.d(
+                                    "zzzTAGzzz",
+                                    "onPriceRangeSelected: newListRoomAdds $newListRoomAdds"
+                                )
                                 addresses2 = newListRoomAdds
                             } else {
-                                Log.d("zzzTAGzz", "onPriceRangeSelected: Room dc false $roomData")
+                                Log.d(
+                                    "zzzTAGzz",
+                                    "onPriceRangeSelected: Room dc false ${roomData.Ten_phongtro}"
+                                )
                             }
                         }
                         .addOnFailureListener { e ->
@@ -990,6 +1024,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
+                        Log.d(
+                            TAG,
+                            "onPriceRangeSelected:addresses2.map { it.Ten_phongtro } ${addresses2.map { it.Ten_phongtro }}"
+                        )
                         addMarkersFromAddresses(mMap, addresses2, this)
                     }
                 }
@@ -1003,14 +1041,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         max = maxPrice
 
     }
-
-    //lọc theo tien nghi noi that
+    //    Test
     override fun onFilterSelected(
         selectedTypes: MutableList<String>,
         selectedTienNghi: MutableList<String>,
         selectedNoiThat: MutableList<String>
     ) {
-
         selectedTypesViewModel = selectedTypes
         selectedNoiThatViewModel = selectedNoiThat
         selectedTienNghiViewModel = selectedTienNghi
@@ -1051,7 +1087,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
 
         // Chờ tất cả các truy vấn hoàn thành
-        val tasks = Tasks.whenAllComplete(loaiPhongTask, tienNghiTask, noiThatTask)
+        Tasks.whenAllComplete(loaiPhongTask, tienNghiTask, noiThatTask)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Xử lý kết quả của LoaiPhong
@@ -1068,6 +1104,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     val maNoiThatList = noiThatTask.result?.documents?.map { it.id } ?: emptyList()
                     Log.d(TAG, "Mã nội thất: $maNoiThatList")
 
+//                    binding.layoutLoading.visibility = View.VISIBLE
+//                    binding.rvListRoom.visibility = View.GONE
+//                    binding.layoutNullMsg.visibility = View.GONE
+                    addresses2.clear()
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
                         .whereIn("Ma_loaiphong", maLoaiPhongList)
@@ -1109,13 +1149,16 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                             if (finalRooms.isEmpty()) {
 //                                                binding.layoutNullMsg.visibility = View.VISIBLE
 //                                                binding.rvListRoom.visibility = View.GONE
+//                                                binding.layoutLoading.visibility = View.GONE
                                                 Toast.makeText(
                                                     this,
-                                                    "Not found room filter",
+                                                    "room filter not found",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
+                                                clearMarkers()
                                             } else {
-                                                val newListRoom = mutableListOf<PhongTroModel>()
+//                                                binding.layoutNullMsg.visibility = View.GONE
+//                                                binding.rvListRoom.visibility = View.VISIBLE
                                                 firestore.collection("PhongTro")
                                                     .whereIn(
                                                         FieldPath.documentId(),
@@ -1132,44 +1175,73 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                                                 TAG,
                                                                 "onFilterSelected: roomData $roomData"
                                                             )
-                                                            firestore.collection("ChiTietThongTin")
-                                                                .whereEqualTo(
-                                                                    "ma_phongtro",
-                                                                    id
-                                                                ) // Truy vấn theo mã phòng trọ
-                                                                .whereEqualTo(
-                                                                    "ten_thongtin",
-                                                                    "Diện tích"
-                                                                ) // Lọc theo thông tin "Diện tích"
-                                                                .get()
-                                                                .addOnSuccessListener { chiTietSnapshot ->
-                                                                    val chiTiet =
-                                                                        chiTietSnapshot.documents.firstOrNull()
-                                                                    val dienTich =
-                                                                        chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                                                            val tasksDone =
+                                                                firestore.collection("ChiTietThongTin")
+                                                                    .whereEqualTo(
+                                                                        "ma_phongtro",
+                                                                        id
+                                                                    ) // Truy vấn theo mã phòng trọ
+                                                                    .whereEqualTo(
+                                                                        "ten_thongtin",
+                                                                        "Diện tích"
+                                                                    ) // Lọc theo thông tin "Diện tích"
+                                                                    .get()
+                                                                    .addOnSuccessListener { chiTietSnapshot ->
+                                                                        val chiTiet =
+                                                                            chiTietSnapshot.documents.firstOrNull()
+                                                                        val dienTich =
+                                                                            chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
 
-                                                                    // Cập nhật diện tích vào đối tượng phòng
-                                                                    roomData.Dien_tich =
-                                                                        dienTich?.toLong()
-                                                                    val trangThaiDiaChi =
-                                                                        document.getBoolean("Trang_thaidc")
-                                                                    if (trangThaiDiaChi == true) {
+                                                                        // Cập nhật diện tích vào đối tượng phòng
+                                                                        roomData.Dien_tich =
+                                                                            dienTich?.toLong()
+                                                                        val trangThaiDuyet =
+                                                                            document.getString("Trang_thaiduyet")
+                                                                        val trangThaiLuu =
+                                                                            document.getBoolean("Trang_thailuu")
+                                                                        val trangThaiPhong =
+                                                                            document.getBoolean("Trang_thaiphong")
                                                                         Log.d(
                                                                             TAG,
-                                                                            "onFilterSelected:roomData $roomData"
+                                                                            "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
                                                                         )
-                                                                        newListRoom.add(roomData)
-                                                                        addresses2 = newListRoom
-                                                                    }
 
-                                                                }
-                                                                .addOnFailureListener { exception ->
-                                                                    Log.e(
-                                                                        TAG,
-                                                                        "Error fetching room details: ${exception.message}"
-                                                                    )
-                                                                }
+                                                                        if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                                                            // Thêm vào danh sách hiển thị
+                                                                            addresses2.add(
+                                                                                roomData
+                                                                            )
+                                                                        }
+                                                                    }
+                                                                    .addOnFailureListener { exception ->
+                                                                        Log.e(
+                                                                            TAG,
+                                                                            "Error fetching room details: ${exception.message}"
+                                                                        )
+                                                                    }
+                                                            Tasks.whenAllComplete(tasksDone)
+                                                                .addOnSuccessListener {
+                                                                    if (it.isNotEmpty()) {
+                                                                        Log.d(
+                                                                            TAG,
+                                                                            "onFilterSelected: Tasks.whenAllComplete(tasksDone) $addresses2"
+                                                                        )
+                                                                        Log.d(
+                                                                            TAG,
+                                                                            "onFilterSelected: Tasks.whenAllComplete(tasksDone) ${addresses2.map { it.Ten_phongtro }}"
+                                                                        )
+                                                                        addMarkersFromAddresses(mMap,addresses2,this)
+                                                                    }
+                                                                }.addOnFailureListener {
+                                                                Log.e(
+                                                                    TAG,
+                                                                    "onFilterSelected:Tasks.whenAllComplete(tasksDone) ${it.message}"
+                                                                )
+                                                            }
                                                         }
+
+//                                                    Cập nhật UI với dữ liệu mới
+//                                                    updateUI(listFullRoom, homeViewModel)
                                                     }
                                                     .addOnFailureListener { exception ->
                                                         Log.d(
@@ -1192,21 +1264,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                         .addOnFailureListener { e ->
                             Log.e(TAG, "Error fetching PhongTro", e)
                         }
+
                 } else {
                     Log.e(TAG, "Error fetching filter data", task.exception)
                 }
             }
-        Tasks.whenAllComplete(tasks).addOnSuccessListener {
-
-            if (it.isEmpty()) {
-                Log.d(TAG, "onFilterSelected: not null room")
-            } else {
-                addMarkersFromAddresses(mMap, addresses2, this)
-            }
-
-        }.addOnFailureListener {
-            Log.d(TAG, "onFilterSelected: ${it.message.toString()}")
-        }
     }
 
 
