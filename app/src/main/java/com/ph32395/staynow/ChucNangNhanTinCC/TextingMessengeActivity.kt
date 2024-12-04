@@ -36,6 +36,7 @@ class TextingMessengeActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate: userIdNguoiGui $userIdNguoiGui")
         Log.d(TAG, "onCreate: userIdNguoiNhan $userIdNguoiNhan")
         Log.d(TAG, "onCreate: chatId $chatId")
+        Log.d(TAG, "onCreate: $userChat")
 
         // Hiển thị thông tin người dùng
         fetchUser(userIdNguoiNhan ?: userChat, binding)
@@ -164,8 +165,16 @@ class TextingMessengeActivity : AppCompatActivity() {
         val userIdNguoiGui = FirebaseAuth.getInstance().currentUser?.uid // ID của user hiện tại
         val userIdNguoiNhan = intent.getStringExtra("userId") // ID của người nhận (nếu có)
         val userChat = intent.getStringExtra("userChat") // ID người chat (từ danh sách chat)
-        val chatId = getChatId(userIdNguoiGui, userIdNguoiNhan ?: userChat)
-        markMessagesAsRead(chatId, userIdNguoiGui!!)
+
+        if (userChat == null) {
+            return
+        } else {
+            val chatId = getChatId(userIdNguoiGui, userIdNguoiNhan ?: userChat)
+            markMessagesAsRead(chatId, userIdNguoiGui!!)
+
+        }
+
+
     }
 
 

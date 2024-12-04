@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ph32395.staynow"
-        minSdk = 34
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -34,19 +34,17 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "1.8"
     }
 
     buildFeatures {
         viewBinding = true
         dataBinding = true
     }
-    buildToolsVersion = "34.0.0"
-    ndkVersion = "1"
 
 }
 
@@ -134,7 +132,7 @@ dependencies {
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
     implementation(fileTree(mapOf(
-        "dir" to "StayNow",
+        "dir" to "D:\\FA_2024\\DATN\\DuAn\\StayNow",
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf<String>()
     )))
