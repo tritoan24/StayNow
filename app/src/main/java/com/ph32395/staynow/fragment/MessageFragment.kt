@@ -13,6 +13,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.ph32395.staynow.ChucNangNhanTinCC.Chat
@@ -35,9 +36,26 @@ class MessageFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_message, container, false)
 
+        binding.btnAdminSuport.setOnClickListener {
+            val adminId = "BCvWcFi8M9PAeMnKLv2SefBzRe23" // ID của admin bạn muốn truyền
+            val userId = FirebaseAuth.getInstance().currentUser?.uid  // Lấy ID của người dùng hiện tại
+            Log.d(TAG, "onCreate: userId $userId")
+
+            if (userId != null) {
+                // Khi có người dùng đăng nhập, truyền ID người dùng là người gửi và admin là người nhận
+                val intent = Intent(context, TextingMessengeActivity::class.java)
+                intent.putExtra("userId", adminId)  // Truyền ID của admin là người nhận
+                startActivity(intent)
+            } else {
+                // Nếu không có người dùng đăng nhập, có thể hiển thị thông báo lỗi
+                Log.e("MessageFragment", "No user logged in")
+            }
+        }
+
         return binding.root
 
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

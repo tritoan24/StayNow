@@ -74,6 +74,8 @@
                 android:padding="10dp"
                 android:textSize="13dp" />
 
+
+
             <ImageView
                 android:id="@+id/ivClearText"
                 android:layout_width="19dp"
