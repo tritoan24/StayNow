@@ -14,8 +14,8 @@ import com.ph32395.staynow.databinding.ActivityBillContractBinding
 import com.ph32395.staynow.payment.OrderProcessor
 import com.ph32395.staynow.payment.SocketManager
 import com.ph32395.staynow.utils.Constants
-import vn.zalopay.sdk.Environment
-import vn.zalopay.sdk.ZaloPaySDK
+//import vn.zalopay.sdk.Environment
+//import vn.zalopay.sdk.ZaloPaySDK
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -37,7 +37,7 @@ class BillContractActivity : AppCompatActivity() {
         // Khởi tạo socket
         socketManager = SocketManager()
         socketManager.initSocket(Constants.URL_PAYMENT)
-        initZaloPay()
+//        initZaloPay()
 
         // nhận intent từ contractAdapter
         val invoice = intent.getSerializableExtra("hoaDonHopDong") as? Invoice
@@ -64,7 +64,7 @@ class BillContractActivity : AppCompatActivity() {
                 itemsArrStr
             ) { token ->
                 if (token != null) {
-                    orderProcessor.startPayment(token, contract)
+//                    orderProcessor.startPayment(token, contract)
                 } else {
                     Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show()
                 }
@@ -138,18 +138,18 @@ class BillContractActivity : AppCompatActivity() {
             "Lỗi: ${e.message}"
         }
     }
-
-    private fun initZaloPay() {
-        StrictMode.ThreadPolicy.Builder().permitAll().build()
-            .also { StrictMode.setThreadPolicy(it) }
-        ZaloPaySDK.init(Constants.APP_ID, Environment.SANDBOX)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        ZaloPaySDK.getInstance().onResult(intent)
-    }
+//
+//    private fun initZaloPay() {
+//        StrictMode.ThreadPolicy.Builder().permitAll().build()
+//            .also { StrictMode.setThreadPolicy(it) }
+//        ZaloPaySDK.init(Constants.APP_ID, Environment.SANDBOX)
+//    }
+//
+//    override fun onNewIntent(intent: Intent) {
+//        super.onNewIntent(intent)
+//        setIntent(intent)
+//        ZaloPaySDK.getInstance().onResult(intent)
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

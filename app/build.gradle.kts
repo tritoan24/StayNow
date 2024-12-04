@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ph32395.staynow"
-        minSdk = 24
+        minSdk = 34
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -34,17 +34,19 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
 
     buildFeatures {
         viewBinding = true
         dataBinding = true
     }
+    buildToolsVersion = "34.0.0"
+    ndkVersion = "1"
 
 }
 
@@ -125,7 +127,6 @@ dependencies {
 
     //thư viện custom text
     implementation ("jp.wasabeef:richeditor-android:2.0.0")
-
     //retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
@@ -133,7 +134,7 @@ dependencies {
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
     implementation(fileTree(mapOf(
-        "dir" to "D:\\KOT104\\Exercises\\StayNow",
+        "dir" to "StayNow",
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf<String>()
     )))

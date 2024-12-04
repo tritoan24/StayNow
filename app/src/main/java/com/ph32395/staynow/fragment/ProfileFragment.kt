@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.BaoMat.CaiDat
 import com.ph32395.staynow.BaoMat.PhanHoi
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
+import com.ph32395.staynow.ChatWithAdmin.ChatWithAdminActivity
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
@@ -48,6 +49,7 @@ class ProfileFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
+    private lateinit var btnSuport: LinearLayout
 
 
     @SuppressLint("MissingInflatedId")
@@ -67,6 +69,8 @@ class ProfileFragment : Fragment() {
         nextPhanhoi = view.findViewById(R.id.phanhoiButton)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
         llContract = view.findViewById(R.id.ll_hopdong)
+        btnSuport = view.findViewById(R.id.SuportBtn)
+
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -127,6 +131,12 @@ class ProfileFragment : Fragment() {
                     Log.e("ProfileFragment", "Lỗi khi lấy dữ liệu người dùng: ${error.message}")
                 }
             })
+        }
+
+        btnSuport.setOnClickListener {
+            // Khi click vào LinearLayout, chuyển đến màn hình ChatWithAdminActivity
+            val intent = Intent(activity, ChatWithAdminActivity::class.java)
+            startActivity(intent)
         }
 
         // Xử lý sự kiện nhấn nút đăng xuất
@@ -197,5 +207,6 @@ class ProfileFragment : Fragment() {
             Toast.makeText(context, "Không thể chuyển Fragment", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 }
