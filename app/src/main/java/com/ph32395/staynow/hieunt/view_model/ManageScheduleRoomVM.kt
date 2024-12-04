@@ -198,11 +198,11 @@ class ManageScheduleRoomVM : ViewModel() {
                 MAP_LINK to mapLink,
                 TIME_STAMP to System.currentTimeMillis(),
                 TYPE_NOTIFICATION to if (isRenterPushNotification) TYPE_SCHEDULE_ROOM_TENANT else TYPE_SCHEDULE_ROOM_RENTER
-                //neu chu tro push noti -> TYPE_NOTIFICATION = TYPE_SCHEDULE_ROOM_TENANT
+                //thay doi TYPE_NOTIFICATION de them cac pendingIntent trong service neu can
             )
             val database = FirebaseDatabase.getInstance()
             val thongBaoRef = database.getReference(THONG_BAO)
-
+            // neu ChuTro push noti thi luu id NguoiThue va nguoc lai
             val userId = if (isRenterPushNotification) data.tenantId else data.renterId
             val userThongBaoRef = thongBaoRef.child(userId)
 
