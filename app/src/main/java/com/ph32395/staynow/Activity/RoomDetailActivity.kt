@@ -1,5 +1,7 @@
 package com.ph32395.staynow.Activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -70,8 +72,10 @@ class RoomDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_room_detail)
 
         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
-            finish() //Quay lai man hinh truoc
+            finish()
         }
+
+
 
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
@@ -164,10 +168,10 @@ class RoomDetailActivity : AppCompatActivity() {
         findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
             val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
             viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
-                intent.putExtra("idUser", ma_NguoiDung)
-                startActivity(intent)
+                intent.putExtra("idUser",ma_NguoiDung)
             }
-
+            startActivity(intent)
+            finish()
         }
 
         findViewById<ImageView>(R.id.shareRoom).setOnClickListener{
@@ -182,8 +186,7 @@ class RoomDetailActivity : AppCompatActivity() {
             }
         }
 
-
-        // Khởi tạo Adapter
+//        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
         noiThatAdapter = NoiThatAdapter(emptyList())
@@ -196,12 +199,7 @@ class RoomDetailActivity : AppCompatActivity() {
         setupListPhiDichVu()
         setupRecyViewTienNghi()
 
-        // Lấy dữ liệu chi tiết thông tin phòng trọ
-
-
-        // Xử lý liên kết động
     }
-
     private fun shareLink(dynamicLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain" // Định dạng chia sẻ là văn bản
@@ -227,23 +225,6 @@ class RoomDetailActivity : AppCompatActivity() {
 
         callback(dynamicLinkUri)
     }
-    private fun showDynamicLinkDialog(dynamicLink: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Dynamic Link")
-        builder.setMessage("Here is your Dynamic Link: $dynamicLink")
-        builder.setPositiveButton("OK") { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.setNegativeButton("Copy Link") { dialog, _ ->
-            // Copy dynamic link to clipboard
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Dynamic Link", dynamicLink)
-            clipboard.setPrimaryClip(clip)
-            dialog.dismiss()
-        }
-        builder.create().show()
-    }
-
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
