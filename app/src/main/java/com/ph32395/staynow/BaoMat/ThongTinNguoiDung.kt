@@ -59,7 +59,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
 
 
         btnBackCT.setOnClickListener {
-            finish()
+            onBackPressedDispatcher.onBackPressed()
         }
 
         homViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)

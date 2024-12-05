@@ -17,6 +17,7 @@
         android:layout_marginBottom="24dp">
 
         <ImageButton
+            android:id="@+id/backPhanHoi"
             android:layout_height="48dp"
             android:layout_width="48dp"
             android:src="@drawable/arrow_back"
@@ -48,13 +49,18 @@
             android:layout_marginBottom="0dp"
             android:src="@drawable/addavatar" />
 
-        <ImageButton
-            android:id="@+id/phanhoi_Img"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:backgroundTint="@color/white"
-            android:layout_marginStart="300dp"
-            android:src="@drawable/camera" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end">
+            <ImageButton
+                android:id="@+id/phanhoi_Img"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/camera" />
+        </LinearLayout>
+
 
 
         <androidx.cardview.widget.CardView
@@ -99,14 +105,22 @@
 
                 />
         </androidx.cardview.widget.CardView>
-        <Button
-            android:id="@+id/btnPhanhoi"
-            android:layout_width="250dp"
-            android:layout_height="61dp"
-            android:layout_margin="55dp"
-            android:text="Send Feedback"
-            android:background="@drawable/button_background_doimk"
-            android:textColor="@android:color/white"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:gravity="center"
+            >
+            <Button
+                android:id="@+id/btnPhanhoi"
+                android:layout_width="250dp"
+                android:layout_height="61dp"
+
+                android:text="Send Feedback"
+                android:background="@drawable/button_background_doimk"
+                android:textColor="@android:color/white"/>
+        </LinearLayout>
+
     </LinearLayout>
 
 

@@ -29,6 +29,7 @@
 
             <!-- User Information Section -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/next_UpdateInfor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardElevation="4dp"
@@ -77,8 +78,7 @@
                             android:layout_marginTop="4dp" />
                     </LinearLayout>
 
-                    <ImageButton
-                        android:id="@+id/next_UpdateInfor"
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -98,7 +98,7 @@
                 app:cardCornerRadius="16dp"
                 app:cardBackgroundColor="@color/white"
                 android:layout_marginTop="8dp"
-                android:padding="8dp">
+                android:layout_margin="5dp">
                 <LinearLayout
                     android:id="@+id/viewDK"
                     android:layout_width="match_parent"
@@ -245,16 +245,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -289,16 +289,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -332,16 +332,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -376,16 +376,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -419,16 +419,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -461,16 +461,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -505,16 +505,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -549,16 +549,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -600,16 +600,16 @@
                         android:ellipsize="end"
                         android:maxLines="1" />
 
-                    <!-- Khoảng trống để đẩy ImageButton sang phải -->
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <!-- ImageButton Đăng xuất (Bên phải) -->
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>

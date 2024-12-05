@@ -176,7 +176,6 @@ class RoomDetailActivity : AppCompatActivity() {
                 intent.putExtra("idUser",ma_NguoiDung)
             }
             startActivity(intent)
-            finish()
         }
 
         findViewById<ImageView>(R.id.shareRoom).setOnClickListener{

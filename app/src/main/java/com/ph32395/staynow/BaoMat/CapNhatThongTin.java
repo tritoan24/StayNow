@@ -143,8 +143,7 @@ public class CapNhatThongTin extends AppCompatActivity {
         backUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(CapNhatThongTin.this, MainActivity.class));
-                finish();
+                onBackPressed();
             }
         });
     }

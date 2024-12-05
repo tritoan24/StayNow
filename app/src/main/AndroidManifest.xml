@@ -74,7 +74,9 @@
         <activity
             android:name=".BaoMat.ThongTinNguoiDung"
             android:exported="false" />
-
+        <activity
+            android:name=".BaoMat.PhanHoi"
+            android:exported="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
@@ -83,8 +85,9 @@
             android:name=".Maps.MapsActivity"
             android:exported="true" />
         <activity
-            android:name=".BaoMat.Xacminh_OTP"
+            android:name=".BaoMat.CapNhatThongTin"
             android:exported="false" />
+
         <activity
             android:name=".BaoMat.CaiDat"
             android:exported="false" />
@@ -171,9 +174,6 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".TaoHopDong.TaoHopDong"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"

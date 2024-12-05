@@ -38,6 +38,7 @@ public class PhanHoi extends AppCompatActivity {
     private EditText commentFeedback;
     private EditText phanHoiTime;
     private Button btnPhanhoi;
+    private ImageButton btnBackPH;
     private Uri selectedImageUri;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -56,6 +57,7 @@ public class PhanHoi extends AppCompatActivity {
         commentFeedback = findViewById(R.id.commentFeedback);
         phanHoiTime = findViewById(R.id.phanhoiTime);
         btnPhanhoi = findViewById(R.id.btnPhanhoi);
+        btnBackPH = findViewById(R.id.backPhanHoi);
         mAuth = FirebaseAuth.getInstance();
         // Khởi tạo Firebase
         db = FirebaseFirestore.getInstance();
@@ -84,6 +86,10 @@ public class PhanHoi extends AppCompatActivity {
             } else {
                 sendFeedback(feedback, feedbackTime, selectedImageUri, maNguoiDung);
             }
+        });
+
+        btnBackPH.setOnClickListener(v -> {
+            onBackPressed();
         });
 
         // Gắn sự kiện cho phanHoiTime

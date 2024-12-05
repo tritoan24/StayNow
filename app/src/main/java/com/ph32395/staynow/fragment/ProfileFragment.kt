@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -46,7 +47,7 @@ class ProfileFragment : Fragment() {
     private lateinit var llScheduleRoom: LinearLayout
     private lateinit var llContract: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
-    private lateinit var nextUpdate: ImageButton
+    private lateinit var nextUpdate: CardView
     private lateinit var nextPhanhoi: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
@@ -170,16 +171,17 @@ class ProfileFragment : Fragment() {
 
 
         nextUpdate.setOnClickListener{
-            startActivity(Intent(requireActivity(), ThongTinNguoiDung::class.java))
-            requireActivity().finish()
+            val intent = Intent(requireActivity(), ThongTinNguoiDung::class.java)
+            intent.putExtra("idUser", FirebaseAuth.getInstance().currentUser?.uid)
+            startActivity(intent)
         }
         nextDoiMK.setOnClickListener {
             startActivity(Intent(requireActivity(),CaiDat::class.java))
-            requireActivity().finish()
         }
         nextPhanhoi.setOnClickListener {
             startActivity(Intent(requireActivity(), PhanHoi::class.java))
-            requireActivity().finish()
+
+
         }
 
         llScheduleRoom.tap {

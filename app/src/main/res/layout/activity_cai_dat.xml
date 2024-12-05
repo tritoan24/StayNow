@@ -106,9 +106,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/right_row"
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
@@ -157,9 +157,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/right_row"
                     android:backgroundTint="@color/white" />
             </LinearLayout>
@@ -196,9 +196,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/right_row"
                     android:backgroundTint="@color/white" />
             </LinearLayout>
@@ -279,9 +279,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/right_row"
                     android:backgroundTint="@color/white" />
             </LinearLayout>
@@ -317,9 +317,9 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     android:src="@drawable/right_row"
                     android:backgroundTint="@color/white" />
             </LinearLayout>
