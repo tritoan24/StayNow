@@ -1,9 +1,11 @@
 package com.ph32395.staynow.BaoMat
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +19,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.home.HomeViewModel
 
@@ -26,6 +29,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
     private lateinit var nameInfor: TextView
     private lateinit var phoneInfor: TextView
     private lateinit var emailInfor: TextView
+    private lateinit var backTT: ImageButton
     private lateinit var rcListRoom: RecyclerView
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
@@ -40,10 +44,15 @@ class ThongTinNguoiDung : AppCompatActivity() {
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
+        backTT = findViewById(R.id.backTT);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
 
+        backTT.setOnClickListener{
+            startActivity(Intent(this@ThongTinNguoiDung, MainActivity::class.java))
+            finish()
+        }
 
         val userId = getIntent().getStringExtra("idUser");
         if(userId != null) {
