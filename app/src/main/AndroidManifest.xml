@@ -13,18 +13,22 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/logoapp"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logoapp"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".TaoHoaDon.CreateInvoice"
+            android:exported="false" />
+        <activity
+            android:name=".TaoHoaDon.ChoiceContract"
+            android:exported="false" />
         <activity
             android:name=".Activity.SuccessPaymentActivity"
             android:exported="true" />
@@ -49,13 +53,14 @@
                     android:scheme="demozpdk" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".BaoMat.ThongTinNguoiDung"
             android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+
         <activity
             android:name=".Maps.MapsActivity"
             android:exported="true" />
@@ -89,11 +94,15 @@
             tools:ignore="AppLinkUrlError">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https" android:host="staynowshare.page.link" />
-            </intent-filter>
 
+                <data
+                    android:host="staynowshare.page.link"
+                    android:pathPrefix="/roomDetail"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ThongTinThanhToan.PaymentInfoActivity"
@@ -104,8 +113,6 @@
         <activity
             android:name=".DangKiDangNhap.OTPActivity"
             android:exported="false" />
-
-
         <activity
             android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
             android:exported="false" />
@@ -123,6 +130,12 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".TaoHopDong.ChiTietHopDong"
+            android:exported="false" />
+        <activity
+            android:name=".TaoHopDong.ChiTietHoaDon"
+            android:exported="false" />
+        <activity
             android:name=".DangKiDangNhap.DangKy"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
@@ -130,6 +143,10 @@
             android:name=".DangKiDangNhap.DangNhap"
             android:exported="false"
             android:theme="@style/Theme.StayNow" />
+        <activity
+            android:name=".TaoHopDong.TaoHopDong"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".ManGioiThieu.OnboardingActivity"
             android:exported="false"

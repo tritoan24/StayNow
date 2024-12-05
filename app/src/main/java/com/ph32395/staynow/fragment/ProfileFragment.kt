@@ -16,6 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -131,17 +133,31 @@ class ProfileFragment : Fragment() {
 
         // Xử lý sự kiện nhấn nút đăng xuất
         logoutButton.setOnClickListener {
-            setUserOffline()
+            setUserOffline() // Đánh dấu trạng thái offline nếu cần
             mAuth.signOut() // Đăng xuất Firebase
-            // Lưu trạng thái đã đăng nhập vào SharedPreferences
-            prefs = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-            val editor = prefs.edit()
-            editor.putBoolean("is_logged_in", false)
-            editor.apply()
-            startActivity(Intent(requireActivity(), DangNhap::class.java)) // Quay lại màn hình đăng nhập
-            requireActivity().finish() // Kết thúc hoạt động hiện tại
-            activity?.finish()
+
+            // Đăng xuất tài khoản Google
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+            val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
+            googleSignInClient.signOut().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Lưu trạng thái đã đăng nhập vào SharedPreferences
+                    val prefs = requireActivity().getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    prefs.edit().apply {
+                        putBoolean("is_logged_in", false)
+                        apply()
+                    }
+                    // Chuyển về màn hình đăng nhập
+                    val intent = Intent(requireActivity(), DangNhap::class.java)
+                    startActivity(intent)
+                    requireActivity().finish() // Kết thúc hoạt động hiện tại
+                } else {
+                    // Xử lý lỗi nếu có (tuỳ chọn)
+                    Log.e("LogoutError", "Google sign-out failed.")
+                }
+            }
         }
+
 
         nextUpdate.setOnClickListener{
             startActivity(Intent(requireActivity(), ThongTinNguoiDung::class.java))

@@ -16,6 +16,11 @@ class CccdViewModel : ViewModel() {
     private val _cccdDataNT = MutableLiveData<Map<String, String>>()
     val cccdDataNT: LiveData<Map<String, String>> = _cccdDataNT
 
+    // LiveData để gửi trạng thái đến Activity
+    private val _cccdStatus = MutableLiveData<Boolean>()
+    val cccdStatus: LiveData<Boolean> get() = _cccdStatus
+
+
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
@@ -25,7 +30,7 @@ class CccdViewModel : ViewModel() {
     /**
      * Hàm giải mã dữ liệu
      */
-    private fun decrypt(encryptedData: String, secretKey: String): String {
+     fun decrypt(encryptedData: String, secretKey: String): String {
         try {
             val keySpec = SecretKeySpec(secretKey.toByteArray(Charsets.UTF_8), "AES")
             val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding")
@@ -96,4 +101,5 @@ class CccdViewModel : ViewModel() {
                 _error.value = "Lỗi khi lấy dữ liệu: ${exception.message}"
             }
     }
+
 }

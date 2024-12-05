@@ -61,8 +61,6 @@
     <string name="t_ph_ng" translatable="false">Đặt phòng</string>
 
 
-
-
     <!-- key Goong map api  -->
 
     <string name="api_key_1" translatable="false">iwrFXU8AhMJ969HbCiIOjGEpJWnIkYHMjNcvVbT4</string>
@@ -89,6 +87,9 @@
     <string name="api_key_22" translatable="false">vhK7oy75ZM0BCUNjPGgB9vVAPlnagHYnHguGNb2M</string>
     <string name="api_key_23" translatable="false">aZADfDAFy0aeJp7J8qLODNfGG58eRoJJH7UIzzly</string>
     <string name="api_key_24" translatable="false">C14o56vqzbvzbna0hTUL5OfdTsyJymaXelM4EHSG</string>
+    <string name="title_activity_monthly_invoice">MonthlyInvoice</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>

@@ -8,6 +8,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <!--thông tin phòng -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -698,8 +703,9 @@
                 android:layout_marginTop="16dp">
                 <Button
                     android:id="@+id/btnBack"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/bg_button"
                     android:text="Quay Lại"
 
@@ -707,8 +713,9 @@
                 <!-- Nút lưu -->
                 <Button
                     android:id="@+id/btnSaveContract"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/bg_button"
                     android:text="Xác nhận"
 
@@ -722,4 +729,16 @@
         </LinearLayout>
     </ScrollView>
 
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingIndicator"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_centerInParent="true"
+            app:lottie_fileName="loading.json"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 </LinearLayout>

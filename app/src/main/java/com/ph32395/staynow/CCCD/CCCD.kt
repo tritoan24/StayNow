@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
@@ -35,7 +36,11 @@ class CCCD : AppCompatActivity() {
     private lateinit var chooseImageButton: Button
     private lateinit var cameraExecutor: ExecutorService
 
+    //khai báo viewmodel
+    private val viewModel: CccdViewModel by viewModels()
 
+    // Biến kiểm tra trạng thái quét mã QR
+    private var isScanning = true
 
     private val SECRET_KEY = "MySecretKey12345"
 
@@ -50,6 +55,9 @@ class CCCD : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cccd)
+
+        //khởi tạo viewmodel
+
 
         previewView = findViewById(R.id.cameraPreview)
         chooseImageButton = findViewById(R.id.chooseImageButton)
@@ -107,6 +115,11 @@ class CCCD : AppCompatActivity() {
     }
 
     private fun processImageProxy(imageProxy: ImageProxy) {
+        if (!isScanning) {
+            imageProxy.close() // Nếu không cần quét, đóng hình ảnh ngay lập tức
+            return
+        }
+
         val mediaImage = imageProxy.image
         if (mediaImage != null) {
             val inputImage = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
@@ -117,6 +130,7 @@ class CCCD : AppCompatActivity() {
                     for (barcode in barcodes) {
                         barcode.rawValue?.let {
                             Log.d("QR Code", "Dữ liệu mã QR: $it")
+                            isScanning = false
                             handleQRCodeData(it)
                         }
                     }
@@ -157,16 +171,33 @@ class CCCD : AppCompatActivity() {
     }
 
     private fun handleQRCodeData(data: String) {
-        SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-            .setTitleText("Thông báo")
-            .setContentText("Thông tin: $data\nBạn có muốn lưu không?")
-            .setConfirmText("Lưu")
-            .setCancelText("Hủy")
-            .setConfirmClickListener { dialog ->
-                dialog.dismissWithAnimation()
-                saveToFirestore(data)
+        val cccd = parseQRCodeData(data)["So_cccd"]
+        cccd?.let {
+            // Kiểm tra xem CCCD đã tồn tại trong Firestore chưa
+            checkIfCccdExists(it) { exists ->
+                if (exists) {
+                    SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Thông báo")
+                        .setContentText("CCCD đã tồn tại trong hệ thống!")
+                        .setConfirmText("OK")
+                        .setConfirmClickListener { dialog ->
+                            dialog.dismissWithAnimation()
+                        }
+                        .show()
+                } else {
+                    SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Thông báo")
+                        .setContentText("Thông tin: $data\nBạn có muốn lưu không?")
+                        .setConfirmText("Lưu")
+                        .setCancelText("Hủy")
+                        .setConfirmClickListener { dialog ->
+                            dialog.dismissWithAnimation()
+                            saveToFirestore(data) // Lưu vào Firestore nếu CCCD chưa tồn tại
+                        }
+                        .show()
+                }
             }
-            .show()
+        }
     }
 
     private fun saveToFirestore(qrData: String) {
@@ -246,6 +277,41 @@ class CCCD : AppCompatActivity() {
                 Toast.makeText(this, "Cập nhật trạng thái thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
+
+    fun checkIfCccdExists(cccd: String, onResult: (Boolean) -> Unit) {
+        firestore.collection("CCCD")
+            .get() // Lấy tất cả các tài liệu trong collection
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    var cccdFound = false
+                    for (document in querySnapshot) {
+                        val encryptedCccd = document.getString("So_cccd") // Giả sử trường CCCD là "So_cccd"
+                        if (encryptedCccd != null) {
+                            try {
+                                // Giải mã CCCD
+                                val decryptedCccd = viewModel.decrypt(encryptedCccd, SECRET_KEY)
+                                if (decryptedCccd == cccd) {
+                                    cccdFound = true
+                                    break // Nếu tìm thấy thì dừng vòng lặp
+                                }
+                            } catch (e: Exception) {
+                                Log.e("Decryption", "Lỗi giải mã CCCD: ${e.message}")
+                            }
+                        }
+                    }
+                    onResult(cccdFound) // Trả kết quả cho callback
+                } else {
+                    // Nếu không có tài liệu nào
+                    onResult(false)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Lỗi kiểm tra CCCD: ${exception.message}")
+                onResult(false) // Nếu có lỗi thì cho là không tìm thấy
+            }
+    }
+
 
 
     override fun onDestroy() {

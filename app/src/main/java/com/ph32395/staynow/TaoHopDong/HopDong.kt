@@ -125,6 +125,8 @@ data class Invoice(
     val kieuHoadon: String = "",
     val paymentDate: String = "",
     val ngayThanhToan: Int = 1,
+    val soDienCu: Int = 0,
+    val soNuocCu: Int = 0,
 ) : Serializable
 
 // Trạng thái hợp đồng

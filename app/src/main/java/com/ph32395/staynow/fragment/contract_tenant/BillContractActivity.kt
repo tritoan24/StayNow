@@ -21,7 +21,9 @@ import com.ph32395.staynow.utils.Constants
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPaySDK
 import java.text.NumberFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 @Suppress("DEPRECATION")
@@ -94,15 +96,35 @@ class BillContractActivity : AppCompatActivity() {
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvRoomDeposit.text = formatCurrency(invoice.tienCoc)
 
-        // Phí cố định
-//        val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
-//        binding.rcvFixedFees.adapter = fixedFeeAdapter
-//        binding.rcvFixedFees.layoutManager = LinearLayoutManager(this)
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        try {
+            // Phân tích chuỗi thành đối tượng Date
+            val date = formatter.parse(invoice.ngayLap)
 
-        // Phí biến động
-//        val variableFeeAdapter = VariableFeeAdapter(invoice.phiBienDong)
-//        binding.rcvVariableFees.adapter = variableFeeAdapter
-//        binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
+            // Thêm 3 ngày
+            val calendar = Calendar.getInstance()
+            calendar.time = date
+            calendar.add(Calendar.DAY_OF_YEAR, 3)
+
+            // Chuyển lại thành chuỗi với định dạng
+            val newDate = formatter.format(calendar.time)
+
+            // Hiển thị kết quả
+            binding.tvReminder.text = "Vui lòng thanh toán hợp đồng trước ngày $newDate. Cảm ơn bạn"
+
+        } catch (e: ParseException) {
+            e.printStackTrace()  // In ra lỗi nếu có vấn đề với việc phân tích ngày
+        }
+
+//         Phí cố định
+        val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
+        binding.rcvFixedFees.adapter = fixedFeeAdapter
+        binding.rcvFixedFees.layoutManager = LinearLayoutManager(this)
+
+//         Phí biến động
+        val variableFeeAdapter = VariableFeeAdapter(invoice.phiBienDong)
+        binding.rcvVariableFees.adapter = variableFeeAdapter
+        binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
 
     }
 

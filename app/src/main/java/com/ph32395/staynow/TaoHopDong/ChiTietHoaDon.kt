@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.databinding.ActivityChiTietHoaDonBinding
@@ -32,7 +33,7 @@ class ChiTietHoaDon : AppCompatActivity() {
         binding = ActivityChiTietHoaDonBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val idHopDong = intent.getStringExtra("idHopDong")
+        val idHopDong = intent.getStringExtra("CONTRACT_ID")
 
         idHopDong?.let {
             viewModelHopDong.fetchInvoiceDetails(it)
@@ -44,14 +45,15 @@ class ChiTietHoaDon : AppCompatActivity() {
         }
 
         // Sự kiện quay lại
-        binding.btnBack.setOnClickListener { finish() }
-        // Sự kiện xem hợp đồng
+        binding.btnBack.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
         binding.btnContract.setOnClickListener {
-            //chuyển id hợp đồng sao màn hình hợp đồng
-            val intent = Intent(this, HopDong::class.java)
-            intent.putExtra("idHopDong", idHopDong)
+            val intent = Intent(this, ChiTietHopDong::class.java)
+            intent.putExtra("CONTRACT_ID", idHopDong)
             startActivity(intent)
         }
+
     }
 
     private fun updateUI(invoice: Invoice) {

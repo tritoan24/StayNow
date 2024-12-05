@@ -35,17 +35,28 @@
         <item name="android:textColor">@color/black</item> <!-- Màu chữ mặc định -->
     </style>
 
-<!--    Border cho Image trong RecyclerView chi tiet tro-->
+    <!--    Border cho Image trong RecyclerView chi tiet tro-->
     <style name="BorderImageItem">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10dp</item>
-<!--        <item name="strokeColor">@color/purple_border_bottom</item>-->
-<!--        <item name="strokeWidth">8dp</item>-->
+        <!--        <item name="strokeColor">@color/purple_border_bottom</item>-->
+        <!--        <item name="strokeWidth">8dp</item>-->
     </style>
 
-<!--    Border anh thanh hinh tron-->
+    <!--    Border anh thanh hinh tron-->
     <style name="CircularShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Theme.StayNow.Fullscreen" parent="Theme.StayNow">
+        <item name="android:actionBarStyle">@style/Widget.Theme.StayNow.ActionBar.Fullscreen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.StayNow.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
 </resources>

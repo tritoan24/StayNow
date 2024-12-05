@@ -1,13 +1,11 @@
-package com.ph32395.staynow.fragment.contract_tenant
+package com.ph32395.staynow.TaoHoaDon
 
-import ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +17,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class ContractAdapter(
-    private val viewmodel: ContractViewModel,
+class ContractAdapterInvoice(
     private val type: ContractStatus,
-    private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit
-) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
+) : RecyclerView.Adapter<ContractAdapterInvoice.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContractViewHolder {
@@ -59,10 +55,7 @@ class ContractAdapter(
         private val tvEndDate: TextView = itemView.tvEndDate
         private val tvRentDuration: TextView = itemView.tvRentDuration
         private val tvRemainingTime: TextView = itemView.tvRemainingTime
-        private val llBtn: LinearLayout = itemView.llBtn
 
-        private val btnXacNhan: TextView = itemView.btnConfirm
-        private val btnCancel: TextView = itemView.btnCancel
 
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n", "DefaultLocale")
@@ -74,54 +67,19 @@ class ContractAdapter(
             tvStartDate.text = "Ngày Bắt Đầu: ${contract.ngayBatDau}"
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
+            tvRemainingTime.text = calculateRemainingDays(contract.ngayKetThuc)
 
-            when (type) {
-                ContractStatus.ACTIVE -> {
-                    tvRemainingTime.text = calculateRemainingDays(contract.ngayKetThuc)
 
-                    // Kiểm tra nếu ngày hết hạn đã qua, thay đổi trạng thái hợp đồng thành EXPIRED
-                    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                    val parsedEndDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
-
-                    if (parsedEndDate.isBefore(LocalDate.now())) {
-                        onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
-                        updateContractList(contractList)
-                    }
-                }
-
-                ContractStatus.PENDING -> {
-                    tvRemainingTime.visibility = View.GONE
-                    llBtn.visibility = View.VISIBLE
-                    btnXacNhan.setOnClickListener {
-
-                        val intent = Intent(itemView.context, BillContractActivity::class.java)
-
-                        intent.putExtra("hoaDonHopDong", contract.hoaDonHopDong)
-                        intent.putExtra("hopDong", contract)
-
-                        itemView.context.startActivity(intent)
-                    }
-                    btnCancel.setOnClickListener {
-                        onStatusUpdated(
-                            contract.maHopDong,
-                            ContractStatus.TERMINATED
-                        )
-                        updateContractList(contractList)
-                    }
-                }
-
-                ContractStatus.EXPIRED -> {
-                    tvRemainingTime.text = "Hợp đồng đã hết hạn"
-                }
-
-                ContractStatus.TERMINATED -> {
-                    tvRemainingTime.text = "Hợp đồng đã bị hủy"
-                }
-            }
-
-            // sự kiện ấn vào item
-            itemView.setOnClickListener {
+            // sự kiện ấn giữ vào item
+            itemView.setOnLongClickListener( View.OnLongClickListener {
                 val intent = Intent(itemView.context, ChiTietHopDong::class.java)
+                intent.putExtra("CONTRACT_ID", contract.maHopDong)
+                itemView.context.startActivity(intent)
+                true
+            })
+            //sự kiện ấn vào item
+            itemView.setOnClickListener {
+                val intent = Intent(itemView.context, CreateInvoice::class.java)
                 intent.putExtra("CONTRACT_ID", contract.maHopDong)
                 itemView.context.startActivity(intent)
             }

@@ -12,25 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_weight="0"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:layout_margin="5dp"
-            tools:ignore="InefficientWeight,NestedWeights,UseCompoundDrawables,UselessParent">
-
-            <ImageView
-                android:id="@+id/iv_back"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_back_black"
-                tools:ignore="ContentDescription" />
-
-        </LinearLayout>
         <androidx.cardview.widget.CardView
             android:id="@+id/fchatwithadmin"
             android:layout_width="wrap_content"

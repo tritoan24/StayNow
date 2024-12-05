@@ -37,6 +37,7 @@ import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.Model.NguoiDungModel;
 import com.ph32395.staynow.R;
 import com.ph32395.staynow.utils.Constants;
+import com.ph32395.staynow.ChucNangChung.LoadingUtil;
 
 import java.util.Objects;
 
@@ -48,6 +49,8 @@ public class DangNhap extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private ImageView img_anhienpass;
 
+
+    private LoadingUtil loadingUtil;
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     private static final int RC_SIGN_IN_REGISTER = 9001;
 
@@ -67,6 +70,9 @@ public class DangNhap extends AppCompatActivity {
         btnDangNhapGoogle = findViewById(R.id.loginWithGGButton);
         TextView txtquenmk = findViewById(R.id.Txtquenmk);
         CheckBox cbremember = findViewById(R.id.Cbremember);
+
+        //khởi tạo biến loadingUtil
+        loadingUtil = new LoadingUtil(this);
 
         // Khởi tạo FirebaseAuth
         mAuth = FirebaseAuth.getInstance();
@@ -103,12 +109,16 @@ public class DangNhap extends AppCompatActivity {
         btnDangNhap.setOnClickListener(v -> {
             String email = edMail.getText().toString().trim();
             String password = edPass.getText().toString().trim();
+            // Initialize the loading utility
+            loadingUtil = new LoadingUtil(this);
+
 
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
             } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 edMail.setError("Email không hợp lệ");
             } else {
+                loadingUtil.show();
                 //Dang nhap Firebase Auth truoc
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(DangNhap.this, task -> {
@@ -131,6 +141,7 @@ public class DangNhap extends AppCompatActivity {
                                                 if ("HoatDong".equals(status)) {
                                                     if (daXacthuc) {
                                                         if (!loaiTaiKhoan.equals("ChuaChon")) {
+                                                            loadingUtil.hide();
 //                                                            Luu trang thai da dang nhap vao SharedPreferences
                                                             SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                             SharedPreferences.Editor editor = prefs.edit();
@@ -142,6 +153,7 @@ public class DangNhap extends AppCompatActivity {
                                                             startActivity(new Intent(DangNhap.this, MainActivity.class));
                                                             finish();
                                                         } else {
+                                                            loadingUtil.hide();
 //                                                            neu loai tai khoan chua chon thi den man loai tai khoan
                                                             startActivity(new Intent(DangNhap.this, ChonLoaiTK.class));
                                                         }
@@ -179,6 +191,7 @@ public class DangNhap extends AppCompatActivity {
         });
 
         btnDangNhapGoogle.setOnClickListener(v -> {
+            loadingUtil.show();
             Intent signInIntent = registerWithGoogle.getGoogleSignInClient().getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN_REGISTER);
         });
@@ -255,6 +268,7 @@ public class DangNhap extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        loadingUtil = new LoadingUtil(this);
 
         if (requestCode == RC_SIGN_IN_REGISTER) {
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
@@ -279,11 +293,11 @@ public class DangNhap extends AppCompatActivity {
                                             String loaiTaiKhoan = snapshot.child("loai_taikhoan").getValue(String.class);
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
-
                                                 if (daXacThuc) {
                                                     assert loaiTaiKhoan != null;
                                                     Intent intent;
                                                     if (!loaiTaiKhoan.equals("ChuaChon")) {
+                                                        loadingUtil.hide();
                                                         SharedPreferences prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE);
                                                         SharedPreferences.Editor editor = prefs.edit();
                                                         editor.putBoolean("is_logged_in", true);
@@ -291,6 +305,7 @@ public class DangNhap extends AppCompatActivity {
                                                         editor.apply();
                                                         intent = new Intent(DangNhap.this, MainActivity.class);
                                                     } else {
+                                                        loadingUtil.hide();
                                                         intent = new Intent(DangNhap.this, ChonLoaiTK.class);
                                                     }
                                                     startActivity(intent);
@@ -299,6 +314,7 @@ public class DangNhap extends AppCompatActivity {
                                                 }
 
                                             } else {
+                                                loadingUtil.hide();
                                                 Toast.makeText(DangNhap.this, "Tài khoản của bạn đã bị khóa", Toast.LENGTH_SHORT).show();
                                                 // Đăng xuất tài khoản Google hiện tại
                                                 GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(DangNhap.this, new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build());
@@ -339,6 +355,7 @@ public class DangNhap extends AppCompatActivity {
 
                 @Override
                 public void onSignInFailed(Exception e) {
+                    loadingUtil.hide();
                     showFailureAnimation("Đăng nhập thất bại");
                 }
             });

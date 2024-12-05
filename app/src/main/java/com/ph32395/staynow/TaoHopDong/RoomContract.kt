@@ -125,7 +125,7 @@ class RoomContract {
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
             "ngayThanhToan" to contract.ngayThanhToan,
-            "thongTinPhong" to createRoomInfoMap(contract.thongtinphong),
+            "thongtinphong" to createRoomInfoMap(contract.thongtinphong),
             "maPhong" to contract.thongtinphong.maPhongTro,
             "chuNha" to createLandlordInfoMap(contract.chuNha),
             "nguoiThue" to createTenantInfoMap(contract.nguoiThue),
@@ -222,6 +222,8 @@ class RoomContract {
             "tienPhong" to ivoices.tienPhong,
             "tienCoc" to ivoices.tienCoc,
             "tongTienDichVu" to ivoices.tongTienDichVu,
+            "soDienCu" to ivoices.soDienCu,
+            "soNuocCu" to ivoices.soNuocCu,
             "phiCoDinh" to ivoices.phiCoDinh.map { fee ->
                 hashMapOf(
                     "tenDichVu" to fee.tenDichVu,
@@ -342,5 +344,22 @@ class RoomContract {
             onFailure(e)
         }
     }
+    suspend fun getAllContractsByUser(userId: String): List<HopDong> {
+        return try {
+            val db = FirebaseFirestore.getInstance()
+            val querySnapshot = db.collection("HopDong")
+                .whereEqualTo("chuNha.maNguoiDung", userId)
+                .get()
+                .await() // Sử dụng await() để chờ kết quả của Firestore
+            querySnapshot.documents.mapNotNull { document ->
+                document.toObject(HopDong::class.java)
+            }
+        } catch (exception: Exception) {
+            Log.e("RoomContract", "Lỗi khi lấy hợp đồng: ${exception.message}")
+            emptyList() // Trả về danh sách rỗng nếu có lỗi
+        }
+    }
+
+
 
 }

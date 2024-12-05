@@ -46,6 +46,12 @@ class ContractViewModel : ViewModel() {
     private val _terminatedContracts = MutableLiveData<List<HopDong>>()
     val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
 
+    private val _allContracts = MutableLiveData<List<HopDong>>()
+    val allContracts: LiveData<List<HopDong>> get() = _allContracts
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> get() = _loading
+
     val contractStatus = MutableLiveData<String>()
     val errorMessage = MutableLiveData<String>()
 
@@ -182,8 +188,24 @@ class ContractViewModel : ViewModel() {
             }
         }
     }
+    //hàm lấy tất cả hợp đồng theo người dùng
+    fun fetchAllContractsByUser(userId: String) {
+        viewModelScope.launch {
+            _loading.value = true // Hiển thị trạng thái đang tải
+            try {
+                val contracts = contractRepository.getAllContractsByUser(userId)
+                _allContracts.value = contracts // Cập nhật LiveData
+            } catch (e: Exception) {
+                Log.e("ContractViewModel", "Lỗi khi lấy hợp đồng: ${e.message}", e)
+                _allContracts.value = emptyList() // Đảm bảo UI hiển thị danh sách rỗng
+            } finally {
+                _loading.value = false // Ẩn trạng thái đang tải
+            }
+        }
+    }
 
-// Lưu thông tin nhắn tin vào bảng StatusMessages
+
+    // Lưu thông tin nhắn tin vào bảng StatusMessages
     fun saveMessageStatus(tenantId: String, landlordId: String) {
         val contractMessagesRef = FirebaseFirestore.getInstance().collection("StatusMessages")
 
@@ -221,4 +243,5 @@ class ContractViewModel : ViewModel() {
             }
         }
     }
+
 }

@@ -11,18 +11,20 @@
     android:background="@drawable/background_gradient"
     >
     <ImageView
-        android:layout_width="340dp"
-        android:layout_height="370dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:src="@drawable/imgsplash"
-        android:layout_marginBottom="20dp"
         />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingSplash"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="loading.json"
+            app:lottie_loop="true" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

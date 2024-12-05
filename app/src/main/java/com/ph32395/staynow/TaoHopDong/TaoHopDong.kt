@@ -36,6 +36,7 @@ import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.CCCD.CccdViewModel
+import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.widget.toast
@@ -107,7 +108,7 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var txtDiaChiNT: TextView
     private lateinit var txtNgayCapNT: TextView
 
-    private lateinit var btnSave: TextView
+    private lateinit var btnSaveContract: Button
     private lateinit var txtNgayThanhToan: TextView
     private lateinit var editorDieuKhoan: RichEditor
     private lateinit var note: TextView
@@ -120,7 +121,8 @@ class TaoHopDong : AppCompatActivity() {
 
     private var giaPhong: Double = 0.0
 
-
+    //khai báo loading animation
+    private lateinit var loadingUtil: LoadingUtil
 
 
     @SuppressLint("MissingInflatedId")
@@ -136,6 +138,10 @@ class TaoHopDong : AppCompatActivity() {
         if (txtNgayThanhToan.text.toString().isEmpty()) {
             txtNgayThanhToan.text = startDate.get(Calendar.DAY_OF_MONTH).toString()
         }
+
+
+        // Khởi tạo LoadingUtil
+        loadingUtil = LoadingUtil(this)
 
 
         calendarView = findViewById(R.id.calendarViewStartDate)
@@ -333,10 +339,10 @@ class TaoHopDong : AppCompatActivity() {
             finish()
         }
         // Lưu hợp đồng
-        btnSave.setOnClickListener {
+        btnSaveContract.setOnClickListener {
             if(validateContract()) {
+                loadingUtil.show()
                 createAndSaveContract()
-                finish()
             }
         }
     }
@@ -534,7 +540,9 @@ private fun observeViewModel() {
                 idNguoinhan = maNguoiThue,
                 idNguoigui = auth.currentUser?.uid ?: "",
                 ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
-                paymentDate = ""
+                paymentDate = "",
+                soDienCu = edSodien.text.toString().toInt(),
+                soNuocCu = edSonuoc.text.toString().toInt(),
             ),
 
             tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
@@ -553,12 +561,14 @@ private fun observeViewModel() {
                 viewModelHopDong.navigateToContractDetail.collect { contractId ->
                     contractId?.let {
                         val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
-                        intent.putExtra("idHopDong", it)
+                        intent.putExtra("CONTRACT_ID", it)
+                        intent.putExtra("Check", 1)
                         startActivity(intent)
                         // Reset giá trị sau khi chuyển màn
                         viewModelHopDong.resetNavigation()
                         // Đóng màn hình hiện tại sau khi chuyển màn
                         finish()
+                        loadingUtil.hide()
                     }
                 }
             }
@@ -607,7 +617,7 @@ private fun observeViewModel() {
         txtNgayCapNT = findViewById(R.id.txtNgayCapCCCDNT)
 
         // Lưu hợp đồng
-        btnSave = findViewById(R.id.btnSaveContract)
+        btnSaveContract = findViewById(R.id.btnSaveContract)
 
         // Quay lại
         btnBack = findViewById(R.id.btnBack)

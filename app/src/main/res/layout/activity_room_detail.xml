@@ -790,13 +790,15 @@
     </ScrollView>
 
     <!-- ProgressBar để hiển thị khi tải -->
-    <ProgressBar
-        android:id="@+id/progressBarDetail"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingIndicator"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/my_button_background"/>
+        app:lottie_fileName="loading.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -38,6 +38,7 @@ import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
+import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
 import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
@@ -65,6 +66,8 @@ class RoomDetailActivity : AppCompatActivity() {
 
     private lateinit var viewmodelHome:HomeViewModel
 
+    //khai báo loading animation
+    private lateinit var loadingUtil: LoadingUtil
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,7 +78,8 @@ class RoomDetailActivity : AppCompatActivity() {
             finish()
         }
 
-
+//        Khởi tạo LoadingUtil
+        loadingUtil = LoadingUtil(this)
 
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
@@ -210,21 +214,27 @@ class RoomDetailActivity : AppCompatActivity() {
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"))
     }
 
-    private fun createDynamicLink(roomDetailLink: String, callback: (String) -> Unit) {
-        val dynamicLink = FirebaseDynamicLinks.getInstance()
-            .createDynamicLink()
-            .setLink(Uri.parse(roomDetailLink))
-            .setDomainUriPrefix("https://staynowshare.page.link") // Đảm bảo sử dụng domain của bạn
+    private fun createDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
+        val dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLink(Uri.parse(roomDetailLink)) // Liên kết đích
+            .setDomainUriPrefix("https://staynowshare.page.link") // Miền Dynamic Link
             .setAndroidParameters(
-                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow")
+                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow") // Tên gói Android
+                    .setFallbackUrl(Uri.parse("https://fallback.url")) // URL dự phòng (tùy chọn)
+                    .build()
+            )
+            .setSocialMetaTagParameters(
+                DynamicLink.SocialMetaTagParameters.Builder()
+                    .setTitle("Chi tiết phòng trọ") // Tùy chỉnh tiêu đề
+                    .setDescription("Xem phòng trọ chi tiết tại StayNow")
+                    .setImageUrl(Uri.parse("https://link.to/image.png")) // Ảnh minh họa (tùy chọn)
                     .build()
             )
             .buildDynamicLink()
 
-        val dynamicLinkUri = dynamicLink.uri.toString()
-
-        callback(dynamicLinkUri)
+        onComplete(dynamicLink.uri.toString())
     }
+
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
@@ -282,7 +292,6 @@ class RoomDetailActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBarDetail)
 
 
 //        Quan sat chi tiet phong tro chinh
@@ -478,9 +487,13 @@ class RoomDetailActivity : AppCompatActivity() {
             }
         }
 
-        // Hiển thị ProgressBar khi bắt đầu tải dữ liệu
         viewModel.isLoading.observe(this) { isLoading ->
-            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            if (isLoading) {
+                loadingUtil.show()
+            }
+            else{
+                loadingUtil.hide()
+            }
         }
 
 //        Quan sat thong tin gioi tinh

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        >
+
+        <TableRow
+            android:padding="8dp"
+            android:background="@drawable/border"
+            >
+            <TextView
+                android:id="@+id/tvSTT"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:textSize="12dp"
+                android:text="1" />
+            <TextView
+                android:id="@+id/tvTenDichVu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.6"
+                android:textSize="12dp"
+                android:text="Tiền Phòng" />
+            <TextView
+                android:id="@+id/tvDonGia"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:textSize="12dp"
+                android:text="3,500" />
+            <TextView
+                android:id="@+id/tvDonVi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:textSize="12dp"
+                android:text="/Số" />
+
+            <TextView
+                android:id="@+id/tvThanhTien"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:textSize="12dp"
+                android:text="0 đ" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

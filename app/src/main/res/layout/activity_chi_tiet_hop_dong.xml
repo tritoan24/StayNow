@@ -1,36 +1,410 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:id="@+id/main"
+    >
 
-    <ScrollView
-        android:id="@+id/scrollViewContract"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/btnExportPdf">
-
-        <TextView
-            android:id="@+id/tvContractDetails"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:padding="16dp" />
-    </ScrollView>
-
-    <Button
-        android:id="@+id/btnExportPdf"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Xuất PDF"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="3dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Độc lập - Tự do - Hạnh phúc "
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="HỢP ĐỒNG THUÊ PHÒNG TRỌ"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+        <TextView
+            android:id="@+id/tv_contract_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Hợp đồng số: "
+            android:textSize="12dp"
+            android:layout_marginBottom="10dp"
+            />
+
+
+        <TextView
+            android:id="@+id/tvdatecreatecontract"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hôm nay, ngày …… tháng …. năm …….." />
+        <!-- Thông Tin Hợp Đồng -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chúng tôi gồm:" />
+
+        <!-- Thông Tin Chủ Nhà -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. Đại diện bên cho thuê phòng trọ (Bên A):"
+            android:layout_marginTop="8dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            >
+            <TextView
+                android:id="@+id/tv_landlord_name"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Họ Tên: " />
+            <TextView
+                android:id="@+id/tv_landlord_birth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sinh Ngày: " />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_landlord_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Địa Chỉ: " />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_landlord_cccd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="CCCD Số:" />
+            <TextView
+                android:id="@+id/tv_landlord_datecccd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cấp ngày: " />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_landlord_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Số Điện Thoại: " />
+
+        <!-- Thông Tin Người Thuê -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. Bên thuê phòng trọ (Bên B):"
+            android:layout_marginTop="8dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            >
+            <TextView
+                android:id="@+id/tv_tenant_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Họ Tên: " />
+            <TextView
+                android:id="@+id/tv_tenant_birth"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Sinh Ngày: " />
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/tv_tenant_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Địa Chỉ: " />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/tv_tenant_cccd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="CCCD Số:" />
+            <TextView
+                android:id="@+id/tv_tenant_datecccd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cấp ngày: " />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_tenant_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Số Điện Thoại: " />
+
+        <!-- Thông Tin Phòng -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sau khi bàn bạc kỹ lưỡng, hai bên cùng thống nhất như sau:"
+            android:layout_marginTop="15dp"
+            />
+        <TextView
+            android:id="@+id/tv_room_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Bên A đồng ý cho bên B thuê 01 phòng ở tại địa chỉ:" />
+        <TextView
+            android:id="@+id/tv_room_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên Phòng: " />
+        <!-- Thông Tin Tài Chính -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Thông Tin Tài Chính"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:id="@+id/tv_rent_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Giá Thuê: " />
+
+        <TextView
+            android:id="@+id/tv_deposit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiền Cọc: " />
+
+        <!-- Phí Dịch Vụ -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Phí Dịch Vụ"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <LinearLayout
+            android:id="@+id/tvServiceFee"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Các chi phí dịch vụ sẽ được tính vào các cuối tháng" />
+
+        <!-- Tiện Nghi -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiện Nghi"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_amenities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tiện Nghi Phòng: " />
+
+        <!-- Nội Thất -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nội Thất"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:id="@+id/tv_furniture"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nội Thất Phòng: " />
+
+        <!-- Thời hạn hợp đồng -->
+        <TextView
+            android:id="@+id/tv_contract_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Hợp đồng có giá trị kể từ ngày …… tháng …… năm 20…. đến ngày ….. tháng …. năm 20…."
+            />
+
+        <!-- Điều Khoản -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TRÁCH NHIỆM CỦA CÁC BÊN"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="* Trách nhiệm của bên A:"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="- Tạo mọi điều kiện thuận lợi để bên B thực hiện theo hợp đồng. \n- Cung cấp nguồn điện, nước, wifi cho bên B sử dụng."
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="* Trách nhiệm của bên B:"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="- Thanh toán đầy đủ các khoản tiền theo đúng thỏa thuận.\n
+- Bảo quản các trang thiết bị và cơ sở vật chất của bên A trang bị cho ban đầu (làm hỏng phải sửa, mất phải đền).\n
+- Không được tự ý sửa chữa, cải tạo cơ sở vật chất khi chưa được sự đồng ý của bên A.\n
+- Giữ gìn vệ sinh trong và ngoài khuôn viên của phòng trọ.\n
+- Bên B phải chấp hành mọi quy định của pháp luật Nhà nước và quy định của địa phương.\n"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TRÁCH NHIỆM CHUNG"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="- Hai bên phải tạo điều kiện cho nhau thực hiện hợp đồng.\n
+
+- Trong thời gian hợp đồng còn hiệu lực nếu bên nào vi phạm các điều khoản đã thỏa thuận thì bên còn lại có quyền đơn phương chấm dứt hợp đồng; nếu sự vi phạm hợp đồng đó gây tổn thất cho bên bị vi phạm hợp đồng thì bên vi phạm hợp đồng phải bồi thường thiệt hại.\n
+- Một trong hai bên muốn chấm dứt hợp đồng trước thời hạn thì phải báo trước cho bên kia ít nhất 30 ngày và hai bên phải có sự thống nhất.\n
+- Bên A phải trả lại tiền đặt cọc cho bên B.\n
+- Bên nào vi phạm điều khoản chung thì phải chịu trách nhiệm trước pháp luật.\n
+- Hợp đồng được lập thành 02 bản có giá trị pháp lý như nhau, mỗi bên giữ một bản.\n"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Điều Khoản Hợp Đồng: "
+            android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            />
+        <TextView
+            android:id="@+id/tv_contract_dieukhoan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Điều khoản: " />
+        <TextView
+            android:id="@+id/tv_contract_note"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ghi chú: " />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:text="Đại Diện Bên A"
+                android:gravity="center"
+                />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Đại Diện Bên B"
+                android:textStyle="bold"
+                android:textSize="14dp"
+                android:gravity="center"
+                />
+
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Thoát"
+            android:id="@+id/btn_back"
+            android:padding="5dp"
+            android:background="@drawable/bg_button_detail"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            />
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Xem hóa đơn"
+            android:id="@+id/seenContract"
+            android:padding="5dp"
+            android:background="@drawable/bg_button_detail"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:visibility="gone"
+            />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
