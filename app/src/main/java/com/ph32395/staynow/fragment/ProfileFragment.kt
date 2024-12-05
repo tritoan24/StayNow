@@ -70,6 +70,7 @@ class ProfileFragment : Fragment() {
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
         llContract = view.findViewById(R.id.ll_hopdong)
 
+
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
         mDatabase = FirebaseDatabase.getInstance().reference
@@ -130,6 +131,8 @@ class ProfileFragment : Fragment() {
                 }
             })
         }
+
+
 
         // Xử lý sự kiện nhấn nút đăng xuất
         logoutButton.setOnClickListener {
@@ -213,5 +216,6 @@ class ProfileFragment : Fragment() {
             Toast.makeText(context, "Không thể chuyển Fragment", Toast.LENGTH_SHORT).show()
         }
     }
+
 
 }

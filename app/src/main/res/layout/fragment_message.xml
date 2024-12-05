@@ -3,69 +3,108 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".fragment.MessageFragment">
 
-
+    <!--Content-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/fchatwithadmin"
-            android:layout_width="wrap_content"
+        >
+        <!--Header-->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_gravity="top"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="10dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                >
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="0.3"
-                    android:src="@drawable/admin"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    />
+            android:orientation="horizontal"
+            android:padding="15dp">
 
             <TextView
+                android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:text="Nhắn tin với chúng tôi"
+                android:fontFamily="serif"
+                android:gravity="center"
+                android:text="Tin nhắn"
                 android:textSize="20sp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
+                android:paddingLeft="20dp"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/btnAdminSuport"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:background="#fff"
+                android:src="@drawable/ic_customer_support"
                 />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="#C8C8C8" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/custom_edittext_search"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <EditText
+                android:id="@+id/edtSearch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:fontFamily="serif"
+                android:hint="Tìm kiếm......."
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:lines="1"
+                android:padding="10dp"
+                android:textSize="13dp" />
+
+
+
+            <ImageView
+                android:id="@+id/ivClearText"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:src="@drawable/icon_close"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:id="@+id/btnSearch"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="15dp"
+                android:background="@drawable/custom_loupe"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="17dp"
+                    android:layout_height="17dp"
+                    android:src="@drawable/icon_search_white" />
             </LinearLayout>
 
+        </LinearLayout>
 
-
-    </androidx.cardview.widget.CardView>
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvListTinNhan"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/rv_message"
-            android:layout_margin="10dp"
-            android:layout_gravity="center"
-   />
-
-        <TextView
-            android:id="@+id/tv_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No message"
-            android:textSize="20sp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="15dp" />
     </LinearLayout>
-
 
 
 </FrameLayout>
