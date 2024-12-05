@@ -8,15 +8,10 @@ import android.os.StrictMode
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
-import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
-import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
-import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService
 import com.ph32395.staynow.Activity.ChoosePaymentActivity
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
@@ -30,11 +25,10 @@ import com.ph32395.staynow.utils.Constants
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPaySDK
 import java.text.NumberFormat
-import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+
 @Suppress("DEPRECATION")
 class BillContractActivity : AppCompatActivity() {
 
