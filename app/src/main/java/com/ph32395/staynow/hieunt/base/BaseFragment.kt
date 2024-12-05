@@ -19,6 +19,7 @@ import androidx.viewbinding.ViewBinding
 import com.ph32395.staynow.hieunt.helper.PermissionHelper
 import com.ph32395.staynow.hieunt.helper.SystemUtils
 import com.ph32395.staynow.hieunt.view.dialog.LoadingDialog
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 
 abstract class BaseFragment<VB : ViewBinding,VM : ViewModel> : Fragment() {
     private var _binding: VB? = null
@@ -60,7 +61,7 @@ abstract class BaseFragment<VB : ViewBinding,VM : ViewModel> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this)[initViewModel()]
+        viewModel = ViewModelProvider(this, ViewModelFactory(requireContext()))[initViewModel()]
         dataObserver()
     }
 

@@ -39,15 +39,14 @@ class CapNhatViTri : AppCompatActivity() {
         binding = ActivityCapNhatViTriBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //tạo sự kiện khi ấn vào nút update_button
-        binding.updateButton.setOnClickListener {
-            doiToaDoRaViTriCuThe(it)
-        }
         // Kiểm tra Intent
         phongTroId = intent.getStringExtra("PHONG_TRO_ID")
         Log.d("DebugIntent", "Received PHONG_TRO_ID: $phongTroId")
 
-        // Nhận ID phòng trọ từ Intent
+        //tạo sự kiện khi ấn vào nút update_button
+        binding.updateButton.setOnClickListener {
+            doiToaDoRaViTriCuThe(it)
+        }
 
         // Khởi tạo FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -114,7 +113,9 @@ class CapNhatViTri : AppCompatActivity() {
             PhongTro.update(mapOf(
                 "Dia_chi" to diachi,
                 "Dia_chichitiet" to diachict,
-                "Trang_thaidc" to Trang_thaidc
+                "Trang_thaidc" to Trang_thaidc,
+                "Trang_thailuu" to false,
+                "Trang_thaiduyet" to "ChoDuyet"
             )).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("Firestore", "Cập nhật thành công")

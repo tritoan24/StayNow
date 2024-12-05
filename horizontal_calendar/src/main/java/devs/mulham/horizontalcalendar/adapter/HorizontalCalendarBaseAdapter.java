@@ -185,12 +185,12 @@ public abstract class HorizontalCalendarBaseAdapter<VH extends DateViewHolder, T
 
         @Override
         public void onClick(View v) {
-            int position = viewHolder.getAdapterPosition();
-            if (position == -1)
-                return;
-
-            horizontalCalendar.getCalendarView().setSmoothScrollSpeed(HorizontalLayoutManager.SPEED_SLOW);
-            horizontalCalendar.centerCalendarToPosition(position);
+//            int position = viewHolder.getAdapterPosition();
+//            if (position == -1)
+//                return;
+//
+//            horizontalCalendar.getCalendarView().setSmoothScrollSpeed(HorizontalLayoutManager.SPEED_SLOW);
+//            horizontalCalendar.centerCalendarToPosition(position);
         }
     }
 

@@ -12,11 +12,16 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.ph32395.staynow.Maps.MapsActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ActivitySearchBinding
@@ -27,24 +32,24 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListener {
+class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListener,
+    BottomSheetFilter.FilterCriteriaListener {
 
     private lateinit var binding: ActivitySearchBinding
     private var TAG: String = "zzzzzzzzzz"
-    //Realtime
-//    private val database = FirebaseDatabase.getInstance()
-//    private val searchHistoryRef = database.getReference("LichSuTimKiem")
-//    private val dataRoom = database.getReference("PhongTro")
-
     private val firestore = FirebaseFirestore.getInstance()
     private val searchHistoryRef = firestore.collection("LichSuTimKiem")
     private val dataRoom = firestore.collection("PhongTro")
-
     private val homeViewModel: HomeViewModel = HomeViewModel()
-    val listFullRoom = mutableListOf<Pair<String, PhongTroModel>>()
+    var listFullRoom = mutableListOf<Pair<String, PhongTroModel>>()
     val listKeySearch: MutableList<SearchDataModel> = mutableListOf()
+    var selectedTypesViewModel: MutableList<String> = mutableListOf()
+    var selectedTienNghiViewModel: MutableList<String> = mutableListOf()
+    var selectedNoiThatViewModel: MutableList<String> = mutableListOf()
+    private lateinit var adapter: PhongTroAdapter
     var min: Int = 0
     var max: Int = 0
+    var isAscending = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
@@ -53,10 +58,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         readKeyWordSearch(userId)
 
-        val adapter = PhongTroAdapter(listFullRoom, homeViewModel)
-        binding.rvListRoom.layoutManager = GridLayoutManager(this@SearchActivity, 2)
-        binding.rvListRoom.adapter = adapter
-        readListRoom(adapter)
+        updateUI(listFullRoom, homeViewModel)
+        readListRoom()
 
         binding.edtSearch.setOnFocusChangeListener { v, hasFocus ->
             Log.d(TAG, "onCreate: hasFocus-- $hasFocus")
@@ -90,7 +93,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 searchRoomByNameOrDescription(query, adapter)
             } else {
                 // Tải lại toàn bộ danh sách nếu không có từ khóa
-                readListRoom(adapter)
+                readListRoom()
             }
             hideKeyClearFocus()
         }
@@ -100,13 +103,35 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             priceRangeBottomSheet.show(supportFragmentManager, priceRangeBottomSheet.tag)
             priceRangeBottomSheet.updatePriceRange(min, max)
         }
-
+        Log.d(TAG, "onCreate: full room $listFullRoom")
         binding.btnCity.setOnClickListener {
-            showBottomSheetCity()
+            if (isAscending) {
+                Log.d(TAG, "onCreate: tang")
+                listFullRoom = listFullRoom.sortedBy { it.second.Gia_phong }.toMutableList()
+                Log.d(TAG, "onCreate:  listSortBy $listFullRoom.")
+                updateUI(listFullRoom, homeViewModel)
+            } else {
+                Log.d(TAG, "onCreate: giam")
+                listFullRoom =
+                    listFullRoom.sortedByDescending { it.second.Gia_phong }.toMutableList()
+                updateUI(listFullRoom, homeViewModel)
+
+                Log.d(TAG, "onCreate:  listSortBy $listFullRoom")
+            }
+            isAscending = !isAscending
         }
         binding.ivFilter.setOnClickListener {
             val bottomSheetFragment = BottomSheetFilter()
             bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
+            Log.d(TAG, "onCreate: selectedTypesViewModel$selectedTypesViewModel")
+            Log.d(TAG, "onCreate: selectedTienNghiViewModel$selectedTienNghiViewModel")
+            Log.d(TAG, "onCreate: selectedNoiThatViewModel$selectedNoiThatViewModel")
+            bottomSheetFragment.updateFilter(
+                selectedTypesViewModel,
+                selectedNoiThatViewModel,
+                selectedTienNghiViewModel
+            )
+
 
         }
         binding.ivBack.setOnClickListener {
@@ -132,191 +157,107 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
     }
 
-
-    // Hàm tìm kiếm tương đối trong name hoặc address realtime database
-//    fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
-//        dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val filteredList = mutableListOf<PhongTro>()
-//                val queryWords = query.split(" ").filter { it.isNotEmpty() }
-//
-//                Log.d(TAG, "onDataChange: queryWords $queryWords")
-//                Log.d(TAG, "onDataChange: query $query")
-//
-//                for (roomSnapshot in snapshot.children) {
-//                    val roomData = roomSnapshot.getValue(PhongTro::class.java)
-//                    val roomName = roomData?.tenPhongTro ?: ""
-//                    val roomDescription = roomData?.motaChiTiet ?: ""
-//
-//                    // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
-//                    val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
-//                            roomDescription.contains(query, ignoreCase = true)
-//
-//                    // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
-//                    val allWordsMatch = queryWords.all { word ->
-//                        roomName.contains(word, ignoreCase = true) || roomDescription.contains(
-//                            word,
-//                            ignoreCase = true
-//                        )
-//                    }
-//
-//                    // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
-//                    if (queryInDescriptionOrName || allWordsMatch) {
-//                        filteredList.add(roomData!!)
-//                        binding.rvListRoom.visibility = View.VISIBLE
-//                        binding.layoutNullMsg.visibility = View.GONE
-//                        Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm chi tiết hoặc tương đối)")
-//                    }
-//                }
-//
-//                adapter.updateList(filteredList)
-//
-//                if (filteredList.isEmpty()) {
-//                    Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
-//                    binding.rvListRoom.visibility = View.GONE
-//                    binding.layoutNullMsg.visibility = View.VISIBLE
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.e(TAG, "Lỗi khi đọc dữ liệu: ${error.message}")
-//            }
-//        })
-//    }
-
-    //Fire store
     @SuppressLint("NotifyDataSetChanged")
     fun searchRoomByNameOrDescription(query: String, adapter: PhongTroAdapter) {
         val queryWords = query.split(" ").filter { it.isNotEmpty() }
-
+        val listSearch = mutableListOf<Pair<String, PhongTroModel>>()
         Log.d(TAG, "onDataChange: queryWords $queryWords")
         Log.d(TAG, "onDataChange: query $query")
+        binding.layoutLoading.visibility = View.VISIBLE
+        binding.rvListRoom.visibility = View.GONE
+        // Truy vấn tất cả các phòng trọ một lần
         listFullRoom.clear()
+
         dataRoom.get().addOnSuccessListener { snapshot ->
+            val tasks = mutableListOf<Task<QuerySnapshot>>()
+
             for (document in snapshot.documents) {
                 val id = document.id.toString()
                 val roomData = document.toObject(PhongTroModel::class.java)
                 Log.d(TAG, "searchRoomByNameOrDescription: room data $roomData")
-                val roomName = roomData?.Ten_phongtro ?: ""
-                val roomDescription = roomData?.Mota_chitiet ?: ""
 
-                // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
-                val queryInDescriptionOrName = roomName.contains(query, ignoreCase = true) ||
-                        roomDescription.contains(query, ignoreCase = true)
+                // Truy vấn chi tiết thông tin diện tích
+                val task = firestore.collection("ChiTietThongTin")
+                    .whereEqualTo("ma_phongtro", id) // Truy vấn theo mã phòng trọ
+                    .whereEqualTo("ten_thongtin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .get()
+                    .addOnSuccessListener { chiTietSnapshot ->
+                        val chiTiet = chiTietSnapshot.documents.firstOrNull()
+                        val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                        Log.d(TAG, "searchRoomByNameOrDescription: chi tiet $chiTiet")
+                        Log.d(TAG, "searchRoomByNameOrDescription: dien tich $dienTich")
+                        roomData?.Dien_tich = dienTich?.toLong()
 
-                // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
-                val allWordsMatch = queryWords.all { word ->
-                    roomName.contains(word, ignoreCase = true) || roomDescription.contains(
-                        word,
-                        ignoreCase = true
-                    )
-                }
+                        val roomName = roomData?.Ten_phongtro ?: ""
+                        val roomDescription = roomData?.Mota_chitiet ?: ""
 
-                // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
-                if (queryInDescriptionOrName || allWordsMatch) {
-                    listFullRoom.addAll(mutableListOf(Pair(id, roomData!!)))
-                    binding.rvListRoom.visibility = View.VISIBLE
-                    binding.layoutNullMsg.visibility = View.GONE
-                    Log.d(TAG, "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)")
+                        // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
+                        val queryInDescriptionOrName =
+                            roomName.contains(query, ignoreCase = true) ||
+                                    roomDescription.contains(query, ignoreCase = true)
 
-                }
+                        // Kiểm tra nếu tất cả các từ trong `queryWords` xuất hiện trong tên hoặc mô tả
+                        val allWordsMatch = queryWords.all { word ->
+                            roomName.contains(word, ignoreCase = true) || roomDescription.contains(
+                                word,
+                                ignoreCase = true
+                            )
+                        }
+
+                        // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
+                        if (queryInDescriptionOrName || allWordsMatch) {
+                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                            Log.d(
+                                TAG,
+                                "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
+                            )
+                            if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                listSearch.add(Pair(id, roomData!!))
+                                Log.d(
+                                    TAG,
+                                    "onDataChange: Room $roomData (tìm kiếm chi tiết hoặc tương đối)"
+                                )
+                            }
+
+                        }
+                        Log.d(TAG, "searchRoomByNameOrDescription: listSearch $listSearch")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error fetching room details: ${exception.message}")
+                    }
+
+                tasks.add(task)
             }
-            Log.d(TAG, "searchRoomByNameOrDescription: list fullRoom $listFullRoom ")
-            adapter.notifyDataSetChanged()
-            if (listFullRoom.isEmpty()) {
-                Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
-                binding.rvListRoom.visibility = View.GONE
-                binding.layoutNullMsg.visibility = View.VISIBLE
+
+            // Đảm bảo tất cả các truy vấn đã hoàn thành
+            Tasks.whenAllSuccess<QuerySnapshot>(tasks).addOnCompleteListener {
+                // Sau khi tất cả các truy vấn hoàn thành, cập nhật giao diện
+                Log.d(TAG, "searchRoomByNameOrDescription: listSearch Tasks $listSearch")
+                if (listSearch.isNotEmpty()) {
+                    listFullRoom.addAll(listSearch)
+                    binding.layoutNullMsg.visibility = View.GONE
+                    binding.rvListRoom.visibility = View.VISIBLE
+                } else {
+                    binding.layoutNullMsg.visibility = View.VISIBLE
+                    binding.rvListRoom.visibility = View.GONE
+                }
+                adapter.notifyDataSetChanged()
             }
         }.addOnFailureListener { exception ->
             Log.e(TAG, "Error getting documents: ", exception)
+        }.addOnCompleteListener {
+            binding.layoutLoading.visibility = View.GONE
+            binding.rvListRoom.visibility = View.VISIBLE
         }
     }
 
-
-    //Cung có the dung ham nay neu thay han tren khong on
-//    fun searchRoomByNameOrDescription2(query: String, adapter: PhongTroAdapter) {
-//        dataRoom.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val filteredList = mutableListOf<PhongTro>()
-//                val cleanedQuery = query.trim().replace(Regex("\\s+"), " ") // Xóa khoảng trắng thừa
-//                val queryWords = cleanedQuery.split(" ").filter { it.isNotEmpty() }
-//
-//                Log.d(TAG, "onDataChange: cleanedQuery $cleanedQuery")
-//                Log.d(TAG, "onDataChange: queryWords $queryWords")
-//
-//                // Tìm kiếm theo cụm từ đầy đủ
-//                for (roomSnapshot in snapshot.children) {
-//                    val roomData = roomSnapshot.getValue(PhongTro::class.java)
-//                    val roomName = roomData?.tenPhongTro ?: ""
-//                    val roomDescription = roomData?.motaChiTiet ?: ""
-//
-//                    if (roomName.contains(cleanedQuery, ignoreCase = true) ||
-//                        roomDescription.contains(cleanedQuery, ignoreCase = true)) {
-//                        filteredList.add(roomData!!)
-//                        Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm theo cụm từ đầy đủ)")
-//                    }
-//                }
-//
-//                // Nếu không có kết quả theo cụm từ đầy đủ, thực hiện tìm kiếm từng từ khóa
-//                if (filteredList.isEmpty()) {
-//                    for (roomSnapshot in snapshot.children) {
-//                        val roomData = roomSnapshot.getValue(PhongTro::class.java)
-//                        val roomName = roomData?.tenPhongTro ?: ""
-//                        val roomDescription = roomData?.motaChiTiet ?: ""
-//
-//                        val allWordsMatch = queryWords.all { word ->
-//                            roomName.contains(word, ignoreCase = true) ||
-//                                    roomDescription.contains(word, ignoreCase = true)
-//                        }
-//
-//                        if (allWordsMatch) {
-//                            filteredList.add(roomData!!)
-//                            Log.d(TAG, "onDataChange: Rom $roomData (tìm kiếm từng từ khóa)")
-//                        }
-//                    }
-//                }
-//
-//                adapter.updateList(filteredList)
-//
-//                if (filteredList.isEmpty()) {
-//                    Log.d(TAG, "Không tìm thấy phòng trọ nào với từ khóa: $query")
-//                }
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                Log.e(TAG, "Lỗi khi đọc dữ liệu: ${error.message}")
-//            }
-//        })
-//    }
-
-
     @SuppressLint("NotifyDataSetChanged")
-    private fun readListRoom(adapter: PhongTroAdapter) {
-        //Realtime data base
-//        dataRoom.addValueEventListener(object : ValueEventListener {
-//            @SuppressLint("NotifyDataSetChanged")
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                Log.d(TAG, "onDataChange: snapshotRoom $snapshot")
-//
-//                listFullRoom.clear()
-//
-//                // Duyệt qua các node con trong "rooms"
-//                for (roomSnapshot in snapshot.children) {
-//                    val room = roomSnapshot.getValue(PhongTro::class.java)
-//                    room?.let {
-//                        listFullRoom.add(it)
-//                    }
-//                }
-//                adapter.notifyDataSetChanged()
-//            }
-//
-//            override fun onCancelled(error: DatabaseError) {
-//                // Xử lý lỗi nếu có
-//                error.toException().printStackTrace()
-//            }
-//        })
+    private fun readListRoom() {
         //firestore
+        binding.layoutLoading.visibility = View.VISIBLE
+        binding.rvListRoom.visibility = View.GONE
         dataRoom.get().addOnSuccessListener { it ->
             listFullRoom.clear()
             Log.d(TAG, "readListRoom: it read room ${it.toObjects(PhongTroModel::class.java)}")
@@ -324,14 +265,49 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 val id = document.id.toString()
                 Log.d(TAG, "readListRoom: document.id.toString() $id")
                 val roomList = document.toObject(PhongTroModel::class.java)
-                roomList.let { room ->
-                    listFullRoom.add(Pair(id, room))
-                    Log.d(TAG, "readListRoom: $room")
-                }
+                firestore.collection("ChiTietThongTin")
+                    .whereEqualTo("ma_phongtro", id) // Truy vấn theo mã phòng trọ
+                    .whereEqualTo("ten_thongtin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .get()
+                    .addOnSuccessListener { chiTietSnapshot ->
+                        val chiTiet = chiTietSnapshot.documents.firstOrNull()
+                        val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+
+                        // Cập nhật diện tích vào đối tượng phòng
+                        roomList.Dien_tich = dienTich?.toLong()
+
+                        val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                        val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                        val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                        Log.d(
+                            TAG,
+                            "readListRoom: trangThaiDuyet $trangThaiDuyet trangThaiLuu $trangThaiLuu trangThaiPhong $trangThaiPhong"
+                        )
+                        if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                            Log.d(TAG, "readListRoom: if ${roomList.Ten_phongtro}")
+                            // Thêm vào danh sách hiển thị
+                            listFullRoom.add(Pair(id, roomList))
+                            Log.d(TAG, "Room added: $roomList")
+
+                        }
+                        // Cập nhật giao diện sau khi hoàn tất
+                        if (listFullRoom.size > 0) {
+                            adapter.notifyDataSetChanged()
+                        }
+                        Log.d(TAG, "readListRoom:listFullRoom $listFullRoom")
+                        Log.d(TAG, "readListRoom:listFullRoom ${listFullRoom.size}")
+
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(TAG, "Error fetching room details: ${exception.message}")
+                    }
             }
-            adapter.notifyDataSetChanged()
         }.addOnFailureListener {
             Log.e(TAG, "readListRoom: ${it.message.toString()}")
+        }.addOnCompleteListener {
+            binding.layoutLoading.visibility = View.GONE
+            binding.rvListRoom.visibility = View.VISIBLE
+            Log.d(TAG, "readListRoom:  complete")
         }
 
 
@@ -406,103 +382,9 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 }
             }
 
-
-        //Realtime database
-//        var adapter: AdapterHistoryKeyWord = AdapterHistoryKeyWord(this, mutableListOf(), userId!!)
-//        searchHistoryRef.child(userId).orderByChild("timestamps")
-//            .addChildEventListener(object : ChildEventListener {
-//                override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-//                    Log.d(TAG, "onChildAdded: snapshot: $snapshot")
-//                    Log.d(TAG, "onChildAdded: snapshot_value: ${snapshot.value}")
-//                    Log.d(TAG, "onChildAdded: previousChildName: $previousChildName")
-//
-//                    val newData = snapshot.getValue(SearchDataModel::class.java)
-//                    Log.d(TAG, "onChildAdded: newData $newData")
-//                    newData.let {
-//                        listKeySearch.add(it!!)
-//                        Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
-//                    }
-//                    if (listKeySearch.size >= 3) {
-//                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
-//                        binding.lvHistory.layoutParams.height = 300
-//                    }
-//                    // Đảo ngược danh sách để hiển thị từ mới nhất đến cũ nhất
-//                    listKeySearch.reverse()
-//                    adapter = AdapterHistoryKeyWord(
-//                        this@SearchActivity,
-//                        listKeySearch,
-//                        userId
-//                    )
-//                    binding.lvHistory.adapter = adapter
-//                    adapter.notifyDataSetChanged()
-//                    Log.d(TAG, "onChildAdded: List Search $listKeySearch")
-//                }
-//
-//                override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-//                    Log.d(TAG, "onChildChanged: snapshot: $snapshot")
-//                    Log.d(TAG, "onChildChanged: previousChildName: $previousChildName")
-//                    Log.d(TAG, "onChildChanged: listKeySearch $listKeySearch")
-//                }
-//
-//                override fun onChildRemoved(snapshot: DataSnapshot) {
-//                    Log.d(TAG, "onChildRemoved: snapshot: $snapshot")
-//                    Log.d(TAG, "onChildRemoved: $listKeySearch")
-//                    if (listKeySearch.size < 3) {
-//                        Log.d(TAG, "onChildAdded: listKeySearch.size >= 3 Three size list search")
-//                        binding.lvHistory.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-//                    }
-//                }
-//
-//                override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-//                    Log.d(TAG, "onChildMoved: snapshot: $snapshot")
-//                    Log.d(TAG, "onChildMoved: previousChildName: $previousChildName")
-//
-//                }
-//
-//                override fun onCancelled(error: DatabaseError) {
-//                    Log.d(TAG, "onCancelled: error: $error")
-//                }
-//
-//            })
-
     }
 
     private fun saveKeyWordSearch(text: Editable) {
-//        Log.d(TAG, "saveKeyWordSearch: text $text")
-//
-//        // Lấy reference đến Realtime Database
-//
-//        //  userId
-//        val userId = FirebaseAuth.getInstance().currentUser?.uid
-//        Log.d(TAG, "saveKeyWordSearch: userID $userId")
-//        Log.d(TAG, "saveKeyWordSearch: database $database")
-//        Log.d(TAG, "saveKeyWordSearch: searchHistoryRef $searchHistoryRef")
-//
-//        val timeStamp = System.currentTimeMillis() // Lấy thời gian hiện tại
-//        val formattedTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault()).format(
-//            Date(timeStamp)
-//        )
-//        val searchQuery = text.toString() // Từ khóa tìm kiếm
-//        // Tạo một ID tìm kiếm ngẫu nhiên
-//        val searchId = searchHistoryRef.child(userId!!).push().key ?: return
-//        val searchData = SearchDataModel(
-//            ma_timkiem = searchId,
-//            tu_khoa = searchQuery,
-//            thoi_giantimkiem = formattedTime,
-//            timestamps = timeStamp.toString()
-//        )
-//        Log.d(TAG, "saveKeyWordSearch: timeStamp $timeStamp")
-//        Log.d(TAG, "saveKeyWordSearch: formattedTime $formattedTime")
-//        Log.d(TAG, "saveKeyWordSearch: searchId $searchId")
-//        Log.d(TAG, "saveKeyWordSearch: searchData $searchData")
-//        // Lưu vào Firebase
-//        searchHistoryRef.child(userId).child(searchId).setValue(searchData)
-//            .addOnSuccessListener {
-//                Log.d("SearchHistory", "Tìm kiếm đã được lưu vào Firebase.")
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.e("SearchHistory", "Lỗi khi lưu tìm kiếm: ${exception.message}")
-//            }
         Log.d(TAG, "saveKeyWordSearch: text $text")
 
 // Lấy reference đến Firestore
@@ -578,12 +460,380 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         binding.edtSearch.clearFocus() // clear focus khi nhan search
     }
 
-    @SuppressLint("SetTextI18n")
+    private fun updateUI(
+        listRoom: MutableList<Pair<String, PhongTroModel>>,
+        homeViewModel: HomeViewModel
+    ) {
+        adapter = PhongTroAdapter(listRoom, homeViewModel)
+        binding.rvListRoom.layoutManager = GridLayoutManager(this@SearchActivity, 2)
+        binding.rvListRoom.adapter = adapter
+    }
+
+    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
     override fun onPriceRangeSelected(minPrice: Int, maxPrice: Int) {
         Log.d(TAG, "onPriceRangeSelected: Min: $minPrice max: $maxPrice search")
+        Log.d(TAG, "onPriceRangeSelected: list full room $listFullRoom")
+//        filterRoomsByPrice(minPrice.toFloat(), maxPrice.toFloat())
+//        listFullRoom = listFullRoom.filter {
+//            it.second.Gia_phong in minPrice.toDouble()..maxPrice.toDouble()
+//        }.toMutableList()
+//        Log.d(TAG, "onPriceRangeSelected: $listFullRoom")
+//        if (listFullRoom.isEmpty()) {
+//            binding.rvListRoom.visibility = View.GONE
+//            binding.layoutNullMsg.visibility = View.VISIBLE
+//            readListRoom()
+//        } else {
+//            binding.rvListRoom.visibility = View.VISIBLE
+//            binding.layoutNullMsg.visibility = View.GONE
+//            updateUI(listFullRoom, homeViewModel)
+//            Log.d(TAG, "onPriceRangeSelected: list full $listFullRoom")
+//            adapter.notifyDataSetChanged()
+//        }
+
+        val listFilterPrice = mutableListOf<Pair<String, PhongTroModel>>()
+
+//        dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
+//            .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
+//            .get()
+//            .addOnSuccessListener {
+//
+//                for (document in it) {
+//                    val id = document.id
+//                    val roomData = document.toObject(PhongTroModel::class.java)
+//
+//                    firestore.collection("ChiTietThongTin")
+//                        .whereEqualTo("ma_phongtro", id)
+//                        .whereEqualTo("ten_thongtin", "Diện tích").get().addOnSuccessListener {
+//                            val chiTiet = it.documents.firstOrNull()
+//                            val dienTich = chiTiet?.getDouble("so_luong_donvi")
+//
+//                            roomData.Dien_tich = dienTich?.toLong()
+//
+//                            Log.d(TAG, "onPriceRangeSelected: cos dien tich $roomData")
+//                            listFilterPrice.add(Pair(id, roomData))
+//                            if (listFullRoom.isEmpty()) {
+//                                binding.rvListRoom.visibility = View.GONE
+//                                binding.layoutNullMsg.visibility = View.VISIBLE
+//                            } else {
+//                                binding.rvListRoom.visibility = View.VISIBLE
+//                                binding.layoutNullMsg.visibility = View.GONE
+//                                listFullRoom = listFilterPrice
+//                                updateUI(listFullRoom, homeViewModel)
+//                                Log.d(TAG, "onPriceRangeSelected: list full $listFullRoom")
+//                                adapter.notifyDataSetChanged()
+//                            }
+//
+//
+//                        }.addOnFailureListener {
+//                            Log.d(TAG, "onPriceRangeSelected: it.msg ${it.message.toString()}")
+//                        }
+//
+//                }
+//
+//            }
+//            .addOnFailureListener {
+//                Log.d(TAG, "onPriceRangeSelected: it.msg ${it.message.toString()}")
+//            }
+        binding.layoutLoading.visibility = View.VISIBLE
+        binding.rvListRoom.visibility = View.GONE
+        binding.layoutNullMsg.visibility = View.GONE
+        dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
+            .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val tasks =
+                    mutableListOf<Task<QuerySnapshot>>() // Danh sách các tác vụ truy vấn phụ
+
+                for (document in querySnapshot) {
+                    val id = document.id
+                    val roomData = document.toObject(PhongTroModel::class.java)
+
+                    // Thêm truy vấn phụ vào danh sách
+                    val task = firestore.collection("ChiTietThongTin")
+                        .whereEqualTo("ma_phongtro", id)
+                        .whereEqualTo("ten_thongtin", "Diện tích")
+                        .get()
+                        .addOnSuccessListener { detailSnapshot ->
+                            val chiTiet = detailSnapshot.documents.firstOrNull()
+                            val dienTich = chiTiet?.getDouble("so_luong_donvi")
+                            roomData.Dien_tich = dienTich?.toLong()
+                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
+                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
+                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                            Log.d(
+                                TAG,
+                                "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
+                            )
+
+                            if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                // Thêm dữ liệu vào danh sách
+                                listFilterPrice.add(Pair(id, roomData))
+                            }
+
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(TAG, "Error fetching ChiTietThongTin for room $id: ${e.message}")
+                        }
+                    tasks.add(task)
+                }
+
+                // Chờ tất cả truy vấn hoàn thành
+                Tasks.whenAllComplete(tasks).addOnSuccessListener {
+                    if (listFilterPrice.isEmpty()) {
+                        binding.rvListRoom.visibility = View.GONE
+                        binding.layoutNullMsg.visibility = View.VISIBLE
+                        binding.layoutLoading.visibility = View.GONE
+                    } else {
+                        binding.rvListRoom.visibility = View.VISIBLE
+                        binding.layoutNullMsg.visibility = View.GONE
+                        listFullRoom = listFilterPrice
+                        updateUI(listFullRoom, homeViewModel)
+                        adapter.notifyDataSetChanged()
+                    }
+
+                    Log.d(TAG, "onPriceRangeSelected: Filtered list: $listFilterPrice")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error fetching rooms: ${e.message}")
+                binding.rvListRoom.visibility = View.GONE
+                binding.layoutNullMsg.visibility = View.VISIBLE
+            }.addOnCompleteListener {
+                binding.layoutLoading.visibility = View.GONE
+            }
+
+
         max = maxPrice
         min = minPrice
 
+    }
+
+
+    override fun onFilterSelected(
+        selectedTypes: MutableList<String>,
+        selectedTienNghi: MutableList<String>,
+        selectedNoiThat: MutableList<String>
+    ) {
+        selectedTypesViewModel = selectedTypes
+        selectedNoiThatViewModel = selectedNoiThat
+        selectedTienNghiViewModel = selectedTienNghi
+        Log.d(TAG, "onFilterSelected:selectedTypes $selectedTypes")
+        Log.d(TAG, "onFilterSelected:selectedTienNghi $selectedTienNghi")
+        Log.d(TAG, "onFilterSelected:selectedNoiThat $selectedNoiThat")
+
+//        val firestore = FirebaseFirestore.getInstance()
+
+        var loaiPhongTask: Task<QuerySnapshot>? = null
+        loaiPhongTask = if (selectedTypes.isNotEmpty()) {
+            firestore.collection("LoaiPhong")
+                .whereIn("Ten_loaiphong", selectedTypes)
+                .get()
+        } else {
+            firestore.collection("LoaiPhong").get() // Lấy tất cả nếu không có chọn
+        }
+
+        // Lọc TienNghi nếu có tiêu chí selectedTienNghi
+        var tienNghiTask: Task<QuerySnapshot>? = null
+        tienNghiTask = if (selectedTienNghi.isNotEmpty()) {
+            firestore.collection("TienNghi")
+                .whereIn("Ten_tiennghi", selectedTienNghi)
+                .get()
+        } else {
+            firestore.collection("TienNghi").get() // Lấy tất cả nếu không có chọn
+        }
+
+        // Lọc NoiThat nếu có tiêu chí selectedNoiThat
+        var noiThatTask: Task<QuerySnapshot>? = null
+        noiThatTask = if (selectedNoiThat.isNotEmpty()) {
+            firestore.collection("NoiThat")
+                .whereIn("Ten_noithat", selectedNoiThat)
+                .get()
+        } else {
+            firestore.collection("NoiThat").get() // Lấy tất cả nếu không có chọn
+        }
+
+
+        // Chờ tất cả các truy vấn hoàn thành
+        Tasks.whenAllComplete(loaiPhongTask, tienNghiTask, noiThatTask)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    // Xử lý kết quả của LoaiPhong
+                    val maLoaiPhongList =
+                        loaiPhongTask.result?.documents?.map { it.id } ?: emptyList()
+                    Log.d(TAG, "Mã loại phòng: $maLoaiPhongList")
+
+                    // Xử lý kết quả của TienNghi
+                    val maTienNghiList =
+                        tienNghiTask.result?.documents?.map { it.id } ?: emptyList()
+                    Log.d(TAG, "Mã tiện nghi: $maTienNghiList")
+
+                    // Xử lý kết quả của NoiThat
+                    val maNoiThatList = noiThatTask.result?.documents?.map { it.id } ?: emptyList()
+                    Log.d(TAG, "Mã nội thất: $maNoiThatList")
+
+                    binding.layoutLoading.visibility = View.VISIBLE
+                    binding.rvListRoom.visibility = View.GONE
+                    binding.layoutNullMsg.visibility = View.GONE
+                    listFullRoom.clear()
+                    // Truy vấn bảng PhongTro và lọc theo mã loại phòng
+                    firestore.collection("PhongTro")
+                        .whereIn("Ma_loaiphong", maLoaiPhongList)
+                        .get()
+                        .addOnSuccessListener { phongTroSnapshot ->
+                            val phongTroIds = phongTroSnapshot.documents.map { it.id }
+                            Log.d(TAG, "Danh sách phòng trọ với loại phòng: $phongTroIds")
+
+                            // Lọc các phòng trọ có nội thất
+                            firestore.collection("PhongTroNoiThat")
+                                .whereIn("ma_noithat", maNoiThatList)
+                                .get()
+                                .addOnSuccessListener { phongTroNoiThatSnapshot ->
+                                    val phongTroWithNoiThatIds =
+                                        phongTroNoiThatSnapshot.documents.map { it.getString("ma_phongtro") }
+                                    Log.d(
+                                        TAG,
+                                        "Danh sách phòng trọ có nội thất: $phongTroWithNoiThatIds"
+                                    )
+
+                                    // Lọc các phòng trọ có tiện nghi
+                                    firestore.collection("PhongTroTienNghi")
+                                        .whereIn("ma_tiennghi", maTienNghiList)
+                                        .get()
+                                        .addOnSuccessListener { phongTroTienNghiSnapshot ->
+                                            val phongTroWithTienNghiIds =
+                                                phongTroTienNghiSnapshot.documents.map {
+                                                    it.getString("ma_phongtro")
+                                                }
+                                            Log.d(
+                                                TAG,
+                                                "Danh sách phòng trọ có tiện nghi: $phongTroWithTienNghiIds"
+                                            )
+                                            // Tìm giao của ba danh sách phòng trọ
+                                            val finalRooms = phongTroIds
+                                                .intersect(phongTroWithNoiThatIds.toSet())
+                                                .intersect(phongTroWithTienNghiIds.toSet())
+                                            Log.d(TAG, "Danh sách phòng trọ cuối cùng: $finalRooms")
+                                            if (finalRooms.isEmpty()) {
+                                                binding.layoutNullMsg.visibility = View.VISIBLE
+                                                binding.rvListRoom.visibility = View.GONE
+                                                binding.layoutLoading.visibility = View.GONE
+                                            } else {
+                                                binding.layoutNullMsg.visibility = View.GONE
+                                                binding.rvListRoom.visibility = View.VISIBLE
+                                                firestore.collection("PhongTro")
+                                                    .whereIn(
+                                                        FieldPath.documentId(),
+                                                        finalRooms.toList()
+                                                    ) // Lọc theo danh sách ID
+                                                    .get()
+                                                    .addOnSuccessListener { querySnapshot ->
+                                                        // Chuyển dữ liệu từ querySnapshot thành list các đối tượng phòng trọ
+                                                        for (document in querySnapshot) {
+                                                            val id = document.id
+                                                            val roomData =
+                                                                document.toObject(PhongTroModel::class.java)
+                                                            Log.d(
+                                                                TAG,
+                                                                "onFilterSelected: roomData $roomData"
+                                                            )
+                                                            firestore.collection("ChiTietThongTin")
+                                                                .whereEqualTo(
+                                                                    "ma_phongtro",
+                                                                    id
+                                                                ) // Truy vấn theo mã phòng trọ
+                                                                .whereEqualTo(
+                                                                    "ten_thongtin",
+                                                                    "Diện tích"
+                                                                ) // Lọc theo thông tin "Diện tích"
+                                                                .get()
+                                                                .addOnSuccessListener { chiTietSnapshot ->
+                                                                    val chiTiet =
+                                                                        chiTietSnapshot.documents.firstOrNull()
+                                                                    val dienTich =
+                                                                        chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+
+                                                                    // Cập nhật diện tích vào đối tượng phòng
+                                                                    roomData.Dien_tich =
+                                                                        dienTich?.toLong()
+                                                                    val trangThaiDuyet =
+                                                                        document.getString("Trang_thaiduyet")
+                                                                    val trangThaiLuu =
+                                                                        document.getBoolean("Trang_thailuu")
+                                                                    val trangThaiPhong =
+                                                                        document.getBoolean("Trang_thaiphong")
+                                                                    Log.d(
+                                                                        TAG,
+                                                                        "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
+                                                                    )
+
+                                                                    if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                                                                        // Thêm vào danh sách hiển thị
+                                                                        listFullRoom.add(
+                                                                            Pair(
+                                                                                id,
+                                                                                roomData
+                                                                            )
+                                                                        )
+                                                                    }
+
+                                                                    // Cập nhật giao diện sau khi hoàn tất
+                                                                    if (listFullRoom.size > 0) {
+                                                                        binding.layoutLoading.visibility =
+                                                                            View.GONE
+                                                                        binding.layoutNullMsg.visibility = View.GONE
+                                                                        binding.rvListRoom.visibility =
+                                                                            View.VISIBLE
+                                                                        updateUI(
+                                                                            listFullRoom,
+                                                                            homeViewModel
+                                                                        )
+                                                                    }else{
+                                                                        Log.d(
+                                                                            TAG,
+                                                                            "onFilterSelected: else $listFullRoom"
+                                                                        )
+                                                                        binding.rvListRoom.visibility =
+                                                                            View.GONE
+                                                                        binding.layoutLoading.visibility = View.GONE
+                                                                        binding.layoutNullMsg.visibility = View.VISIBLE
+                                                                    }
+                                                                }
+                                                                .addOnFailureListener { exception ->
+                                                                    Log.e(
+                                                                        TAG,
+                                                                        "Error fetching room details: ${exception.message}"
+                                                                    )
+                                                                }
+                                                        }
+
+//                                                    Cập nhật UI với dữ liệu mới
+//                                                    updateUI(listFullRoom, homeViewModel)
+                                                    }
+                                                    .addOnFailureListener { exception ->
+                                                        Log.d(
+                                                            TAG,
+                                                            "Lỗi khi lấy dữ liệu phòng trọ: ${exception.message}"
+                                                        )
+                                                    }
+                                            }
+
+
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.e(TAG, "Error fetching PhongTroTienNghi", e)
+                                        }
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e(TAG, "Error fetching PhongTroNoiThat", e)
+                                }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e(TAG, "Error fetching PhongTro", e)
+                        }
+                } else {
+                    Log.e(TAG, "Error fetching filter data", task.exception)
+                }
+            }
     }
 
 

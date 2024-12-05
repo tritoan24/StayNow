@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
+    id ("kotlin-parcelize")
+    kotlin("kapt")
 }
 
 android {
@@ -40,7 +42,7 @@ android {
 
     buildFeatures {
         viewBinding = true
-//        dataBinding = true
+        dataBinding = true
     }
 
 }
@@ -86,8 +88,8 @@ dependencies {
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
 //Thư viện format tgian tạo phòng trọ
     implementation ("org.ocpsoft.prettytime:prettytime:5.0.2.Final")
-
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+//
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 //    thu vien zoom to anh
     implementation("com.github.chrisbanes:PhotoView:2.3.0")
     //calendar
@@ -101,15 +103,51 @@ dependencies {
 
     implementation("io.github.ParkSangGwon:tedimagepicker:1.6.1")
 
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
     implementation ("com.google.android.libraries.places:places:4.1.0")
-
     //Thu vien khoang gia
-    implementation ("com.github.MohammedAlaaMorsi:RangeSeekBar:1.0.6")
+    implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
 
+    // Firebase Cloud Messaging
+    implementation("com.google.firebase:firebase-messaging:24.1.0")
+    // Thư viện Volley
+    implementation("com.android.volley:volley:1.2.1")
 
+    implementation("com.google.mlkit:barcode-scanning:17.3.0")
+    implementation("androidx.camera:camera-core:1.2.2")
+    implementation("androidx.camera:camera-camera2:1.2.2")
+    implementation("androidx.camera:camera-lifecycle:1.2.2")
+    implementation("androidx.camera:camera-view:1.2.2")
+
+    implementation("com.itextpdf:itext7-core:7.2.3")
+    implementation("com.afollestad.material-dialogs:core:3.3.0")
+
+    //thư viện custom text
+    implementation("jp.wasabeef:richeditor-android:2.0.0")
+
+    //retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
+    // Socket
+    implementation ("io.socket:socket.io-client:2.0.0")
+    // zalo sdk
+   implementation("androidx.room:room-runtime:2.4.3")
+    kapt("androidx.room:room-compiler:2.4.3")
+    implementation("androidx.room:room-ktx:2.4.3")
+
+    implementation(
+        fileTree(
+            mapOf(
+                "dir" to "C:\\Do_an_tot_nghiep_StayNow\\StayNow",
+                "include" to listOf("*.aar", "*.jar"),
+                "exclude" to listOf<String>()
+            )
+        )
+    )
+    implementation ("androidx.appcompat:appcompat:1.7.0")
+
+    //generate qr
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
 }

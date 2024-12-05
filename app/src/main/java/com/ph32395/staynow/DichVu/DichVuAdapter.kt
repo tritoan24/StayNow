@@ -4,12 +4,16 @@ import android.content.Context
 import android.text.InputType
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
 import com.ph32395.staynow.Interface.AdapterTaoPhongTroEnteredListenner
+import com.ph32395.staynow.R
+import com.ph32395.staynow.TaoPhongTro.PhiDichVu
 import com.ph32395.staynow.databinding.ItemDichvuBinding
 class DichVuAdapter(
     private val context: Context,
@@ -17,7 +21,7 @@ class DichVuAdapter(
     private val listener: AdapterTaoPhongTroEnteredListenner
 ) : RecyclerView.Adapter<DichVuAdapter.DichVuViewHolder>() {
 
-    private val pricesMap = mutableMapOf<Int, Int>()
+    private val pricesMap = mutableMapOf<Int, Pair<Int, String>>() // Lưu giá và đơn vị
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DichVuViewHolder {
         val binding = ItemDichvuBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -26,7 +30,7 @@ class DichVuAdapter(
 
     override fun onBindViewHolder(holder: DichVuViewHolder, position: Int) {
         val dichvu = dichVuList[position]
-        holder.bind(dichvu, position) // Truyền position vào hàm bind
+        holder.bind(dichvu, position)
     }
 
     override fun getItemCount(): Int = dichVuList.size
@@ -34,16 +38,17 @@ class DichVuAdapter(
     inner class DichVuViewHolder(private val binding: ItemDichvuBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(dichvu: DichVu, position: Int) {
             binding.dichvuName.text = dichvu.Ten_dichvu
-            binding.donviDichvu.text = if (dichvu.Don_vi.isEmpty()) "" else "/${dichvu.Don_vi}"
+            val priceInfo = pricesMap[position]
+            if (priceInfo != null) {
+                val formattedPrice = String.format("%,d", priceInfo.first)
+                binding.giaDichvu.text = "$formattedPrice đ / ${priceInfo.second}"
+            } else {
+                binding.giaDichvu.text = "Chưa nhập giá"
+            }
+
             Glide.with(context)
                 .load(dichvu.Icon_dichvu)
                 .into(binding.dichvuImage)
-
-            // Hiển thị giá nếu đã có giá
-            val price = pricesMap[position] // Lấy giá từ map tạm
-            if (price != null) {
-                binding.giaDichvu.text = "$price đ"
-            }
 
             binding.itemDichvu.setOnClickListener {
                 showInputDialog(dichvu, position)
@@ -52,30 +57,60 @@ class DichVuAdapter(
     }
 
     private fun showInputDialog(dichvu: DichVu, position: Int) {
-        val editText = EditText(context)
-        editText.hint = "Nhập giá tiền"
-        editText.inputType = InputType.TYPE_CLASS_NUMBER
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_select_price_unit, null)
+        val editText = dialogView.findViewById<EditText>(R.id.editPrice)
+        val spinner = dialogView.findViewById<Spinner>(R.id.spinnerUnit)
+
+        // Thiết lập giá trị đã chọn trước đó (nếu có)
+        val existingPriceInfo = pricesMap[position]
+        if (existingPriceInfo != null) {
+            // Set giá đã nhập trước đó
+            editText.setText(existingPriceInfo.first.toString())
+
+            // Set đơn vị đã chọn trước đó
+            val unitList = dichvu.Don_vi
+            val adapter = ArrayAdapter(context, com.airbnb.lottie.R.layout.support_simple_spinner_dropdown_item, unitList)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+
+            // Tìm vị trí của đơn vị đã chọn trong list và set cho Spinner
+            val selectedUnitPosition = unitList.indexOf(existingPriceInfo.second)
+            if (selectedUnitPosition != -1) {
+                spinner.setSelection(selectedUnitPosition)
+            }
+        } else {
+            // Trường hợp chưa có giá trị
+            val unitList = dichvu.Don_vi
+            val adapter = ArrayAdapter(context, com.airbnb.lottie.R.layout.support_simple_spinner_dropdown_item, unitList)
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
 
         SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
             .setTitleText("Nhập giá tiền cho ${dichvu.Ten_dichvu}")
+            .setCustomView(dialogView)
             .setConfirmText("Xác nhận")
-            .setCustomView(editText) // Thêm EditText vào dialog
             .setConfirmClickListener { sDialog ->
                 val inputText = editText.text.toString()
-                if (inputText.isNotEmpty()) {
+                val selectedUnit = spinner.selectedItem.toString()
+
+                if (inputText.isNotEmpty() && selectedUnit.isNotEmpty()) {
                     val price = inputText.toIntOrNull()
                     if (price != null) {
-                        // Lưu giá vào map
-                        pricesMap[position] = price
-
-                        // Cập nhật lại giao diện
+                        // Lưu giá và đơn vị vào pricesMap
+                        pricesMap[position] = price to selectedUnit
                         notifyItemChanged(position)
 
-
-                        // Kiểm tra xem đã nhập đủ giá cho tất cả dịch vụ chưa
+                        // Kiểm tra xem đã nhập đủ giá chưa
                         if (pricesMap.size == dichVuList.size) {
                             val priceList = dichVuList.mapIndexed { index, dichVu ->
-                                dichVu to (pricesMap[index] ?: 0)
+                                PhiDichVu(
+                                    Ma_phongtro = "",
+                                    Ten_dichvu = dichVu.Ten_dichvu,
+                                    Don_vi = pricesMap[index]?.second ?: "",
+                                    Icon_dichvu = dichVu.Icon_dichvu,
+                                    So_tien = pricesMap[index]?.first ?: 0
+                                )
                             }
                             listener.onAllPricesEntered(priceList)
                         }
@@ -84,7 +119,7 @@ class DichVuAdapter(
                         Toast.makeText(context, "Vui lòng nhập giá hợp lệ", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    Toast.makeText(context, "Vui lòng nhập giá tiền", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
                 }
             }
             .show()

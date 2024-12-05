@@ -29,6 +29,14 @@ class PermissionHelper(val activity: Activity?) {
         }
     }
 
+    fun isGrantPermissionNotification(context: Context): Boolean{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
     fun isGrantPermission(permission: String): Boolean {
         activity?.let {
             return ActivityCompat.checkSelfPermission(

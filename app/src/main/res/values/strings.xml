@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">StayNow</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
@@ -59,4 +59,37 @@
     <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature" translatable="false">You must allow all Permission to use this app with full feature.</string>
     <string name="go_to_setting" translatable="false">Go to setting</string>
     <string name="t_ph_ng" translatable="false">Đặt phòng</string>
+
+
+    <!-- key Goong map api  -->
+
+    <string name="api_key_1" translatable="false">iwrFXU8AhMJ969HbCiIOjGEpJWnIkYHMjNcvVbT4</string>
+    <string name="api_key_2" translatable="false">u1Vbyv3BPdyHQWSDn9YA7V2eI3E1YyYaZdqpju8q</string>
+    <string name="api_key_3" translatable="false">iAEZmhh1jdwQNE78TmcI36osxxQKaZkNVsWy5Tns</string>
+    <string name="api_key_4" translatable="false">zFmfQIQpWm8gJUpqeVLr3I1rwD21z6ggmDWpUwQv</string>
+    <string name="api_key_5" translatable="false">T09wYGmDqfIDl39GvmODdG63BOPiFgnBpthhYkYj</string>
+    <string name="api_key_6" translatable="false">DWPdFeorM4FFQa702aI0155NR8lqMhcr1k7iZ0tR</string>
+    <string name="api_key_7" translatable="false">iQicEsyfDobXOiEAcCxS44dB5MkEGntVpyYWLjYe</string>
+    <string name="api_key_8" translatable="false">akEY4Z6erQA72sGvphoerHEndmMDmHpKqOkQDfpe</string>
+    <string name="api_key_9" translatable="false">ZDvuoQqO8JI3TNqTmYdoduWXPY1l7kIowI3WdoaL</string>
+    <string name="api_key_10" translatable="false">tFngA7TdvJLeOWYyFSUryTppZzm49o6iHHAGJzCh</string>
+    <string name="api_key_11" translatable="false">l3zF3iXVeLBN2Asal038Zs9PudnPtemlUPyvQJNr</string>
+    <string name="api_key_12" translatable="false">9bsRQOqVL4i402E8ZkxrlcPi4zrIHgssN8teOBvB</string>
+    <string name="api_key_13" translatable="false">Hp4dV1OwufaRsE8a1FCwrhy2giltD4in5hoVjbJY</string>
+    <string name="api_key_14" translatable="false">Fjf3L7vxXHpyDQbSBi0Mj1qkRi95wLKbhPJYUeHo</string>
+    <string name="api_key_15" translatable="false">TlZJeyR2YxdOjVyMf7yykuBPVjAIWoUIHDgOXNrh</string>
+    <string name="api_key_16" translatable="false">MqW8OCD9DZXNv0u63vF55622C7TMcC0aFmsw1pz1</string>
+    <string name="api_key_17" translatable="false">M2X4wo3yvCSEExVfttn8p8PnMKEOxd3e9vtw4oBN</string>
+    <string name="api_key_18" translatable="false">0I8JiUkulgImFMJn7Vu8Ef3YUAexpOLHu8s5RgeF</string>
+    <string name="api_key_19" translatable="false">MSEZ4HG33xgTr8bip5zqySWrdQQIYGou9L0bSkna</string>
+    <string name="api_key_20" translatable="false">WLnBNsfR9B3TV4z3tPxPEOo7PereW0GAwvkC2wUu</string>
+    <string name="api_key_21" translatable="false">034o1cSDzgg7svQZQVe7dIgXBrtICd3t61IGifY0</string>
+    <string name="api_key_22" translatable="false">vhK7oy75ZM0BCUNjPGgB9vVAPlnagHYnHguGNb2M</string>
+    <string name="api_key_23" translatable="false">aZADfDAFy0aeJp7J8qLODNfGG58eRoJJH7UIzzly</string>
+    <string name="api_key_24" translatable="false">C14o56vqzbvzbna0hTUL5OfdTsyJymaXelM4EHSG</string>
+    <string name="title_activity_monthly_invoice">MonthlyInvoice</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+
 </resources>

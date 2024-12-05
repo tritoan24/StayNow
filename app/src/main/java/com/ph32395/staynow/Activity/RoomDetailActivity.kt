@@ -2,6 +2,7 @@ package com.ph32395.staynow.Activity
 
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,15 +12,19 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
@@ -32,9 +37,18 @@ import com.ph32395.staynow.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
+import com.ph32395.staynow.CCCD.CCCD
+import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
+import com.ph32395.staynow.ChucNangChung.LoadingUtil
+import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
+import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.fragment.RoomManagementFragment
+import com.ph32395.staynow.fragment.home.HomeViewModel
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
@@ -49,18 +63,39 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var phiDichVuAdapter: PhiDichVuAdapter
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var tienNghiAdapter: TienNghiAdapter
+    private var ManHome = ""
+
+    private lateinit var viewmodelHome:HomeViewModel
+
+    //khai báo loading animation
+    private lateinit var loadingUtil: LoadingUtil
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_detail)
 
+        findViewById<ImageView>(R.id.iconBack).setOnClickListener {
+            finish()
+        }
 
+//        Khởi tạo LoadingUtil
+        loadingUtil = LoadingUtil(this)
 
-        // Khởi tạo viewModel
+//        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
 
-        // Nhận dữ liệu từ Intent
+//
+        viewmodelHome = ViewModelProvider(this)[HomeViewModel::class.java]
+
+//        Nhan du lieu tu Intent
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+        ManHome = intent.getStringExtra("ManHome") ?: ""
+
+
+        if (ManHome == "ManND") {
+            viewmodelHome.incrementRoomViewCount(maPhongTro)
+        }
 
         FirebaseDynamicLinks.getInstance()
             .getDynamicLink(intent)
@@ -103,26 +138,44 @@ class RoomDetailActivity : AppCompatActivity() {
 
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
-            launchActivity(
-                Bundle().apply {
-                    putSerializable(ROOM_DETAIL, viewModel.room.value)
-                    putString(ROOM_ID, maPhongTro)
-                },
-                ScheduleRoomActivity::class.java
-            )
-        }
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            // Lấy dữ liệu từ Firebase Realtime Database
+            val database = FirebaseDatabase.getInstance().reference
+            val userRef = database.child("NguoiDung").child(userId)
+            userRef.get().addOnSuccessListener { snapshot ->
+                val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
+                val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+                Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
+                Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
 
-
-        // Nút chi tiết
-        findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener {
-            val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
-
-            // Quan sát userId để lấy thông tin người dùng
-            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
-                intent.putExtra("idUser", ma_NguoiDung)
-                startActivity(intent)
+                // Kiểm tra trạng thái CCCD và PTTT
+                if (!statusCCCD) {
+                    RoomManagementFragment().showWarningDialog(
+                        context = this,
+                        title = "Bạn chưa cập nhật CCCD",
+                        content = "Hãy cập nhật CCCD để tiếp tục",
+                        confirmAction = { navigateToUpdateCCCD() }
+                    )
+                } else {
+                    launchActivity(
+                        Bundle().apply {
+                            putSerializable(ROOM_DETAIL, viewModel.room.value)
+                            putString(ROOM_ID, maPhongTro)
+                        },
+                        ScheduleRoomActivity::class.java
+                    )
+                }
+            }.addOnFailureListener { exception ->
+                // Xử lý lỗi nếu có
+                Log.e("RoomManagementFragment", "Error fetching user data", exception)
             }
-
+        }
+        findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
+            val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
+            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
+                intent.putExtra("idUser",ma_NguoiDung)
+            }
+            startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.shareRoom).setOnClickListener{
@@ -137,8 +190,7 @@ class RoomDetailActivity : AppCompatActivity() {
             }
         }
 
-
-        // Khởi tạo Adapter
+//        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
         noiThatAdapter = NoiThatAdapter(emptyList())
@@ -151,12 +203,7 @@ class RoomDetailActivity : AppCompatActivity() {
         setupListPhiDichVu()
         setupRecyViewTienNghi()
 
-        // Lấy dữ liệu chi tiết thông tin phòng trọ
-
-
-        // Xử lý liên kết động
     }
-
     private fun shareLink(dynamicLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain" // Định dạng chia sẻ là văn bản
@@ -167,84 +214,76 @@ class RoomDetailActivity : AppCompatActivity() {
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"))
     }
 
-    private fun createDynamicLink(roomDetailLink: String, callback: (String) -> Unit) {
-        val dynamicLink = FirebaseDynamicLinks.getInstance()
-            .createDynamicLink()
-            .setLink(Uri.parse(roomDetailLink))
-            .setDomainUriPrefix("https://staynowshare.page.link") // Đảm bảo sử dụng domain của bạn
+    private fun createDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
+        val dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLink(Uri.parse(roomDetailLink)) // Liên kết đích
+            .setDomainUriPrefix("https://staynowshare.page.link") // Miền Dynamic Link
             .setAndroidParameters(
-                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow")
+                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow") // Tên gói Android
+                    .setFallbackUrl(Uri.parse("https://fallback.url")) // URL dự phòng (tùy chọn)
+                    .build()
+            )
+            .setSocialMetaTagParameters(
+                DynamicLink.SocialMetaTagParameters.Builder()
+                    .setTitle("Chi tiết phòng trọ") // Tùy chỉnh tiêu đề
+                    .setDescription("Xem phòng trọ chi tiết tại StayNow")
+                    .setImageUrl(Uri.parse("https://link.to/image.png")) // Ảnh minh họa (tùy chọn)
                     .build()
             )
             .buildDynamicLink()
 
-        val dynamicLinkUri = dynamicLink.uri.toString()
-
-        callback(dynamicLinkUri)
-    }
-    private fun showDynamicLinkDialog(dynamicLink: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Dynamic Link")
-        builder.setMessage("Here is your Dynamic Link: $dynamicLink")
-        builder.setPositiveButton("OK") { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.setNegativeButton("Copy Link") { dialog, _ ->
-            // Copy dynamic link to clipboard
-            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val clip = ClipData.newPlainText("Dynamic Link", dynamicLink)
-            clipboard.setPrimaryClip(clip)
-            dialog.dismiss()
-        }
-        builder.create().show()
+        onComplete(dynamicLink.uri.toString())
     }
 
 
 
-    // Danh sách thông tin chi tiết
+    //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = GridLayoutManager(context, 4)
             adapter = chiTietAdapter
-            addItemDecoration(SpacingItemDecoration(20))  // 20dp là khoảng cách giữa các item
         }
     }
 
-    // Danh sách tiện nghi
+    //    Danh sach tien nghi
     private fun setupRecyViewTienNghi() {
         findViewById<RecyclerView>(R.id.recyclerViewTienNghi).apply {
             layoutManager = GridLayoutManager(context, 4)
             adapter = tienNghiAdapter
+
             addItemDecoration(SpacingItemDecoration(4))
         }
     }
 
-    // Danh sách nội thất
+    //    Danh sach noi that
     private fun setupRecyclerViewNoiThat() {
         findViewById<RecyclerView>(R.id.recyclerViewNoiThat).apply {
             layoutManager = GridLayoutManager(context, 4)
             adapter = noiThatAdapter
+
             addItemDecoration(SpacingItemDecoration(16))
         }
     }
 
-    // Danh sách phí dịch vụ
+    //    danh sach phi dich vu
     private fun setupListPhiDichVu() {
         findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
             layoutManager = GridLayoutManager(context, 3)
             adapter = phiDichVuAdapter
-            addItemDecoration(SpacingItemDecoration(6))
+
+//            addItemDecoration(SpacingItemDecoration(1))
         }
     }
 
     private fun setupImage() {
-        // Thiết lập ViewPager và RecyclerView cho ảnh
+        //        Thiet lap viewPager va RecyclerView cho anh
         val viewPager = findViewById<ViewPager>(R.id.viewPager)
         viewPagerAdapter = ImagePagerAdapter(viewPager)
-        viewPager.adapter = viewPagerAdapter
+        findViewById<ViewPager>(R.id.viewPager).adapter = viewPagerAdapter
 
         recyclerViewAdapter = ImageRecyclerViewAdapter { imageUrl ->
-            // Sự kiện khi nhấn ảnh nhỏ trên RecyclerView sẽ hiển thị lên giao diện
+//            Su kien khi nhan anh nho tren recyclerView se hien thi len giao dien
             viewPagerAdapter.setCurrentImage(imageUrl)
         }
 
@@ -255,68 +294,266 @@ class RoomDetailActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        val progressBar = findViewById<ProgressBar>(R.id.progressBarDetail)
 
-        // Quan sát chi tiết phòng trọ chính
+
+//        Quan sat chi tiet phong tro chinh
         viewModel.room.observe(this) { room ->
-            // Cập nhật giao diện thông tin phòng trọ
+//            Cap nhat giao dien thong tin phong tro
             findViewById<TextView>(R.id.txtTenPhongTro).text = room.Ten_phongtro
             findViewById<TextView>(R.id.txtDiaChi).text = room.Dia_chi
             findViewById<TextView>(R.id.txtGiaThue).text =
                 "${String.format("%,.0f", room.Gia_phong)} VND"
             findViewById<TextView>(R.id.txtChiTietThem).text = room.Mota_chitiet
 
-            // Cập nhật hình ảnh
+            val trangThaiDuyet = room.Trang_thaiduyet
+            val trangThaiLuu = room.Trang_thailuu
+            val trangThaiPhong = room.Trang_thaiphong
+
+            Log.d("RoomDetailActivity", "Trang thai duyet: $trangThaiDuyet")
+            Log.d("RoomDetailActivity", "Trang thai luu: $trangThaiLuu")
+            Log.d("RoomDetailActivity", "Trang thai phong: $trangThaiPhong")
+
+
+            Log.d("RoomDetailActivity", "Home: $ManHome")
+            //tritoan code dựa vào 3 trạng thái này để hiển thị botton của phòng trọ
+            if (ManHome == "ManND") {
+                findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.VISIBLE
+            } else if (ManHome == "ManCT") {
+                if(trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                }
+                else if(trangThaiLuu == true) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                }else if(trangThaiDuyet == "BiHuy" && trangThaiLuu == false && trangThaiPhong == false) {
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDaBiHuy).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                } else if (trangThaiDuyet == "ChoDuyet") {
+                    findViewById<CardView>(R.id.cardViewChucNangChoDuyet).visibility = View.VISIBLE
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                } else if (trangThaiPhong == true) {
+                    findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
+                }
+            }
+
+
+
+//            Chuc nang Cap nhat thong tin phong
+            findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
+//                lay thong tin tu ViewModel chuyen doi sang UpdateRoomViewModel
+                val updateRoomModel = UpdateRoomModel(
+                    Ten_phongtro = viewModel.room.value?.Ten_phongtro ?: "",
+                    Dia_chi = viewModel.room.value?.Dia_chi ?: "",
+                    Loai_phong = viewModel.roomType.value ?: "",
+                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
+                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
+                    Gia_phong = viewModel.room.value?.Gia_phong ?: 0.0,
+                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
+                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
+                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
+                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
+                    Chi_tietthem = viewModel.room.value?.Mota_chitiet ?: ""
+                )
+                //                    Truyen du lieu qua Intent
+                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
+                intent.putExtra("updateRoomModel", updateRoomModel)
+                startActivity(intent)
+            }
+
+//            Chuc ang go phong chuyen sang man dang luu
+            findViewById<LinearLayout>(R.id.btnGoPhong).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
+                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+//                Hien thi Dialog xacs nhan
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn gỡ phòng không?",
+                    onConfirm = {
+//                        Nguoi dung nhan xac nhan
+                        viewModel.updateRoomStatus(roomId, "", true)
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Phòng trọ đã được gỡ!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+            }
+
+//            Chuc nang cho duyet -> dang luu
+            findViewById<LinearLayout>(R.id.btnXacNhanHuy).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
+                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+//                Hien thi Dialog xacs nhan
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn hủy chờ duyệt không?",
+                    onConfirm = {
+//                        Nguoi dung nhan xac nhan
+                        viewModel.updateRoomStatus(roomId, "", true)
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Đã hủy chờ duyệt!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+            }
+
+            //            Chuc ang go phong chuyen sang man da  dang
+            findViewById<LinearLayout>(R.id.btnDangPhong).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
+                val intent = Intent(this, CapNhatViTri::class.java)
+                intent.putExtra("PHONG_TRO_ID", roomId)
+                startActivity(intent)
+            }
+
+            //            Chuc ang go phong chuyen sang man huy phong
+            findViewById<LinearLayout>(R.id.btnHuyPhong).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
+                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+//                Hien thi Dialog xacs nhan
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn hủy phòng không?",
+                    onConfirm = {
+//                        Nguoi dung nhan xac nhan
+                        viewModel.updateRoomStatusHuyPhong(roomId, "BiHuy")
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Đã hủy phòng trọ!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+            }
+
+            //            Chuc nang go phong chuyen sang man luu phong tu man bi huy
+            findViewById<LinearLayout>(R.id.btnLuuPhong).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
+                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+//                Hien thi Dialog xacs nhan
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn lưu phòng không?",
+                    onConfirm = {
+//                        Nguoi dung nhan xac nhan
+                        viewModel.updateRoomStatus(roomId, "", true)
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Phòng trọ đã được lưu!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+            }
+
+            //            Chuc nang go phong chuyen sang man bi huy tu man luu phong
+            findViewById<LinearLayout>(R.id.btnHuyPhongLuu).setOnClickListener {
+                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
+                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
+//                Hien thi Dialog xacs nhan
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn hủy phòng không?",
+                    onConfirm = {
+//                        Nguoi dung nhan xac nhan
+                        viewModel.updateRoomStatus(roomId, "BiHuy", false)
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Phòng trọ đã được hủy!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
+            }
+
+//            Cap nhat hinh anh
             room.imageUrls?.let {
                 viewPagerAdapter.setImages(it)
                 recyclerViewAdapter.setImages(it)
             }
         }
 
-        // Hiển thị ProgressBar khi bắt đầu tải dữ liệu
         viewModel.isLoading.observe(this) { isLoading ->
-            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            if (isLoading) {
+                loadingUtil.show()
+            }
+            else{
+                loadingUtil.hide()
+            }
         }
 
-        // Quan sát thông tin giới tính
+//        Quan sat thong tin gioi tinh
         viewModel.genderInfo.observe(this) { (imgUrlGioiTinh, tenGioiTinh) ->
             findViewById<TextView>(R.id.txtGioiTinh).text = tenGioiTinh
             Glide.with(this).load(imgUrlGioiTinh).into(findViewById(R.id.img_gender))
         }
 
-        // Quan sát thông tin loại phòng
+//        Quan sat thong tin loai phong
         viewModel.roomType.observe(this) { roomType ->
             findViewById<TextView>(R.id.txtLoaiPhong).text = roomType
         }
 
-        // Quan sát thông tin người dùng
+//        Quan sat thong tin nguoi dung
         viewModel.userInfo.observe(this) { (anhDaiDien, hoTen) ->
             findViewById<TextView>(R.id.txtTenChuTro).text = hoTen
             Glide.with(this).load(anhDaiDien).into(findViewById(R.id.imgAvatarChuTro))
         }
 
-        // Quan sát chi tiết thông tin
+//        Quan sat chi tiet thong tin
         viewModel.chiTietList.observe(this) { chiTietList ->
             chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
             findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).adapter = chiTietAdapter
         }
 
-        // Quan sát dữ liệu phí dịch vụ
+//        Quan sat du lieu phi dich vu
         viewModel.phiDichVuList.observe(this) { phiDichVuList ->
             phiDichVuAdapter = PhiDichVuAdapter(phiDichVuList)
             findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).adapter = phiDichVuAdapter
         }
 
-        // Quan sát dữ liệu nội thất
+//        Quan sat du lieu noi that
         viewModel.noiThatList.observe(this) { noiThatList ->
             noiThatAdapter = NoiThatAdapter(noiThatList)
             findViewById<RecyclerView>(R.id.recyclerViewNoiThat).adapter = noiThatAdapter
         }
 
-        // Quan sát dữ liệu tiện nghi
+//        Quan sat du lieu tien nghi
         viewModel.tienNghiList.observe(this) { tienNghiList ->
             tienNghiAdapter = TienNghiAdapter(tienNghiList)
             findViewById<RecyclerView>(R.id.recyclerViewTienNghi).adapter = tienNghiAdapter
         }
+
+    }
+    private fun navigateToUpdateCCCD() {
+        val intent = Intent(this, CCCD::class.java)
+        startActivity(intent)
     }
 }

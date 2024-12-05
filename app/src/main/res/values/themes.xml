@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.StayNow" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.StayNow" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your light theme here. -->
 
         <item name="colorPrimary">@color/my_light_primary</item>
@@ -26,17 +26,37 @@
         <item name="android:textColor">@color/my_button_text</item>
     </style>
 
-<!--    Border cho Image trong RecyclerView chi tiet tro-->
+    <!-- Style cho Custom Dialog -->
+    <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowMinWidthMajor">90%</item> <!-- Đặt chiều rộng dialog -->
+        <item name="android:windowMinWidthMinor">90%</item>
+        <item name="android:windowBackground">@drawable/dialog_background</item> <!-- Nền custom -->
+        <item name="android:backgroundDimEnabled">true</item> <!-- Làm mờ nền phía sau -->
+        <item name="android:textColor">@color/black</item> <!-- Màu chữ mặc định -->
+    </style>
+
+    <!--    Border cho Image trong RecyclerView chi tiet tro-->
     <style name="BorderImageItem">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10dp</item>
-<!--        <item name="strokeColor">@color/purple_border_bottom</item>-->
-<!--        <item name="strokeWidth">8dp</item>-->
+        <!--        <item name="strokeColor">@color/purple_border_bottom</item>-->
+        <!--        <item name="strokeWidth">8dp</item>-->
     </style>
 
-<!--    Border anh thanh hinh tron-->
+    <!--    Border anh thanh hinh tron-->
     <style name="CircularShape">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="Theme.StayNow.Fullscreen" parent="Theme.StayNow">
+        <item name="android:actionBarStyle">@style/Widget.Theme.StayNow.ActionBar.Fullscreen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
+    <style name="ThemeOverlay.StayNow.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_600</item>
+        <item name="fullscreenTextColor">@color/light_blue_A200</item>
     </style>
 </resources>
