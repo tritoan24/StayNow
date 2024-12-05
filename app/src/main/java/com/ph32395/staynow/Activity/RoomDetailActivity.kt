@@ -1,6 +1,7 @@
 package com.ph32395.staynow.Activity
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import androidx.cardview.widget.CardView
@@ -20,6 +22,10 @@ import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
+import com.google.firebase.dynamiclinks.internal.FirebaseDynamicLinksImpl.createDynamicLink
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
@@ -34,6 +40,7 @@ import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
 import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
 import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.fragment.home.HomeViewModel
@@ -63,10 +70,8 @@ class RoomDetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_room_detail)
 
         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
-            finish()
+            finish() //Quay lai man hinh truoc
         }
-
-
 
 //        Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
@@ -82,6 +87,46 @@ class RoomDetailActivity : AppCompatActivity() {
         if (ManHome == "ManND") {
             viewmodelHome.incrementRoomViewCount(maPhongTro)
         }
+
+        FirebaseDynamicLinks.getInstance()
+            .getDynamicLink(intent)
+            .addOnSuccessListener { pendingDynamicLinkData ->
+                val deepLink = pendingDynamicLinkData?.link
+                if (deepLink != null) {
+                    val roomType = deepLink.getQueryParameter("roomType")
+                    Log.e("RoomDetailActivity", "RoomType: $roomType")
+
+                    if (roomType != null) {
+                        viewModel.fetchChiTietThongTin(roomType)
+                        viewModel.fetchPhiDichVu(roomType)
+                        viewModel.fetchNoiThat(roomType)
+                        viewModel.fetchTienNghi(roomType)
+                        viewModel.fetchRoomDetail(roomType)
+
+                        findViewById<ImageView>(R.id.iconBack).setOnClickListener {
+                            startActivity(Intent(this@RoomDetailActivity, MainActivity::class.java))
+                        }
+                    }else {
+
+                    }
+                }else {
+                    viewModel.fetchChiTietThongTin(maPhongTro)
+                    viewModel.fetchPhiDichVu(maPhongTro)
+                    viewModel.fetchNoiThat(maPhongTro)
+                    viewModel.fetchTienNghi(maPhongTro)
+
+                    // Tải dữ liệu từ Firebase
+                    viewModel.fetchRoomDetail(maPhongTro)
+
+                    findViewById<ImageView>(R.id.iconBack).setOnClickListener {
+                        finish() // Quay lại màn hình trước
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("RoomDetailActivity", "Error retrieving dynamic link", e)
+            }
+
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
@@ -119,13 +164,26 @@ class RoomDetailActivity : AppCompatActivity() {
         findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
             val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
             viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
-                intent.putExtra("idUser",ma_NguoiDung)
+                intent.putExtra("idUser", ma_NguoiDung)
+                startActivity(intent)
             }
-            startActivity(intent)
-            finish()
+
         }
 
-//        khoi tao Adapter
+        findViewById<ImageView>(R.id.shareRoom).setOnClickListener{
+            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
+                intent.putExtra("idUser", ma_NguoiDung)
+
+                // Tạo dynamic link
+                val roomDetailLink = "https://staynowshare.page.link/roomDetail?roomType=${maPhongTro}"
+                createDynamicLink(roomDetailLink) { dynamicLink ->
+                    shareLink(dynamicLink)
+                }
+            }
+        }
+
+
+        // Khởi tạo Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
         phiDichVuAdapter = PhiDichVuAdapter(emptyList())
         noiThatAdapter = NoiThatAdapter(emptyList())
@@ -138,16 +196,52 @@ class RoomDetailActivity : AppCompatActivity() {
         setupListPhiDichVu()
         setupRecyViewTienNghi()
 
-//        Lay du lieu chi tiet thong tin phong tro
-        viewModel.fetchChiTietThongTin(maPhongTro)
-
-        viewModel.fetchPhiDichVu(maPhongTro)
-        viewModel.fetchNoiThat(maPhongTro)
-        viewModel.fetchTienNghi(maPhongTro)
+        // Lấy dữ liệu chi tiết thông tin phòng trọ
 
 
-//        Tai du lieu tu Firebase
-        viewModel.fetchRoomDetail(maPhongTro)
+        // Xử lý liên kết động
+    }
+
+    private fun shareLink(dynamicLink: String) {
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain" // Định dạng chia sẻ là văn bản
+            putExtra(Intent.EXTRA_TEXT, dynamicLink) // Thêm dynamic link vào Intent
+        }
+
+        // Hiển thị các ứng dụng có thể chia sẻ link
+        startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"))
+    }
+
+    private fun createDynamicLink(roomDetailLink: String, callback: (String) -> Unit) {
+        val dynamicLink = FirebaseDynamicLinks.getInstance()
+            .createDynamicLink()
+            .setLink(Uri.parse(roomDetailLink))
+            .setDomainUriPrefix("https://staynowshare.page.link") // Đảm bảo sử dụng domain của bạn
+            .setAndroidParameters(
+                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow")
+                    .build()
+            )
+            .buildDynamicLink()
+
+        val dynamicLinkUri = dynamicLink.uri.toString()
+
+        callback(dynamicLinkUri)
+    }
+    private fun showDynamicLinkDialog(dynamicLink: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Dynamic Link")
+        builder.setMessage("Here is your Dynamic Link: $dynamicLink")
+        builder.setPositiveButton("OK") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Copy Link") { dialog, _ ->
+            // Copy dynamic link to clipboard
+            val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Dynamic Link", dynamicLink)
+            clipboard.setPrimaryClip(clip)
+            dialog.dismiss()
+        }
+        builder.create().show()
     }
 
     //    Danh sacch thng tin chi tiet

@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.R;
 
 import java.util.Calendar;
@@ -38,6 +39,7 @@ public class PhanHoi extends AppCompatActivity {
     private EditText commentFeedback;
     private EditText phanHoiTime;
     private Button btnPhanhoi;
+    private ImageButton btnbackFeed;
     private Uri selectedImageUri;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -56,6 +58,7 @@ public class PhanHoi extends AppCompatActivity {
         commentFeedback = findViewById(R.id.commentFeedback);
         phanHoiTime = findViewById(R.id.phanhoiTime);
         btnPhanhoi = findViewById(R.id.btnPhanhoi);
+        btnbackFeed = findViewById(R.id.backFeedback);
         mAuth = FirebaseAuth.getInstance();
         // Khởi tạo Firebase
         db = FirebaseFirestore.getInstance();
@@ -74,6 +77,9 @@ public class PhanHoi extends AppCompatActivity {
                     .start();
         });
 
+        btnbackFeed.setOnClickListener(v -> {
+            startActivity( new Intent(PhanHoi.this, MainActivity.class));
+        });
         // Gắn sự kiện gửi phản hồi
         btnPhanhoi.setOnClickListener(v -> {
             String feedback = commentFeedback.getText().toString().trim();
