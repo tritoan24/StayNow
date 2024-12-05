@@ -141,8 +141,8 @@ class CreateInvoice : AppCompatActivity() {
         binding.tvTienPhong.text = formatCurrency(invoice.tienPhong)
         binding.tvTienCoc.text = formatCurrency(invoice.tienCoc)
 
-        val tienThem = binding.editPhiThem.text.toString().toDoubleOrNull() ?: 0.0
-        val tienGiam = binding.editTienGiam.text.toString().toDoubleOrNull() ?: 0.0
+        var tienThem = binding.editPhiThem.text.toString().toDoubleOrNull() ?: 0.0
+        var tienGiam = binding.editTienGiam.text.toString().toDoubleOrNull() ?: 0.0
         var ghiChu = binding.editTextNotes.text.toString()
 
         // Fixed fees
@@ -173,18 +173,45 @@ class CreateInvoice : AppCompatActivity() {
             binding.editTextSoNuocCu.setText(soNuocCu.toString())
         }
 
+
+
+
+
+
         //btn Cancel
         binding.btnCancel.setOnClickListener {
            finish()
         }
-        //btn Save
-        binding.btnCreate.setOnClickListener{
+        // Collect data from UI
+        val invoice = InvoiceMonthlyModel(
+            tienPhong = invoice.tienPhong, // Room price from existing invoice
+            tienCoc = invoice.tienCoc, // Deposit from existing invoice
+            soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0,
+            soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0,
+//            soDienMoi = binding.editTextSoDienMoi.text.toString().toIntOrNull() ?: 0,
+//            soNuocMoi = binding.editTextSoNuocMoi.text.toString().toIntOrNull() ?: 0,
+//            phiThem = binding.editPhiThem.text.toString().toDoubleOrNull() ?: 0.0,
+//            tienGiam = binding.editTienGiam.text.toString().toDoubleOrNull() ?: 0.0,
+//            ghiChu = binding.editTextNotes.text.toString(),
+//            tongTienDichVu = invoice.tongTienDichVu, // Total service fees
+//            tongTienPhiBienDoi = binding.tvTongTienPhiBienDoi.text.toString().toDoubleOrNull() ?: 0.0,
+//            tongHoaDon = binding.tvTongHoaDon.text.toString().toDoubleOrNull() ?: 0.0,
+            phiBienDong = invoice.phiBienDong, // Variable fees
+            phiCoDinh = invoice.phiCoDinh, // Fixed fees
+            tienThem = tienThem,
+            tienGiam = tienGiam
+
+        )
+
+// Save invoice
+
+        binding.btnCreate.setOnClickListener {
             invoiceViewModel.addInvoice(invoice, {
+                Toast.makeText(this, "Invoice created successfully", Toast.LENGTH_SHORT).show()
                 finish()
             }, {
-               Toast.makeText(this, "Error creating invoice", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error creating invoice", Toast.LENGTH_SHORT).show()
             })
-
         }
 
         val variableFeesAdapter = InvoiceVariableFeesAdapter(invoice.phiBienDong)

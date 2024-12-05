@@ -12,11 +12,11 @@ class InvoiceViewModel : ViewModel() {
     private val invoiceCollection = firestore.collection("HoaDon")
 
     // LiveData để quan sát danh sách hóa đơn
-    private val _invoices = MutableLiveData<List<Invoice>>()
-    val invoices: LiveData<List<Invoice>> get() = _invoices
+    private val _invoices = MutableLiveData<List<InvoiceMonthlyModel>>()
+    val invoices: LiveData<List<InvoiceMonthlyModel>> get() = _invoices
 
     // Thêm một hóa đơn mới
-    fun addInvoice(invoice: Invoice, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    fun addInvoice(invoice: InvoiceMonthlyModel, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
         val invoiceId = invoiceCollection.document().id // Tạo ID tự động
         val invoiceWithId = invoice.copy(idHoaDon = invoiceId)
 
@@ -33,7 +33,7 @@ class InvoiceViewModel : ViewModel() {
     fun fetchInvoices() {
         invoiceCollection.get()
             .addOnSuccessListener { querySnapshot ->
-                val invoicesList = querySnapshot.documents.mapNotNull { it.toObject<Invoice>() }
+                val invoicesList = querySnapshot.documents.mapNotNull { it.toObject<InvoiceMonthlyModel>() }
                 _invoices.value = invoicesList
             }
             .addOnFailureListener { exception ->
