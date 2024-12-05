@@ -6,6 +6,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.databinding.ActivityTenantManageScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_TENANT
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CANCELED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow.hieunt.helper.Default.StatusRoom.WAIT
@@ -47,6 +50,9 @@ class TenantManageScheduleRoomActivity :
             },
             onClickCancelSchedule = {
                 updateStatusRoom(it.roomScheduleId, CANCELED)
+                viewModel.pushNotification(TITLE_CANCELED_BY_TENANT, it, false) { isCompletion ->
+                    toastNotification(isCompletion)
+                }
             },
             onClickLeaveSchedule = {
                 UpdateRoomScheduleDialog(it, onClickConfirm = { newTime, newDate ->
@@ -60,6 +66,13 @@ class TenantManageScheduleRoomActivity :
                             viewModel.filerScheduleRoomState(0) {
                                 scheduleStateAdapter?.setSelectedState(0)
                             }
+                            viewModel.pushNotification(
+                                TITLE_LEAVED_BY_TENANT,
+                                it.copy(time = newTime, date = newDate)
+                                ,false
+                            ) { isCompletion ->
+                                toastNotification(isCompletion)
+                            }
                         } else {
                             lifecycleScope.launch {
                                 toast("Có lỗi xảy ra!")
@@ -70,9 +83,9 @@ class TenantManageScheduleRoomActivity :
             },
             onClickConfirm = {
                 updateStatusRoom(it.roomScheduleId, CONFIRMED)
-            },
-            onClickCreateContract = {
-
+                viewModel.pushNotification(TITLE_CONFIRMED, it, false) { isCompletion ->
+                    toastNotification(isCompletion)
+                }
             }
         )
 
@@ -107,12 +120,12 @@ class TenantManageScheduleRoomActivity :
                 launch {
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
-                            listScheduleState.map { scheduleState ->
+                            scheduleStateAdapter?.listData?.map { scheduleState ->
                                 val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
-                        scheduleStateAdapter?.addListObserver(newList)
+                        scheduleStateAdapter?.addListObserver(newList ?: listScheduleState)
                     }
                 }
             }
@@ -132,6 +145,15 @@ class TenantManageScheduleRoomActivity :
                     toast("Có lỗi xảy ra!")
                 }
             }
+        }
+    }
+
+    private fun toastNotification(isCompletion: Boolean) {
+        lifecycleScope.launch {
+            if (isCompletion)
+                toast("Thông báo đã được gửi đến chủ trọ")
+            else
+                toast("Có lỗi xảy ra!")
         }
     }
 

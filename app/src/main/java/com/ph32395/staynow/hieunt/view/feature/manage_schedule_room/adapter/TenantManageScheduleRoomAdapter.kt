@@ -20,7 +20,6 @@ class TenantManageScheduleRoomAdapter(
     private val onClickCancelSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickLeaveSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickWatched: (ScheduleRoomModel) -> Unit,
-    private val onClickCreateContract: (ScheduleRoomModel) -> Unit,
     private val onClickConfirm: (ScheduleRoomModel) -> Unit,
 ) : BaseAdapter<ScheduleRoomModel, BaseViewHolder<ScheduleRoomModel, *>>() {
     inner class RoomWaitVH(binding: TenantItemRoomWaitBinding) :
@@ -68,9 +67,6 @@ class TenantManageScheduleRoomAdapter(
                 tvTime.text = "Thời gian: ${data.time} ngày ${data.date}"
                 tvWatched.tap {
                     onClickWatched.invoke(data)
-                }
-                tvCreateContract.tap {
-                    onClickCreateContract.invoke(data)
                 }
                 tvLeaveSchedule.tap {
                     onClickLeaveSchedule.invoke(data)

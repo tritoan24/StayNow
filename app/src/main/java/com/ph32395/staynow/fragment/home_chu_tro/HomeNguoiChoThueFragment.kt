@@ -1,6 +1,5 @@
 package com.ph32395.staynow.fragment.home_chu_tro
 
-import android.app.Notification
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,17 +7,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
-import com.ph32395.staynow.R
-import com.ph32395.staynow.ThongBao.NotificationActivity
-import com.ph32395.staynow.ThongBao.NotificationViewModel
-import com.ph32395.staynow.databinding.FragmentHomeBinding
+import com.ph32395.staynow.hieunt.view.feature.notification.NotificationActivity
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.databinding.FragmentHomeNguoiChoThueBinding
 import com.ph32395.staynow.fragment.home.HomeViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
+import com.ph32395.staynow.hieunt.widget.gone
+import com.ph32395.staynow.hieunt.widget.visible
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeNguoiChoThueFragment : Fragment() {
 
@@ -27,8 +35,7 @@ class HomeNguoiChoThueFragment : Fragment() {
     private lateinit var swipeFresh: SwipeRefreshLayout // keo de lam moiw noi dung
     private lateinit var imageSliderChuTro: ImageSlider
     private lateinit var roomNguoiChoThueAdapter: RoomNguoiChoThueAdapter
-    private val notificationViewModel: NotificationViewModel by activityViewModels()
-
+    private lateinit var notificationViewModel: NotificationViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,19 +47,36 @@ class HomeNguoiChoThueFragment : Fragment() {
         swipeFresh = binding.swipeLayoutChuTro
         imageSliderChuTro = binding.imageSliderChuTro
 
+        notificationViewModel = ViewModelProvider(this, ViewModelFactory(requireContext()))[NotificationViewModel::class.java]
+        lifecycleScope.launch (Dispatchers.IO){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                notificationViewModel.notificationsState.collect {
+                    val countNotificationNotSeen = async { it.filter { notificationModel -> !notificationModel.isRead }.size }.await()
+                    withContext(Dispatchers.Main){
+                        if (countNotificationNotSeen > 0){
+                            binding.notificationBadge.visible()
+                            binding.notificationBadge.text = countNotificationNotSeen.toString()
+                        } else {
+                            binding.notificationBadge.gone()
+                        }
+                    }
+                }
+            }
+        }
+
         //tritoan code thong bao
         binding.fNotification.setOnClickListener {
             startActivity(Intent(context, NotificationActivity::class.java))
         }
         // Quan sát số lượng thông báo chưa đọc
-        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
-            if (count > 0) {
-                binding.notificationBadge.text = count.toString()
-                binding.notificationBadge.visibility = View.VISIBLE
-            } else {
-                binding.notificationBadge.visibility = View.GONE
-            }
-        }
+//        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
+//            if (count > 0) {
+//                binding.notificationBadge.text = count.toString()
+//                binding.notificationBadge.visibility = View.VISIBLE
+//            } else {
+//                binding.notificationBadge.visibility = View.GONE
+//            }
+//        }
 
 
 //        Khoi tao recyclerView

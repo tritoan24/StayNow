@@ -46,8 +46,8 @@ import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.fragment.RoomManagementFragment
 import com.ph32395.staynow.fragment.home.HomeViewModel
-import com.ph32395.staynow.fragment.showWarningDialog
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
@@ -149,7 +149,7 @@ class RoomDetailActivity : AppCompatActivity() {
 
                 // Kiểm tra trạng thái CCCD và PTTT
                 if (!statusCCCD) {
-                    showWarningDialog(
+                    RoomManagementFragment().showWarningDialog(
                         context = this,
                         title = "Bạn chưa cập nhật CCCD",
                         content = "Hãy cập nhật CCCD để tiếp tục",

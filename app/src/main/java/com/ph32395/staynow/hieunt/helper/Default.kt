@@ -28,6 +28,7 @@ object Default {
         const val SPLASH_ACTIVITY = "SplashActivity"
         const val ROOM_DETAIL = "room_detail"
         const val ROOM_ID = "room_id"
+        const val OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION = "open_manage_schedule_room_by_notification"
     }
 
     object SharePreKey {
@@ -51,6 +52,8 @@ object Default {
         const val MESSAGE = "message"
         const val CHANGED_SCHEDULE_BY_RENTER = "changedScheduleByRenter"
         const val ROOM_SCHEDULE_ID = "roomScheduleId"
+        const val IS_PUSHED = "isPushed"
+        const val TYPE_NOTIFICATION = "typeNotification"
     }
 
     object StatusRoom {
@@ -66,6 +69,11 @@ object Default {
         const val TITLE_CANCELED_BY_TENANT = "Lịch hẹn đã bị hủy bỏ bởi người thuê"
         const val TITLE_LEAVED_BY_RENTER = "Lịch hẹn đã thay đổi bởi chủ trọ"
         const val TITLE_LEAVED_BY_TENANT = "Lịch hẹn đã thay đổi bởi người thuê"
+    }
+
+    object TypeNotification{
+        const val TYPE_SCHEDULE_ROOM_RENTER = "type_schedule_room_renter"
+        const val TYPE_SCHEDULE_ROOM_TENANT = "type_schedule_room_tenant"
     }
 
 }

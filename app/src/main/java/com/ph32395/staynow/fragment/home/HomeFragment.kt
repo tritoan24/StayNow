@@ -5,15 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.airbnb.lottie.LottieAnimationView
@@ -21,13 +22,20 @@ import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.Model.LoaiPhongTro
-import com.ph32395.staynow.ThongBao.NotificationActivity
-import com.ph32395.staynow.ThongBao.NotificationViewModel
 import com.ph32395.staynow.databinding.FragmentHomeBinding
+import com.ph32395.staynow.hieunt.database.db.AppDatabase
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view.feature.notification.NotificationActivity
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
+import com.ph32395.staynow.hieunt.widget.gone
+import com.ph32395.staynow.hieunt.widget.visible
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeFragment : Fragment() {
 
@@ -38,9 +46,6 @@ class HomeFragment : Fragment() {
     private lateinit var loadingIndicator: LottieAnimationView
     private lateinit var notificationViewModel: NotificationViewModel
 
-    private val currentUser = FirebaseAuth.getInstance().currentUser
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,11 +54,24 @@ class HomeFragment : Fragment() {
         swipeFresh = binding.swipeRefreshLayout
         imageSlider = binding.imageSlider
         loadingIndicator = binding.loadingIndicator
-
-
         // Load dữ liệu ban đầu
         loadData()
-
+        notificationViewModel = ViewModelProvider(this,ViewModelFactory(requireContext()))[NotificationViewModel::class.java]
+        lifecycleScope.launch (Dispatchers.IO){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                notificationViewModel.notificationsState.collect {
+                    val countNotificationNotSeen = async { it.filter { notificationModel -> !notificationModel.isRead }.size }.await()
+                    withContext(Dispatchers.Main){
+                        if (countNotificationNotSeen > 0){
+                            binding.notificationBadge.visible()
+                            binding.notificationBadge.text = countNotificationNotSeen.toString()
+                        } else {
+                            binding.notificationBadge.gone()
+                        }
+                    }
+                }
+            }
+        }
 
         // Quan sát LiveData từ ViewModel
         homeViewModel.loaiPhongTroList.observe(viewLifecycleOwner) { loaiPhongTroList ->
@@ -92,24 +110,6 @@ class HomeFragment : Fragment() {
         binding.fNotification.setOnClickListener {
             startActivity(Intent(context, NotificationActivity::class.java))
         }
-        //đếm số thông báo chưa đọc
-
-        notificationViewModel =
-            ViewModelProvider(requireActivity()).get(NotificationViewModel::class.java)
-// Trong Fragment
-        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
-            Log.d("Notification", "Unread count: $count")
-            if (count > 0) {
-                binding.notificationBadge.text = count.toString()
-                binding.notificationBadge.visibility = View.VISIBLE
-            } else {
-                binding.notificationBadge.visibility = View.GONE
-            }
-        }
-
-// Gọi fetchNotifications sau khi set observer
-        notificationViewModel.fetchNotifications(currentUser?.uid ?: "")
-
 
         return binding.root
     }

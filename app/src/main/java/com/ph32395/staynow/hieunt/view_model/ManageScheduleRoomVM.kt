@@ -20,7 +20,11 @@ import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME_STAMP
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TITLE
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TYPE_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -178,22 +182,28 @@ class ManageScheduleRoomVM : ViewModel() {
     fun pushNotification(
         titleNotification: String,
         data: ScheduleRoomModel,
+        isRenterPushNotification: Boolean = true,
         onCompletion: (Boolean) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val mapLink = if (titleNotification == TITLE_CANCELED_BY_RENTER) null else "geo:0,0?q=${Uri.encode(data.roomAddress)}"
+            val mapLink =
+                if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT)
+                    null
+                else "geo:0,0?q=${Uri.encode(data.roomAddress)}"
             val notificationData = hashMapOf(
                 TITLE to titleNotification,
                 MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
                 DATE to data.date,
                 TIME to data.time,
                 MAP_LINK to mapLink,
-                TIME_STAMP to System.currentTimeMillis()
+                TIME_STAMP to System.currentTimeMillis(),
+                TYPE_NOTIFICATION to if (isRenterPushNotification) TYPE_SCHEDULE_ROOM_TENANT else TYPE_SCHEDULE_ROOM_RENTER
+                //thay doi TYPE_NOTIFICATION de them cac pendingIntent trong service neu can
             )
             val database = FirebaseDatabase.getInstance()
             val thongBaoRef = database.getReference(THONG_BAO)
-
-            val userId = data.tenantId
+            // neu ChuTro push noti thi luu id NguoiThue va nguoc lai
+            val userId = if (isRenterPushNotification) data.tenantId else data.renterId
             val userThongBaoRef = thongBaoRef.child(userId)
 
             val newThongBaoId = userThongBaoRef.push().key

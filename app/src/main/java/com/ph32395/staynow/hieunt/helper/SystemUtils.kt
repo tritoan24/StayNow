@@ -88,6 +88,12 @@ object SystemUtils {
         return dateFormat.format(currentDate)
     }
 
+    fun currentDateFormattedFromMillis(currentTimeMillis: Long): String {
+        val currentDate = Date(currentTimeMillis)
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return dateFormat.format(currentDate)
+    }
+
     fun copyTextToClipboard(context: Context, text: String) {
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("label", text)

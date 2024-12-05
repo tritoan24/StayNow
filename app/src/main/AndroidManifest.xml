@@ -13,7 +13,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!--permission notifications-->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--    service-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
         android:allowBackup="true"
@@ -34,6 +38,12 @@
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
             android:exported="false" />
+
+        <service
+            android:name=".hieunt.service.NotificationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
         <activity
             android:name=".Activity.SuccessPaymentActivity"
             android:exported="true" />
@@ -41,7 +51,7 @@
             android:name=".Activity.ThanhToanActivity"
             android:exported="true" />
         <activity
-            android:name=".ThongBao.NotificationActivity"
+            android:name=".hieunt.view.feature.notification.NotificationActivity"
             android:exported="true" />
         <activity
             android:name=".fragment.contract_tenant.BillContractActivity"
