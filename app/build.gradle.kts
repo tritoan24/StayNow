@@ -96,18 +96,18 @@ dependencies {
     implementation(project(":horizontal_calendar"))
 
 
-    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation ("androidx.recyclerview:recyclerview:1.3.2")
 
     //Thư Viện SweetAlertDialog
-    implementation("com.github.f0ris.sweetalert:library:1.6.2")
+    implementation ("com.github.f0ris.sweetalert:library:1.6.2")
 
     implementation("io.github.ParkSangGwon:tedimagepicker:1.6.1")
 
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
     //Thư viện Places API
-    implementation("com.google.android.libraries.places:places:4.1.0")
+    implementation ("com.google.android.libraries.places:places:4.1.0")
     //Thu vien khoang gia
-    implementation("com.github.Jay-Goo:RangeSeekBar:3.0.0")
+    implementation ("com.github.Jay-Goo:RangeSeekBar:3.0.0")
 
     // Firebase Cloud Messaging
     implementation("com.google.firebase:firebase-messaging:24.1.0")
@@ -146,4 +146,8 @@ dependencies {
         )
     )
     implementation ("androidx.appcompat:appcompat:1.7.0")
+
+    //generate qr
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
 }

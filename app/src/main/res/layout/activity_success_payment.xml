@@ -36,22 +36,74 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Người Thuê:"
+                android:textColor="#05136A"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+            <TextView
                 android:id="@+id/tvTenantInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thông tin người thuê: [Tên Người Thuê]"
+                android:text="[Tên Người Thuê]"
                 android:textColor="#000000"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/tvTenantAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[Address Người Thuê]"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/tvTenantBd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[Bd Người Thuê]"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chủ Trọ:"
+                android:textColor="#05136A"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+            <TextView
                 android:id="@+id/tvLandlordInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thông tin chủ trọ: [Tên Chủ Trọ]"
+                android:text="[Tên Chủ Trọ]"
                 android:textColor="#000000"
-                android:textSize="16sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/tvLandlordAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[Address Chủ Trọ]"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/tvLandlordBd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="[Bd Chủ Trọ]"
+                android:textColor="#000000"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
@@ -124,6 +176,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Thời hạn thuê"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                tools:ignore="HardcodedText" />
+            <TextView
+                android:id="@+id/tvClause"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Điều khoản"
                 android:textColor="#000000"
                 android:textSize="14sp"
                 tools:ignore="HardcodedText" />

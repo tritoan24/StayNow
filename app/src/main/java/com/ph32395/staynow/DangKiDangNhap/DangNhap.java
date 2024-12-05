@@ -60,7 +60,6 @@ public class DangNhap extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dang_nhap);
-        ServerWakeUpService.INSTANCE.wakeUpServer();
 
         btnDangNhap = findViewById(R.id.loginButton);
         TextView txtdangky = findViewById(R.id.txtdangky);

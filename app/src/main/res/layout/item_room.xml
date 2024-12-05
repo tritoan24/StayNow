@@ -10,106 +10,53 @@
     card_view:cardElevation="4dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
 
-        <!-- Phần hiển thị ảnh của phòng trọ -->
-        <ImageView
-            android:id="@+id/imgPhongTro"
-            android:layout_width="160dp"
-            android:layout_height="100dp"
-            android:background="@drawable/border_image"
-            android:src="@drawable/room"
-            tools:ignore="ContentDescription" />
-
-        <!-- Phần tên của phòng trọ -->
-        <TextView
-            android:id="@+id/tvTenPhongTro"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Tên phòng trọ"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText" />
-
-        <!-- Phần địa chỉ của phòng trọ -->
+        <!-- Header: Cố định kích thước và vị trí -->
         <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:orientation="horizontal"
+            android:layout_height="150dp"
+            android:orientation="vertical"
             tools:ignore="UseCompoundDrawables">
 
             <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="start"
-                android:src="@drawable/ic_location_room"
+                android:id="@+id/imgPhongTro"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/border_image"
+                android:src="@drawable/room"
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:id="@+id/tvDiaChi"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvTenPhongTro"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:text="Địa chỉ"
+                android:layout_marginTop="8dp"
+                android:text="Tên phòng trọ"
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
+                android:textStyle="bold"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
 
-        <!-- Phần giá thuê -->
-        <TextView
-            android:id="@+id/tvGiaThue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Giá thuê: 2,000,000 VND"
-            android:textColor="#EF1606"
-            android:textSize="12sp"
-            tools:ignore="HardcodedText" />
-
-        <!-- Layout diện tích và số lượt xem -->
+        <!-- Content: Cố định chiều cao tối thiểu -->
         <LinearLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            tools:ignore="DisableBaselineAlignment">
+            android:layout_height="80dp"
+            android:minHeight="60dp"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="horizontal"
-                tools:ignore="UseCompoundDrawables">
-
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="4dp"
-                    android:src="@drawable/ic_dientich"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:id="@+id/tvDienTich"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="25m²"
-                    android:textColor="@android:color/black"
-                    android:textSize="12sp"
-                    tools:ignore="HardcodedText" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginTop="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
@@ -117,32 +64,108 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="4dp"
-                    android:src="@drawable/ic_viewer"
+                    android:layout_gravity="start"
+                    android:src="@drawable/ic_location_room"
                     tools:ignore="ContentDescription" />
 
                 <TextView
-                    android:id="@+id/tvSoLuotXem"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
+                    android:id="@+id/tvDiaChi"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="2dp"
+                    android:text="Địa chỉ"
                     android:textColor="@android:color/black"
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvGiaThue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Giá thuê: 2,000,000 VND"
+                android:textColor="#EF1606"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvTgianTao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="5dp"
-            android:text="20 phút trước"
-            android:textColor="#24C12A"
-            android:textSize="12sp"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
+        <!-- Footer: Cố định chiều cao -->
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="22dp"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="DisableBaselineAlignment">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_dientich"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/tvDienTich"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="25m²"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginEnd="4dp"
+                        android:src="@drawable/ic_viewer"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/tvSoLuotXem"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="122"
+                        android:textColor="@android:color/black"
+                        android:textSize="12sp"
+                        tools:ignore="HardcodedText" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvTgianTao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="5dp"
+                android:text="20 phút trước"
+                android:textColor="#24C12A"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+    </LinearLayout>
 </androidx.cardview.widget.CardView>

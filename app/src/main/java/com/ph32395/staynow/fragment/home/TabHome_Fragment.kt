@@ -49,7 +49,6 @@ class HomeTabFragment : Fragment(R.layout.fragment_tab_home) {
         }
 
 
-
     }
 
     override fun onResume() {

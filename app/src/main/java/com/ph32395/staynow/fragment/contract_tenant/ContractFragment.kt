@@ -18,8 +18,10 @@ import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHopDong.ContractStatus
 import com.ph32395.staynow.databinding.FragmentContractBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import kotlinx.coroutines.launch
 
+@Suppress("DEPRECATION")
 class ContractFragment : Fragment() {
 
     // Đối tượng Binding
@@ -49,7 +51,7 @@ class ContractFragment : Fragment() {
         pendingContractsTitle.text = SpannableString("Hợp đồng chờ xác nhận").apply {
             setSpan(UnderlineSpan(), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.tap {
             requireActivity().onBackPressed()  // Gọi phương thức quay lại màn hình trước
         }
         // Khởi tạo adapter và gán vào RecyclerView

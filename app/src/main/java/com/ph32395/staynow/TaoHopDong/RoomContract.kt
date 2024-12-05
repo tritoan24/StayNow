@@ -7,9 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
-import org.jetbrains.annotations.Contract
-import java.text.NumberFormat
-import java.util.Locale
 
 class RoomContract {
     private val db = FirebaseFirestore.getInstance()
@@ -339,6 +336,20 @@ class RoomContract {
             contractsCollection.document(contractId)
                 .update("trangThai", newStatus.name)
                 .await()
+
+            if (newStatus == ContractStatus.EXPIRED || newStatus == ContractStatus.TERMINATED) {
+                // Lấy thông tin hợp đồng để tìm mã phòng
+                val contractSnapshot = contractsCollection.document(contractId).get().await()
+                val roomId = contractSnapshot.getString("maPhong")
+
+                if (roomId != null) {
+                    // Cập nhật trạng thái phòng trọ
+                    roomsCollection.document(roomId)
+                        .update("Trang_thaiphong", false)
+                        .await()
+                }
+            }
+
             onSuccess()
         } catch (e: Exception) {
             onFailure(e)

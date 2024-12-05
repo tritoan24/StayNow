@@ -2,21 +2,30 @@ package com.ph32395.staynow.fragment.contract_tenant
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService
+import com.ph32395.staynow.Activity.ChoosePaymentActivity
+import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
+import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
+import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ActivityBillContractBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
-import com.ph32395.staynow.payment.SocketManager
 import com.ph32395.staynow.utils.Constants
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPaySDK
@@ -30,18 +39,15 @@ import java.util.concurrent.TimeUnit
 class BillContractActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBillContractBinding
-    private lateinit var socketManager: SocketManager
+    private lateinit var loadingIndicator: LottieAnimationView
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBillContractBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //đánh thức server
-        ServerWakeUpService.wakeUpServer()
-        // Khởi tạo socket
-        socketManager = SocketManager()
-        socketManager.initSocket(Constants.URL_PAYMENT)
+        loadingIndicator = binding.loadingIndicator
+
         initZaloPay()
 
         // nhận intent từ contractAdapter
@@ -54,22 +60,36 @@ class BillContractActivity : AppCompatActivity() {
 
         updateUI(invoice!!, contract!!)
 
-        binding.ivBack.setOnClickListener {
+        binding.ivBack.tap {
             onBackPressed()
             finish()
         }
 
-        binding.btnThanhtoan.setOnClickListener {
-            Toast.makeText(this, "Đang chuyển hướng", Toast.LENGTH_SHORT).show()
+        if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID) {
+            binding.btnThanhtoan.visibility = View.GONE
+        }
+
+        binding.btnThanhtoan.tap {
+            showLoading()
             val orderProcessor = OrderProcessor(this)
             orderProcessor.checkAndCreateOrder(
                 invoice.tongTien,
                 contract.maHopDong,
                 contract.hoaDonHopDong.idHoaDon,
                 itemsArrStr
-            ) { token ->
-                if (token != null) {
-                    orderProcessor.startPayment(token, contract)
+            ) { token, orderUrl, remainTime ->
+                hideLoading()
+                if (token != null && orderUrl != null) {
+                    val intent = Intent(this, ChoosePaymentActivity::class.java)
+                    intent.putExtra("contract", contract)
+                    intent.putExtra("itemsArrStr", itemsArrStr)
+                    intent.putExtra("zpToken", token)
+                    intent.putExtra("orderUrl", orderUrl)
+                    intent.putExtra("remainTime", remainTime)
+                    Log.d("remainTimeBillContract", remainTime.toString())
+
+                    startActivity(intent)
+
                 } else {
                     Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show()
                 }
@@ -96,32 +116,12 @@ class BillContractActivity : AppCompatActivity() {
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvRoomDeposit.text = formatCurrency(invoice.tienCoc)
 
-        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        try {
-            // Phân tích chuỗi thành đối tượng Date
-            val date = formatter.parse(invoice.ngayLap)
-
-            // Thêm 3 ngày
-            val calendar = Calendar.getInstance()
-            calendar.time = date
-            calendar.add(Calendar.DAY_OF_YEAR, 3)
-
-            // Chuyển lại thành chuỗi với định dạng
-            val newDate = formatter.format(calendar.time)
-
-            // Hiển thị kết quả
-            binding.tvReminder.text = "Vui lòng thanh toán hợp đồng trước ngày $newDate. Cảm ơn bạn"
-
-        } catch (e: ParseException) {
-            e.printStackTrace()  // In ra lỗi nếu có vấn đề với việc phân tích ngày
-        }
-
-//         Phí cố định
+        // Phí cố định
         val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
         binding.rcvFixedFees.adapter = fixedFeeAdapter
         binding.rcvFixedFees.layoutManager = LinearLayoutManager(this)
 
-//         Phí biến động
+        // Phí biến động
         val variableFeeAdapter = VariableFeeAdapter(invoice.phiBienDong)
         binding.rcvVariableFees.adapter = variableFeeAdapter
         binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
@@ -164,6 +164,18 @@ class BillContractActivity : AppCompatActivity() {
         }
     }
 
+
+    private fun showLoading() {
+        binding.container.setBackgroundColor(Color.parseColor("#A9A9A9"));
+        loadingIndicator.visibility = View.VISIBLE
+        loadingIndicator.playAnimation()
+    }
+
+    private fun hideLoading() {
+        binding.container.setBackgroundColor(Color.TRANSPARENT)
+        loadingIndicator.visibility = View.GONE
+    }
+
     private fun initZaloPay() {
         StrictMode.ThreadPolicy.Builder().permitAll().build()
             .also { StrictMode.setThreadPolicy(it) }
@@ -176,8 +188,5 @@ class BillContractActivity : AppCompatActivity() {
         ZaloPaySDK.getInstance().onResult(intent)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        socketManager.disconnect()
-    }
+
 }

@@ -152,7 +152,6 @@ enum class InvoiceStatus {
     PENDING,
     PAID,
     OVERDUE,
-    CANCELLED
+    CANCELLED,
+    DONE
 }
-
-

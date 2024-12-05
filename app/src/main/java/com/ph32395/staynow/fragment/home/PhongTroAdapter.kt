@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.databinding.ItemRoomBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import java.util.Date
 
 class PhongTroAdapter(
@@ -104,7 +105,7 @@ class PhongTroAdapter(
 
 
 //            Xu ly su kien khi click item sang man chi tiet
-            itemView.setOnClickListener {
+            itemView.tap {
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@setOnClickListener
                 saveRoomToHistory(userId, roomId)
 

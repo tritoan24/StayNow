@@ -51,13 +51,13 @@
             android:name=".Activity.SuccessPaymentActivity"
             android:exported="true" />
         <activity
-            android:name=".Activity.ThanhToanActivity"
-            android:exported="true" />
+            android:name=".fragment.contract_tenant.BillContractActivity"
+            android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.notification.NotificationActivity"
             android:exported="true" />
         <activity
-            android:name=".fragment.contract_tenant.BillContractActivity"
+            android:name=".Activity.ChoosePaymentActivity"
             android:exported="true"
             android:launchMode="singleTask">
             <intent-filter>
@@ -171,6 +171,9 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TaoHopDong.TaoHopDong"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"

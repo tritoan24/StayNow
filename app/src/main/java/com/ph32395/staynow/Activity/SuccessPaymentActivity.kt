@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ActivitySuccessPaymentBinding
+import com.ph32395.staynow.hieunt.widget.tap
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -38,8 +39,12 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvEndDate.text = contract.ngayKetThuc
         binding.tvDate.text = contract.ngayThanhToan.toString()
         binding.tvInvoiceId.text = "ID hợp đồng: " + contract!!.maHopDong
-        binding.tvLandlordInfo.text = "Người cho thuê: " + contract.chuNha.hoTen
-        binding.tvTenantInfo.text = "Người thuê: " + contract.nguoiThue.hoTen
+        binding.tvLandlordInfo.text = contract.chuNha.hoTen
+        binding.tvLandlordAddress.text = contract.chuNha.diaChi
+        binding.tvLandlordBd.text = contract.chuNha.ngaySinh
+        binding.tvTenantInfo.text = contract.nguoiThue.hoTen
+        binding.tvTenantAddress.text = contract.nguoiThue.diaChi
+        binding.tvTenantBd.text = contract.nguoiThue.ngaySinh
         binding.tvNameRoom.text = "Tên phòng: " + contract.thongtinphong.tenPhong
         binding.tvAmount.text = "Tổng tiền: " + formatCurrency(contract.hoaDonHopDong.tongTien)
         binding.tvAmountRoom.text =
@@ -49,10 +54,11 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvAddress.text = "Địa chỉ: " + contract.thongtinphong.diaChiPhong
         binding.tvStartDate.text = "Ngày bắt đầu: " + contract.ngayBatDau
         binding.tvEndDate.text = "Ngày kết thúc: " + contract.ngayKetThuc
+        binding.tvClause.text = "Điều khoản: " + contract.dieuKhoan
         binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue
         binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
 
-        binding.btnGoHome.setOnClickListener {
+        binding.btnGoHome.tap {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -68,7 +74,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
     }
 
     private fun formatServerTime(serverTime: String): String {
-        val date = Date(serverTime)
+        val date = Date(serverTime.toLong())
 
         // Định dạng ngày giờ theo chuẩn mong muốn
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())

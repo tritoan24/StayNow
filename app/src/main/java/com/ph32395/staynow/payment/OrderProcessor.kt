@@ -7,7 +7,6 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
-import com.ph32395.staynow.Activity.ThanhToanActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +27,7 @@ class OrderProcessor(private val context: Context) {
         contractId: String,
         billId: String,
         items: String,
-        callback: (String?) -> Unit
+        callback: (String?, String?, Long?) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -37,6 +36,7 @@ class OrderProcessor(private val context: Context) {
                 // Truy vấn Firestore
                 val querySnapshot = db.collection("PaymentTransaction")
                     .whereEqualTo("contractId", contractId)
+                    .whereEqualTo("status", "PENDING")
                     .get()
                     .await()
 
@@ -48,20 +48,28 @@ class OrderProcessor(private val context: Context) {
 
                 if (validOrder != null) {
                     val token = validOrder.getString("zp_trans_token")
+                    val orderUrl = validOrder.getString("order_url")
+
+                    // Tính toán thời gian còn lại (remainTime)
+                    val expireTime =
+                        validOrder.getLong("app_time")!! + validOrder.getLong("expire_duration_seconds")!! * 1000
+                    val remainTime =
+                        expireTime - currentTime // Thời gian còn lại
+                    Log.d("remainTimeOrderProcessor", remainTime.toString())
                     CoroutineScope(Dispatchers.Main).launch {
-                        callback(token)
+                        callback(token, orderUrl, remainTime)
                     }
                 } else {
                     // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
-                    createOrder(amount, contractId, billId, items) { token ->
+                    createOrder(amount, contractId, billId, items) { token, orderUrl ->
                         CoroutineScope(Dispatchers.Main).launch {
-                            callback(token)
+                            callback(token, orderUrl, 900)
                         }
                     }
                 }
             } catch (e: Exception) {
                 CoroutineScope(Dispatchers.Main).launch {
-                    callback(null)
+                    callback(null, null, null)
                 }
             }
         }
@@ -73,7 +81,7 @@ class OrderProcessor(private val context: Context) {
         contractId: String,
         billId: String,
         items: String,
-        callback: (String?) -> Unit
+        callback: (String?, String?) -> Unit
     ) {
         val apiClient = ApiClient.create()
         val orderRequest = OrderRequest(amount, contractId, billId, items)
@@ -82,14 +90,15 @@ class OrderProcessor(private val context: Context) {
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
                 if (response.isSuccessful) {
                     val token = response.body()?.zalopay_response?.zp_trans_token
-                    callback(token)
+                    val orderUrl = response.body()?.zalopay_response?.order_url
+                    callback(token, orderUrl)
                 } else {
-                    callback(null)
+                    callback(null, null)
                 }
             }
 
             override fun onFailure(call: Call<OrderResponse>, t: Throwable) {
-                callback(null)
+                callback(null, null)
             }
         })
     }
@@ -100,21 +109,6 @@ class OrderProcessor(private val context: Context) {
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
                         Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
-
-//                        val contractService = ContractService()
-//
-//                        contractService.updatePaymentStatusAndContractStatus(
-//                            contract.maHopDong,
-//                            contract.hoaDonHopDong.idHoaDon
-//                        ) { success, message ->
-//                            if (success) {
-//                                // Cập nhật thành công
-//                                Log.d("ContractUpdate", message)
-//                            } else {
-//                                // Cập nhật thất bại
-//                                Log.d("ContractUpdate", message)
-//                            }
-//                        }
                         val intent = Intent(context, SuccessPaymentActivity::class.java)
                         intent.putExtra("itemData", contract)
                         context.startActivity(intent)

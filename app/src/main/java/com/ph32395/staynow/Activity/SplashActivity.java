@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.ph32395.staynow.DangKiDangNhap.DangNhap;
-import com.ph32395.staynow.DangKiDangNhap.ServerWakeUpService;
 import com.ph32395.staynow.MainActivity;
 import com.ph32395.staynow.ManGioiThieu.OnboardingActivity;
 import com.ph32395.staynow.R;
@@ -24,8 +23,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        //đánh thức server ngay khi run
-        ServerWakeUpService.INSTANCE.wakeUpServer();
 
         // Lấy tham chiếu đến LottieAnimationView
         LottieAnimationView loadingSplash = findViewById(R.id.loadingSplash);
