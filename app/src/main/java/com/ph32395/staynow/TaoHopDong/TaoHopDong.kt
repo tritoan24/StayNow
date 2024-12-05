@@ -556,26 +556,6 @@ private fun observeViewModel() {
         viewModelHopDong.saveContract(contract,idLichhen)
         viewModelHopDong.saveMessageStatus(maNguoiThue,auth.currentUser?.uid ?: "")
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModelHopDong.navigateToContractDetail.collect { contractId ->
-                    contractId?.let {
-                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
-                        intent.putExtra("CONTRACT_ID", it)
-                        intent.putExtra("Check", 1)
-                        startActivity(intent)
-                        // Reset giá trị sau khi chuyển màn
-                        viewModelHopDong.resetNavigation()
-                        // Đóng màn hình hiện tại sau khi chuyển màn
-                        finish()
-                        loadingUtil.hide()
-                    }
-                }
-            }
-        }
-
-
-
     }
 
     private fun initViews() {

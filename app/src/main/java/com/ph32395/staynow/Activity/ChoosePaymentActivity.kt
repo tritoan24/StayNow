@@ -36,8 +36,6 @@ class ChoosePaymentActivity : AppCompatActivity() {
         val zpToken = intent.getStringExtra("zpToken")
         val orderUrl = intent.getStringExtra("orderUrl")
         val remainTime = intent.getLongExtra("remainTime", -1)
-        Log.d("remainTime", remainTime.toString())
-        startTimer(remainTime)
         // Khởi tạo socket
         socketManager = SocketManager()
         socketManager.connect()
@@ -57,6 +55,7 @@ class ChoosePaymentActivity : AppCompatActivity() {
         }
 
         showQRCode(orderUrl!!)
+        startTimer(remainTime)
 
         binding.ivBack.tap {
             onBackPressed()

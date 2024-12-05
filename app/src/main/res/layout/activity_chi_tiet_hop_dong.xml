@@ -393,18 +393,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             />
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Xem hóa đơn"
-            android:id="@+id/seenContract"
-            android:padding="5dp"
-            android:background="@drawable/bg_button_detail"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:visibility="gone"
-            />
+
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

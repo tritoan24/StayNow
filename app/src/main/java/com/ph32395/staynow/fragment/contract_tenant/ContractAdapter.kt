@@ -95,6 +95,7 @@ class ContractAdapter(
                     tvRemainingTime.visibility = View.GONE
                     llBtn.visibility =
                         if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) View.VISIBLE else View.GONE
+
                     btnXacNhan.tap {
 
                         val intent = Intent(itemView.context, BillContractActivity::class.java)
