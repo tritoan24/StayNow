@@ -1,15 +1,19 @@
 package com.ph32395.staynow.BaoMat
 
 import android.content.Intent
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -22,6 +26,8 @@ import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.home.HomeViewModel
+import com.ph32395.staynow.fragment.home.PhongTroAdapter
+import gun0912.tedimagepicker.util.ToastUtil.context
 
 class ThongTinNguoiDung : AppCompatActivity() {
 
@@ -30,10 +36,13 @@ class ThongTinNguoiDung : AppCompatActivity() {
     private lateinit var phoneInfor: TextView
     private lateinit var emailInfor: TextView
     private lateinit var rcListRoom: RecyclerView
+    private lateinit var btnBackCT: ImageView
     private lateinit var btnNhanTin: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var homViewModel: HomeViewModel
+    private lateinit var roomAdapter: PhongTroAdapter
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_thong_tin_nguoi_dung)
@@ -45,11 +54,15 @@ class ThongTinNguoiDung : AppCompatActivity() {
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
         btnNhanTin = findViewById(R.id.btnNhanTin)
+        btnBackCT = findViewById(R.id.btnBackCT)
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
 
+        btnBackCT.setOnClickListener {
+            finish()
+        }
 
-
+        homViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val userId = getIntent().getStringExtra("idUser");
         if(userId != null) {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
@@ -67,6 +80,17 @@ class ThongTinNguoiDung : AppCompatActivity() {
                       phoneInfor.text = maskedPhone ?: "Chưa cập nhật"
                       emailInfor.text = maskedEmail ?: "Chưa cập nhật"
 
+
+                      rcListRoom.layoutManager = GridLayoutManager(context, 2)
+                      roomAdapter = PhongTroAdapter(mutableListOf(), homViewModel)
+                      rcListRoom.adapter = roomAdapter
+
+                      homViewModel.loadRoomByStatus(userId)
+//                      Lang nghe thay doi
+                      homViewModel.phongDaDang.observe(this@ThongTinNguoiDung) {rooms ->
+                          roomAdapter.updateRoomList(rooms)
+                          Log.d("ThongTinNguoiDung", rooms.toString())
+                      }
 
                       // Gắn ảnh đại diện nếu có
                       if (img != null && !img.isEmpty()) {
@@ -119,16 +143,5 @@ class ThongTinNguoiDung : AppCompatActivity() {
             return "****" + email.substring(atIndex)
         }
         return email.substring(0,3) + "*****" + email.substring(atIndex)
-    }
-
-
-    fun listRoom() {
-        homViewModel.clearRoomCache()
-        homViewModel.loadLoaiPhongTro()
-        homViewModel.loadImagesFromFirebase()
-        homViewModel.selectedLoaiPhongTro.value?.let {maLoaiPhong ->{
-            homViewModel.updateRoomList(maLoaiPhong)
-        }
-        }
     }
 }

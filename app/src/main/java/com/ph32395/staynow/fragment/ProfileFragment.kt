@@ -30,6 +30,7 @@ import com.ph32395.staynow.BaoMat.PhanHoi
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
+import com.ph32395.staynow.PhongTroDaXem.PhongTroDaXemActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
@@ -50,6 +51,7 @@ class ProfileFragment : Fragment() {
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
+    private lateinit var btnPhongTroDaXem: LinearLayout
 
 
     @SuppressLint("MissingInflatedId")
@@ -69,6 +71,11 @@ class ProfileFragment : Fragment() {
         nextPhanhoi = view.findViewById(R.id.phanhoiButton)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
         llContract = view.findViewById(R.id.ll_hopdong)
+        btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
+
+        btnPhongTroDaXem.setOnClickListener {
+            launchActivity(PhongTroDaXemActivity::class.java)
+        }
 
 
         // Khởi tạo FirebaseAuth và DatabaseReference

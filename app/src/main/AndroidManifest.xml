@@ -45,6 +45,9 @@
             android:foregroundServiceType="specialUse" />
 
         <activity
+            android:name=".PhongTroDaXem.PhongTroDaXemActivity"
+            android:exported="false" />
+        <activity
             android:name=".Activity.SuccessPaymentActivity"
             android:exported="true" />
         <activity
@@ -68,7 +71,6 @@
                     android:scheme="demozpdk" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".BaoMat.ThongTinNguoiDung"
             android:exported="false" />

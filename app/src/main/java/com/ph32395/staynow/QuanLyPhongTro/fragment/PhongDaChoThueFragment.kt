@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentPhongDaChoThueBinding
@@ -35,7 +36,7 @@ class PhongDaChoThueFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         val viewModel: HomeViewModel by viewModels()
-        viewModel.loadRoomByStatus()
+        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
 
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_da_cho_thue, container, false)

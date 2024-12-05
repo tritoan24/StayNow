@@ -55,13 +55,15 @@ class HomeViewModel : ViewModel() {
     private val _phongDaChoThue = MutableLiveData<List<Pair<String, PhongTroModel>>>()
     val phongDaChoThue: LiveData<List<Pair<String, PhongTroModel>>> get() = _phongDaChoThue
 
+    private val _roomListCT = MutableLiveData<List<Pair<String, PhongTroModel>>>()
+    val roomListCT: LiveData<List<Pair<String, PhongTroModel>>> get() = _roomListCT
+
     fun selectLoaiPhongTro(idLoaiPhong: String) {
         _selectedLoaiPhongTro.value = idLoaiPhong
     }
 
-    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
-    fun loadRoomByStatus() {
-        val maNguoiDung = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+//    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    fun loadRoomByStatus(maNguoiDung:String) {
         firestore.collection("PhongTro")
             .whereEqualTo("Ma_nguoidung", maNguoiDung) //Loc theo ma nguoi dung
             .addSnapshotListener { snapshot, exception ->
@@ -82,11 +84,12 @@ class HomeViewModel : ViewModel() {
                         }
                     }
 
+                    _roomListCT.value = allRooms
+
 //                    Phan loai phong tro theo trang thai
                     _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
                     _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
-                    _phongChoDuyet.value =
-                        allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
                     _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
                     _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
 
@@ -268,9 +271,10 @@ class HomeViewModel : ViewModel() {
             }
         }
     }
-    //    lay du lieu danh sach phong tro su dung Kotlin Coroutines
-
+    //    lay du lieu danh sach hien thi o man chu tro phong tro su dung Kotlin Coroutines
     fun updateRoomListWithCoroutines() {
+//        Lay id tai khoan dang nhap
+        val idUser = FirebaseAuth.getInstance().currentUser?.uid ?: ""
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val roomRef = firestore.collection("PhongTro")
@@ -279,7 +283,16 @@ class HomeViewModel : ViewModel() {
 //                Chuyen doi du lieu Firebase thanh danh sach Rm
                 val rooms = querySnapshot.documents.mapNotNull { doc ->
                     val roomModel = doc.toObject(PhongTroModel::class.java)
-                    roomModel?.let { Pair(doc.id, it) } // Chỉ thêm khi không null
+                    roomModel?.let {
+                        if (it.Ma_nguoidung != idUser
+                            && it.Trang_thaiphong == false
+                            && it.Trang_thaiduyet == "DaDuyet") {
+                            Pair(doc.id, it)
+                        } else {
+                            null
+                        }
+
+                    }
                 }
 
 //                cap nhat Livedata tren MainThread

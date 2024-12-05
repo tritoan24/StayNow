@@ -37,7 +37,7 @@ class PhongChoDuyetFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         val viewModel: HomeViewModel by viewModels()
-        viewModel.loadRoomByStatus()
+        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
 
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_cho_duyet, container, false)
