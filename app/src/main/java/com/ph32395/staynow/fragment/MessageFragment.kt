@@ -92,7 +92,8 @@ class MessageFragment : Fragment() {
                     chat?.let { chatList.add(it) }
                 }
                 Log.d(TAG, "onDataChange:chatList $chatList")
-                onResult(chatList)
+                val reversedChatList = chatList.reversed()
+                onResult(reversedChatList)
             }
 
             override fun onCancelled(error: DatabaseError) {

@@ -29,7 +29,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true">
         </activity>
         <activity

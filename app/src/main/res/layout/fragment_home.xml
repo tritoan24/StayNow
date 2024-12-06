@@ -44,7 +44,8 @@
                     android:contentDescription="iconNoti"
                     android:elevation="4dp"
                     android:padding="5dp"
-                    android:src="@drawable/icon_notification" />
+                    android:src="@drawable/icon_notification"
+                    app:tint="@color/white"/>
 
                 <!-- Số lượng thông báo -->
                 <TextView
