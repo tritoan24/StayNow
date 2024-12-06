@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow.MainActivity
+import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ActivitySuccessPaymentBinding
 import com.ph32395.staynow.hieunt.widget.tap
@@ -29,7 +30,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
         hieuUngBinding.textMessage.text = "Thanh toán thành công"
 
         val contract = intent.getSerializableExtra("itemData") as? HopDong
-        val billId = intent.getStringExtra("billId")
+        val bill = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
 
         if (contract != null) {
             binding.tvInvoiceId.text = contract.hoaDonHopDong.idHoaDon

@@ -8,10 +8,12 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ActivityChoosePaymentBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
+import com.ph32395.staynow.payment.OrderProcessorService
 import com.ph32395.staynow.payment.SocketManager
 import com.ph32395.staynow.payment.TypeBill
 import vn.zalopay.sdk.ZaloPaySDK
@@ -31,7 +33,7 @@ class ChoosePaymentActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val contract = intent.getSerializableExtra("contract") as? HopDong
-        val itemsArrStr = intent.getStringExtra("itemsArrStr")
+        val bill = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
         val zpToken = intent.getStringExtra("zpToken")
         val orderUrl = intent.getStringExtra("orderUrl")
         val remainTime = intent.getLongExtra("remainTime", -1)
@@ -52,19 +54,37 @@ class ChoosePaymentActivity : AppCompatActivity() {
                 }
             }
         }
+        //lắng nghe event hóa đơn hàng tháng
+        socketManager.on("paymentCallbackService") {
+            runOnUiThread {
+                try {
+                    val intent = Intent(this, SuccessPaymentActivity::class.java)
+                    intent.putExtra("bill", bill)
+                    startActivity(intent)
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
         showQRCode(orderUrl!!)
         startTimer(remainTime)
 
         binding.ivBack.tap {
             onBackPressed()
-            finish()
         }
 
         binding.btnThanhtoan.tap {
             zpToken?.let {
-                val orderProcessor = OrderProcessor(this)
-                orderProcessor.startPayment(it, contract!!)
+                if(contract != null){
+                    val orderProcessor = OrderProcessor(this)
+                    orderProcessor.startPayment(it, contract)
+                }else{
+                    val orderProcessor=OrderProcessorService(this)
+                    orderProcessor.startPayment(zpToken,bill!!)
+                }
+
             }
         }
 

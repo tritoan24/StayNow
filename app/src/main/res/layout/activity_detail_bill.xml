@@ -138,13 +138,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="Tiền phòng: 3,500,000"
+                android:text="Tiền phòng"
                 tools:ignore="HardcodedText" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="Tiền dịch vụ: 1,200,000"
+                android:text="Tiền dịch vụ"
                 tools:ignore="HardcodedText" />
 
 
@@ -362,7 +362,7 @@
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/tvRoomDeposit"
+                    android:id="@+id/tvServiceFee"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -383,25 +383,6 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="----------------------------------------------------------------"
-                android:textAlignment="center"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Hợp đồng và hóa đơn đã được gửi đến người thuê. Vui lòng chờ người thuê xác nhận hợp đồng và thanh toán hóa đơn. Cảm ơn bạn"
-                android:textAlignment="center"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                tools:ignore="HardcodedText" />
-
 
         </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
+import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.Invoice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +35,7 @@ class OrderProcessorService(private val context: Context) {
                 val currentTime = System.currentTimeMillis()
 
                 // Truy vấn Firestore
-                val querySnapshot = db.collection("PaymentTransaction")
+                val querySnapshot = db.collection("PaymentTransactionService")
                     .whereEqualTo("billId", billId)
                     .whereEqualTo("status", "PENDING")
                     .get()
@@ -103,7 +104,7 @@ class OrderProcessorService(private val context: Context) {
         })
     }
 
-    fun startPayment(zpToken: String?, billId:Invoice) {
+    fun startPayment(zpToken: String?, billId:InvoiceMonthlyModel) {
         zpToken?.let {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {

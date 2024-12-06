@@ -5,7 +5,6 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
@@ -67,7 +66,7 @@ class BillAdapter(
 
             binding.btnConfirm.tap {
                 val intent = Intent(binding.root.context, DetailBillActivity::class.java)
-
+                intent.putExtra("hoaDonHangThang", bill)
                 binding.root.context.startActivity(intent)
             }
             binding.btnCancel.tap {
@@ -82,7 +81,7 @@ class BillAdapter(
             }
             itemView.tap {
                 val intent = Intent(binding.root.context, DetailBillActivity::class.java)
-                intent.putExtra("billId", bill.idHoaDon)
+                intent.putExtra("hoaDonHangThang", bill)
                 binding.root.context.startActivity(intent)
             }
         }

@@ -5,35 +5,29 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
 import com.ph32395.staynow.Activity.ChoosePaymentActivity
+import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
-import com.ph32395.staynow.TaoHopDong.HopDong
-import com.ph32395.staynow.TaoHopDong.Invoice
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
-import com.ph32395.staynow.databinding.ActivityBillContractBinding
 import com.ph32395.staynow.databinding.ActivityDetailBillBinding
 import com.ph32395.staynow.hieunt.widget.tap
-import com.ph32395.staynow.payment.OrderProcessor
+import com.ph32395.staynow.payment.OrderProcessorService
 import com.ph32395.staynow.payment.TypeBill
 import com.ph32395.staynow.utils.Constants
 import com.ph32395.staynow.utils.showConfirmDialog
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPaySDK
 import java.text.NumberFormat
-import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
-class BillContractActivity : AppCompatActivity() {
+class DetailBillActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBillBinding
     private lateinit var loadingIndicator: LottieAnimationView
@@ -47,8 +41,8 @@ class BillContractActivity : AppCompatActivity() {
 
         initZaloPay()
 
-        // nhận intent từ contractAdapter
-        val invoice = intent.getSerializableExtra("hoaDonHopDong") as? Invoice
+        // nhận intent từ billAdapter
+        val invoice = intent.getSerializableExtra("hoaDonHangThang") as? InvoiceMonthlyModel
 
         // convert invoice to jsonArrStr
         val gson = Gson()
@@ -66,8 +60,30 @@ class BillContractActivity : AppCompatActivity() {
         }
 
         binding.btnThanhtoan.tap {
-            showConfirmDialog(this, "Xác nhận thanh toán","Bạn đã kiểm tra kĩ thông tin rồi chứ ?"){
 
+            showConfirmDialog(
+                this,
+                "Xác nhận thanh toán",
+                "Bạn đã kiểm tra kĩ thông tin rồi chứ ?"
+            ) {
+                showLoading()
+                val orderProcessor = OrderProcessorService(this)
+                orderProcessor.checkAndCreateOrder(
+                    invoice.tongTien,
+                    invoice.idHoaDon,
+                    itemsArrStr,
+                    TypeBill.HoaDonHangThang
+                ) { token, orderUrl, remainTime ->
+                    hideLoading()
+                    if (token != null && orderUrl != null) {
+                        val intent = Intent(this, ChoosePaymentActivity::class.java)
+                        intent.putExtra("invoice", invoice)
+                        intent.putExtra("zpToken", token)
+                        intent.putExtra("orderUrl", orderUrl)
+                        intent.putExtra("remainTime", remainTime)
+                        startActivity(intent)
+                    }
+                }
             }
 
         }
@@ -75,14 +91,15 @@ class BillContractActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateUI(invoice: Invoice) {
+    private fun updateUI(invoice: InvoiceMonthlyModel) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
         binding.tvRoomName.text = invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
-        binding.tvRoomDeposit.text = formatCurrency(invoice.tienCoc)
+        binding.tvServiceFee.text = formatCurrency(invoice.tongTienDichVu)
+        binding.tvTotal.text = formatCurrency(invoice.tongTien)
 
         // Phí cố định
         val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)

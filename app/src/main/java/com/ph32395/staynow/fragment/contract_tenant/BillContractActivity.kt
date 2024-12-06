@@ -80,7 +80,6 @@ class BillContractActivity : AppCompatActivity() {
                     if (token != null && orderUrl != null) {
                         val intent = Intent(this, ChoosePaymentActivity::class.java)
                         intent.putExtra("contract", contract)
-                        intent.putExtra("itemsArrStr", itemsArrStr)
                         intent.putExtra("zpToken", token)
                         intent.putExtra("orderUrl", orderUrl)
                         intent.putExtra("remainTime", remainTime)
