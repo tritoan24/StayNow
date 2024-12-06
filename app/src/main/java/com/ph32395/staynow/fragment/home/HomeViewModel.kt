@@ -64,37 +64,84 @@ class HomeViewModel : ViewModel() {
 
 //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
     fun loadRoomByStatus(maNguoiDung:String) {
-        firestore.collection("PhongTro")
-            .whereEqualTo("Ma_nguoidung", maNguoiDung) //Loc theo ma nguoi dung
-            .addSnapshotListener { snapshot, exception ->
-                if (exception != null) {
-                    Log.e("HomeViewModel", "Error fetching rooms: ", exception)
-                    return@addSnapshotListener
-                }
-
-//                lay tat ca cac phong theo ma nguoi fung
-                snapshot?.let {
-                    Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
-
-
-                    val allRooms = it.documents.mapNotNull { doc ->
-                        doc.toObject(PhongTroModel::class.java)?.let { room ->
-                            Pair(doc.id, room)
-
-                        }
-                    }
-
-                    _roomListCT.value = allRooms
-
-//                    Phan loai phong tro theo trang thai
-                    _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
-                    _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
-                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
-                    _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
-                    _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
-
+    //Test
+    firestore.collection("PhongTro")
+        .whereEqualTo("Ma_nguoidung", maNguoiDung) // Lọc theo mã người dùng
+        .get()
+        .addOnSuccessListener { snapshot ->
+            val allRooms = snapshot.documents.mapNotNull { doc ->
+                doc.toObject(PhongTroModel::class.java)?.let { room ->
+                    Pair(doc.id, room)
                 }
             }
+
+            if (allRooms.isNotEmpty()) {
+                val roomIds = allRooms.map { it.first } // Lấy danh sách id của phòng trọ
+
+                // Truy vấn thông tin diện tích từ bảng ChiTietThongTin
+                firestore.collection("ChiTietThongTin")
+                    .whereIn("ma_phongtro", roomIds)
+                    .whereEqualTo("ten_thongtin", "Diện tích")
+                    .get()
+                    .addOnSuccessListener { chiTietSnapshot ->
+                        val chiTietMap = chiTietSnapshot.documents.associate { doc ->
+                            doc.getString("ma_phongtro") to doc.getDouble("so_luong_donvi")
+                        }
+
+                        // Cập nhật thông tin diện tích cho từng phòng
+                        val updatedRooms = allRooms.map { (id, room) ->
+                            room.Dien_tich = chiTietMap[id]?.toLong()
+                            Pair(id, room)
+                        }
+
+                        // Cập nhật LiveData
+                        _roomListCT.value = updatedRooms
+
+                        // Phân loại phòng trọ
+                        _phongDaDang.value =
+                            updatedRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
+                        _phongDangLuu.value =
+                            updatedRooms.filter { it.second.Trang_thailuu == true }
+                        _phongChoDuyet.value =
+                            updatedRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                        _phongDaHuy.value =
+                            updatedRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
+                        _phongDaChoThue.value =
+                            updatedRooms.filter { it.second.Trang_thaiphong == true }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("HomeViewModel", "Error fetching room details: ", e)
+                    }
+            }
+        }
+        .addOnFailureListener { e ->
+            Log.e("HomeViewModel", "Error fetching rooms: ", e)
+        }
+////                lay tat ca cac phong theo ma nguoi fung
+//                snapshot?.let {
+//                    Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
+//
+//
+//                    val allRooms = it.documents.mapNotNull { doc ->
+//                        doc.toObject(PhongTroModel::class.java)?.let { room ->
+//                            Log.d("TAG", "loadRoomByStatus:roomMap $room")
+//                            Pair(doc.id, room)
+//
+//                        }
+//                    }
+//                    Log.d("TAG", "loadRoomByStatus: allRooms $allRooms")
+//
+//                    _roomListCT.value = allRooms
+//
+////                    Phan loai phong tro theo trang thai
+//                    _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
+//                    _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
+//                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+//                    _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
+//                    _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
+//
+//                }
+//            }
     }
 
     //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
