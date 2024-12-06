@@ -35,6 +35,7 @@ class PhongTroDaXemViewModel : ViewModel() {
     fun fetchRoomHistory(userId: String) {
         viewModelScope.launch {
             try {
+                isLoading.postValue(true) //Bat dau tai du lieu
                 // Lắng nghe thay đổi dữ liệu Firestore theo thời gian thực
                 firestore.collection("PhongTroDaXem")
                     .whereEqualTo("Id_nguoidung", userId)
@@ -59,6 +60,8 @@ class PhongTroDaXemViewModel : ViewModel() {
                             fetchRoomDetails(roomHistoryList)
                         } else {
                             Log.d("Firestore", "Không có dữ liệu lịch sử phòng.")
+                            roomHistoryLiveDate.postValue(emptyList()) //Khong cao du lieu
+                            isLoading.postValue(false) //Ket thuc tai
                         }
                     }
 
@@ -69,42 +72,12 @@ class PhongTroDaXemViewModel : ViewModel() {
         }
     }
 
-
-
     private fun fetchRoomDetails(roomHistory: List<PhongTroDaXemModel>) {
         if (roomHistory.isEmpty()) {
             roomHistoryLiveDate.postValue(emptyList())
             isLoading.postValue(false) //Ket thuc tai khi trang thai loi
             return
         }
-
-//        viewModelScope.launch {
-//            val roomList = mutableListOf<PhongTroModel>()
-//            val tasks = roomHistory.map { room ->
-//                async(Dispatchers.IO) {
-//                    val doc = firestore.collection("PhongTro")
-//                        .document(room.Id_phongtro)
-//                        .get()
-//                        .await()
-//
-//                    PhongTroModel(
-//                        Ma_phongtro = doc.id,
-//                        Ten_phongtro = doc.getString("Ten_phongtro") ?: "",
-//                        Dia_chi = doc.getString("Dia_chi") ?: "",
-//                        Gia_phong = doc.getDouble("Gia_phong") ?: 0.0,
-//                        Dien_tich = null,
-//                        imageUrls = (doc.get("imageUrls") as? ArrayList<String>) ?: ArrayList(),
-//                        Trang_thai = false,
-//                        Thoi_gianxem = room.Thoi_gianxem
-//                    )
-//                }
-//            }
-//
-//            // Chờ tất cả các tác vụ async hoàn thành
-//            val rooms = tasks.awaitAll()
-//            roomList.addAll(rooms)
-//            roomHistoryLiveDate.postValue(roomList)
-//        }
         viewModelScope.launch {
             try {
                 val roomList = mutableListOf<PhongTroModel>()

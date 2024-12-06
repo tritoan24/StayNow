@@ -62,8 +62,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--        Slider anh lon-->
-
             <!--        Danh sach anh nho-->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -80,7 +78,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="20dp"
-                android:layout_marginStart="10dp"
                 >
 
                 <!--            Loai phong-->
@@ -90,6 +87,7 @@
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="4dp"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginStart="10dp"
                     app:cardCornerRadius="10dp"
                     tools:ignore="MissingClass">
 
@@ -130,7 +128,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
@@ -139,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginBottom="10dp"
                     android:orientation="horizontal"
                     >
@@ -170,6 +167,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="18dp"
@@ -191,6 +189,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
                     android:orientation="horizontal">
                     <ImageView
                         android:layout_width="18dp"
@@ -212,6 +211,7 @@
                     app:cardElevation="4dp"
                     app:cardCornerRadius="20dp"
                     android:layout_marginTop="30dp"
+                    android:layout_marginHorizontal="10dp"
                     app:cardBackgroundColor="@color/white"
                     tools:ignore="MissingClass">
 
@@ -272,6 +272,7 @@
                     android:layout_height="wrap_content"
                     app:cardBackgroundColor="@color/white"
                     android:layout_marginTop="25dp"
+                    android:layout_marginHorizontal="10dp"
                     app:cardElevation="4dp"
                     android:elevation="8dp"
                     app:cardCornerRadius="18dp">
@@ -293,7 +294,8 @@
                     android:layout_height="wrap_content"
                     android:text="Phí Dich Vụ"
                     android:textSize="18sp"
-                    android:layout_marginTop="40dp"/>
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="30dp"/>
 
                 <!--            Thong tin phi dich vu-->
                 <androidx.cardview.widget.CardView
@@ -301,6 +303,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardElevation="4dp"
+                    android:layout_marginHorizontal="10dp"
                     app:cardBackgroundColor="@color/white"
                     android:elevation="8dp"
                     app:cardCornerRadius="18dp">
@@ -323,6 +326,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nội Thất"
                     android:textSize="18sp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="25dp"/>
 
                 <!--            Thong tin noi that-->
@@ -331,6 +335,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardElevation="4dp"
+                    android:layout_marginHorizontal="10dp"
                     app:cardBackgroundColor="@color/white"
                     android:elevation="8dp"
                     app:cardCornerRadius="18dp">
@@ -353,6 +358,7 @@
                     android:layout_height="wrap_content"
                     android:text="Tiện Nghi"
                     android:textSize="18sp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="25dp"/>
 
                 <!--            Thong tin tien nghi-->
@@ -361,6 +367,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     app:cardElevation="4dp"
+                    android:layout_marginHorizontal="10dp"
                     app:cardBackgroundColor="@color/white"
                     android:elevation="8dp"
                     app:cardCornerRadius="18dp">
@@ -382,6 +389,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Chi Tiết Thêm"
+                    android:layout_marginStart="10dp"
                     android:textSize="18sp"
                     android:layout_marginTop="25dp"/>
 
@@ -390,6 +398,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginHorizontal="10dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardElevation="4dp"
                     android:elevation="8dp"

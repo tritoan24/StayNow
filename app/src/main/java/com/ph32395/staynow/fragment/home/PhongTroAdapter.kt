@@ -106,6 +106,7 @@ class PhongTroAdapter(
 
 //            Xu ly su kien khi click item sang man chi tiet
             itemView.tap {
+                //Luu thong tin phong tro da xem
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@tap
                 saveRoomToHistory(userId, roomId)
 

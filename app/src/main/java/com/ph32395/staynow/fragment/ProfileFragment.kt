@@ -32,6 +32,7 @@ import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.PhongTroDaXem.PhongTroDaXemActivity
+import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
@@ -53,6 +54,7 @@ class ProfileFragment : Fragment() {
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
     private lateinit var btnPhongTroDaXem: LinearLayout
+    private lateinit var btnBaiDangYeuThich: LinearLayout
 
 
     @SuppressLint("MissingInflatedId")
@@ -73,6 +75,11 @@ class ProfileFragment : Fragment() {
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
         llContract = view.findViewById(R.id.ll_hopdong)
         btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
+        btnBaiDangYeuThich = view.findViewById(R.id.btnBaiDangYeuThich)
+
+        btnBaiDangYeuThich.setOnClickListener {
+            launchActivity(PhongTroYeuThichActivity::class.java)
+        }
 
         btnPhongTroDaXem.setOnClickListener {
             launchActivity(PhongTroDaXemActivity::class.java)
@@ -180,8 +187,6 @@ class ProfileFragment : Fragment() {
         }
         nextPhanhoi.setOnClickListener {
             startActivity(Intent(requireActivity(), PhanHoi::class.java))
-
-
         }
 
         llScheduleRoom.tap {

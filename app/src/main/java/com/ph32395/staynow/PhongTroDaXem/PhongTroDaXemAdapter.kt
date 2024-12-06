@@ -84,6 +84,7 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomModel.Ma_phongtro)
+                Log.d("PhongTroDaXemAdapter", "Ma phong tro: ${roomModel.Ma_phongtro}")
                 itemView.context.startActivity(intent)
             }
 
