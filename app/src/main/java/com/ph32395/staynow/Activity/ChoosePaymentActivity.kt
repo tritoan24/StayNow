@@ -13,6 +13,8 @@ import com.ph32395.staynow.databinding.ActivityChoosePaymentBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
 import com.ph32395.staynow.payment.SocketManager
+import com.ph32395.staynow.payment.TypeBill
+import vn.zalopay.sdk.ZaloPaySDK
 
 
 @Suppress("DEPRECATION")
@@ -105,4 +107,11 @@ class ChoosePaymentActivity : AppCompatActivity() {
         super.onDestroy()
         socketManager.disconnect()
     }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        ZaloPaySDK.getInstance().onResult(intent)
+    }
+
 }

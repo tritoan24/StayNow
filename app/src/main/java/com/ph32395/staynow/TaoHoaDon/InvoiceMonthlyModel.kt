@@ -11,7 +11,7 @@ data class InvoiceMonthlyModel(
     val tenKhachHang: String = "",
     val tenPhong: String = "",
     val ngayLap: String = "",
-    val hoaDonThang: String= "",
+    val hoaDonThang: Long=0L,
     val phiCoDinh: List<UtilityFeeDetail> = emptyList(),
     val phiBienDong: List<UtilityFeeDetail> = emptyList(),
     val tongTien: Double = 0.0,

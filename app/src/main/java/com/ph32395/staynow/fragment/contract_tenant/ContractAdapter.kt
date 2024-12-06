@@ -17,6 +17,7 @@ import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ItemContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
+import com.ph32395.staynow.utils.showConfirmDialog
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -106,11 +107,18 @@ class ContractAdapter(
                         itemView.context.startActivity(intent)
                     }
                     btnCancel.tap {
-                        onStatusUpdated(
-                            contract.maHopDong,
-                            ContractStatus.TERMINATED
-                        )
-                        updateContractList(contractList)
+                        showConfirmDialog(
+                            itemView.context,
+                            "Hủy Hợp Đồng",
+                            "Bạn có chắc chắn muốn hủy hợp đồng này?"
+                        ) {
+                            onStatusUpdated(
+                                contract.maHopDong,
+                                ContractStatus.TERMINATED
+                            )
+                            updateContractList(contractList)
+                        }
+
                     }
                 }
 

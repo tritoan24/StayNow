@@ -30,7 +30,6 @@ class ContractViewModel : ViewModel() {
     private val _invoiceDetails = MutableLiveData<Invoice>()
     val invoiceDetails: LiveData<Invoice> = _invoiceDetails
 
-
     private val _updateResult = MutableLiveData<Result<Unit>>()
     val updateResult: LiveData<Result<Unit>> = _updateResult
 
