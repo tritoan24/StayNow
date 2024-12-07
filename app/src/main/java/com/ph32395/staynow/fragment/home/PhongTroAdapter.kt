@@ -86,7 +86,9 @@ class PhongTroAdapter(
             // Cập nhật giá thuê
             roomPrice.text = "${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
 
+//            Hien thi dien tich
             roomArea.text = "${room.Dien_tich} m²"
+
 
             // Cập nhật số lượt xem
             roomViews.text = "${room.So_luotxemphong}"

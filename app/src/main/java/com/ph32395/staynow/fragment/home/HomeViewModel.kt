@@ -361,7 +361,6 @@ class HomeViewModel : ViewModel() {
         }
     }
 
-
     //    lay dien tich trong Home Nguoi Thue
     private fun fetchChiTietThongTinForRoomList(
         roomList: List<Pair<String, PhongTroModel>>,
