@@ -13,6 +13,7 @@ class HistoryBillContactActivity<InvoiceViewModel> : AppCompatActivity() {
     private lateinit var binding: ActivityHistoryBillContactBinding
     private lateinit var billPagerAdapter: BillPagerAdapter
     private var contractId: String? = null
+    private var isLandlord: Boolean? = false
     private val invoiceViewModel: InvoiceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +25,11 @@ class HistoryBillContactActivity<InvoiceViewModel> : AppCompatActivity() {
 
         // Lấy contractId từ intent
         contractId = intent.getStringExtra("CONTRACT_ID")
+        isLandlord = intent.getBooleanExtra("isLandlord", false)
 
         // Đảm bảo contractId không null
         contractId?.let {
-            billPagerAdapter = BillPagerAdapter(this, it)
+            billPagerAdapter = BillPagerAdapter(this, it, isLandlord!!)
             binding.viewPager.adapter = billPagerAdapter
 
             // Liên kết TabLayout với ViewPager

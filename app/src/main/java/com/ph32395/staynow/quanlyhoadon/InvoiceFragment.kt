@@ -18,6 +18,7 @@ class InvoiceFragment : Fragment() {
     private lateinit var binding: FragmentInvoiceBinding
     private var contractId: String? = null
     private var status: InvoiceStatus? = null
+    private var isLandlord: Boolean = false
     private lateinit var invoiceAdapter: BillAdapter
     private val invoiceViewModel: InvoiceViewModel by viewModels()
 
@@ -30,15 +31,20 @@ class InvoiceFragment : Fragment() {
         // Lấy contractId và status từ Bundle
         contractId = arguments?.getString("CONTRACT_ID")
         status = arguments?.getSerializable("STATUS") as? InvoiceStatus
-
+        isLandlord = arguments?.getBoolean("isLandlord") == false
         return binding.root
     }
 
     companion object {
-        fun newInstance(contractId: String, status: InvoiceStatus): InvoiceFragment {
+        fun newInstance(
+            contractId: String,
+            status: InvoiceStatus,
+            isLandlord: Boolean
+        ): InvoiceFragment {
             val fragment = InvoiceFragment()
             val bundle = Bundle()
             bundle.putString("CONTRACT_ID", contractId)
+            bundle.putBoolean("isLandlord", isLandlord)
             bundle.putSerializable("STATUS", status)
             Log.d(
                 "InvoiceFragment",
@@ -56,7 +62,7 @@ class InvoiceFragment : Fragment() {
         if (status == null) {
             status = InvoiceStatus.PAID
         }
-        invoiceAdapter = BillAdapter(status!!, null)
+        invoiceAdapter = BillAdapter(status!!, isLandlord, null)
         // Thiết lập RecyclerView
 
         binding.recyclerViewInvoices.apply {

@@ -56,7 +56,6 @@ class ContractFragment : Fragment() {
             requireActivity().onBackPressed()
         }
         // Khởi tạo adapter và gán vào RecyclerView
-        setupAdapters()
 
         // Khởi tạo FirebaseAuth và lấy userId
         mAuth = FirebaseAuth.getInstance()
@@ -69,13 +68,15 @@ class ContractFragment : Fragment() {
             val isLandlord = checkUserRole(role)
             if (userId != null) {
                 fetchContractsByUser(userId, isLandlord)
+                setupAdapters(isLandlord)
+                setupRecyclerView(pendingAdapter, "Hợp đồng chờ xác nhận")
+
             }
         })
 
         if (userId != null) {
             contractViewModel.getUserRole(userId)
         }
-        setupRecyclerView(pendingAdapter, "Hợp đồng chờ xác nhận")
 
         binding.ivMenu.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), binding.ivMenu)
@@ -126,21 +127,21 @@ class ContractFragment : Fragment() {
         binding.tvContractsTitle.text = title
     }
 
-    private fun setupAdapters() {
+    private fun setupAdapters(isLandlord:Boolean) {
         activeAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.ACTIVE) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.ACTIVE,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         pendingAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.PENDING) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.PENDING,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         expireAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.EXPIRED) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.EXPIRED,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         terminatedAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.TERMINATED) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.TERMINATED,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
 

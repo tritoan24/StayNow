@@ -15,7 +15,9 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class BillAdapter(
-    private val status: InvoiceStatus, private val listener: OnInvoiceStatusUpdateListener?
+    private val status: InvoiceStatus,
+    private var isLandlord: Boolean,
+    private val listener: OnInvoiceStatusUpdateListener?
 ) :
     RecyclerView.Adapter<BillAdapter.BillViewHolder>() {
 
@@ -34,7 +36,7 @@ class BillAdapter(
     // Liên kết dữ liệu vào item
     override fun onBindViewHolder(holder: BillViewHolder, position: Int) {
         val bill = billList[position]
-        holder.bind(bill, status)
+        holder.bind(bill, status, isLandlord)
     }
 
     // Trả về số lượng item trong list
@@ -51,7 +53,11 @@ class BillAdapter(
     inner class BillViewHolder(private val binding: ItemBillBinding) :
         RecyclerView.ViewHolder(binding.root) {
         @SuppressLint("SetTextI18n")
-        fun bind(bill: InvoiceMonthlyModel, status: InvoiceStatus) {
+        fun bind(bill: InvoiceMonthlyModel, status: InvoiceStatus, isLandlord: Boolean) {
+
+            if (isLandlord) {
+                binding.llBtn.visibility = View.GONE
+            }
 
             if (status != InvoiceStatus.PENDING) {
                 binding.llBtn.visibility = View.GONE
@@ -91,5 +97,11 @@ class BillAdapter(
         val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         return formatter.format(amount)
     }
-
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateIsLandlord(newIsLandlord: Boolean) {
+        if (isLandlord != newIsLandlord) {
+            isLandlord = newIsLandlord
+            notifyDataSetChanged()  // Hoặc chỉ cập nhật các item cần thiết
+        }
+    }
 }

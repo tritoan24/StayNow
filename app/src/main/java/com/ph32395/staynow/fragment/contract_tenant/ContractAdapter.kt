@@ -25,6 +25,7 @@ import java.time.temporal.ChronoUnit
 class ContractAdapter(
     private val viewmodel: ContractViewModel,
     private val type: ContractStatus,
+    private val isLandlord: Boolean,
     private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit
 ) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
@@ -39,7 +40,7 @@ class ContractAdapter(
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ContractViewHolder, position: Int) {
         val contract = contractList[position]
-        holder.bind(contract, type)
+        holder.bind(contract, type, isLandlord)
 
     }
 
@@ -69,7 +70,11 @@ class ContractAdapter(
 
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n", "DefaultLocale")
-        fun bind(contract: HopDong, type: ContractStatus) {
+        fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
+
+            if (isLandlord) {
+                llBtn.visibility = View.GONE
+            }
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
