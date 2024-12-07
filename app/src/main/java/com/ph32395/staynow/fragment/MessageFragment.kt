@@ -25,12 +25,8 @@ class MessageFragment : Fragment() {
     private var TAG = "zzzMessageFragmentzzz"
     private lateinit var binding: FragmentMessageBinding
     private lateinit var adapterMessage: MessageAdapter
-    private lateinit var adapterUserStatus: UserStatusOnOfAdapter
     private val listUser = mutableListOf<UserStatus>()
-    private var currentPage = 0
-    private val pageSize = 10
-    private var isLoading = false
-    private var hasMore = true
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,8 +53,6 @@ class MessageFragment : Fragment() {
             }
         }
 
-        setupRecyclerView()
-
         return binding.root
 
     }
@@ -80,6 +74,16 @@ class MessageFragment : Fragment() {
             binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
             binding.rcvListTinNhan.adapter = adapterMessage
 
+        }
+        fetchListUser {
+            val adapter = UserStatusOnOfAdapter(it){
+                val intent = Intent(context,TextingMessengeActivity::class.java)
+                intent.putExtra("userId",it.ma_nguoidung)
+                startActivity(intent)
+            }
+            val linearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            binding.rcvListUser.layoutManager = linearLayoutManager
+            binding.rcvListUser.adapter = adapter
         }
     }
 
@@ -114,7 +118,7 @@ class MessageFragment : Fragment() {
     }
 
     //On
-    fun fetchListUser1(onResult: (List<UserStatus>) -> Unit) {
+    fun fetchListUser(onResult: (List<UserStatus>) -> Unit) {
         val database = Firebase.database.reference
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
@@ -146,7 +150,7 @@ class MessageFragment : Fragment() {
                     }
 
                     // Nếu chưa đủ 10 người, lấy thêm người dùng có trạng thái khác
-                    if (onlineCount < 10) {
+                    if (onlineCount < 15) {
                         for (snap in snapshot.children) {
                             val maNguoiDung =
                                 snap.child("ma_nguoidung").getValue(String::class.java) ?: ""
@@ -156,7 +160,7 @@ class MessageFragment : Fragment() {
                             val ho_ten = snap.child("ho_ten").getValue(String::class.java) ?: ""
 
                             // Nếu đã đủ 10 người, thoát vòng lặp
-                            if (listUser.size >= 10) break
+                            if (listUser.size >= 15) break
 
                             // Bỏ qua tài khoản của chính mình
                             if (maNguoiDung == currentUserId) continue
@@ -180,93 +184,5 @@ class MessageFragment : Fragment() {
                 }
             })
     }
-
-    fun observeUserChanges(
-        currentPage: Int,
-        pageSize: Int,
-        onResult: (List<UserStatus>, Boolean) -> Unit
-    ) {
-        val database = Firebase.database.reference.child("NguoiDung")
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val onlineList = mutableListOf<UserStatus>()
-                val offlineList = mutableListOf<UserStatus>()
-
-                for (snap in snapshot.children) {
-                    val maNguoiDung = snap.child("ma_nguoidung").getValue(String::class.java) ?: ""
-                    val ho_ten = snap.child("ho_ten").getValue(String::class.java) ?: ""
-                    val anhDaiDien = snap.child("anh_daidien").getValue(String::class.java) ?: ""
-                    val status = snap.child("status").getValue(String::class.java) ?: ""
-
-                    val user = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
-                    // Bỏ qua tài khoản của chính mình
-                    if (maNguoiDung == currentUserId) continue
-                    // Phân loại online và offline
-                    if (status == "online") {
-                        onlineList.add(user)
-                    } else {
-                        offlineList.add(user)
-                    }
-                }
-
-                // Kết hợp danh sách và phân trang
-                val combinedList = onlineList + offlineList
-                val paginatedList = combinedList.drop(currentPage * pageSize).take(pageSize)
-                val hasMore = (currentPage + 1) * pageSize < combinedList.size
-
-                onResult(paginatedList, hasMore) // Trả về dữ liệu và trạng thái còn dữ liệu không
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("Firebase", "Error: ${error.message}")
-            }
-        })
-    }
-
-    // Khởi tạo RecyclerView
-    private fun setupRecyclerView() {
-        binding.rcvListUser.layoutManager =
-            LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val adapter = UserStatusOnOfAdapter(listUser) { itemUser ->
-            // Xử lý khi nhấn vào item
-            val intent = Intent(context, TextingMessengeActivity::class.java)
-            intent.putExtra("userId", itemUser.ma_nguoidung)
-            startActivity(intent)
-        }
-        binding.rcvListUser.adapter = adapter
-
-        // Lắng nghe sự kiện cuộn
-        binding.rcvListUser.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val totalItemCount = layoutManager.itemCount
-                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
-
-                if (!isLoading && hasMore && lastVisibleItem + 1 >= totalItemCount) {
-                    // Tải thêm dữ liệu
-                    loadMoreUsers(adapter)
-                }
-            }
-        })
-
-        // Tải trang đầu tiên
-        loadMoreUsers(adapter)
-    }
-
-    // Hàm tải thêm dữ liệu
-    @SuppressLint("NotifyDataSetChanged")
-    private fun loadMoreUsers(adapter: UserStatusOnOfAdapter) {
-        isLoading = true
-        observeUserChanges(currentPage, pageSize) { newUsers, hasMoreData ->
-            listUser.addAll(newUsers)
-            adapter.notifyDataSetChanged()
-            isLoading = false
-            hasMore = hasMoreData
-            currentPage++
-        }
-    }
-
 
 }
