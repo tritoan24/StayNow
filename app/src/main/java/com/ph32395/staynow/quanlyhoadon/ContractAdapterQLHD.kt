@@ -10,7 +10,7 @@ import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ItemContractTextBinding
 import com.ph32395.staynow.hieunt.widget.tap
 
-class ContractAdapter_QLHD : RecyclerView.Adapter<ContractAdapter_QLHD.ContractTextViewHolder>() {
+class ContractAdapterQLHD : RecyclerView.Adapter<ContractAdapterQLHD.ContractTextViewHolder>() {
     private var contractList: List<HopDong> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContractTextViewHolder {

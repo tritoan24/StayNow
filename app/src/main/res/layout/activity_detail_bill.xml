@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/container"
     android:background="@android:color/white"
     android:padding="16dp">
 
@@ -48,13 +48,15 @@
 
     <!-- Content (Cuộn được) -->
     <ScrollView
-        android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:paddingBottom="50dp"
             android:orientation="vertical">
 
             <LinearLayout
@@ -140,6 +142,7 @@
                 android:layout_marginTop="7dp"
                 android:text="Tiền phòng"
                 tools:ignore="HardcodedText" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

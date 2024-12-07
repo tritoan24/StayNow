@@ -1,6 +1,6 @@
 package com.ph32395.staynow.TaoHoaDon
 
-import ContractViewModel
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher

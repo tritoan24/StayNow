@@ -2,7 +2,6 @@ package com.ph32395.staynow.quanlyhoadon
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
@@ -55,10 +54,6 @@ class DetailBillActivity : AppCompatActivity() {
             finish()
         }
 
-        if (invoice.trangThai == InvoiceStatus.PAID) {
-            binding.btnThanhtoan.visibility = View.GONE
-        }
-
         binding.btnThanhtoan.tap {
 
             showConfirmDialog(
@@ -94,7 +89,7 @@ class DetailBillActivity : AppCompatActivity() {
     private fun updateUI(invoice: InvoiceMonthlyModel) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: "+invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
@@ -120,13 +115,11 @@ class DetailBillActivity : AppCompatActivity() {
     }
 
     private fun showLoading() {
-        binding.container.setBackgroundColor(Color.parseColor("#A9A9A9"));
         loadingIndicator.visibility = View.VISIBLE
         loadingIndicator.playAnimation()
     }
 
     private fun hideLoading() {
-        binding.container.setBackgroundColor(Color.TRANSPARENT)
         loadingIndicator.visibility = View.GONE
     }
 

@@ -1,6 +1,6 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
-import ContractViewModel
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build

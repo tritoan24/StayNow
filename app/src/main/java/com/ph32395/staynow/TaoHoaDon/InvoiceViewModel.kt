@@ -52,10 +52,10 @@ class InvoiceViewModel : ViewModel() {
             }
     }
 
-    fun fetchInvoices(userId: String, trangThai: InvoiceStatus) {
+    fun fetchInvoicesForUser(type: String,userId: String, trangThai: InvoiceStatus) {
         invoiceCollection
             .whereEqualTo("trangThai", trangThai)
-            .whereEqualTo("idNguoinhan", userId)
+            .whereEqualTo(type, userId)
             .addSnapshotListener { querySnapshot, exception ->
                 if (exception != null) {
                     _invoices.value = emptyList()  // Trả về danh sách rỗng nếu có lỗi

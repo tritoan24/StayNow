@@ -1,28 +1,32 @@
 package com.ph32395.staynow.quanlyhoadon
 
-import ContractViewModel
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHoaDon.InvoiceViewModel
 import com.ph32395.staynow.TaoHopDong.ContractStatus
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ActivityBillManagementBinding
+import com.ph32395.staynow.fragment.contract_tenant.LoaiTaiKhoan
+import kotlinx.coroutines.launch
 
 class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusUpdateListener {
 
     private lateinit var binding: ActivityBillManagementBinding
-    private lateinit var contractAdapter: ContractAdapter_QLHD
+    private lateinit var contractAdapter: ContractAdapterQLHD
     private lateinit var billAdapter: BillAdapter
 
     private lateinit var mAuth: FirebaseAuth
 
     // Sử dụng ViewModel
-    private val contractViewModel: ContractViewModel by viewModels()
+    private lateinit var contractViewModel: ContractViewModel
     private val invoiceViewModel: InvoiceViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +34,10 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
         binding = ActivityBillManagementBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        contractViewModel = ViewModelProvider(this)[ContractViewModel::class.java]
+
         // Thiết lập RecyclerView cho hợp đồng
-        contractAdapter = ContractAdapter_QLHD()
+        contractAdapter = ContractAdapterQLHD()
         binding.rvContracts.apply {
             layoutManager = LinearLayoutManager(
                 this@BillManagementActivity,
@@ -43,11 +49,15 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
 
         // Quan sát LiveData từ ViewModel
         contractViewModel.activeContracts.observe(this) { contracts ->
-            // Cập nhật adapter khi có dữ liệu mới
             contractAdapter.submitList(contracts)
         }
 
-
+        contractViewModel.expiredContracts.observe(this) { contracts ->
+            contractAdapter.submitList(contracts)
+        }
+        contractViewModel.allContracts.observe(this) { contracts ->
+            contractAdapter.submitList(contracts)
+        }
         // Quan sát LiveData từ ViewModel cho hóa đơn
         billAdapter = BillAdapter(InvoiceStatus.PENDING, this)
         binding.rvBills.apply {
@@ -64,20 +74,24 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
             billAdapter.submitList(invoices)
         }
 
-
         // Khởi tạo FirebaseAuth và lấy userId
         mAuth = FirebaseAuth.getInstance()
         val userId = mAuth.currentUser?.uid
 
-        contractViewModel.fetchContractsByTenant(userId!!, ContractStatus.ACTIVE)
+        contractViewModel.userRoleLiveData.observe(this, Observer { role ->
+            val isLandlord = checkUserRole(role)
+            if (userId != null) {
+                fetchBillsAndContractByUser(userId, isLandlord)
+            }
+        })
 
-        //lấy tất cả hóa đơn chưa thanh toán của người dùng
-        Log.d("BillManagementActivity", "Fetching invoices for user: $userId")
-        invoiceViewModel.fetchInvoices(userId, InvoiceStatus.PENDING)
+        if (userId != null) {
+            contractViewModel.getUserRole(userId)
+        }
 
         // Bắt sự kiện click trên toolbar
         binding.ivBack.setOnClickListener {
-            finish() // Kết thúc Activity khi bấm nút Back
+            finish()
         }
     }
 
@@ -85,5 +99,38 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
         invoiceViewModel.updateInvoiceStatus(invoiceId, newStatus)
     }
 
+    private fun fetchBillsAndContractByUser(userId: String, isLandlord: Boolean) {
 
+        if (isLandlord) {
+            lifecycleScope.launch {
+                contractViewModel.fetchContractsByLandlordForBillManagement(
+                    userId,
+                    setOf(
+                        ContractStatus.ACTIVE,
+                        ContractStatus.TERMINATED,
+                        ContractStatus.EXPIRED,
+                    )
+                )
+                invoiceViewModel.fetchInvoicesForUser("idNguoigui", userId, InvoiceStatus.PENDING)
+
+            }
+        } else {
+            lifecycleScope.launch {
+                contractViewModel.fetchContractsByTenantForBillManagement(
+                    userId,
+                    setOf(
+                        ContractStatus.ACTIVE,
+                        ContractStatus.TERMINATED,
+                        ContractStatus.EXPIRED,
+                    )
+                )
+                invoiceViewModel.fetchInvoicesForUser("idNguoinhan", userId, InvoiceStatus.PENDING)
+
+            }
+        }
+    }
+
+    private fun checkUserRole(role: String): Boolean {
+        return role == LoaiTaiKhoan.NguoiChoThue.toString()
+    }
 }

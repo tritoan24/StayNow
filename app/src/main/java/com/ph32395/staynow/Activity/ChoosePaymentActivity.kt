@@ -15,7 +15,6 @@ import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
 import com.ph32395.staynow.payment.OrderProcessorService
 import com.ph32395.staynow.payment.SocketManager
-import com.ph32395.staynow.payment.TypeBill
 import vn.zalopay.sdk.ZaloPaySDK
 
 
@@ -101,7 +100,15 @@ class ChoosePaymentActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun startTimer(remainTime: Long) {
+        if (remainTime <= 0) {
+            binding.con.visibility = View.GONE
+            binding.remainTime.text = "Đơn hàng đã hết hạn\nHãy quay lại và tạo đơn mới!"
+            binding.btnThanhtoan.isEnabled = false
+            return
+        }
+
         val timer = object : CountDownTimer(remainTime, 1000) {
             @SuppressLint("SetTextI18n")
             override fun onTick(millisUntilFinished: Long) {

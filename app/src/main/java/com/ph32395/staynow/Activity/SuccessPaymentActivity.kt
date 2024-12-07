@@ -63,6 +63,20 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
         }
 
+        if (bill != null) {
+            binding.tvInvoiceId.text = bill.idHoaDon
+            binding.tvLandlordInfo.text = bill.idNguoigui
+            binding.tvTenantInfo.text = bill.idNguoinhan
+
+            binding.tvDate.text = bill.ngayThanhToan.toString()
+            binding.tvInvoiceId.text = "ID hợp đồng: " + bill.idHopDong
+            binding.tvNameRoom.text = "Tên phòng: " + bill.tenPhong
+            binding.tvAmount.text = "Tổng tiền: " + formatCurrency(bill.tongTien)
+            binding.tvAmountRoom.text =
+                "Tiền phòng: " + formatCurrency(bill.tienPhong)
+            binding.tvDate.text = formatServerTime(bill.paymentDate)
+        }
+
         binding.btnGoHome.tap {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

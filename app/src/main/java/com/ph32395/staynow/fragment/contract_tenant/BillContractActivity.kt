@@ -2,7 +2,6 @@ package com.ph32395.staynow.fragment.contract_tenant
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
@@ -76,7 +75,6 @@ class BillContractActivity : AppCompatActivity() {
                     itemsArrStr,
                     TypeBill.HoaDonHopDong,
                 ) { token, orderUrl, remainTime ->
-                    hideLoading()
                     if (token != null && orderUrl != null) {
                         val intent = Intent(this, ChoosePaymentActivity::class.java)
                         intent.putExtra("contract", contract)
@@ -84,7 +82,7 @@ class BillContractActivity : AppCompatActivity() {
                         intent.putExtra("orderUrl", orderUrl)
                         intent.putExtra("remainTime", remainTime)
                         Log.d("remainTimeBillContract", remainTime.toString())
-
+                        hideLoading()
                         startActivity(intent)
 
                     } else {
@@ -101,7 +99,7 @@ class BillContractActivity : AppCompatActivity() {
     private fun updateUI(invoice: Invoice, contract: HopDong) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: "+invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
         binding.tvInvoicePeriod.text = "Thời hạn thuê:${
             calculateRentalPeriod(
@@ -165,13 +163,11 @@ class BillContractActivity : AppCompatActivity() {
 
 
     private fun showLoading() {
-        binding.container.setBackgroundColor(Color.parseColor("#A9A9A9"));
         loadingIndicator.visibility = View.VISIBLE
         loadingIndicator.playAnimation()
     }
 
     private fun hideLoading() {
-        binding.container.setBackgroundColor(Color.TRANSPARENT)
         loadingIndicator.visibility = View.GONE
     }
 
