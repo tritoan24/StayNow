@@ -42,9 +42,14 @@ class MainActivity : AppCompatActivity() {
 
     private val PREFS_NAME: String = "MyAppPrefs"
     private var userRole: String = ""
+    // Cong Add
+    private lateinit var myApplication: MyApplication
 
     override fun onResume() {
         super.onResume()
+        // Cong Add
+        // Khi trở về màn chính, đảm bảo người dùng online
+        myApplication.setOnlineStatus(true)
         if (!SystemUtils.isServiceRunning(this, NotificationService::class.java)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(Intent(this, NotificationService::class.java))
@@ -60,6 +65,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Cong Add
+        myApplication = application as MyApplication
+        myApplication.setOnlineStatus(true) // Đặt trạng thái online khi vào màn chính
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
@@ -216,25 +224,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        setUserOnline()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        setUserOffline()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        setUserOffline()
-    }
-
+    // Cong Add
+//    override fun onStart() {
+//        super.onStart()
+//        setUserOnline()
+//    }
+//
+//    override fun onStop() {
+//        super.onStop()
+//        setUserOffline()
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        setUserOffline()
+//    }
+//
     override fun onDestroy() {
         super.onDestroy()
-        setUserOffline()
+        // Cong Add
+        // Đặt trạng thái offline khi ứng dụng bị hủy
+        myApplication.setOnlineStatus(false)
     }
 
 

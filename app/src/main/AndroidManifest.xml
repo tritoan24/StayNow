@@ -26,6 +26,7 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
+        android:name=".MyApplication"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
