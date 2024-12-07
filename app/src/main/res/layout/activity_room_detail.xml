@@ -277,15 +277,22 @@
                     android:elevation="8dp"
                     app:cardCornerRadius="18dp">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewChiTietThongTin"
+                    <androidx.core.widget.NestedScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        tools:listitem="@layout/item_chitiet_thongtin"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
-                        />
+                        android:fillViewport="true">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewChiTietThongTin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            tools:listitem="@layout/item_chitiet_thongtin"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginStart="4dp"
+                            />
+
+                    </androidx.core.widget.NestedScrollView>
+
                 </androidx.cardview.widget.CardView>
 
                 <!--            Phi dich vu-->
@@ -314,8 +321,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         tools:listitem="@layout/item_phi_dichvu"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
                         />
 
                 </androidx.cardview.widget.CardView>
@@ -346,8 +353,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         tools:listitem="@layout/item_noi_that_chitiet"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
                         />
 
                 </androidx.cardview.widget.CardView>
@@ -378,8 +385,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         tools:listitem="@layout/item_tien_nghi_chitiet"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
                         />
 
                 </androidx.cardview.widget.CardView>

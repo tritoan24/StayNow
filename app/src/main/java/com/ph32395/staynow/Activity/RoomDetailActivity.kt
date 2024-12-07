@@ -314,9 +314,19 @@ class RoomDetailActivity : AppCompatActivity() {
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            layoutManager = GridLayoutManager(context, 4)
+//            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = GridLayoutManager(context, 3)
             adapter = chiTietAdapter
+        }
+    }
+
+    //    danh sach phi dich vu
+    private fun setupListPhiDichVu() {
+        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
+            layoutManager = GridLayoutManager(context, 3)
+            adapter = phiDichVuAdapter
+
+//            addItemDecoration(SpacingItemDecoration(1))
         }
     }
 
@@ -340,15 +350,7 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
-    //    danh sach phi dich vu
-    private fun setupListPhiDichVu() {
-        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
-            layoutManager = GridLayoutManager(context, 3)
-            adapter = phiDichVuAdapter
 
-//            addItemDecoration(SpacingItemDecoration(1))
-        }
-    }
 
     private fun setupImage() {
         //        Thiet lap viewPager va RecyclerView cho anh
