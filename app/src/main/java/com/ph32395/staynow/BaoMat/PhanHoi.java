@@ -2,8 +2,6 @@ package com.ph32395.staynow.BaoMat;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,7 +25,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ph32395.staynow.R;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +33,6 @@ public class PhanHoi extends AppCompatActivity {
     private ImageView phanHoiAvatar;
     private ImageButton phanHoiImg;
     private EditText commentFeedback;
-    private EditText phanHoiTime;
     private Button btnPhanhoi;
     private ImageButton btnBackPH;
     private Uri selectedImageUri;
@@ -55,10 +51,10 @@ public class PhanHoi extends AppCompatActivity {
         phanHoiAvatar = findViewById(R.id.phanhoi_avatar);
         phanHoiImg = findViewById(R.id.phanhoi_Img);
         commentFeedback = findViewById(R.id.commentFeedback);
-        phanHoiTime = findViewById(R.id.phanhoiTime);
         btnPhanhoi = findViewById(R.id.btnPhanhoi);
         btnBackPH = findViewById(R.id.backPhanHoi);
         mAuth = FirebaseAuth.getInstance();
+
         // Khởi tạo Firebase
         db = FirebaseFirestore.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -79,21 +75,18 @@ public class PhanHoi extends AppCompatActivity {
         // Gắn sự kiện gửi phản hồi
         btnPhanhoi.setOnClickListener(v -> {
             String feedback = commentFeedback.getText().toString().trim();
-            String feedbackTime = phanHoiTime.getText().toString().trim();
 
-            if (feedback.isEmpty() || feedbackTime.isEmpty() || selectedImageUri == null || maNguoiDung == null) {
+            if (feedback.isEmpty() || selectedImageUri == null || maNguoiDung == null) {
                 Toast.makeText(PhanHoi.this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             } else {
-                sendFeedback(feedback, feedbackTime, selectedImageUri, maNguoiDung);
+                sendFeedback(feedback, selectedImageUri, maNguoiDung);
             }
         });
 
+        // Gắn sự kiện quay lại
         btnBackPH.setOnClickListener(v -> {
             onBackPressed();
         });
-
-        // Gắn sự kiện cho phanHoiTime
-        phanHoiTime.setOnClickListener(v -> showDateTimePickerDialog());
     }
 
     // Lấy ma_nguoidung từ Firebase Realtime Database
@@ -115,38 +108,8 @@ public class PhanHoi extends AppCompatActivity {
         });
     }
 
-    // Hiển thị DatePickerDialog và TimePickerDialog
-    private void showDateTimePickerDialog() {
-        Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(PhanHoi.this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                    showTimePickerDialog(date);
-                }, year, month, day);
-
-        datePickerDialog.show();
-    }
-
-    private void showTimePickerDialog(String selectedDate) {
-        Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
-
-        TimePickerDialog timePickerDialog = new TimePickerDialog(PhanHoi.this,
-                (view, selectedHour, selectedMinute) -> {
-                    String time = String.format("%02d:%02d", selectedHour, selectedMinute);
-                    phanHoiTime.setText(selectedDate + " " + time);
-                }, hour, minute, true);
-
-        timePickerDialog.show();
-    }
-
     // Gửi phản hồi
-    private void sendFeedback(String feedback, String feedbackTime, Uri imageUri, String maNguoiDung) {
+    private void sendFeedback(String feedback, Uri imageUri, String maNguoiDung) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference("feedback_images");
         StorageReference imageRef = storageReference.child(System.currentTimeMillis() + ".jpg");
 
@@ -154,12 +117,17 @@ public class PhanHoi extends AppCompatActivity {
                 .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     String imageUrl = uri.toString();
 
+                    // Lấy thời gian hiện tại
+                    long currentTimeMillis = System.currentTimeMillis();
+                    String formattedDateTime = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+                            .format(new java.util.Date(currentTimeMillis));
+
                     Map<String, Object> feedbackData = new HashMap<>();
                     feedbackData.put("noi_dung", feedback);
-                    feedbackData.put("thoi_giangui", feedbackTime);
+                    feedbackData.put("thoi_giangui", formattedDateTime); // Gán thời gian hiện tại
                     feedbackData.put("img", imageUrl);
                     feedbackData.put("ma_nguoidung", maNguoiDung);
-                    feedbackData.put("createdAt", System.currentTimeMillis());
+                    feedbackData.put("createdAt", currentTimeMillis); // Lưu timestamp nếu cần
 
                     db.collection("PhanHoi")
                             .add(feedbackData)
@@ -178,7 +146,6 @@ public class PhanHoi extends AppCompatActivity {
 
     private void clearFields() {
         commentFeedback.setText("");
-        phanHoiTime.setText("");
         phanHoiAvatar.setImageResource(R.drawable.ic_user);
     }
 
