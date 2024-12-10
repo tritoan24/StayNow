@@ -30,6 +30,15 @@
             android:name=".PhongTroYeuThich.PhongTroYeuThichActivity"
             android:exported="false" />
         <activity
+            android:name=".quanlyhoadon.DetailBillActivity"
+            android:exported="false" />
+        <activity
+            android:name=".quanlyhoadon.HistoryBillContactActivity"
+            android:exported="false" />
+        <activity
+            android:name=".quanlyhoadon.BillManagementActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
@@ -82,6 +91,7 @@
         <activity
             android:name=".BaoMat.PhanHoi"
             android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
@@ -159,9 +169,6 @@
         </activity>
         <activity
             android:name=".TaoHopDong.ChiTietHopDong"
-            android:exported="false" />
-        <activity
-            android:name=".TaoHopDong.ChiTietHoaDon"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.DangKy"

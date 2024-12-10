@@ -7,7 +7,8 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
-import com.ph32395.staynow.TaoHopDong.HopDong
+import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
+import com.ph32395.staynow.TaoHopDong.Invoice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,12 +20,11 @@ import vn.zalopay.sdk.ZaloPayError
 import vn.zalopay.sdk.ZaloPaySDK
 import vn.zalopay.sdk.listeners.PayOrderListener
 
-class OrderProcessor(private val context: Context) {
+class OrderProcessorService(private val context: Context) {
     private val db = FirebaseFirestore.getInstance()
 
     fun checkAndCreateOrder(
         amount: Double,
-        contractId: String,
         billId: String,
         items: String,
         typeBill: TypeBill,
@@ -35,8 +35,8 @@ class OrderProcessor(private val context: Context) {
                 val currentTime = System.currentTimeMillis()
 
                 // Truy vấn Firestore
-                val querySnapshot = db.collection("PaymentTransaction")
-                    .whereEqualTo("contractId", contractId)
+                val querySnapshot = db.collection("PaymentTransactionService")
+                    .whereEqualTo("billId", billId)
                     .whereEqualTo("status", "PENDING")
                     .get()
                     .await()
@@ -62,7 +62,7 @@ class OrderProcessor(private val context: Context) {
                     }
                 } else {
                     // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
-                    createOrder(amount, contractId, billId, items,typeBill) { token, orderUrl ->
+                    createOrder(amount, billId, items,typeBill) { token, orderUrl ->
                         CoroutineScope(Dispatchers.Main).launch {
                             callback(token, orderUrl, 900)
                         }
@@ -79,16 +79,15 @@ class OrderProcessor(private val context: Context) {
 
     private fun createOrder(
         amount: Double,
-        contractId: String,
         billId: String,
         items: String,
         typeBill: TypeBill,
         callback: (String?, String?) -> Unit
     ) {
         val apiClient = ApiClient.create()
-        val orderRequest = OrderRequest(amount, contractId, billId, items,typeBill)
+        val orderRequest = OrderRequestService(amount, billId, items,typeBill)
 
-        apiClient.createOrder(orderRequest).enqueue(object : Callback<OrderResponse> {
+        apiClient.createOrderService(orderRequest).enqueue(object : Callback<OrderResponse> {
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
                 if (response.isSuccessful) {
                     val token = response.body()?.zalopay_response?.zp_trans_token
@@ -105,14 +104,14 @@ class OrderProcessor(private val context: Context) {
         })
     }
 
-    fun startPayment(zpToken: String?, contract: HopDong) {
+    fun startPayment(zpToken: String?, billId:InvoiceMonthlyModel) {
         zpToken?.let {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
                         Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
                         val intent = Intent(context, SuccessPaymentActivity::class.java)
-                        intent.putExtra("itemData", contract)
+                        intent.putExtra("billId", billId)
                         context.startActivity(intent)
                     }
 
@@ -133,7 +132,4 @@ class OrderProcessor(private val context: Context) {
 
 }
 
-enum class TypeBill {
-    HoaDonHopDong,
-    HoaDonHangThang
-}
+

@@ -38,6 +38,7 @@ import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
+import com.ph32395.staynow.quanlyhoadon.BillManagementActivity
 
 class ProfileFragment : Fragment() {
 
@@ -47,6 +48,7 @@ class ProfileFragment : Fragment() {
     private lateinit var logoutButton: LinearLayout
     private lateinit var llScheduleRoom: LinearLayout
     private lateinit var llContract: LinearLayout
+    private lateinit var llBill: LinearLayout
     private lateinit var nextDoiMK: LinearLayout
     private lateinit var nextUpdate: CardView
     private lateinit var nextPhanhoi: LinearLayout
@@ -74,6 +76,7 @@ class ProfileFragment : Fragment() {
         nextPhanhoi = view.findViewById(R.id.phanhoiButton)
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
         llContract = view.findViewById(R.id.ll_hopdong)
+        llBill = view.findViewById(R.id.ll_hoadon)
         btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
         btnBaiDangYeuThich = view.findViewById(R.id.btnBaiDangYeuThich)
 
@@ -98,55 +101,58 @@ class ProfileFragment : Fragment() {
 
         // Lấy thông tin người dùng từ Firebase nếu có UID
         if (userId != null) {
-            mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
-                        val name = snapshot.child("ho_ten").value.toString()
-                        val phone = snapshot.child("sdt").value.toString()
-                        val img = snapshot.child("anh_daidien").value.toString()
+            mDatabase.child("NguoiDung").child(userId)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val name = snapshot.child("ho_ten").value.toString()
+                            val phone = snapshot.child("sdt").value.toString()
+                            val img = snapshot.child("anh_daidien").value.toString()
 
-                        // gắn cho tôi vào textview
-                        userNameTextView.text = name
-                        userPhoneTextView.text = phone
+                            // gắn cho tôi vào textview
+                            userNameTextView.text = name
+                            userPhoneTextView.text = phone
 
-                        // Tải ảnh đại diện bằng Glide
-                        // Glide with null check to ensure fragment is attached to activity
-                        if (isAdded) {
-                            Glide.with(requireContext())
-                                .load(img)
-                                .circleCrop()
-                                .placeholder(R.drawable.ic_user)
-                                .into(profileImageView)
+                            // Tải ảnh đại diện bằng Glide
+                            // Glide with null check to ensure fragment is attached to activity
+                            if (isAdded) {
+                                Glide.with(requireContext())
+                                    .load(img)
+                                    .circleCrop()
+                                    .placeholder(R.drawable.ic_user)
+                                    .into(profileImageView)
+                            } else {
+                                // Handle the case where fragment is not yet attached
+                                profileImageView.setImageResource(R.drawable.ic_user)
+                            }
+
                         } else {
-                            // Handle the case where fragment is not yet attached
-                            profileImageView.setImageResource(R.drawable.ic_user)
+                            Log.d("ProfileFragment", "Người dùng không tồn tại")
                         }
-
-                    } else {
-                        Log.d("ProfileFragment", "Người dùng không tồn tại")
-                    }
-                    val accountType = snapshot.child("loai_taikhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
-                    val registerLayout = view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
-                    val scheduleRoom = view.findViewById<LinearLayout>(R.id.ll_schedule_room)
-                    if (registerLayout != null) {
-                        if ("ChuNha".equals(accountType)) {
-                            registerLayout.visibility = View.GONE
-                            scheduleRoom.visibility = View.GONE
+                        val accountType =
+                            snapshot.child("loai_taikhoan").getValue(String::class.java)
+                                ?: "NguoiThue" // Mặc định là "NguoiThue"
+                        val registerLayout =
+                            view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
+                        val scheduleRoom = view.findViewById<LinearLayout>(R.id.ll_schedule_room)
+                        if (registerLayout != null) {
+                            if ("ChuNha".equals(accountType)) {
+                                registerLayout.visibility = View.GONE
+                                scheduleRoom.visibility = View.GONE
+                            } else {
+                                registerLayout.visibility = View.VISIBLE
+                                scheduleRoom.visibility = View.VISIBLE
+                            }
                         } else {
-                            registerLayout.visibility = View.VISIBLE
-                            scheduleRoom.visibility = View.VISIBLE
+                            Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.");
                         }
-                    } else {
-                        Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.");
                     }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("ProfileFragment", "Lỗi khi lấy dữ liệu người dùng: ${error.message}")
-                }
-            })
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("ProfileFragment", "Lỗi khi lấy dữ liệu người dùng: ${error.message}")
+                    }
+                })
         }
-
 
 
         // Xử lý sự kiện nhấn nút đăng xuất
@@ -177,13 +183,13 @@ class ProfileFragment : Fragment() {
         }
 
 
-        nextUpdate.setOnClickListener{
+        nextUpdate.setOnClickListener {
             val intent = Intent(requireActivity(), ThongTinNguoiDung::class.java)
             intent.putExtra("idUser", FirebaseAuth.getInstance().currentUser?.uid)
             startActivity(intent)
         }
         nextDoiMK.setOnClickListener {
-            startActivity(Intent(requireActivity(),CaiDat::class.java))
+            startActivity(Intent(requireActivity(), CaiDat::class.java))
         }
         nextPhanhoi.setOnClickListener {
             startActivity(Intent(requireActivity(), PhanHoi::class.java))
@@ -194,6 +200,9 @@ class ProfileFragment : Fragment() {
         }
         llContract.tap {
             replaceFragment(ContractFragment())
+        }
+        llBill.tap {
+            launchActivity(BillManagementActivity::class.java)
         }
         return view
     }
@@ -213,12 +222,16 @@ class ProfileFragment : Fragment() {
             userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
         }
     }
+
     private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
         if (context is androidx.fragment.app.FragmentActivity) {
             val activity = context as androidx.fragment.app.FragmentActivity
 
             activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment) // fragment_container là ID của ViewGroup chứa Fragment
+                .replace(
+                    R.id.fragment_container,
+                    fragment
+                ) // fragment_container là ID của ViewGroup chứa Fragment
                 .addToBackStack(null) // Để quay lại màn hình trước
                 .commit()
 
