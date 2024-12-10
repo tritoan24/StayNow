@@ -40,7 +40,7 @@
                     android:id="@+id/tvInvoiceStatusDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cảm ơn bạn đã tin tưởng chúng tôi"
+                    android:text="@string/Thank_you_for_trusting_us"
                     android:textSize="13sp"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hóa Đơn Thanh Toán Hợp Đồng"
+            android:text="@string/Contract_Payment_Invoice"
             android:textAlignment="center"
             android:textSize="22sp"
             android:layout_marginTop="15dp"
@@ -61,7 +61,7 @@
             android:id="@+id/tvRoomName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phòng 706"
+            android:text="@string/Room_706"
             android:gravity="center"
             android:layout_marginTop="10dp"
             />
@@ -78,32 +78,32 @@
             android:id="@+id/tvInvoicePeriod"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Thời hạn thuê: 5 tháng, tính từ ngày 01/01/2021 đến hết ngày 01/06/2021"
+            android:text="@string/Lease_term_5_months_from_to_the_end"
             android:textStyle="italic"
             android:textColor="#A63030"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Các chi phí cho hóa đơn bao gồm:"
+            android:text="@string/The_costs_for_the_invoice_include"
             android:textStyle="bold"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tiền Phòng: 3,500,000"
+            android:text="@string/Room_Fee_3_500_000"
             android:layout_marginTop="7dp"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tiền Cọc: 3,500,000"
+            android:text="@string/Deposit_3_500_000"
             />
 
         <TextView
             android:id="@+id/tvInvoiceDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ngày tạo hóa đơn: 01/01/2021"
+            android:text="@string/Invoice_Creation_Date_01_01_2021"
             android:textAlignment="textEnd"
             />
 
@@ -111,14 +111,14 @@
             android:id="@+id/tvReminderDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Các chi phí dịch vụ cố định và phí biến động sẽ được tính vào hóa đơn hàng tháng. Chúng tôi sẽ nhắc nhở bạn vào ngày 28 tháng sau."
+            android:text="@string/Fixed_service_costs_and_variable_fees_will_be_charged"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="5dp"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phí Cố Định"
+            android:text="@string/Flat_Fee"
             android:textStyle="bold"/>
         <TableLayout
             android:layout_width="wrap_content"
@@ -143,7 +143,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:padding="8dp"
-                android:text="Tên dịch vụ"
+                android:text="@string/Service_Name"
                 android:textSize="12dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
@@ -152,7 +152,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
-                android:text="Đơn giá"
+                android:text="@string/Unit_Price"
                 android:textSize="12dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
@@ -171,7 +171,7 @@
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:textSize="12dp"
-                android:text="Thành tiền"
+                android:text="@string/Becoming_money"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </TableRow>
@@ -185,7 +185,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phí Biến Động"
+            android:text="@string/Variable_fees"
             android:textStyle="bold"/>
 
         <TableLayout
@@ -211,7 +211,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1.2"
                     android:padding="8dp"
-                    android:text="Tên dịch vụ"
+                    android:text="@string/Service_Name"
                     android:textSize="12dp"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
@@ -220,7 +220,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="8dp"
-                    android:text="Đơn giá"
+                    android:text="@string/Unit_Price"
                     android:textSize="12dp"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
@@ -230,7 +230,7 @@
                     android:layout_weight="1"
                     android:padding="8dp"
                     android:textSize="12dp"
-                    android:text="Đơn vị"
+                    android:text="@string/Unit"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
             </TableRow>
@@ -251,7 +251,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Số tiền cần thanh toán"
+            android:text="@string/Amount_to_be_paid"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
             android:textSize="15sp"
@@ -268,7 +268,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tiền Phòng:"
+                android:text="@string/Room_Fee"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 />
@@ -292,7 +292,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Tiền Cọc:"
+                android:text="@string/Deposit"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 />
@@ -310,7 +310,7 @@
             android:id="@+id/tvTotal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Tổng cộng: 7,000,000"
+            android:text="@string/Total"
             android:textStyle="bold"
             android:layout_marginTop="10dp"
             android:textSize="15sp"
@@ -327,7 +327,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hợp đồng và hóa đơn đã được gửi đến người thuê. Vui lòng chờ người thuê xác nhận hợp đồng và thanh toán hóa đơn. Cảm ơn bạn"
+            android:text="@string/The_contract_and_invoice"
             android:textStyle="italic"
             android:layout_marginTop="8dp"
             android:textSize="12sp"
@@ -344,13 +344,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Xem laị hợp đồng"/>
+                android:text="@string/View_Contract"/>
             <Button
                 android:id="@+id/btnBack"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Hoàn Thành"/>
+                android:text="@string/complete"/>
         </LinearLayout>
 
     </LinearLayout>

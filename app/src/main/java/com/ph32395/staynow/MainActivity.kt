@@ -26,6 +26,7 @@ import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.SystemUtils
 import com.ph32395.staynow.hieunt.service.NotificationService
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -58,6 +59,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
+        val savedLanguage = sharedPreferences.getString("Language", "en") // Mặc định là tiếng Anh
+        setLocale(savedLanguage!!)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -108,6 +114,7 @@ class MainActivity : AppCompatActivity() {
 //        Cap nhat giao dien theo vai tro
         updateUIForRole()
 
+
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
             Log.d("MainActivity", "Selected item: ${item.itemId}")
             when (item.itemId) {
@@ -146,6 +153,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun setLocale(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val resources = resources
+        val config = resources.configuration
+        val displayMetrics = resources.displayMetrics
+
+        config.setLocale(locale)
+        resources.updateConfiguration(config, displayMetrics)
+    }
+
 
     //    Ham cap nhat giao dien dua tren vai tro nguoi dung
     private fun updateUIForRole() {

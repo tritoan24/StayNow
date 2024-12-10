@@ -25,7 +25,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Quét mã QR"
+            android:text="@string/Scan_QR_Code"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:layout_gravity="center_vertical"
@@ -57,7 +57,7 @@
         android:layout_below="@id/scanFrame"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:text="Di chuyển camera đến vùng chứa mã QR để quét"
+        android:text="@string/Move_the_camera_to_the_QR_code_container_to_scan"
         android:textColor="#FFFFFF"
         android:textSize="13sp"
         android:textStyle="italic"
@@ -84,7 +84,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Quét ảnh có sẵn"
+            android:text="@string/Scan_available_photos"
             android:textColor="#FFFFFF"
             android:background="@drawable/cardview_border"
 

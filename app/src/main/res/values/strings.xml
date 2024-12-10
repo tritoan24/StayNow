@@ -16,6 +16,111 @@
         <item>Giới tính thứ 3</item>
     </string-array>
 
+    <string name="Home" translatable="false">Nhà</string>
+
+    <!-- Bottom Navigation -->
+    <string name="Search" translatable="false">Tìm kiếm</string>
+    <string name="Calender" translatable="false">Lịch</string>
+    <string name="Message" translatable="false">Tin nhắn</string>
+    <string name="Profile" translatable="false">Cá nhân</string>
+
+    <!-- Bill Contract -->
+    <string name="Thank_you_for_trusting_us" translatable="false">Cảm ơn bạn đã tin tưởng chúng tôi</string>
+    <string name="Contract_Payment_Invoice" translatable="false">Hóa Đơn Thanh Toán Hợp Đồng</string>
+    <string name="Room_706" translatable="false">Phòng 706</string>
+    <string name="Lease_term_5_months_from_to_the_end" translatable="false">Thời hạn thuê: 5 tháng, tính từ ngày 01/01/2021 đến hết ngày 01/06/2021</string>
+    <string name="The_costs_for_the_invoice_include" translatable="false">Các chi phí cho hóa đơn bao gồm:</string>
+    <string name="Room_Fee_3_500_000" translatable="false">Tiền Phòng: 3,500,000</string>
+    <string name="Deposit_3_500_000" translatable="false">TIền cọc: 3,500,500</string>
+    <string name="Invoice_Creation_Date_01_01_2021" translatable="false">ngày tạo hóa đơn: 01/01/2021</string>
+    <string name="Fixed_service_costs_and_variable_fees_will_be_charged" translatable="false">Các chi phí dịch vụ cố định và phí biến động sẽ được tính vào hóa đơn hàng tháng. Chúng tôi sẽ nhắc nhở bạn vào ngày 28 tháng sau.</string>
+    <string name="Flat_Fee" translatable="false">Phí cố định</string>
+    <string name="Service_Name" translatable="false">Tên dịch vụ</string>
+    <string name="Unit_Price" translatable="false">Đơn giá</string>
+    <string name="Becoming_money" translatable="false">Đơn vị</string>
+    <string name="Variable_fees" translatable="false">Phí biến động</string>
+    <string name="Unit" translatable="false">Đơn vị</string>
+    <string name="Amount_to_be_paid" translatable="false">Số tiền cần thanh toán</string>
+    <string name="Room_Fee" translatable="false">Tiền phòng:</string>
+    <string name="Deposit" translatable="false">Tiền cọc:</string>
+    <string name="Total" translatable="false">Tổng tiền: 7,000,000</string>
+    <string name="The_contract_and_invoice" translatable="false">Hợp đồng và hóa đơn đã được gửi đến người thuê. Vui lòng chờ người thuê xác nhận hợp đồng và thanh toán hóa đơn. Cảm ơn bạn</string>
+    <string name="View_Contract" translatable="false">Xem lại hợp đồng</string>
+    <string name="complete" translatable="false">Hoàn thành</string>
+
+    <!-- Setting -->
+    <string name="Setting" translatable="false">Cài đặt</string>
+    <string name="Save_a_login_session" translatable="false">Lưu phiên đăng nhập</string>
+    <string name="Payment_Methods" translatable="false">Phương thức thanh toán</string>
+    <string name="Update_information" translatable="false">Cập nhật thông tin</string>
+    <string name="Change_Password" translatable="false">Đổi mật khẩu</string>
+    <string name="Theme" translatable="false">Màu sắc</string>
+    <string name="Languege" translatable="false">Ngôn ngữ</string>
+    <string name="App_Info" translatable="false">Thông tin ứng dụng</string>
+
+    <!-- Update Information -->
+    <string name="Full_name" translatable="false">Họ và tên</string>
+    <string name="Phone" translatable="false">Số điện thoại</string>
+    <string name="Email" translatable="false">Email</string>
+
+    <!-- Cập nhật vị trí -->
+    <string name="Update_room_location" translatable="false">Cập nhật vị trí phòng</string>
+    <string name="Here_the_address_when_changing_from_your_coordinates" translatable="false">đây là địa chỉ khi đổi từ tọa độ của bạn:</string>
+    <string name="Update_your_location" translatable="false">Cập nhật vị trí</string>
+
+    <!-- CCCD -->
+    <string name="Scan_QR_Code" translatable="false">Quét mã QR</string>
+    <string name="Move_the_camera_to_the_QR_code_container_to_scan" translatable="false">Di chuyển camera đến vùng chứa mã QR để quét</string>
+    <string name="Scan_available_photos" translatable="false">Quét ảnh có sẵn</string>
+
+    <!-- Chọn loại tk -->
+    <string name="You_are" translatable="false">Bạn là:</string>
+    <string name="Innkeeper" translatable="false">Chủ nhà trọ</string>
+    <string name="Tenants" translatable="false">Người thuê trọ</string>
+
+    <!-- Chosse payment-->
+    <string name="Payment_Options" translatable="false">Lựa chọn thanh toán</string>
+    <string name="You_can_ask_someone_else_to_scan_for_you" translatable="false">Bạn có thể nhờ người khác quét hộ</string>
+    <string name="QR_code_scanning_time_for_payment" translatable="false">Thời gian quét mã QR để thanh toán</string>
+    <string name="event" translatable="false">còn</string>
+    <string name="Pay_with" translatable="false">Thanh toán với</string>
+    <string name="by_QR_code" translatable="false">bằng mã QR</string>
+    <string name="Open_Zalopay_now" translatable="false">Mở Zalopay ngay</string>
+
+    <!-- Chosse creat_montly_invoic_auto-->
+    <string name="Create_monthly_invoices" translatable="false">Tạo hóa đơn hàng tháng</string>
+    <string name="into_money" translatable="false">Thành tiền</string>
+    <string name="Old_Power_Indicator" translatable="false">Chỉ số điện</string>
+    <string name="New_Power_Indicator" translatable="false">Chỉ số điện mới</string>
+    <string name="Amount" translatable="false">Số lương</string>
+    <string name="Water_Indicator" translatable="false">Chỉ số nước</string>
+    <string name="New_water_Indicator" translatable="false">Chỉ số nước mới</string>
+    <string name="Extra_money" translatable="false">Tiền thêm</string>
+    <string name="Reduced_money" translatable="false">Tiền giảm</string>
+    <string name="Enter_your_notes" translatable="false">Nhập ghi chú của bạn</string>
+    <string name="Billing" translatable="false">Tính tiền</string>
+    <string name="Total_fixed_charges" translatable="false">Tổng phí cố định</string>
+    <string name="Total_variable_fees" translatable="false">Tổng phí biến đổi</string>
+    <string name="Total_service_fee" translatable="false">Tổng phí dịch vụ</string>
+    <string name="Total_bill" translatable="false">Tổng hóa đơn</string>
+    <string name="Cancle" translatable="false">Hủy</string>
+    <string name="Create_invoices" translatable="false">Tạo hóa đơn</string>
+
+    <!-- Profile-->
+    <string name="Viewed_motel_room_history" translatable="false">Lịch sử phòng trọ đã xem</string>
+    <string name="Room_viewing_schedule" translatable="false">Lịch sử phòng</string>
+    <string name="Billding" translatable="false">Hóa đơn</string>
+    <string name="Contract" translatable="false">Hợp đồng</string>
+    <string name="Favorite_Posts" translatable="false">Bài đăng yêu thích</string>
+    <string name="Terms_Policies" translatable="false">Điều khoản và chính sách</string>
+    <string name="Great_Grandfather_Report" translatable="false">Báo cáo sự cố</string>
+    <string name="Exit" translatable="false">Đăng xuất</string>
+    <string name="Account_deletion_request" translatable="false">Yêu cầu xóa tài khoản</string>
+
+
+
+
+
 
     <!-- Strings  id update -->
     <string name="default_web_client_id">918655571270-u0aorv0f23meel967mfomasbc5e2ngns.apps.googleusercontent.com</string>

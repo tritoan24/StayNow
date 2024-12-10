@@ -9,11 +9,13 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.ph32395.staynow.R;
+import com.ph32395.staynow.databinding.ActivityThayDoiNgonNguBinding;
 
 public class CaiDat extends AppCompatActivity {
 
     private LinearLayout nextDoiMK;
     private LinearLayout updateNguoiDung;
+    private LinearLayout language;
     private ImageButton btnBackSetting;
 
     @Override
@@ -23,7 +25,15 @@ public class CaiDat extends AppCompatActivity {
 
         nextDoiMK = findViewById(R.id.nextDoiMK);
         updateNguoiDung = findViewById(R.id.updateNguoiDung);
+        language = findViewById(R.id.btnLanguage);
         btnBackSetting = findViewById(R.id.button_backSettings);
+
+        language.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(CaiDat.this, ThayDoiNgonNgu.class));
+            }
+        });
 
         btnBackSetting.setOnClickListener(new View.OnClickListener() {
             @Override

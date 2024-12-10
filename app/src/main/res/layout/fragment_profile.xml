@@ -239,7 +239,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lịch sử phòng trọ đã xem"
+                        android:text="@string/Viewed_motel_room_history"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -283,7 +283,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lịch xem phòng"
+                        android:text="@string/Room_viewing_schedule"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -326,7 +326,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hóa đơn"
+                        android:text="@string/Billding"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -370,7 +370,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hợp đồng"
+                        android:text="@string/Contract"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -413,7 +413,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Bài đăng yêu thích"
+                        android:text="@string/Favorite_Posts"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -455,7 +455,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Điều khoản và chính sách"
+                        android:text="@string/Terms_Policies"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -499,7 +499,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Báo cáo sư cố"
+                        android:text="@string/Great_Grandfather_Report"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -543,7 +543,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Cài đặt"
+                        android:text="@string/Setting"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"
@@ -594,7 +594,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Đăng xuất"
+                        android:text="@string/Exit"
                         android:textStyle="bold"
                         android:layout_marginStart="8dp"
                         android:ellipsize="end"

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="Home" translatable="false">Home</string>
+
+    <!-- Bottom Navigation -->
+    <string name="Search" translatable="false">Search</string>
+    <string name="Calender" translatable="false">Calander</string>
+    <string name="Message" translatable="false">Message</string>
+    <string name="Profile" translatable="false">Profile</string>
+
+    <!-- Bill Contract -->
+    <string name="Thank_you_for_trusting_us" translatable="false">Thank you for trusting us</string>
+    <string name="Contract_Payment_Invoice" translatable="false">Contract Payment Invoice</string>
+    <string name="Room_706" translatable="false">Room 706</string>
+    <string name="Lease_term_5_months_from_to_the_end" translatable="false">Lease term: 5 months, from 01/01/2021 to 01/06/2021</string>
+    <string name="The_costs_for_the_invoice_include" translatable="false">The costs for the invoice include:</string>
+    <string name="Room_Fee_3_500_000" translatable="false">Room Fee: 3,500,000</string>
+    <string name="Deposit_3_500_000" translatable="false">Deposit: 3,500,500</string>
+    <string name="Invoice_Creation_Date_01_01_2021" translatable="false">Invoice creation date: 01/01/2021</string>
+    <string name="Fixed_service_costs_and_variable_fees_will_be_charged" translatable="false">Fixed service costs and variable fees will be charged on a monthly invoice. We will remind you on the 28th of the following month.</string>
+    <string name="Flat_Fee" translatable="false">Flat Fee</string>
+    <string name="Service_Name" translatable="false">Service Name</string>
+    <string name="Unit_Price" translatable="false">Unit Price</string>
+    <string name="Variable_fees" translatable="false">Variable Fees</string>
+    <string name="Unit" translatable="false">Unit</string>
+    <string name="Amount_to_be_paid" translatable="false">Amount to be paid</string>
+    <string name="Room_Fee" translatable="false">Room Fee:</string>
+    <string name="Deposit" translatable="false">Deposit:</string>
+    <string name="Total" translatable="false">Total: 7,000,000</string>
+    <string name="The_contract_and_invoice" translatable="false">The contract and invoice have been sent to the tenant. Please wait for the tenant to confirm the contract and make the payment. Thank you.</string>
+    <string name="View_Contract" translatable="false">View Contract</string>
+    <string name="complete" translatable="false">Complete</string>
+
+    <!-- Giới tính -->
+    <string-array name="gender_options">
+        <item>south</item>
+        <item>female</item>
+        <item>3rd gender</item>
+    </string-array>
+
+    <!-- Setting -->
+    <string name="Setting" translatable="false">Setting</string>
+    <string name="Save_a_login_session" translatable="false">Save a login session</string>
+    <string name="Payment_Methods" translatable="false">Payment Methods</string>
+    <string name="Update_information" translatable="false">Update information</string>
+    <string name="Change_Password" translatable="false">Change Password</string>
+    <string name="Theme" translatable="false">Theme</string>
+    <string name="Languege" translatable="false">Language</string>
+    <string name="App_Info" translatable="false">App Info</string>
+
+    <!-- Cập nhật vị trí -->
+    <string name="Update_room_location" translatable="false">Update room location</string>
+    <string name="Here_the_address_when_changing_from_your_coordinates" translatable="false">Here the address when changing from your coordinates</string>
+    <string name="Update_your_location" translatable="false">Update your location</string>
+
+    <!-- CCCD -->
+    <string name="Scan_QR_Code" translatable="false">Scan QR code</string>
+    <string name="Move_the_camera_to_the_QR_code_container_to_scan" translatable="false">Move the camera to the QR code container to scan</string>
+    <string name="Scan_available_photos" translatable="false">Scan available photos</string>
+
+    <!-- Chọn loại tk -->
+    <string name="You_are" translatable="false">You are:</string>
+    <string name="Innkeeper" translatable="false">Innkeeper</string>
+    <string name="Tenants" translatable="false">Tenant</string>
+
+    <!-- Choose payment -->
+    <string name="Payment_Options" translatable="false">Payment Options</string>
+    <string name="You_can_ask_someone_else_to_scan_for_you" translatable="false">You can ask someone else to scan for you</string>
+    <string name="QR_code_scanning_time_for_payment" translatable="false">QR code scanning time for payment</string>
+    <string name="event" translatable="false">remaining</string>
+    <string name="Pay_with" translatable="false">Pay with</string>
+    <string name="by_QR_code" translatable="false">by QR code</string>
+    <string name="Open_Zalopay_now" translatable="false">Open Zalopay now</string>
+
+    <!-- Choose create monthly invoice auto -->
+    <string name="Create_monthly_invoices" translatable="false">Create monthly invoices</string>
+    <string name="into_money" translatable="false">Total amount</string>
+    <string name="Old_Power_Indicator" translatable="false">Old Power Indicator</string>
+    <string name="New_Power_Indicator" translatable="false">New Power Indicator</string>
+    <string name="Amount" translatable="false">Amount</string>
+    <string name="Water_Indicator" translatable="false">Water Indicator</string>
+    <string name="New_water_Indicator" translatable="false">New Water Indicator</string>
+    <string name="Extra_money" translatable="false">Extra money</string>
+    <string name="Reduced_money" translatable="false">Discounted money</string>
+    <string name="Enter_your_notes" translatable="false">Enter your notes</string>
+    <string name="Billing" translatable="false">Billing</string>
+    <string name="Total_fixed_charges" translatable="false">Total fixed charges</string>
+    <string name="Total_variable_fees" translatable="false">Total variable fees</string>
+    <string name="Total_service_fee" translatable="false">Total service fee</string>
+    <string name="Total_bill" translatable="false">Total bill</string>
+    <string name="Cancle" translatable="false">Cancel</string>
+    <string name="Create_invoices" translatable="false">Create invoices</string>
+
+    <!-- Profile -->
+    <string name="Viewed_motel_room_history" translatable="false">Viewed motel room history</string>
+    <string name="Room_viewing_schedule" translatable="false">Room viewing schedule</string>
+    <string name="Billding" translatable="false">Billing</string>
+    <string name="Contract" translatable="false">Contract</string>
+    <string name="Favorite_Posts" translatable="false">Favorite Posts</string>
+    <string name="Terms_Policies" translatable="false">Terms and Policies</string>
+    <string name="Great_Grandfather_Report" translatable="false">Incident Report</string>
+    <string name="Exit" translatable="false">Logout</string>
+    <string name="Account_deletion_request" translatable="false">Account deletion request</string>
+
+</resources>
