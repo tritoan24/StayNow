@@ -1,6 +1,5 @@
 package com.ph32395.staynow.TaoHoaDon
 
-import ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Context
 import com.ph32395.staynow.TaoHopDong.ContractViewModel
@@ -77,7 +76,9 @@ class CreateInvoice : AppCompatActivity() {
             updateUI(invoice)
             setupCalculationListeners()
         }
-        viewModelHopDong.fetchPreviousUtilities(idHopDong)
+        if (idHopDong != null) {
+            viewModelHopDong.fetchPreviousUtilities(idHopDong)
+        }
         viewModelHopDong.previousUtilities.observe(this) { utilities ->
             binding.editTextSoDienCu.setText(utilities.first?.toString() ?: "0")
             binding.editTextSoNuocCu.setText(utilities.second?.toString() ?: "0")

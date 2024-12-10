@@ -89,7 +89,7 @@ class DetailBillActivity : AppCompatActivity() {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
         binding.tvRoomName.text = "Phòng: "+invoice.tenPhong
-        binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
+        binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayTaoHoaDon}"
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvServiceFee.text = formatCurrency(invoice.tongTienDichVu)

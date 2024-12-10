@@ -2,6 +2,7 @@
 package com.ph32395.staynow.TaoHopDong
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -18,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,6 +43,7 @@ import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -568,7 +572,7 @@ private fun observeViewModel() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModelHopDong.navigateToContractDetail.collect { contractId ->
                     contractId?.let {
-                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
+                        val intent = Intent(this@TaoHopDong, ChiTietHopDong::class.java)
                         intent.putExtra("CONTRACT_ID", it)
                         intent.putExtra("Check", 1)
                         startActivity(intent)
