@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
@@ -113,6 +115,7 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var editorDieuKhoan: RichEditor
     private lateinit var note: TextView
     private lateinit var btnBack: Button
+    private lateinit var btncardview: CardView
 
     private lateinit var maPhongTro: String
     private lateinit var maNguoiThue: String
@@ -345,6 +348,14 @@ class TaoHopDong : AppCompatActivity() {
                 createAndSaveContract()
             }
         }
+
+        //ấn vào phòng trọ
+        btncardview.setOnClickListener{
+            val intent = Intent(this, RoomDetailActivity::class.java)
+            intent.putExtra("maPhongTro", maPhongTro)
+            startActivity(intent)
+        }
+
     }
 
 
@@ -488,6 +499,8 @@ private fun observeViewModel() {
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
             ghiChu = note.text.toString(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
+            soDienCu = edSodien.text.toString().toInt(),
+            soNuocCu = edSonuoc.text.toString().toInt(),
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -621,6 +634,9 @@ private fun observeViewModel() {
 
         // Quay lại
         btnBack = findViewById(R.id.btnBack)
+
+        // ấn vào phòng trọ
+        btncardview = findViewById(R.id.cardViewPhongTro)
 
         // Ngày thanh toán
         txtNgayThanhToan = findViewById(R.id.editTextNgayThanhToan)

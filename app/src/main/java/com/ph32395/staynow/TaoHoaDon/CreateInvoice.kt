@@ -1,9 +1,9 @@
 package com.ph32395.staynow.TaoHoaDon
 
 import ContractViewModel
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -11,25 +11,51 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import cn.pedant.SweetAlert.SweetAlertDialog
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItems
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Invoice
+import com.ph32395.staynow.TaoHopDong.InvoiceStatus
+import com.ph32395.staynow.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow.databinding.ActivityCreateMontlyInvoiceAutoBinding
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import java.text.NumberFormat
+import java.util.Calendar
 import java.util.Locale
 
 class CreateInvoice : AppCompatActivity() {
-    private val firestore = FirebaseFirestore.getInstance()
-
     private lateinit var binding: ActivityCreateMontlyInvoiceAutoBinding
-
     private val viewModelHopDong: ContractViewModel by viewModels()
     private val invoiceViewModel: InvoiceViewModel by viewModels()
 
-    // Khai báo invoice là một thuộc tính của class
+    private val utilityFeeDetails = mutableListOf<UtilityFeeDetail>()
     private lateinit var invoice: Invoice
 
+    private var slDienTieuThu = 0
+    private var slNuocTieuThu = 0
+    private var tienThem = 0.0
+    private var tienGiam = 0.0
+    private var tienPhong = 0.0
+    private var tongTienDichVuCoDinh = 0.0
+    private var tongTienPhiBienDong = 0.0
+    private var tongPhiDichVu = 0.0
+    private var tongTienHoaDon = 0.0
+
+    private var idNguoiNhan: String = ""
+    private var idNguoiGui: String = ""
+    private var idHopDong: String = ""
+    private var tenKhachHang: String = ""
+    private var tenPhong: String = ""
+    private var tienCoc: Double = 0.0
+    private val phiCoDinhList = mutableListOf<UtilityFeeDetail>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,295 +64,357 @@ class CreateInvoice : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        val idHopDong = intent.getStringExtra("CONTRACT_ID")
 
-        idHopDong?.let {
-            viewModelHopDong.fetchInvoiceDetails(it)
-        }
+        idHopDong = intent.getStringExtra("CONTRACT_ID").toString()
+        Log.d("idHopDong", "idHopDong: $idHopDong")
 
-        // Quan sát dữ liệu và cập nhật UI
+        viewModelHopDong.fetchInvoiceDetails(idHopDong)
+        //viewModelHopDong.fetchInvoiceDetails("g93M93HQHiK3bbQ6Mafn")
         viewModelHopDong.invoiceDetails.observe(this) { fetchedInvoice ->
-            // Gán giá trị cho invoice khi nhận được dữ liệu
             invoice = fetchedInvoice
             updateUI(invoice)
+            setupCalculationListeners()
+        }
+        viewModelHopDong.fetchPreviousUtilities(idHopDong)
+        viewModelHopDong.previousUtilities.observe(this) { utilities ->
+            binding.editTextSoDienCu.setText(utilities.first?.toString() ?: "0")
+            binding.editTextSoNuocCu.setText(utilities.second?.toString() ?: "0")
+        }
+        binding.btnCancel.setOnClickListener {
+            finish()
         }
     }
 
-    private fun setupAdditionalFeeListeners() {
-        // Mặc định giá trị ban đầu của tiền thêm và tiền giảm là 0
-        binding.editPhiThem.setText("0")
-        binding.editTienGiam.setText("0")
-
-        // Thêm TextWatcher để theo dõi sự thay đổi của tiền thêm
-        binding.editPhiThem.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                // Lấy giá trị mới nhập vào, nếu rỗng thì mặc định là 0
-                val tienThem = s.toString().toDoubleOrNull() ?: 0.0
-
-                // Cập nhật lại tổng hóa đơn
-                updateTotalBill(tienThem, getDiscountAmount())
-            }
-        })
-
-        // Tương tự cho tiền giảm
-        binding.editTienGiam.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: Editable?) {
-                // Lấy giá trị mới nhập vào, nếu rỗng thì mặc định là 0
-                val tienGiam = s.toString().toDoubleOrNull() ?: 0.0
-
-                // Cập nhật lại tổng hóa đơn
-                updateTotalBill(getAdditionalAmount(), tienGiam)
-            }
-        })
-    }
-    private fun getAdditionalAmount(): Double {
-        return binding.editPhiThem.text.toString().toDoubleOrNull() ?: 0.0
-    }
-
-    private fun getDiscountAmount(): Double {
-        return binding.editTienGiam.text.toString().toDoubleOrNull() ?: 0.0
-    }
-
-    private fun updateTotalBill(tienThem: Double, tienGiam: Double) {
-        // Tìm các dịch vụ điện và nước
-        val electricityService = invoice.phiBienDong.find { it.tenDichVu.lowercase() == "điện" }
-        val waterService = invoice.phiBienDong.find { it.tenDichVu.lowercase() == "nước" }
-
-        // Tính toán phí điện và nước
-        val electricityFee = if (electricityService != null) {
-            // Tìm giá trị phí điện từ calculatedFees nếu có
-            // Bạn có thể điều chỉnh logic này phù hợp với cách tính phí của bạn
-            invoice.phiBienDong
-                .filter { it.tenDichVu.lowercase() == "điện" }
-                .map { it.giaTien }
-                .firstOrNull() ?: 0.0
-        } else 0.0
-
-        val waterFee = if (waterService != null) {
-            // Tương tự với phí nước
-            invoice.phiBienDong
-                .filter { it.tenDichVu.lowercase() == "nước" }
-                .map { it.giaTien }
-                .firstOrNull() ?: 0.0
-        } else 0.0
-
-        // Tính toán tổng hóa đơn ban đầu (không bao gồm tiền thêm và tiền giảm)
-        val baseTotal = invoice.tongTienDichVu +
-                invoice.tienPhong +
-                invoice.tienCoc +
-                electricityFee +
-                waterFee
-
-        // Áp dụng tiền thêm và tiền giảm
-        val finalTotal = baseTotal + tienThem - tienGiam
-
-        // Cập nhật TextView tổng hóa đơn
-        binding.tvTongHoaDon.text = formatCurrency(finalTotal)
-        binding.tvTienThem.text = formatCurrency(tienThem)
-        binding.tvTienGiam.text = formatCurrency(tienGiam)
-    }
+    // Thêm biến flag để kiểm soát việc lưu dữ liệu
+    private var isFinalCalculation = false
 
     private fun updateUI(invoice: Invoice) {
 
-        setupAdditionalFeeListeners()
-        //tienphong
-        binding.tvTienPhong.text = formatCurrency(invoice.tienPhong)
-        binding.tvTienCoc.text = formatCurrency(invoice.tienCoc)
+        // Tính toán các giá trị ban đầu
+        tienPhong = invoice.tienPhong
+        tongTienDichVuCoDinh = invoice.tongTienDichVu
+        tongTienPhiBienDong = 0.0
+        tongPhiDichVu = tongTienDichVuCoDinh + tongTienPhiBienDong
+        tongTienHoaDon = tienPhong + tongPhiDichVu
 
-        var tienThem = binding.editPhiThem.text.toString().toDoubleOrNull() ?: 0.0
-        var tienGiam = binding.editTienGiam.text.toString().toDoubleOrNull() ?: 0.0
-        var ghiChu = binding.editTextNotes.text.toString()
 
-        // Fixed fees
+        // Lấy thông tin người nhận và người gửi
+        idNguoiNhan = invoice.idNguoinhan
+        idNguoiGui = invoice.idNguoigui
+        tenKhachHang = invoice.tenKhachHang
+        tenPhong = invoice.tenPhong
+        tienCoc = invoice.tienCoc
+        phiCoDinhList.addAll(invoice.phiCoDinh)
+
+        // Cập nhật các TextView với giá trị ban đầu
+        binding.tvTienPhong.text = formatCurrency(tienPhong)
+        binding.tvTongTienPhiCoDinh.text = formatCurrency(tongTienDichVuCoDinh)
+        binding.tvTongTienPhiBienDoi.text = formatCurrency(tongTienPhiBienDong)
+        binding.tvTongTien.text = formatCurrency(tongPhiDichVu)
+        binding.tvTongHoaDon.text = formatCurrency(tongTienHoaDon)
+
+        binding.tvTienThem.text = formatCurrency(tienThem)
+        binding.tvTienGiam.text = formatCurrency(tienGiam)
+
+
+        Log.d("Invoice", "tien phong: " + tienPhong)
+        Log.d("Invoice", "phi co dinh: " + tongTienDichVuCoDinh)
+        Log.d("Invoice", "tong tien phi bien dong: " + tongTienPhiBienDong)
+        Log.d("Invoice", "tong phi dich vu: " + tongPhiDichVu)
+        Log.d("Invoice", "tong tien hoa don: " + tongTienHoaDon)
+
+        // Thiết lập adapter cho các phí cố định và biến động
         val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
         binding.rcvFixedFees.adapter = fixedFeeAdapter
         binding.rcvFixedFees.layoutManager = LinearLayoutManager(this)
 
-        // Set initial values with null safety
-        val soDienCu = invoice.soDienCu ?: 0
-        val soNuocCu = invoice.soNuocCu ?: 0
-
-        // Kiểm tra và ẩn hiện EditText dựa trên tồn tại của dịch vụ
-        val electricityService = invoice.phiBienDong.find { it.tenDichVu.lowercase() == "điện" }
-        val waterService = invoice.phiBienDong.find { it.tenDichVu.lowercase() == "nước" }
-
-        // Ẩn hiện EditText điện
-        binding.LnSoDien.visibility = if (electricityService != null) View.VISIBLE else View.GONE
-
-        // Ẩn hiện EditText nước
-        binding.LnsoNuoc.visibility = if (waterService != null) View.VISIBLE else View.GONE
-
-        // Set old meter readings (chỉ khi dịch vụ tồn tại)
-        if (electricityService != null) {
-            binding.editTextSoDienCu.setText(soDienCu.toString())
-        }
-
-        if (waterService != null) {
-            binding.editTextSoNuocCu.setText(soNuocCu.toString())
-        }
-
-
-
-
-
-
-        //btn Cancel
-        binding.btnCancel.setOnClickListener {
-           finish()
-        }
-        // Collect data from UI
-        val invoice = InvoiceMonthlyModel(
-            tienPhong = invoice.tienPhong, // Room price from existing invoice
-            tienCoc = invoice.tienCoc, // Deposit from existing invoice
-            soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0,
-            soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0,
-//            soDienMoi = binding.editTextSoDienMoi.text.toString().toIntOrNull() ?: 0,
-//            soNuocMoi = binding.editTextSoNuocMoi.text.toString().toIntOrNull() ?: 0,
-//            phiThem = binding.editPhiThem.text.toString().toDoubleOrNull() ?: 0.0,
-//            tienGiam = binding.editTienGiam.text.toString().toDoubleOrNull() ?: 0.0,
-//            ghiChu = binding.editTextNotes.text.toString(),
-//            tongTienDichVu = invoice.tongTienDichVu, // Total service fees
-//            tongTienPhiBienDoi = binding.tvTongTienPhiBienDoi.text.toString().toDoubleOrNull() ?: 0.0,
-//            tongHoaDon = binding.tvTongHoaDon.text.toString().toDoubleOrNull() ?: 0.0,
-            phiBienDong = invoice.phiBienDong, // Variable fees
-            phiCoDinh = invoice.phiCoDinh, // Fixed fees
-            tienThem = tienThem,
-            tienGiam = tienGiam
-
-        )
-
-// Save invoice
-
-        binding.btnCreate.setOnClickListener {
-            invoiceViewModel.addInvoice(invoice, {
-                Toast.makeText(this, "Invoice created successfully", Toast.LENGTH_SHORT).show()
-                finish()
-            }, {
-                Toast.makeText(this, "Error creating invoice", Toast.LENGTH_SHORT).show()
-            })
-        }
-
         val variableFeesAdapter = InvoiceVariableFeesAdapter(invoice.phiBienDong)
-        variableFeesAdapter.calculationListener = object : InvoiceVariableFeesAdapter.OnCalculationCompleteListener {
-            override fun onCalculationComplete(calculatedFees: List<Double>) {
-                // Xử lý thành tiền ở đây
-                val totalFee = calculatedFees.sum()
-
-                // Nếu có 2 dịch vụ (điện và nước)
-                if (calculatedFees.size >= 2) {
-                    val electricityFee = calculatedFees[0]
-                    val waterFee = calculatedFees[1]
-
-                    // Tính toán tổng tiền
-                    binding.tvTongTienPhiCoDinh.text = formatCurrency(invoice.tongTienDichVu)
-                    binding.tvTongTienPhiBienDoi.text = formatCurrency(totalFee)
-                    val totalFee = invoice.tongTienDichVu + waterFee + electricityFee
-                    binding.tvTongTien.text = formatCurrency(totalFee)
-                    val totalBill = totalFee + invoice.tienPhong + invoice.tienCoc
-                    binding.tvTongHoaDon.text = formatCurrency(totalBill)
-                    binding.tvTienThem.text = formatCurrency(tienThem)
-                    binding.tvTienGiam.text = formatCurrency(tienGiam)
-                    if (tienGiam > 0) {
-                        binding.tvTongHoaDon.text = formatCurrency(totalBill - tienGiam)
-                    }else if(tienThem > 0){
-                        binding.tvTongHoaDon.text = formatCurrency(totalBill + tienThem)
-                    }
-                    else{
-                        binding.tvTongHoaDon.text = formatCurrency(totalBill)
-                    }
-                }
-                // Nếu chỉ có 1 dịch vụ
-                else if (calculatedFees.isNotEmpty()) {
-                    val singleFee = calculatedFees[0]
-                    // Tính toán tổng tiền
-                    binding.tvTongTienPhiCoDinh.text = formatCurrency(invoice.tongTienDichVu)
-                    binding.tvTongTienPhiBienDoi.text = formatCurrency(totalFee)
-                    val totalFee = invoice.tongTienDichVu + singleFee
-                    binding.tvTongTien.text = formatCurrency(totalFee)
-                    val totalBill = totalFee + invoice.tienPhong + invoice.tienCoc
-                    binding.tvTongHoaDon.text = formatCurrency(totalBill)
-                    binding.tvTienThem.text = formatCurrency(tienThem)
-                    binding.tvTienGiam.text = formatCurrency(tienGiam)
-                    if (tienGiam > 0) {
-                        binding.tvTongHoaDon.text = formatCurrency(totalBill - tienGiam)
-                    }else if(tienThem > 0){
-                        binding.tvTongHoaDon.text = formatCurrency(totalBill + tienThem)
-                    }
-                    else{
-                        binding.tvTongHoaDon.text = formatCurrency(totalBill)
-                    }
-                }
-            }
-        }
-
         binding.rcvVariableFees.adapter = variableFeesAdapter
         binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
 
-        // Tạo một hàm chung để tính toán và cập nhật
-        fun calculateAndUpdateUtilities() {
-            try {
-                val soDienCu = if (electricityService != null)
-                    binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0
-                else 0
+        // Xử lý hiển thị và ẩn các EditText dựa trên dịch vụ
+        val electricityService = invoice.phiBienDong.find { it.tenDichVu.lowercase() == "điện" }
+        val waterService = invoice.phiBienDong.find { it.tenDichVu.lowercase() == "nước" }
 
-                val soNuocCu = if (waterService != null)
-                    binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0
-                else 0
+        binding.LnSoDien.visibility = if (electricityService != null) View.VISIBLE else View.GONE
+        binding.LnsoNuoc.visibility = if (waterService != null) View.VISIBLE else View.GONE
 
-                val soDienMoi = if (electricityService != null)
-                    binding.editTextSoDienMoi.text.toString().toIntOrNull() ?: 0
-                else 0
 
-                val soNuocMoi = if (waterService != null)
-                    binding.editTextSoNuocMoi.text.toString().toIntOrNull() ?: 0
-                else 0
+        // Set sự kiện click cho txtThang
+        binding.txtThang.setOnClickListener {
+            showMonthPicker()
+        }
 
-                val dienTieuThu = maxOf(soDienMoi - soDienCu, 0)
-                val nuocTieuThu = maxOf(soNuocMoi - soNuocCu, 0)
 
-                binding.editSoDien.setText(dienTieuThu.toString())
-                binding.editSoNuoc.setText(nuocTieuThu.toString())
+        // Lấy tháng hiện tại và đặt làm giá trị mặc định cho TextView
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        binding.txtThang.text = currentMonth.toString()
 
-                // Log để kiểm tra
-                Log.d("UpdateUI", "Electricity consumption: $dienTieuThu, Water consumption: $nuocTieuThu")
+        // Thêm nút xác nhận lưu hóa đơn
+        binding.btnCreate.setOnClickListener {
+            // Đánh dấu là tính toán cuối cùng
+            isFinalCalculation = true
 
-                // Cập nhật số lượng cho adapter
-                variableFeesAdapter.updateQuantities(
-                    electricityQuantity = dienTieuThu.toDouble(),
-                    waterQuantity = nuocTieuThu.toDouble()
-                )
+            // Thực hiện tính toán cuối cùng
+            calculateUtilities()
+            updateTotalBill()
 
-            } catch (e: Exception) {
-                Log.e("UpdateUI", "Error calculating utilities", e)
+            val soDienCu =   binding.editTextSoNuocCu.text.toString().toInt()
+            if(soDienCu != invoice.soDienCu){
+              Toast.makeText(this, "Số điện cũ đã bị thay đổi", Toast.LENGTH_SHORT).show()
+            }
+//            saveInvoice()
+        }
+
+        // định dạng số tiền nhập vào
+        setupCalculationListeners()
+        CurrencyFormatTextWatcher.addTo(binding.editTienGiam) {
+            updateTotalBill()
+        }
+        CurrencyFormatTextWatcher.addTo(binding.editPhiThem) {
+            updateTotalBill()
+        }
+    }
+
+    private fun setupCalculationListeners() {
+        val calculationTriggers = listOf(
+            binding.editTextSoDienCu,
+            binding.editTextSoDienMoi,
+            binding.editTextSoNuocCu,
+            binding.editTextSoNuocMoi,
+            binding.editPhiThem,
+            binding.editTienGiam
+        )
+
+        calculationTriggers.forEach { editText ->
+            editText.addTextChangedListener {
+                calculateUtilities()
+                updateTotalBill()
+            }
+        }
+    }
+
+    private fun calculateUtilities() {
+        val soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0
+        val soDienMoi = binding.editTextSoDienMoi.text.toString().toIntOrNull() ?: 0
+        val soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0
+        val soNuocMoi = binding.editTextSoNuocMoi.text.toString().toIntOrNull() ?: 0
+
+        slDienTieuThu = maxOf(soDienMoi - soDienCu, 0)
+        slNuocTieuThu = maxOf(soNuocMoi - soNuocCu, 0)
+
+        binding.editSoDien.setText(slDienTieuThu.toString())
+        binding.editSoNuoc.setText(slNuocTieuThu.toString())
+
+        (binding.rcvVariableFees.adapter as? InvoiceVariableFeesAdapter)?.updateQuantities(
+            electricityQuantity = slDienTieuThu.toDouble(),
+            waterQuantity = slNuocTieuThu.toDouble()
+        )
+    }
+
+    private fun calculateTotalBill(): Double {
+        // Tính tổng phí biến động
+        val calculatedFees = invoice.phiBienDong.mapIndexed { index, fee ->
+            when (fee.tenDichVu.lowercase()) {
+                "điện" -> fee.giaTien * slDienTieuThu
+                "nước" -> fee.giaTien * slNuocTieuThu
+                else -> fee.giaTien
             }
         }
 
-        // Thêm text change listener cho các EditText (chỉ khi dịch vụ tồn tại)
-        if (electricityService != null) {
-            binding.editTextSoDienCu.addTextChangedListener { calculateAndUpdateUtilities() }
-            binding.editTextSoDienMoi.addTextChangedListener { calculateAndUpdateUtilities() }
-        }
+        val totalVariableFees = calculatedFees.sum()
 
-        if (waterService != null) {
-            binding.editTextSoNuocCu.addTextChangedListener { calculateAndUpdateUtilities() }
-            binding.editTextSoNuocMoi.addTextChangedListener { calculateAndUpdateUtilities() }
-        }
+        // Lấy giá trị số thực
+        tienThem = CurrencyFormatTextWatcher.getUnformattedValue(binding.editPhiThem)
+        tienGiam = CurrencyFormatTextWatcher.getUnformattedValue(binding.editTienGiam)
 
-        // Gọi lần đầu để tính toán ban đầu
-        calculateAndUpdateUtilities()
+        tongTienPhiBienDong = totalVariableFees
+        tongTienDichVuCoDinh = invoice.tongTienDichVu
+        tongPhiDichVu = tongTienDichVuCoDinh + tongTienPhiBienDong
+        tongTienHoaDon = tienPhong + tongPhiDichVu + tienThem - tienGiam
 
+        return tongTienHoaDon
     }
+
+    private fun updateTotalBill() {
+        // Nếu là tính toán cuối cùng, lưu chi tiết phí
+        if (isFinalCalculation) {
+            // Xóa danh sách chi tiết phí cũ
+            utilityFeeDetails.clear()
+
+            val calculatedFees = invoice.phiBienDong.mapIndexed { index, fee ->
+                when (fee.tenDichVu.lowercase()) {
+                    "điện" -> fee.giaTien * slDienTieuThu
+                    "nước" -> fee.giaTien * slNuocTieuThu
+                    else -> fee.giaTien
+                }
+            }
+
+            // Nếu có 2 dịch vụ (điện và nước)
+            if (calculatedFees.size >= 2) {
+                val electricityFee = calculatedFees[0]
+                val waterFee = calculatedFees[1]
+
+                utilityFeeDetails.add(
+                    UtilityFeeDetail(
+                        tenDichVu = invoice.phiBienDong[0].tenDichVu,
+                        giaTien = invoice.phiBienDong[0].giaTien,
+                        donVi = invoice.phiBienDong[0].donVi,
+                        soLuong = slDienTieuThu,
+                        thanhTien = electricityFee
+                    )
+                )
+                utilityFeeDetails.add(
+                    UtilityFeeDetail(
+                        tenDichVu = invoice.phiBienDong[1].tenDichVu,
+                        giaTien = invoice.phiBienDong[1].giaTien,
+                        donVi = invoice.phiBienDong[1].donVi,
+                        soLuong = slNuocTieuThu,
+                        thanhTien = waterFee
+                    )
+                )
+            }
+            // Nếu chỉ có 1 dịch vụ
+            else if (calculatedFees.isNotEmpty()) {
+                val singleFee = calculatedFees[0]
+                val tenDichVu = invoice.phiBienDong[0].tenDichVu
+
+                utilityFeeDetails.add(
+                    UtilityFeeDetail(
+                        tenDichVu = tenDichVu,
+                        giaTien = invoice.phiBienDong[0].giaTien,
+                        donVi = invoice.phiBienDong[0].donVi,
+                        soLuong = if (tenDichVu.lowercase() == "điện") slDienTieuThu else slNuocTieuThu,
+                        thanhTien = singleFee
+                    )
+                )
+            }
+
+            // Reset flag sau khi lưu
+            isFinalCalculation = false
+        }
+
+        // Tính toán tổng hóa đơn
+        val tongHoaDon = calculateTotalBill()
+
+        // Cập nhật UI
+        binding.tvTongTienPhiBienDoi.text = formatCurrency(tongTienPhiBienDong)
+        binding.tvTongTienPhiCoDinh.text = formatCurrency(tongTienDichVuCoDinh)
+        binding.tvTongTien.text = formatCurrency(tongPhiDichVu)
+        binding.tvTongHoaDon.text = formatCurrency(tongHoaDon)
+        binding.tvTienThem.text = formatCurrency(tienThem)
+        binding.tvTienGiam.text = formatCurrency(tienGiam)
+
+        // Log để kiểm tra
+        Log.d("Invoice1", "Utility Fee Details: $utilityFeeDetails")
+    }
+
+    private fun saveInvoice() {
+        // Phương thức lưu hóa đơn
+        // Sử dụng utilityFeeDetails để lưu chi tiết phí
+        // Triển khai logic lưu vào Firestore hoặc cơ sở dữ liệu của bạn
+        val hoaDonMon = InvoiceMonthlyModel(
+            idHoaDon = "",
+            idNguoiNhan = idNguoiNhan,
+            idNguoiGui = idNguoiGui,
+            idHopDong = idHopDong,
+            tenKhachHang = tenKhachHang,
+            tenPhong = tenPhong,
+            ngayTaoHoaDon = Calendar.getInstance().time.toString(),
+            hoaDonThang = binding.txtThang.text.toString().toInt(),
+            phiCoDinh = phiCoDinhList,
+            phiBienDong = utilityFeeDetails,
+            tongTien = tongTienHoaDon,
+            trangThai = InvoiceStatus.PENDING,
+            tienPhong = tienPhong,
+            tienCoc = tienCoc,
+            tongPhiCoDinh = tongTienDichVuCoDinh,
+            tongPhiBienDong = tongTienPhiBienDong,
+            tongTienDichVu = tongPhiDichVu,
+            kieuHoadon = invoice.kieuHoadon,
+            paymentDate = "Ngày thanh toán",
+            soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0,
+            soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0,
+            soDienMoi = binding.editTextSoDienMoi.text.toString().toIntOrNull() ?: 0,
+            soNuocMoi = binding.editTextSoNuocMoi.text.toString().toIntOrNull() ?: 0,
+            soDienTieuThu = slDienTieuThu,
+            soNuocTieuThu = slNuocTieuThu,
+            tienGiam = tienGiam,
+            tienThem = tienThem,
+            ghiChu = binding.editTextNotes.text.toString()
+
+            // Các trường khác
+        )
+        Log.d("Invoice2", "Invoice: $hoaDonMon")
+
+        invoiceViewModel.addInvoice(hoaDonMon, {
+            val factory = ViewModelFactory(applicationContext) // Hoặc context cần thiết
+            val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
+            Toast.makeText(this, "Tạo hóa đơn thành công", Toast.LENGTH_SHORT).show()
+            //gọi hàm update số điện số nc
+            viewModelHopDong.updatePreviousUtilities(
+                idHopDong,
+                binding.editTextSoDienMoi.text.toString().toInt(),
+                binding.editTextSoNuocMoi.text.toString().toInt()
+            )
+
+            // Giám sát trạng thái gửi thông báo
+            notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->
+                if (isSuccess) {
+                    // Thông báo thành công
+                    Toast.makeText(this, "Thông báo đã được gửi!", Toast.LENGTH_SHORT).show()
+                } else {
+                    // Thông báo thất bại
+                    Toast.makeText(this, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+            val soDienCu =   binding.editTextSoDienMoi.text.toString().toInt()
+            val soNuocCu =  binding.editTextSoNuocMoi.text.toString().toInt()
+            val message = if (invoice.soDienCu != soDienCu || invoice.soNuocCu != soNuocCu) {
+                "Đến ngày cần thanh toán hóa đơn cho tháng ${hoaDonMon.hoaDonThang}. Lưu ý: Đã có sự thay đổi về số điện hoặc số nước!"
+            } else {
+                "Đến ngày cần thanh toán hóa đơn cho tháng ${hoaDonMon.hoaDonThang}"
+            }
+            // Ví dụ: gửi thông báo
+            val notification = NotificationModel(
+                title = "Thanh toán hóa đơn",
+                message = message,
+                //lấy ngày hôm nay
+                date = Calendar.getInstance().time.toString(),
+                time = "0",
+                mapLink = null,
+                isRead = false,
+                isPushed = true,
+                typeNotification = "invoiceRemind",
+                idModel = idHopDong
+            )
+
+            val recipientId = idNguoiNhan
+            notificationViewModel.sendNotification(notification, recipientId)
+
+        }, {
+            Toast.makeText(this, "Lỗi khi tạo hóa đơn", Toast.LENGTH_SHORT).show()
+        })
+    }
+
     private fun formatCurrency(amount: Number): String {
         val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         return formatter.format(amount)
     }
 
+    @SuppressLint("CheckResult")
+    private fun showMonthPicker() {
+        // Tạo danh sách tháng từ 1 đến 12
+        val months = (1..12).map { "Tháng $it" }
+        // Hiển thị MaterialDialog
+        MaterialDialog(this).show {
+            title(text = "Chọn tháng") // Tiêu đề của dialog
+            listItems(items = months) { _, index, _ ->
+                // Xử lý khi người dùng chọn một tháng
+                val selectedMonth = index + 1 // Vì danh sách bắt đầu từ 0, cộng thêm 1
+                binding.txtThang.text = "$selectedMonth"
+            }
+        }
+    }
 }

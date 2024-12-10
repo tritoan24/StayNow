@@ -18,10 +18,12 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
+import com.ph32395.staynow.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
 import com.ph32395.staynow.hieunt.helper.Default.Collection.IS_PUSHED
 import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
@@ -73,12 +75,18 @@ class NotificationService : Service() {
     }
 
     private fun getNotification(notificationModel: NotificationModel): Notification {
+        Log.d("idHopDong", "idHopDongput: ${notificationModel.idModel}")
         when (notificationModel.typeNotification){
             TYPE_SCHEDULE_ROOM_TENANT -> {
                 Intent(this, TenantManageScheduleRoomActivity::class.java)
             }
             TYPE_SCHEDULE_ROOM_RENTER -> {
                 Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) }
+            }
+            TYPE_NOTI_BILL_MONTHLY -> {
+                Intent(this, CreateInvoice::class.java).apply {
+                    putExtra("CONTRACT_ID", notificationModel.idModel)
+                }
             }
             else -> {
                 null

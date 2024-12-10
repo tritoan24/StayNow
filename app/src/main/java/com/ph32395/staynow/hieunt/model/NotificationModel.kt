@@ -16,5 +16,6 @@ data class NotificationModel(
     var isRead: Boolean = false,
     var isPushed: Boolean = false,
     var readTime : String = "",
-    var typeNotification: String = ""
+    var typeNotification: String = "",
+    var idModel : String = ""
 )

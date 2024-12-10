@@ -226,6 +226,61 @@ class ContractViewModel : ViewModel() {
             }
     }
 
+    fun fetchPreviousUtilities(contractId: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("HopDong")
+            .document(contractId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+
+                    val soDienCu = documentSnapshot.getLong("soDienCu")?.toInt() ?: 0
+                    val soNuocCu = documentSnapshot.getLong("soNuocCu")?.toInt() ?: 0
+                    // Log hoặc cập nhật LiveData nếu cần
+                    Log.d("ContractViewModel", "Số điện cũ: $soDienCu, Số nước cũ: $soNuocCu")
+
+                    // Bạn có thể dùng LiveData hoặc MutableLiveData để đẩy giá trị ra UI
+                    _previousUtilities.value = Pair(soDienCu, soNuocCu)
+                } else {
+                    Log.e("ContractViewModel", "Hợp đồng không tồn tại.")
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("ContractViewModel", "Lỗi khi lấy số điện và nước cũ: ${exception.message}", exception)
+            }
+    }
+
+    fun updatePreviousUtilities(contractId: String, newSoDienCu: Int, newSoNuocCu: Int) {
+        val db = FirebaseFirestore.getInstance()
+
+        // Lấy tham chiếu tới tài liệu hợp đồng cần cập nhật
+        val contractRef = db.collection("HopDong").document(contractId)
+
+        // Cập nhật các trường soDienCu và soNuocCu
+        contractRef.update(
+            "soDienCu", newSoDienCu,
+            "soNuocCu", newSoNuocCu
+        )
+            .addOnSuccessListener {
+                // Log thành công và cập nhật thông báo nếu cần
+                Log.d("ContractViewModel", "Cập nhật số điện cũ và số nước cũ thành công")
+                // Cập nhật LiveData hoặc thông báo cho UI
+                contractStatus.value = "Cập nhật số điện và nước cũ thành công"
+            }
+            .addOnFailureListener { exception ->
+                // Log lỗi khi cập nhật không thành công
+                Log.e("ContractViewModel", "Lỗi khi cập nhật số điện và nước cũ: ${exception.message}", exception)
+                contractStatus.value = "Có lỗi khi cập nhật số điện và nước cũ: ${exception.message}"
+            }
+    }
+
+
+    // LiveData để lưu trữ kết quả
+    private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()
+    val previousUtilities: LiveData<Pair<Int, Int>> get() = _previousUtilities
+
+
     // Kiểm tra xem người thuê và người cho thuê đã có thông tin trong bảng contract_messages hay chưa
     fun checkMessageStatus(tenantId: String, landlordId: String) {
         val contractMessagesRef = FirebaseFirestore.getInstance().collection("contract_messages")

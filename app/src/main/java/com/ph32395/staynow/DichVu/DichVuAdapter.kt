@@ -1,7 +1,7 @@
-package com.ph32395.staynow.DichVu
 
 import android.content.Context
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -11,17 +11,26 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
+import com.ph32395.staynow.ChucNangChung.CurrencyFormatTextWatcher
+import com.ph32395.staynow.DichVu.DichVu
 import com.ph32395.staynow.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoPhongTro.PhiDichVu
 import com.ph32395.staynow.databinding.ItemDichvuBinding
+import kotlin.math.log
+
 class DichVuAdapter(
     private val context: Context,
-    private val dichVuList: List<DichVu>,
+    private var dichVuList: List<DichVu>,
     private val listener: AdapterTaoPhongTroEnteredListenner
 ) : RecyclerView.Adapter<DichVuAdapter.DichVuViewHolder>() {
 
-    private val pricesMap = mutableMapOf<Int, Pair<Int, String>>() // Lưu giá và đơn vị
+    private val pricesMap = mutableMapOf<Int, Pair<Int, String>>()
+    // Thêm phương thức để cập nhật danh sách
+    fun updateList(newList: List<DichVu>) {
+        dichVuList = newList
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DichVuViewHolder {
         val binding = ItemDichvuBinding.inflate(LayoutInflater.from(context), parent, false)
@@ -42,6 +51,9 @@ class DichVuAdapter(
             if (priceInfo != null) {
                 val formattedPrice = String.format("%,d", priceInfo.first)
                 binding.giaDichvu.text = "$formattedPrice đ / ${priceInfo.second}"
+                Log.d("DichVuAdapter", "bind: $formattedPrice")
+                Log.d("DichVuAdapter", "bind: $formattedPrice đ / ${priceInfo.second}")
+
             } else {
                 binding.giaDichvu.text = "Chưa nhập giá"
             }
@@ -53,9 +65,47 @@ class DichVuAdapter(
             binding.itemDichvu.setOnClickListener {
                 showInputDialog(dichvu, position)
             }
+            // Thêm nút xóa
+            binding.btnDelete.setOnClickListener {
+                showDeleteConfirmDialog(position)
+            }
         }
     }
+    private fun showDeleteConfirmDialog(position: Int) {
+        SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+            .setTitleText("Xóa dịch vụ")
+            .setConfirmClickListener { sDialog ->
+                // Tạo list mới loại trừ phần tử bị xóa
+                val updatedList = dichVuList.toMutableList().apply {
+                    removeAt(position)
+                }
 
+                // Cập nhật adapter
+                dichVuList = updatedList
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, updatedList.size)
+
+                // Thông báo cho listener
+                updatePriceList(updatedList)
+
+                sDialog.dismissWithAnimation()
+            }
+            .show()
+    }
+
+    private fun updatePriceList(updatedList: List<DichVu>) {
+        val priceList = updatedList.mapIndexed { index, dichVu ->
+            val priceInfo = pricesMap[index]
+            PhiDichVu(
+                Ma_phongtro = "",
+                Ten_dichvu = dichVu.Ten_dichvu,
+                Don_vi = priceInfo?.second ?: "",
+                Icon_dichvu = dichVu.Icon_dichvu,
+                So_tien = priceInfo?.first ?: 0
+            )
+        }
+        listener.onAllPricesEntered(priceList)
+    }
     private fun showInputDialog(dichvu: DichVu, position: Int) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_select_price_unit, null)
         val editText = dialogView.findViewById<EditText>(R.id.editPrice)
@@ -91,37 +141,54 @@ class DichVuAdapter(
             .setCustomView(dialogView)
             .setConfirmText("Xác nhận")
             .setConfirmClickListener { sDialog ->
-                val inputText = editText.text.toString()
+                val inputText = CurrencyFormatTextWatcher.getUnformattedValue(editText).toInt()
                 val selectedUnit = spinner.selectedItem.toString()
 
-                if (inputText.isNotEmpty() && selectedUnit.isNotEmpty()) {
-                    val price = inputText.toIntOrNull()
-                    if (price != null) {
-                        // Lưu giá và đơn vị vào pricesMap
-                        pricesMap[position] = price to selectedUnit
-                        notifyItemChanged(position)
+                if (inputText > 0 && selectedUnit.isNotEmpty()) {
+                    // Lưu giá và đơn vị vào pricesMap
+                    pricesMap[position] = inputText to selectedUnit
+                    notifyItemChanged(position)
 
-                        // Kiểm tra xem đã nhập đủ giá chưa
-                        if (pricesMap.size == dichVuList.size) {
-                            val priceList = dichVuList.mapIndexed { index, dichVu ->
-                                PhiDichVu(
-                                    Ma_phongtro = "",
-                                    Ten_dichvu = dichVu.Ten_dichvu,
-                                    Don_vi = pricesMap[index]?.second ?: "",
-                                    Icon_dichvu = dichVu.Icon_dichvu,
-                                    So_tien = pricesMap[index]?.first ?: 0
-                                )
-                            }
-                            listener.onAllPricesEntered(priceList)
+                    // Kiểm tra xem đã nhập đủ giá chưa
+                    if (pricesMap.size == dichVuList.size) {
+                        val priceList = dichVuList.mapIndexed { index, dichVu ->
+                            PhiDichVu(
+                                Ma_phongtro = "",
+                                Ten_dichvu = dichVu.Ten_dichvu,
+                                Don_vi = pricesMap[index]?.second ?: "",
+                                Icon_dichvu = dichVu.Icon_dichvu,
+                                So_tien = pricesMap[index]?.first ?: 0
+                            )
                         }
-                        sDialog.dismissWithAnimation()
-                    } else {
-                        Toast.makeText(context, "Vui lòng nhập giá hợp lệ", Toast.LENGTH_SHORT).show()
+                        listener.onAllPricesEntered(priceList)
                     }
+                    sDialog.dismissWithAnimation()
                 } else {
-                    Toast.makeText(context, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Vui lòng nhập giá hợp lệ", Toast.LENGTH_SHORT).show()
                 }
             }
             .show()
+
+// Khi khởi tạo dialog, áp dụng CurrencyFormatTextWatcher
+        CurrencyFormatTextWatcher.addTo(editText)
     }
+
+    fun addDichVu(dichVu: DichVu) {
+        // Tạo list mới và thêm dịch vụ
+        val updatedList = dichVuList.toMutableList().apply {
+            add(dichVu)
+        }
+
+        // Cập nhật adapter
+        dichVuList = updatedList
+        notifyItemInserted(updatedList.size - 1)
+
+        // Check the exact type of your pricesMap and adjust accordingly
+        // This is a placeholder - you may need to adjust based on your exact implementation
+        pricesMap[updatedList.size - 1] = Pair(0, "")
+
+        // Thông báo cho listener
+        updatePriceList(updatedList)
+    }
+
 }

@@ -7,13 +7,13 @@
     android:layout_marginBottom="8dp"
     android:layout_margin="4dp"
     android:gravity="center"
-        android:padding="8dp">
+        android:padding="7dp">
 
         <!-- Hình ảnh nội thất -->
         <ImageView
             android:id="@+id/iconGioiTinh"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/ic_launcher_background"
             />
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tên giới tính"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"
             />

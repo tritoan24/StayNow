@@ -32,11 +32,14 @@
             android:windowSoftInputMode="adjustPan"
             android:exported="true">
         </activity>
-        <activity
-            android:name=".TaoHoaDon.CreateInvoice"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".TaoHoaDon.CreateInvoice"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
+            android:exported="false" />
+        <activity
+            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"
             android:exported="false" />
 
         <service
@@ -130,6 +133,9 @@
             android:exported="false" />
         <activity
             android:name=".CCCD.CCCD"
+            android:exported="false" />
+        <activity
+            android:name=".TaoHoaDon.CreateInvoice"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.OTPActivity"
