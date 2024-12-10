@@ -35,6 +35,7 @@ import com.ph32395.staynow.PhongTroDaXem.PhongTroDaXemActivity
 import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
+import com.ph32395.staynow.hieunt.database.db.AppDatabase
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
@@ -157,6 +158,7 @@ class ProfileFragment : Fragment() {
 
         // Xử lý sự kiện nhấn nút đăng xuất
         logoutButton.setOnClickListener {
+            AppDatabase.getInstance(requireContext()).notificationDao().deleteAllNotification()
             setUserOffline() // Đánh dấu trạng thái offline nếu cần
             mAuth.signOut() // Đăng xuất Firebase
 

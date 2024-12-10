@@ -38,6 +38,8 @@
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
             android:exported="false" />
+        android:usesCleartextTraffic="true"
+        >
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:windowSoftInputMode="adjustResize"
@@ -102,6 +104,7 @@
         <activity
             android:name=".BaoMat.CapNhatThongTin"
             android:exported="false" />
+
         <activity
             android:name=".BaoMat.CaiDat"
             android:exported="false" />
