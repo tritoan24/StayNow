@@ -134,6 +134,8 @@ class RoomContract {
             "hoaDonHopDong" to createBillMap(contract.hoaDonHopDong),
             "ngayThanhToan" to contract.ngayThanhToan,
             "ghiChu" to contract.ghiChu,
+            "soDienCu" to contract.soDienCu,
+            "soNuocCu" to contract.soNuocCu
 
 
             )
@@ -345,7 +347,12 @@ class RoomContract {
                 if (roomId != null) {
                     // Cập nhật trạng thái phòng trọ
                     roomsCollection.document(roomId)
-                        .update("Trang_thaiphong", false)
+                        .update(
+                            mapOf(
+                                "Trang_thaiphong" to false,
+                                "Trang_thaiduyet" to ""
+                            )
+                        )
                         .await()
                 }
             }

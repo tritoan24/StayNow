@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.TienNghi.TienNghi
-
 class DichVuViewModel : ViewModel() {
-
     private val listDichVu = MutableLiveData<List<DichVu>>()
 
     init {

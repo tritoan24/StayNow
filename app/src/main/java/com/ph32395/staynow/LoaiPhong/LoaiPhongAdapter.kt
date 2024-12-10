@@ -48,6 +48,7 @@ class LoaiPhongAdapter(
             }
         }
 
+
         fun bind(loaiphong: LoaiPhong, isSelected: Boolean) {
             binding.tenLoaiPhong.text = loaiphong.Ten_loaiphong
             binding.root.isSelected = isSelected
