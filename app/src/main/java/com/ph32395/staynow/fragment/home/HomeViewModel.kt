@@ -117,31 +117,6 @@ class HomeViewModel : ViewModel() {
         .addOnFailureListener { e ->
             Log.e("HomeViewModel", "Error fetching rooms: ", e)
         }
-////                lay tat ca cac phong theo ma nguoi fung
-//                snapshot?.let {
-//                    Log.d("HomeViewModel", "Fetched ${it.size()} rooms for user $maNguoiDung")
-//
-//
-//                    val allRooms = it.documents.mapNotNull { doc ->
-//                        doc.toObject(PhongTroModel::class.java)?.let { room ->
-//                            Log.d("TAG", "loadRoomByStatus:roomMap $room")
-//                            Pair(doc.id, room)
-//
-//                        }
-//                    }
-//                    Log.d("TAG", "loadRoomByStatus: allRooms $allRooms")
-//
-//                    _roomListCT.value = allRooms
-//
-////                    Phan loai phong tro theo trang thai
-//                    _phongDaDang.value = allRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
-//                    _phongDangLuu.value = allRooms.filter { it.second.Trang_thailuu == true }
-//                    _phongChoDuyet.value = allRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
-//                    _phongDaHuy.value = allRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
-//                    _phongDaChoThue.value = allRooms.filter { it.second.Trang_thaiphong == true }
-//
-//                }
-//            }
     }
 
     //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu

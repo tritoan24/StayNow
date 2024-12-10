@@ -24,14 +24,16 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
+        android:name=".MyApplication"
         android:usesCleartextTraffic="true">
         <activity
             android:name=".PhongTroYeuThich.PhongTroYeuThichActivity"
             android:exported="false" />
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
+        </activity>
         <activity
             android:name=".TaoHoaDon.CreateInvoice"
             android:exported="false" />
@@ -77,7 +79,6 @@
         <activity
             android:name=".BaoMat.PhanHoi"
             android:exported="false" />
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />

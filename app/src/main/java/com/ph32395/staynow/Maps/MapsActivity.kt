@@ -641,9 +641,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 binding.tvAddressRoom.text = matchedRoom.second.Dia_chi
 
             }
-            val intent = Intent(this, RoomDetailActivity::class.java)
-            intent.putExtra("maPhongTro", matchedRoom?.first)
-            startActivity(intent)
+
+            binding.layoutCardView.setOnClickListener {
+                Log.d(TAG, "addMarkersFromAddresses: ${matchedRoom?.first}")
+                val intent = Intent(this, RoomDetailActivity::class.java)
+                intent.putExtra("maPhongTro", matchedRoom?.first)
+                startActivity(intent)
+            }
+
             bottomSheet.show()
 
 
