@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cập nhật ngày và giờ"
+        android:text="@string/Updated_date_and_time"
         android:layout_marginBottom="24dp"
         android:textSize="22sp"
         android:textColor="@color/black"
@@ -18,7 +18,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn ngày:"
+        android:text="@string/Choose_a_date"
         android:layout_marginStart="16dp"
         android:textSize="14sp"
         android:fontFamily="@font/inter_medium"
@@ -37,7 +37,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chọn giờ:"
+        android:text="@string/Choose_a_time"
         android:layout_marginStart="16dp"
         android:textSize="14sp"
         android:fontFamily="@font/inter_medium"
@@ -122,7 +122,7 @@
         android:layout_width="match_parent"
         android:layout_height="44dp"
         android:background="@drawable/bg_button"
-        android:text="Xác nhận"
+        android:text="@string/Confirm"
         android:textColor="@color/white"
         android:layout_marginHorizontal="16dp"
         android:textSize="14sp"/>

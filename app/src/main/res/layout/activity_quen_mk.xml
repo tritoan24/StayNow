@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quên mật khẩu"
+                android:text="@string/Forgot_Password"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
@@ -53,7 +53,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bạn quên mật khẩu ư?"
+            android:text="@string/Forgot_your_password"
             android:textColor="@color/black"
             android:textSize="22sp"
             android:textStyle="bold"
@@ -94,7 +94,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nhập Email"
+            android:text="@string/Enter_email"
             android:textSize="16sp"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -127,7 +127,7 @@
             android:layout_width="280dp"
             android:layout_height="48dp"
            android:layout_margin="50dp"
-            android:text="Gửi mã OTP"
+            android:text="@string/Send_OTP"
             android:background="@drawable/button_background_doimk"
             android:textColor="@android:color/white" />
     </LinearLayout>

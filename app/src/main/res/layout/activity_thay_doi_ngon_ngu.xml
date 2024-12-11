@@ -23,7 +23,7 @@
                 android:paddingBottom="12dp">
 
                 <ImageButton
-                    android:id="@+id/button_backSettings"
+                    android:id="@+id/button_backLanguage"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/arrow_back"
@@ -33,7 +33,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Thay đổi ngôn ngữ"
+                    android:text="@string/Change_the_language"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:layout_marginStart="16dp"
@@ -44,7 +44,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chọn Ngôn ngữ"
+                android:text="@string/Select_language"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
@@ -87,7 +87,7 @@
                 android:id="@+id/button_save_language"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Lưu"
+                android:text="@string/Save"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@android:color/holo_blue_light"
                 android:textColor="@android:color/white" />

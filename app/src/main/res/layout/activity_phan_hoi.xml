@@ -78,7 +78,7 @@
                 android:background="@android:color/transparent"
                 android:drawableLeft="@drawable/baseline_feedback_24"
                 android:drawablePadding="12dp"
-                android:hint="Comment Feedback"
+                android:hint="@string/Comment_Feedback"
                 android:padding="10dp"
 
                 />
@@ -96,7 +96,7 @@
                 android:layout_width="250dp"
                 android:layout_height="61dp"
 
-                android:text="Send Feedback"
+                android:text=""
                 android:background="@drawable/button_background_doimk"
                 android:textColor="@android:color/white"/>
         </LinearLayout>

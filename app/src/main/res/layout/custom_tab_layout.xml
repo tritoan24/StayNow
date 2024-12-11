@@ -10,7 +10,7 @@
         android:id="@+id/tabTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Phong da dang"
+        android:text="@string/Diverse_Rooms"
         android:textColor="@color/black"
         android:textSize="14sp" />
 

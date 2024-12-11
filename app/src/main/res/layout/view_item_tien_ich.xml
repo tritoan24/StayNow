@@ -30,7 +30,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:minHeight="40dp"
-            android:text="Tìm xung quanh"
+            android:text="@string/Find_Around"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -56,7 +56,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:minHeight="40dp"
-            android:text="Tìm người ở ghép"
+            android:text="@string/Find_a_transplant"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -82,7 +82,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:minHeight="40dp"
-            android:text="Vận chuyển đồ"
+            android:text="@string/Shipping"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -108,7 +108,7 @@
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:minHeight="40dp"
-            android:text="Đổi bình gas"
+            android:text="@string/Change_the_gas_cylinder"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gilroy_bold"
-                android:text="Hợp đồng"
+                android:text="@string/Contract"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 tools:ignore="HardcodedText" />
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:paddingBottom="8dp"
-        android:text="Hợp đồng chờ xác nhận"
+        android:text="@string/Contract_pending_confirmation"
         android:textSize="18sp"
         android:textStyle="bold"
         tools:ignore="HardcodedText" />

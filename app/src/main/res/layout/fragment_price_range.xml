@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="serif"
-        android:text="Khoảng giá"
+        android:text="@string/Price_range"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Giá"
+            android:text="@string/Unit_Price"
             android:textColor="@color/black"
             android:textFontWeight="500"
             android:textSize="15sp"
@@ -62,7 +62,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Giá từ "
+            android:text="@string/Unit_Price"
             android:fontFamily="serif"
             android:textColor="@color/black"
             android:textFontWeight="500"
@@ -131,7 +131,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="serif"
                 android:gravity="center"
-                android:text="Làm mới"
+                android:text="@string/Refresh"
                 android:textColor="@color/black" />
         </androidx.cardview.widget.CardView>
 
@@ -151,7 +151,7 @@
                 android:layout_gravity="center"
                 android:fontFamily="serif"
                 android:gravity="center"
-                android:text="Áp dụng"
+                android:text="@string/Apply"
                 android:textColor="@color/white" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>

@@ -30,163 +30,152 @@
                 android:id="@+id/tvInvoiceId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mã hóa đơn: #1234567"
+                android:text="@string/Invoice_code"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Người Thuê:"
+                android:text="@string/Tenant"
                 android:textColor="#05136A"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvTenantInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Tên Người Thuê]"
+                android:text="@string/Tenant_name"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvTenantAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Address Người Thuê]"
+                android:text="@string/Tenant_address"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvTenantBd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Bd Người Thuê]"
+                android:text="@string/Tenant_id"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chủ Trọ:"
+                android:text="@string/Host"
                 android:textColor="#05136A"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvLandlordInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Tên Chủ Trọ]"
+                android:text="@string/Host_name"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvLandlordAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Address Chủ Trọ]"
+                android:text="@string/Host_address"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
+
             <TextView
                 android:id="@+id/tvLandlordBd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="[Bd Chủ Trọ]"
+                android:text="@string/Host_id"
                 android:textColor="#000000"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvNameRoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tên Phòng"
+                android:text="@string/Room_name"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Địa chỉ"
+                android:text="@string/Address"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvAmountDeposit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiền dịch vụ: 500,000 VND"
+                android:text="@string/Service_fee"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAmountRoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tiền phòng: 500,000 VND"
+                android:text="@string/Room_fee"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tổng tiền: 500,000 VND"
+                android:text="@string/Total_amount"
                 android:textColor="#EB0707"
                 android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ngày bắt đầu"
+                android:text="@string/Start_date"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ngày kết thúc"
+                android:text="@string/End_date"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvTerm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thời hạn thuê"
+                android:text="@string/Rental_duration"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
+
             <TextView
                 android:id="@+id/tvClause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Điều khoản"
+                android:text="@string/Terms_and_conditions"
                 android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvDate"
@@ -194,11 +183,11 @@
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:paddingEnd="10dp"
-                android:text="Ngày thanh toán"
+                android:text="@string/Payment_date"
                 android:textColor="#000000"
                 android:textSize="14sp"
                 android:textStyle="italic"
-                tools:ignore="HardcodedText,RtlSymmetry" />
+                tools:ignore="RtlSymmetry" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -209,7 +198,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@drawable/custom_buttom"
-        android:text="Về trang chủ"
-        tools:ignore="HardcodedText" />
+        android:text="Về trang chủ" />
 
 </LinearLayout>

@@ -150,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textSize="20sp"
-                    android:text="Tên phòng trọ"
+                    android:text="@string/Room_Name"
                     android:textStyle="bold"/>
 
                     <ImageView
@@ -254,7 +254,7 @@
                             android:id="@+id/viewInfor"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
-                            android:text="Xem chi tiết"
+                            android:text="@string/View_details"
                             android:textSize="12sp"
                             android:paddingHorizontal="4dp"
                             android:layout_marginStart="35dp"
@@ -291,7 +291,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phí Dich Vụ"
+                    android:text="@string/Service_Fee"
                     android:textSize="18sp"
                     android:layout_marginTop="40dp"/>
 
@@ -321,7 +321,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nội Thất"
+                    android:text="@string/Interior"
                     android:textSize="18sp"
                     android:layout_marginTop="25dp"/>
 
@@ -468,7 +468,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Đặt Phòng"
+                                android:text="@string/Book_a_room"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -516,7 +516,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Gỡ Phòng"
+                                android:text="@string/Room_removal"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -539,7 +539,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sửa Phòng"
+                                android:text="@string/Room_Repair"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -562,7 +562,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sao Chép"
+                                android:text="@string/Copy"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -585,7 +585,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tạo Họp Đồng"
+                                android:text="@string/Create_a_Guild_Meeting"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -608,7 +608,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Hủy Phòng"
+                                android:text="@string/Cancellation"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -654,7 +654,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Đăng Phòng"
+                                android:text="@string/Room_post"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -677,7 +677,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Sửa Phòng"
+                                android:text="@string/Room_Repair"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -700,7 +700,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Tạo Họp Đồng"
+                                android:text="@string/Create_a_Guild_Meeting"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -723,7 +723,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Hủy Phòng"
+                                android:text="@string/Cancellation"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -769,7 +769,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Lưu Phòng"
+                                android:text="@string/Stay_in_the_room"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 
@@ -816,7 +816,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Xác Nhận Hủy"
+                                android:text="@string/Cancellation_Confirmation"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 

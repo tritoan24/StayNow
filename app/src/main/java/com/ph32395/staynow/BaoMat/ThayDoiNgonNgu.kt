@@ -7,6 +7,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -27,6 +28,11 @@ class ThayDoiNgonNgu : AppCompatActivity() {
 
         val radioGroupLanguage = findViewById<RadioGroup>(R.id.radio_group_language)
         val buttonSaveLanguage = findViewById<Button>(R.id.button_save_language)
+        val buttonBack = findViewById<ImageButton>(R.id.button_backLanguage)
+
+        buttonBack.setOnClickListener {
+            onBackPressed()
+        }
 
         // Đặt radio button theo ngôn ngữ đã lưu
         when (savedLanguage) {

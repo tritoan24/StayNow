@@ -130,7 +130,7 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:gravity="center"
-                            android:text="Tìm xung quanh"
+                            android:text="@string/Find_Around"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
 
@@ -155,7 +155,7 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:gravity="center"
-                            android:text="Tìm người ở ghép"
+                            android:text="@string/Find_a_transplant"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
 
@@ -180,7 +180,7 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:gravity="center"
-                            android:text="Vận chuyển đồ"
+                            android:text="@string/Shipping"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
 
@@ -205,7 +205,7 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:gravity="center"
-                            android:text="Đổi bình gas"
+                            android:text="@string/Change_the_gas_cylinder"
                             tools:ignore="HardcodedText" />
                     </LinearLayout>
 

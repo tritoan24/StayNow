@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="serif"
             android:textColor="@color/black"
-            android:text="Chào bạn. bạn cần hỗ trợ gì ạ?"
+            android:text="@string/Hello_What_support_do_you_need"
             android:textSize="12sp" />
 
     </LinearLayout>

@@ -61,6 +61,7 @@ public class DangNhap extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_dang_nhap);
 
+
         btnDangNhap = findViewById(R.id.loginButton);
         TextView txtdangky = findViewById(R.id.txtdangky);
         edMail = findViewById(R.id.username);

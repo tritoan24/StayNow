@@ -10,7 +10,7 @@
         android:id="@+id/search_province"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tìm kiếm tỉnh"
+        android:hint="@string/Search_Province"
         android:padding="8dp"
         />
 

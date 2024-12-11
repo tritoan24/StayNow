@@ -33,7 +33,7 @@
             android:layout_weight="0.6"
             android:fontFamily="serif"
             android:gravity="center"
-            android:text="Lọc kết quả"
+            android:text="@string/Filter_results"
             android:textColor="@color/black"
             android:textFontWeight="700"
             android:textSize="17sp" />
@@ -45,7 +45,7 @@
             android:layout_weight="0.1"
             android:fontFamily="serif"
             android:gravity="center"
-            android:text="Cài lại"
+            android:text="@string/Reset"
             android:textColor="#805EC9"
             android:textSize="12sp"
             android:textStyle="italic" />
@@ -76,7 +76,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
-                android:text="Loại phòng"
+                android:text="@string/Room_Type"
                 android:textFontWeight="600"
                 android:textSize="15sp" />
 
@@ -101,7 +101,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
-                android:text="Tiện nghi"
+                android:text="@string/Comfort"
                 android:textFontWeight="600"
                 android:textSize="15sp" />
 
@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
-                android:text="Nội thất"
+                android:text="@string/Interior"
                 android:textFontWeight="600"
                 android:textSize="15sp" />
 
@@ -164,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Áp dụng"
+                android:text="@string/Apply"
                 android:textColor="@color/white"
                 android:layout_gravity="center"
                 android:fontFamily="serif"

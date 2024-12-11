@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Quản lý phòng"
+            android:text="@string/Room_Management"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Quản lý hợp đông"
+            android:text="@string/Rental_Management"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -83,7 +83,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Quản lý hóa đơn"
+            android:text="@string/Manage_invoices"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Quản lý người thuê"
+            android:text="@string/Landlord_management"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

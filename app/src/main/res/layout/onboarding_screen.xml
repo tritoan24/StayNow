@@ -21,7 +21,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp"
-        android:text="Kham pha"
+        android:text="@string/Explore"
         android:gravity="center" />
 
     <TextView
@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:text="Kham pha ngay nao"
+        android:text="@string/Explore_the_day"
         android:layout_marginTop="18dp"
         android:textStyle="italic"
         android:gravity="center" />

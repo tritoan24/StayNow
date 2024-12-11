@@ -37,7 +37,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:fontFamily="serif"
-                android:hint="Tìm kiếm......."
+                android:hint="@string/Search"
                 android:lines="1"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
@@ -84,7 +84,7 @@
             android:layout_height="36dp"
             android:background="@drawable/custom_edittext_khoang_gia"
             android:fontFamily="serif"
-            android:text="Khoảng giá"
+            android:text="@string/Price_range"
             android:textStyle="italic"
             android:textColor="#471BC4"
             android:textSize="10sp" />

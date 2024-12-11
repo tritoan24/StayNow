@@ -22,7 +22,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Title"
+            android:text="@string/Title"
             android:textStyle="bold"
             android:fontFamily="@font/inter_bold"
             android:textSize="14sp"
@@ -34,7 +34,7 @@
         android:id="@+id/tvMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Message"
+        android:text="@string/Message"
         android:fontFamily="@font/inter_medium"
         android:paddingBottom="4dp"
         android:maxLines="3"/>
@@ -43,7 +43,7 @@
         android:id="@+id/tvDateTime"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Date and Time"
+        android:text="@string/Date_and_Time"
         android:textSize="12sp"
         android:fontFamily="@font/inter_regular"
         android:textColor="@android:color/darker_gray" />

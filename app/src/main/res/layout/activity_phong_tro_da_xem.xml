@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Lịch sử phòng trọ đã xem"
+            android:text="@string/Viewed_motel_room_history"
             android:textColor="@color/black"
             android:textSize="18sp"
             />

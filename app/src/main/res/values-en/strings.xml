@@ -102,4 +102,208 @@
     <string name="Exit" translatable="false">Logout</string>
     <string name="Account_deletion_request" translatable="false">Account deletion request</string>
 
+    <!-- Register -->
+    <string name="Password" translatable="false">Password</string>
+    <string name="Password_new" translatable="false">Re-enter Password</string>
+    <string name="Register" translatable="false">Register</string>
+    <string name="Register_google" translatable="false">Register with Google</string>
+    <string name="Already_have_an_account" translatable="false">Already have an account?</string>
+    <string name="Login" translatable="false">Login</string>
+
+    <!-- Login -->
+    <string name="Hello" translatable="false">Hello</string>
+    <string name="Log_in_to_your_account" translatable="false">Log in to your account</string>
+    <string name="Remember_your_account" translatable="false">Remember your account</string>
+    <string name="Forgot_Password" translatable="false">Forgot Password</string>
+    <string name="Login_google" translatable="false">Log in with Google</string>
+    <string name="Don_have_an_account_yet" translatable="false">Dont have an account yet?</string>
+    <string name="Register_now" translatable="false">Register now</string>
+
+    <!-- Tìm kiếm-->
+    <string name="Price_range" translatable="false">Price Range</string>
+
+    <!-- Thông báo-->
+    <string name="Notification" translatable="false">Notification</string>
+
+    <!-- OTP-->
+    <string name="Verify" translatable="false">Verify</string>
+    <string name="Enter_the_code_sent_to" translatable="false">Enter the code sent to</string>
+    <string name="If_you_haven_received_the_code_yet_click_Resend" translatable="false">If you haven received the code yet, click Resend</string>
+    <string name="Confirm" translatable="false">Confirm</string>
+    <string name="Resend_the_following_code" translatable="false">Resend the following code</string>
+
+    <!-- Payment_into-->
+    <string name="Declaration_of_payment_information" translatable="false">Declaration of Payment Information</string>
+    <string name="ZaloPay_Linked_Phone_Number" translatable="false">ZaloPay Linked Phone Number</string>
+    <string name="Enter_a_phone_number" translatable="false">Enter a phone number</string>
+    <string name="ZaloPay_Account_Name" translatable="false">ZaloPay Account Name</string>
+    <string name="Enter_the_account_name" translatable="false">Enter the account name</string>
+    <string name="ZaloPay_QR_code_optional" translatable="false">ZaloPay QR Code (optional)</string>
+    <string name="Upload_your_QR_code" translatable="false">Upload your QR code</string>
+    <string name="Save_information" translatable="false">Save Information</string>
+
+    <!-- Phản hồi-->
+    <string name="Comment_Feedback" translatable="false">Write Feedback</string>
+    <string name="Send_Feedback" translatable="false">Send Feedback</string>
+
+    <!-- QL phòng-->
+    <string name="Room_Management" translatable="false">Room Management</string>
+
+    <!-- Quên mk-->
+    <string name="Forgot_your_password" translatable="false">Forgot your password?</string>
+    <string name="Enter_email" translatable="false">Enter email</string>
+    <string name="Send_OTP" translatable="false">Send OTP</string>
+
+    <!-- Room detail-->
+    <string name="Room_Name" translatable="false">Room Name</string>
+    <string name="View_details" translatable="false">View Details</string>
+    <string name="Service_Fee" translatable="false">Service Fee</string>
+    <string name="Interior" translatable="false">Interior</string>
+    <string name="Comfort" translatable="false">Comfort</string>
+    <string name="More_details" translatable="false">More Details</string>
+    <string name="Book_a_room" translatable="false">Book a Room</string>
+    <string name="Room_removal" translatable="false">Remove Room</string>
+    <string name="Room_Repair" translatable="false">Repair Room</string>
+    <string name="Copy" translatable="false">Copy</string>
+    <string name="Create_a_Guild_Meeting" translatable="false">Create a Contract</string>
+    <string name="Cancellation" translatable="false">Cancel Room</string>
+    <string name="Room_post" translatable="false">Post Room</string>
+    <string name="Stay_in_the_room" translatable="false">Stay in the Room</string>
+    <string name="Cancellation_Confirmation" translatable="false">Cancellation Confirmation</string>
+
+    <!-- Lịch phòng-->
+    <string name="t_ph_ng" translatable="false">Room Booking</string>
+    <string name="Select_dates" translatable="false">Select Dates:</string>
+    <string name="Select_times" translatable="false">Select Times</string>
+    <string name="Notes" translatable="false">Notes</string>
+    <string name="Notes_if_applicable" translatable="false">Notes (if applicable)</string>
+    <string name="Please_wait_for_the_host" translatable="false">Please wait for the host to confirm your appointment. After the host confirms, you will have all the information about the address and the landlord.</string>
+
+    <!-- Welcom-->
+    <string name="Welcome_to_StayNow" translatable="false">Welcome to StayNow</string>
+
+    <!-- Succes_payment-->
+    <string name="Invoice_code" translatable="false">Invoice Code: #1234567</string>
+    <string name="Tenant" translatable="false">Tenant:</string>
+    <string name="Tenant_name" translatable="false">[Tenant Name]</string>
+    <string name="Tenant_address" translatable="false">[Tenant Address]</string>
+    <string name="Tenant_id" translatable="false">[Tenant ID]</string>
+    <string name="Host" translatable="false">Host:</string>
+    <string name="Host_name" translatable="false">[Host Name]</string>
+    <string name="Host_address" translatable="false">[Host Address]</string>
+    <string name="Host_id" translatable="false">[Host ID]</string>
+    <string name="Room_name" translatable="false">Room Name</string>
+    <string name="Address" translatable="false">Address</string>
+    <string name="Service_fee" translatable="false">Service Fee: 500,000 VND</string>
+    <string name="Room_fee" translatable="false">Room Fee: 500,000 VND</string>
+    <string name="Total_amount" translatable="false">Total Amount: 500,000 VND</string>
+    <string name="Start_date" translatable="false">Start Date</string>
+    <string name="End_date" translatable="false">End Date</string>
+    <string name="Rental_duration" translatable="false">Rental Duration</string>
+    <string name="Terms_and_conditions" translatable="false">Terms and Conditions</string>
+    <string name="Payment_date" translatable="false">Payment Date</string>
+    <string name="Back_to_Home" translatable="false">Back to Home</string>
+
+    <!-- tao phòng trọ -->
+    <string name="Add_a_room" translatable="false">Add a Room</string>
+    <string name="Room_information" translatable="false">Room Information</string>
+    <string name="Enter_Address" translatable="false">Enter Address</string>
+    <string name="Name_house_number" translatable="false">House Name/Number *</string>
+    <string name="Room_Rate" translatable="false">Room Rate *</string>
+    <string name="Description" translatable="false">Description</string>
+    <string name="Service_Information" translatable="false">Service Information</string>
+    <string name="Furniture_List" translatable="false">Furniture List</string>
+    <string name="List_of_Amenities" translatable="false">List of Amenities</string>
+    <string name="Stay_Room" translatable="false">Stay Room</string>
+    <string name="Posting_a_room" translatable="false">Post a Room</string>
+
+    <!-- manage_schedule_room -->
+    <string name="Waiting_for_confirmation" translatable="false">Waiting for Confirmation</string>
+    <string name="Manage_appointments" translatable="false">Manage Appointments</string>
+    <string name="No_appointments" translatable="false">No Appointments!</string>
+
+    <!--Message -->
+    <string name="Name" translatable="false">Nguyen Tat Cong</string>
+    <string name="aA" translatable="false">aA|</string>
+
+    <!-- thay đổi ngôn ngữ -->
+    <string name="Change_the_language" translatable="false">Change the Language</string>
+    <string name="Select_language" translatable="false">Select Language</string>
+    <string name="Save" translatable="false">Save</string>
+
+    <!-- Thông tin người dùng -->
+    <string name="User_Information" translatable="false">User Information</string>
+    <string name="Available_Rooms" translatable="false">Available Rooms</string>
+
+    <!-- Xác minh OTP -->
+    <string name="OTP_Verification" translatable="false">OTP Verification</string>
+    <string name="Enter_the_code_to_verify_your_account" translatable="false">Enter the code to verify your account</string>
+    <string name="OTP_code" translatable="false">OTP Code</string>
+    <string name="Resend_OTP_code" translatable="false">Resend OTP Code</string>
+
+    <!-- Sheet_city -->
+    <string name="Province_City" translatable="false">Province/City</string>
+
+    <!-- Sheet_dialog -->
+    <string name="Mini_Apartment" translatable="false">Mini Apartment</string>
+    <string name="VND" translatable="false">300000 VND</string>
+    <string name="Number" translatable="false">123</string>
+
+    <!-- Sheet_filter -->
+    <string name="Filter_results" translatable="false">Filter Results</string>
+    <string name="Reset" translatable="false">Reset</string>
+    <string name="Room_Type" translatable="false">Room Type</string>
+    <string name="Apply" translatable="false">Apply</string>
+
+    <!-- tab_layout -->
+    <string name="Diverse_Rooms" translatable="false">Diverse Rooms</string>
+
+    <!-- dialog_addres -->
+    <string name="Search_Province" translatable="false">Search Province</string>
+
+    <!-- dialog_custom -->
+    <string name="Are_you_sure_you_want_to_switch_statuses" translatable="false">Are you sure you want to switch statuses?</string>
+
+    <!-- DIALOG_SELECT_PRICE -->
+    <string name="Value" translatable="false">Value</string>
+
+    <!-- dialog_update_room -->
+    <string name="Updated_date_and_time" translatable="false">Updated Date and Time</string>
+    <string name="Choose_a_date" translatable="false">Choose a Date:</string>
+    <string name="Choose_a_time" translatable="false">Choose a Time:</string>
+
+    <!-- Fragment_contract -->
+    <string name="Contract_pending_confirmation" translatable="false">Contract Pending Confirmation</string>
+
+    <!-- fragment_home_nguoi_cho_thue -->
+    <string name="Rental_Management" translatable="false">Rental Management</string>
+    <string name="StayNow_Partners" translatable="false">StayNow Partners</string>
+
+    <!-- price_range -->
+    <string name="Refresh" translatable="false">Refresh</string>
+
+    <!-- item_chi_tiet_thong_tin -->
+    <string name="Floor" translatable="false">Floor</string>
+
+    <!-- gioitinh -->
+    <string name="Gender_Name" translatable="false">Gender Name</string>
+
+    <string name="Two_person_room" translatable="false">Two-Person Room</string>
+    <string name="Room_type_name" translatable="false">Room Type Name</string>
+    <string name="Future_name" translatable="false">Future Name</string>
+
+    <string name="Title" translatable="false">Title</string>
+    <string name="Date_and_Time" translatable="false">Date and Time</string>
+    <string name="Electric" translatable="false">Electric</string>
+    <string name="Hello_What_support_do_you_need" translatable="false">Hello, what support do you need?</string>
+    <string name="Explore" translatable="false">Explore</string>
+    <string name="Explore_the_day" translatable="false">Explore Today</string>
+    <string name="Manage_invoices" translatable="false">Manage Invoices</string>
+    <string name="Landlord_management" translatable="false">Landlord Management</string>
+
+    <string name="Find_Around" translatable="false">Find Around</string>
+    <string name="Find_a_transplant" translatable="false">Find a Roommate</string>
+    <string name="Shipping" translatable="false">Shipping</string>
+    <string name="Change_the_gas_cylinder" translatable="false">Change Gas Cylinder</string>
+
 </resources>
