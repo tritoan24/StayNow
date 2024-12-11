@@ -24,8 +24,8 @@ class MessageFragment : Fragment() {
     private var TAG = "zzzMessageFragmentzzz"
     private lateinit var binding: FragmentMessageBinding
     private lateinit var adapterMessage: MessageAdapter
-    private val listUser = mutableListOf<UserStatus>()
     private val data = FirebaseFirestore.getInstance()
+    private val database = Firebase.database.reference
     private val statusMessageRef = data.collection("StatusMessages")
 
     override fun onCreateView(
@@ -138,56 +138,51 @@ class MessageFragment : Fragment() {
 
     fun fetchStatusMessage(onResult: (List<UserStatus>) -> Unit) {
         val idUser = FirebaseAuth.getInstance().currentUser?.uid
-        val database = Firebase.database.reference
         Log.e(TAG, "fetchStatusMessage:idUser uid $idUser")
+
         val listUserId = mutableListOf<String>()
-        statusMessageRef.get().addOnSuccessListener {
+        val listUser = mutableListOf<UserStatus>()
 
-            for (document in it.documents) {
-                //Log.d(TAG, "fetchStatusMessage:documentForIn $document")
+        statusMessageRef.get().addOnSuccessListener { documents ->
+            for (document in documents.documents) {
                 val statusMessage = document.toObject(StatusMessage::class.java)
-                Log.d(TAG, "fetchStatusMessage:statusMessage $statusMessage")
                 if (statusMessage?.tenantId == idUser) {
-                    Log.e(TAG, "fetchStatusMessage:statusMessage $statusMessage")
-                    Log.e(TAG, "fetchStatusMessage: idUser Khac ${statusMessage?.landlordId}")
-                    statusMessage?.landlordId?.let { it1 -> listUserId.add(it1) }
+                    statusMessage?.landlordId?.let { listUserId.add(it) }
                 }
-
             }
-            Log.d(TAG, "fetchStatusMessage: listUserId $listUserId")
+
             val newlistUserId = listUserId.distinct()
             Log.e(TAG, "fetchStatusMessage: newlistUserId $newlistUserId")
-            listUser.clear()
-            newlistUserId.forEach {
-                database.child("NguoiDung").child(it)
+
+            newlistUserId.forEach { userId ->
+                database.child("NguoiDung").child(userId)
                     .addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-
-                            Log.d(TAG, "onDataChange: ${snapshot.value}")
-                            val maNguoiDung =
-                                snapshot.child("ma_nguoidung").value.toString()
+                            val maNguoiDung = snapshot.child("ma_nguoidung").value.toString()
                             val ho_ten = snapshot.child("ho_ten").value.toString()
-                            val anhDaiDien =
-                                snapshot.child("anh_daidien").value.toString()
+                            val anhDaiDien = snapshot.child("anh_daidien").value.toString()
                             val status = snapshot.child("status").value.toString()
-                            val user = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
-                            Log.e(TAG, "onDataChange: user$user")
-                            listUser.add(user)
-                            Log.d(TAG, "fetchStatusMessage:listUser $listUser")
+
+                            // Tìm user đã tồn tại và cập nhật trạng thái mới
+                            val existingUserIndex = listUser.indexOfFirst { it.ma_nguoidung == maNguoiDung }
+                            if (existingUserIndex != -1) {
+                                listUser[existingUserIndex] = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
+                            } else {
+                                listUser.add(UserStatus(maNguoiDung, ho_ten, anhDaiDien, status))
+                            }
+
+                            // Gọi hàm onResult mỗi khi dữ liệu thay đổi
                             onResult(listUser)
                         }
 
                         override fun onCancelled(error: DatabaseError) {
-                            Log.e(TAG, "onCancelled:Error RealTime ${error.message} ")
+                            Log.e(TAG, "onCancelled: Error Realtime ${error.message}")
                         }
                     })
             }
-
-
         }.addOnFailureListener {
-            Log.e(TAG, "fetchStatusMessage: Error Fetch Status Messages ${it.message.toString()}")
+            Log.e(TAG, "fetchStatusMessage: Error Fetch Status Messages ${it.message}")
         }
-
     }
 
 
