@@ -52,7 +52,7 @@
                         android:elevation="4dp"
                         android:contentDescription="iconNoti"
                         android:layout_margin="7dp"
-                        />
+                        app:tint="@color/white"/>
 
                     <!-- Số lượng thông báo -->
                     <TextView

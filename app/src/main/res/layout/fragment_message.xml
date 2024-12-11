@@ -99,17 +99,32 @@
             </LinearLayout>
 
         </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvListUser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            />
+            android:layout_marginTop="15dp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvListTinNhan"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="15dp" />
+
+        <LinearLayout
+            android:id="@+id/layoutMessageNull"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:visibility="gone"
+            >
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:src="@drawable/icon_null_message"
+                />
+        </LinearLayout>
     </LinearLayout>
 
 

@@ -1,21 +1,20 @@
 package com.ph32395.staynow.fragment
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.ChucNangNhanTinCC.Chat
 import com.ph32395.staynow.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow.databinding.FragmentMessageBinding
@@ -26,7 +25,8 @@ class MessageFragment : Fragment() {
     private lateinit var binding: FragmentMessageBinding
     private lateinit var adapterMessage: MessageAdapter
     private val listUser = mutableListOf<UserStatus>()
-
+    private val data = FirebaseFirestore.getInstance()
+    private val statusMessageRef = data.collection("StatusMessages")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +52,42 @@ class MessageFragment : Fragment() {
                 Log.e("MessageFragment", "No user logged in")
             }
         }
+        Log.d(TAG, "onCreateView:  vao onCreateView")
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        Log.d(TAG, "onCreate:userId $userId")
+        fetchChatList(userId!!) {
+            if (it.isEmpty()) {
+                binding.layoutMessageNull.visibility = View.VISIBLE
+                binding.rcvListTinNhan.visibility = View.GONE
+            } else {
+                binding.layoutMessageNull.visibility = View.GONE
+                binding.rcvListTinNhan.visibility = View.VISIBLE
+                Log.d(TAG, "onCreate:it List chat $it")
+                adapterMessage = MessageAdapter(it) {
+                    Log.d(TAG, "onCreate: it.time $it")
+                    val intent = Intent(context, TextingMessengeActivity::class.java)
+                    intent.putExtra("chatId", it.chatId)
+                    intent.putExtra("userChat", it.otherUserId)
+                    startActivity(intent)
+                }
+                binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
+                binding.rcvListTinNhan.adapter = adapterMessage
+
+            }
+        }
+        fetchStatusMessage {
+            val adapter = UserStatusOnOfAdapter(it) {
+                val intent = Intent(context, TextingMessengeActivity::class.java)
+                intent.putExtra("userId", it.ma_nguoidung)
+                startActivity(intent)
+            }
+            val linearLayoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.rcvListUser.layoutManager = linearLayoutManager
+            binding.rcvListUser.adapter = adapter
+        }
+
 
         return binding.root
 
@@ -60,31 +96,7 @@ class MessageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-        Log.d(TAG, "onCreate:userId $userId")
-        fetchChatList(userId!!) {
-            Log.d(TAG, "onCreate:it List chat $it")
-            adapterMessage = MessageAdapter(it) {
-                Log.d(TAG, "onCreate: it.time $it")
-                val intent = Intent(context, TextingMessengeActivity::class.java)
-                intent.putExtra("chatId", it.chatId)
-                intent.putExtra("userChat", it.otherUserId)
-                startActivity(intent)
-            }
-            binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
-            binding.rcvListTinNhan.adapter = adapterMessage
-
-        }
-        fetchListUser {
-            val adapter = UserStatusOnOfAdapter(it){
-                val intent = Intent(context,TextingMessengeActivity::class.java)
-                intent.putExtra("userId",it.ma_nguoidung)
-                startActivity(intent)
-            }
-            val linearLayoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
-            binding.rcvListUser.layoutManager = linearLayoutManager
-            binding.rcvListUser.adapter = adapter
-        }
+        Log.d(TAG, "onCreate: vao onCreate")
     }
 
     fun fetchChatList(userId: String, onResult: (List<Chat>) -> Unit) {
@@ -117,72 +129,66 @@ class MessageFragment : Fragment() {
         constructor() : this("", "", "", "")
     }
 
-    //On
-    fun fetchListUser(onResult: (List<UserStatus>) -> Unit) {
-        val database = Firebase.database.reference
-        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        Log.d(TAG, "fetchListUser: database $database")
-
-        database.child("NguoiDung")
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    var onlineCount = 0
-
-                    // Lấy người dùng có trạng thái "online" trước, bỏ qua tài khoản của chính mình
-                    for (snap in snapshot.children) {
-                        val maNguoiDung =
-                            snap.child("ma_nguoidung").getValue(String::class.java) ?: ""
-                        val ho_ten = snap.child("ho_ten").getValue(String::class.java) ?: ""
-                        val anhDaiDien =
-                            snap.child("anh_daidien").getValue(String::class.java) ?: ""
-                        val status = snap.child("status").getValue(String::class.java) ?: ""
-
-                        // Bỏ qua tài khoản của chính mình
-                        if (maNguoiDung == currentUserId) continue
-
-                        // Chỉ thêm người dùng có status là "online"
-                        if (status == "online") {
-                            val user = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
-                            listUser.add(user)
-                            onlineCount++
-                        }
-                    }
-
-                    // Nếu chưa đủ 10 người, lấy thêm người dùng có trạng thái khác
-                    if (onlineCount < 15) {
-                        for (snap in snapshot.children) {
-                            val maNguoiDung =
-                                snap.child("ma_nguoidung").getValue(String::class.java) ?: ""
-                            val anhDaiDien =
-                                snap.child("anh_daidien").getValue(String::class.java) ?: ""
-                            val status = snap.child("status").getValue(String::class.java) ?: ""
-                            val ho_ten = snap.child("ho_ten").getValue(String::class.java) ?: ""
-
-                            // Nếu đã đủ 10 người, thoát vòng lặp
-                            if (listUser.size >= 15) break
-
-                            // Bỏ qua tài khoản của chính mình
-                            if (maNguoiDung == currentUserId) continue
-
-                            // Chỉ thêm người dùng không phải "online"
-                            if (status != "online") {
-                                val user = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
-                                listUser.add(user)
-                            }
-                        }
-                    }
-
-                    // Xử lý danh sách người dùng đã lấy
-                    Log.d(TAG, "List of users: $listUser")
-                    // Ví dụ: cập nhật UI, gửi tới adapter, v.v.
-                    onResult(listUser)
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e(TAG, "onCancelled: ${error.message}")
-                }
-            })
+    data class StatusMessage(
+        val landlordId: String = "",
+        val tenantId: String = ""
+    ) {
+        constructor() : this("", "")
     }
+
+    fun fetchStatusMessage(onResult: (List<UserStatus>) -> Unit) {
+        val idUser = FirebaseAuth.getInstance().currentUser?.uid
+        val database = Firebase.database.reference
+        Log.e(TAG, "fetchStatusMessage:idUser uid $idUser")
+        val listUserId = mutableListOf<String>()
+        statusMessageRef.get().addOnSuccessListener {
+
+            for (document in it.documents) {
+                //Log.d(TAG, "fetchStatusMessage:documentForIn $document")
+                val statusMessage = document.toObject(StatusMessage::class.java)
+                Log.d(TAG, "fetchStatusMessage:statusMessage $statusMessage")
+                if (statusMessage?.tenantId == idUser) {
+                    Log.e(TAG, "fetchStatusMessage:statusMessage $statusMessage")
+                    Log.e(TAG, "fetchStatusMessage: idUser Khac ${statusMessage?.landlordId}")
+                    statusMessage?.landlordId?.let { it1 -> listUserId.add(it1) }
+                }
+
+            }
+            Log.d(TAG, "fetchStatusMessage: listUserId $listUserId")
+            val newlistUserId = listUserId.distinct()
+            Log.e(TAG, "fetchStatusMessage: newlistUserId $newlistUserId")
+            listUser.clear()
+            newlistUserId.forEach {
+                database.child("NguoiDung").child(it)
+                    .addValueEventListener(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+
+                            Log.d(TAG, "onDataChange: ${snapshot.value}")
+                            val maNguoiDung =
+                                snapshot.child("ma_nguoidung").value.toString()
+                            val ho_ten = snapshot.child("ho_ten").value.toString()
+                            val anhDaiDien =
+                                snapshot.child("anh_daidien").value.toString()
+                            val status = snapshot.child("status").value.toString()
+                            val user = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
+                            Log.e(TAG, "onDataChange: user$user")
+                            listUser.add(user)
+                            Log.d(TAG, "fetchStatusMessage:listUser $listUser")
+                            onResult(listUser)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Log.e(TAG, "onCancelled:Error RealTime ${error.message} ")
+                        }
+                    })
+            }
+
+
+        }.addOnFailureListener {
+            Log.e(TAG, "fetchStatusMessage: Error Fetch Status Messages ${it.message.toString()}")
+        }
+
+    }
+
 
 }

@@ -1,5 +1,7 @@
 package com.ph32395.staynow.ChucNangNhanTinCC
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -79,12 +81,15 @@ class TextingMessengeActivity : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val userName = snapshot.child("ho_ten").value.toString()
                     val anhDaiDien = snapshot.child("anh_daidien").value.toString()
+                    val status = snapshot.child("status").value.toString()
+                    val statusDrawable = binding.vTrangThaiUser.background as GradientDrawable
+                    statusDrawable.setColor(if (status == "online") Color.GREEN else Color.GRAY)
                     if (!this@TextingMessengeActivity.isDestroyed && !this@TextingMessengeActivity.isFinishing) {
                         binding.tvNameUser.text = userName
                         Glide.with(this@TextingMessengeActivity)
                             .load(anhDaiDien)
                             .circleCrop()
-                            .into(binding.ivAvatar)
+                            .into(binding.ivAvatarItemTinNhan)
                     } else {
                         Log.d(TAG, "fetchUser: Activity destroyed, skipping image load")
                     }

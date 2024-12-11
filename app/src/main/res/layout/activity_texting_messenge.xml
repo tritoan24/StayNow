@@ -14,7 +14,7 @@
         android:background="#471BC4"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="15dp"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -26,12 +26,27 @@
             android:src="@drawable/icon_back_search"
             app:tint="@color/white"/>
 
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:src="@drawable/ic_user" />
+            >
+            <ImageView
+                android:id="@+id/ivAvatarItemTinNhan"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_user" />
+            <View
+                android:id="@+id/vTrangThaiUser"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/custom_layout_trang_thai_user"
+                android:layout_alignBottom="@id/ivAvatarItemTinNhan"
+                android:layout_alignEnd="@id/ivAvatarItemTinNhan"
+                android:layout_marginBottom="2dp"
+                android:layout_marginEnd="2dp"
+                />
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/tvNameUser"

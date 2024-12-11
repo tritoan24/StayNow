@@ -35,7 +35,9 @@
             android:fontFamily="serif"
             android:text="Chào bạn. bạn cần hỗ trợ gì ạ?"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:maxWidth="220dp"
+            />
 
     </LinearLayout>
 
