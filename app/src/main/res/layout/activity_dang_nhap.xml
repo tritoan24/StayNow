@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/loginWithGGButton"
-                android:text="Đăng Nhập Với Google"
+                android:text="@string/Login_google"
                 android:textSize="14sp"
                 android:drawableLeft="@drawable/icongoogle"
                 android:layout_marginTop="15dp"

@@ -326,6 +326,15 @@
     <string name="New_Password" translatable="false">Mật khẩu mới</string>
     <string name="Confirm_New_Password" translatable="false">Nhập lại mật khẩu mới</string>
 
+    <string name="Get_started" translatable="false">Bắt đầu sử dụng</string>
+
+    <string name="onboarding_title_1" translatable="false">Chào mừng đến với ứng dụng!</string>
+    <string name="onboarding_desc_1" translatable="false">Dễ dàng tìm kiếm và khám phá các phòng trọ phù hợp với nhu cầu của bạn trên toàn quốc.</string>
+    <string name="onboarding_title_2" translatable="false">Các tính năng nổi bật</string>
+    <string name="onboarding_desc_2" translatable="false">Khám phá những tính năng hữu ích dành cho bạn.</string>
+    <string name="onboarding_title_3" translatable="false">Thanh toán và quản lý dễ dàng</string>
+    <string name="onboarding_desc_3" translatable="false">Quản lý hóa đơn, hợp đồng và thanh toán chỉ với vài thao tác.</string>
+
 
 
 

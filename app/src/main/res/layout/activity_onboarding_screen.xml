@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@drawable/custom_buttom"
-        android:text="Bắt Đầu Sử Dụng"
+        android:text="@string/Get_started"
         android:textColor="@color/white"
         android:visibility="gone"
         android:layout_gravity="bottom"

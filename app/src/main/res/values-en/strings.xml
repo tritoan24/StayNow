@@ -306,4 +306,17 @@
     <string name="Shipping" translatable="false">Shipping</string>
     <string name="Change_the_gas_cylinder" translatable="false">Change Gas Cylinder</string>
 
+    <string name="Get_started" translatable="false">Get Started</string>
+
+
+
+    <string name="onboarding_title_1">Welcome to the App!</string>
+    <string name="onboarding_desc_1">Easily search and discover rooms that suit your needs nationwide.</string>
+    <string name="onboarding_title_2">Highlighted Features</string>
+    <string name="onboarding_desc_2">Explore useful features for you.</string>
+    <string name="onboarding_title_3">Easy Payment and Management</string>
+    <string name="onboarding_desc_3">Manage bills, contracts, and payments with just a few taps.</string>
+
+    <string name="Full_name" translatable="false">Full name</string>
+    <string name="Phone" translatable="false">Phone</string>
 </resources>
