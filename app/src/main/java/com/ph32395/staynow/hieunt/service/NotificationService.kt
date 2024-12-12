@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.ph32395.staynow.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHoaDon.CreateInvoice
@@ -24,6 +25,7 @@ import com.ph32395.staynow.hieunt.helper.Default.Collection.IS_PUSHED
 import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
@@ -86,6 +88,11 @@ class NotificationService : Service() {
             TYPE_NOTI_BILL_MONTHLY -> {
                 Intent(this, CreateInvoice::class.java).apply {
                     putExtra("CONTRACT_ID", notificationModel.idModel)
+                }
+            }
+            TYPE_NOTI_MASSAGES ->{
+                Intent(this,TextingMessengeActivity::class.java).apply {
+                    putExtra("userId",notificationModel.idModel)
                 }
             }
             else -> {

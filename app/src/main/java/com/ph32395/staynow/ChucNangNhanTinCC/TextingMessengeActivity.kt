@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.firebase.Firebase
@@ -15,6 +16,10 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.ph32395.staynow.databinding.ActivityTextingMessengeBinding
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
+import java.util.Calendar
 
 class TextingMessengeActivity : AppCompatActivity() {
 
@@ -129,6 +134,11 @@ class TextingMessengeActivity : AppCompatActivity() {
         receiverId: String,
         messageText: String
     ) {
+        Log.e(TAG, "sendMessage: senderId $senderId")
+        val factory = ViewModelFactory(applicationContext)
+        val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
+
+
         val database = Firebase.database.reference
         val timestamp = System.currentTimeMillis()
 
@@ -155,6 +165,23 @@ class TextingMessengeActivity : AppCompatActivity() {
                 val senderChat = Chat(chatId, messageText, timestamp, 0, receiverId)
                 database.child("ChatList").child(senderId).child(chatId).setValue(senderChat)
             }
+
+        //push notification
+        val notificationMes = NotificationModel(
+            title = "Bạn có 1 tin nhắn mới",
+            message = messageText,
+            date = Calendar.getInstance().time.toString(),
+            time = "0",
+            mapLink = null,
+            isRead = false,
+            isPushed = true,
+            typeNotification = "send_massage",
+            idModel = senderId
+        )
+        Log.e(TAG, "sendMessage:notificationMes $notificationMes")
+        notificationViewModel.sendNotification(notificationMes,receiverId)
+
+
     }
 
     private fun markMessagesAsRead(chatId: String, userId: String) {
