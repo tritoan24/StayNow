@@ -69,6 +69,7 @@ object Default {
         const val TITLE_CANCELED_BY_TENANT = "Lịch hẹn đã bị hủy bỏ bởi người thuê"
         const val TITLE_LEAVED_BY_RENTER = "Lịch hẹn đã thay đổi bởi chủ trọ"
         const val TITLE_LEAVED_BY_TENANT = "Lịch hẹn đã thay đổi bởi người thuê"
+        const val TITLE_SCHEDULE_ROOM_SUCCESSFULLY = "Phòng trọ đã được đặt thành công"
     }
 
     object TypeNotification{

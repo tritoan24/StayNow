@@ -1,8 +1,10 @@
 package com.ph32395.staynow.hieunt.view.feature.schedule_room
 
 import android.graphics.Color
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,12 +14,25 @@ import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
 import com.ph32395.staynow.hieunt.custom_view.WheelView
+import com.ph32395.staynow.hieunt.helper.Default.Collection.DATE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.DAT_PHONG
 import com.ph32395.staynow.hieunt.helper.Default.Collection.HO_TEN
+import com.ph32395.staynow.hieunt.helper.Default.Collection.MAP_LINK
+import com.ph32395.staynow.hieunt.helper.Default.Collection.MESSAGE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.NGUOI_DUNG
 import com.ph32395.staynow.hieunt.helper.Default.Collection.SO_DIEN_THOAI
+import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TIME_STAMP
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TITLE
+import com.ph32395.staynow.hieunt.helper.Default.Collection.TYPE_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
+import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
 import com.ph32395.staynow.hieunt.view_model.CommonVM
 import com.ph32395.staynow.hieunt.widget.currentBundle
@@ -110,6 +125,9 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                     lifecycleScope.launch(Dispatchers.Main) {
                         dismissLoading()
                         if (isCompletion) {
+                            pushNotification(scheduleRoomModel){
+                                toastNotification(it)
+                            }
                             launchActivity(MainActivity::class.java)
                             finish()
                         } else {
@@ -123,6 +141,15 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
 
     override fun dataObserver() {
 
+    }
+
+    private fun toastNotification(isCompletion: Boolean) {
+        lifecycleScope.launch {
+            if (isCompletion)
+                toast("Thông báo đã được gửi đến chủ trọ")
+            else
+                toast("Có lỗi xảy ra!")
+        }
     }
 
     private fun addScheduleRoomToFireStore(
@@ -142,6 +169,38 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             } catch (e: Exception) {
                 Log.d("addScheduleRoomToFireStore", "Error: ${e.message}")
                 onCompletion.invoke(false)
+            }
+        }
+    }
+
+    private fun pushNotification(data: ScheduleRoomModel, onCompletion: (Boolean) -> Unit){
+        lifecycleScope.launch(Dispatchers.IO) {
+            val mapLink = null
+            val notificationData = hashMapOf(
+                TITLE to TITLE_SCHEDULE_ROOM_SUCCESSFULLY,
+                MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
+                DATE to data.date,
+                TIME to data.time,
+                MAP_LINK to mapLink,
+                TIME_STAMP to System.currentTimeMillis(),
+                TYPE_NOTIFICATION to TYPE_SCHEDULE_ROOM_RENTER
+                //thay doi TYPE_NOTIFICATION de them cac pendingIntent trong service neu can
+            )
+            val database = FirebaseDatabase.getInstance()
+            val thongBaoRef = database.getReference(THONG_BAO)
+            // neu ChuTro push noti thi luu id NguoiThue va nguoc lai
+            val userId = data.renterId
+            val userThongBaoRef = thongBaoRef.child(userId)
+
+            val newThongBaoId = userThongBaoRef.push().key
+            if (newThongBaoId != null) {
+                userThongBaoRef.child(newThongBaoId).setValue(notificationData)
+                    .addOnSuccessListener {
+                        onCompletion.invoke(true)
+                    }
+                    .addOnFailureListener {
+                        onCompletion.invoke(false)
+                    }
             }
         }
     }
