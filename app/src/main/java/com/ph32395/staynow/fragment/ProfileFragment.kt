@@ -32,7 +32,7 @@ import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.PhongTroDaXem.PhongTroDaXemActivity
-import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichActivity
+import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
@@ -57,7 +57,6 @@ class ProfileFragment : Fragment() {
     private lateinit var mDatabase: DatabaseReference
     private lateinit var prefs: SharedPreferences
     private lateinit var btnPhongTroDaXem: LinearLayout
-    private lateinit var btnBaiDangYeuThich: LinearLayout
 
 
     @SuppressLint("MissingInflatedId")
@@ -79,11 +78,7 @@ class ProfileFragment : Fragment() {
         llContract = view.findViewById(R.id.ll_hopdong)
         llBill = view.findViewById(R.id.ll_hoadon)
         btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
-        btnBaiDangYeuThich = view.findViewById(R.id.btnBaiDangYeuThich)
 
-        btnBaiDangYeuThich.setOnClickListener {
-            launchActivity(PhongTroYeuThichActivity::class.java)
-        }
 
         btnPhongTroDaXem.setOnClickListener {
             launchActivity(PhongTroDaXemActivity::class.java)

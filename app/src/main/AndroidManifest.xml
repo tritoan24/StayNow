@@ -26,9 +26,7 @@
         android:theme="@style/Theme.StayNow"
         android:name=".MyApplication"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".PhongTroYeuThich.PhongTroYeuThichActivity"
-            android:exported="false" />
+
         <activity
             android:name=".quanlyhoadon.DetailBillActivity"
             android:exported="false" />
@@ -37,9 +35,8 @@
             android:exported="false" />
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
+            android:usesCleartextTraffic="true"
             android:exported="false" />
-        android:usesCleartextTraffic="true"
-        >
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:windowSoftInputMode="adjustResize"
