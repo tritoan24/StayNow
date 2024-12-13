@@ -107,8 +107,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     private lateinit var imageAdapter: ChoiceImageAdapter
     private var mutableUriList: MutableList<Uri> = mutableListOf()
 
-    var city = ""
-    var district = ""
+    var Dc_quanhuyen = ""
+    var Dc_tinhtp = ""
     var ward = ""
     private var latitude: Double = 0.0
     private var longitude: Double = 0.0
@@ -373,6 +373,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 DichVuAdapter.addDichVu(newDichVu)
             }
         }
+
+
 
         // Quan sát LiveData từ ViewModel
         noiThatViewModel.getListNoiThat().observe(this, Observer { noiThatList ->
@@ -656,6 +658,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     "Dia_chi" to fullAddressct,
                     "Dia_chichitiet" to fullAddressDeltail,
                     "Trang_thaidc" to false,
+                    "Dc_quanhuyen" to Dc_quanhuyen,
+                    "Dc_tinhtp" to Dc_tinhtp,
                     "Ma_loaiphong" to Ma_loaiphong,
                     "Ma_gioiTinh" to Ma_gioiTinh,
                     "Trang_thailuu" to Trang_thailuu,
@@ -836,6 +840,17 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                         val list = suggestions.map { prediction ->
                             val description = prediction.description
                             val secondaryText = prediction.structured_formatting?.secondary_text ?: "N/A"
+                            val district = prediction.compound?.district ?: "N/A" // Lấy district
+                            val province = prediction.compound?.province ?: "N/A" // Lấy province
+
+
+                            Dc_tinhtp = province
+                            Dc_quanhuyen = district
+
+
+                            //log quan huyen
+                            Log.d(TAG, "Quan huyen: $Dc_quanhuyen")
+                            Log.d(TAG, "TinhTP: $Dc_tinhtp")
 
                             // Gán giá trị cho fullAddressDeltail
                             fullAddressDeltail = description
@@ -957,6 +972,12 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 val locality = address.locality ?: ""             // Thành phố hoặc thị xã
                 val adminArea = address.adminArea ?: ""           // Tỉnh/thành phố
                 val countryName = address.countryName ?: ""       // Tên quốc gia
+                Dc_tinhtp = address.adminArea ?: ""          // Tỉnh/Thành phố
+                Dc_quanhuyen = address.subAdminArea ?: ""
+
+                //log quan huyen
+                Log.d(TAG, "Quan huyen: $Dc_quanhuyen")
+                Log.d(TAG, "TinhTP: ${Dc_tinhtp}")
 
                 // Tạo địa chỉ cụ thể kết hợp các thành phần
                 val detailedAddress =
@@ -974,6 +995,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
                     Log.d("Location", "Địa chỉ cụ thể: $detailedAddress")
                     Log.d("Location", "Địa chỉ cụ thể chi tiets: $diachict")
+
                 }
             }
         } catch (e: IOException) {

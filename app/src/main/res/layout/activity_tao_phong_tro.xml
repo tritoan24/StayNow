@@ -82,27 +82,6 @@
                 android:completionThreshold="1"
                 android:padding="10dp"
                 android:textSize="11sp" />
-
-            <ImageView
-                android:id="@+id/ivClearText"
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:src="@drawable/icon_close"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/btnSearch"
-                android:layout_width="33dp"
-                android:layout_height="33dp"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/custom_loupe"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="17dp"
-                    android:layout_height="17dp"
-                    android:src="@drawable/icon_search_white" />
-            </LinearLayout>
             <LinearLayout
                 android:id="@+id/btngetIndex"
                 android:layout_width="35dp"
