@@ -18,14 +18,17 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
-        android:name=".MyApplication"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
+            android:exported="false" />
         <activity
             android:name=".PhongTroYeuThich.PhongTroYeuThichActivity"
             android:exported="false" />
@@ -38,8 +41,6 @@
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
             android:exported="false" />
-        android:usesCleartextTraffic="true"
-        >
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:windowSoftInputMode="adjustResize"

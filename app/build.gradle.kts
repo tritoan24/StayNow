@@ -152,4 +152,9 @@ dependencies {
     //generate qr
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
+
+
+    //progressdialog
+    implementation ("com.github.tommasoberlose:progress-dialog:1.0.0")
+
 }

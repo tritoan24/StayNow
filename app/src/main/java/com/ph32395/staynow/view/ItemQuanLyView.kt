@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
+import com.ph32395.staynow.QuanLyNguoiThue.QuanLyNguoiThueActivity
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.R
 
@@ -45,6 +46,8 @@ class ItemQuanLyView @JvmOverloads constructor(
 
             "QuanLyNguoiThue" -> {
                 Toast.makeText(context, "Quan ly nguoi thue", Toast.LENGTH_SHORT).show()
+                //congAdd
+                context.startActivity(Intent(context,QuanLyNguoiThueActivity::class.java))
             }
         }
     }
