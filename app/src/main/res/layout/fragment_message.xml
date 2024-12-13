@@ -18,7 +18,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="15dp">
+            android:padding="15dp"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_weight="1"
@@ -98,7 +99,12 @@
             </LinearLayout>
 
         </LinearLayout>
-
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcvListUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvListTinNhan"
             android:layout_width="match_parent"

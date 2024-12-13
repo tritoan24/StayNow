@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -140,7 +141,7 @@ dependencies {
     implementation(
         fileTree(
             mapOf(
-                "dir" to "D:\\StayNow",
+                "dir" to "C:\\Do_an_tot_nghiep_StayNow\\StayNow",
                 "include" to listOf("*.aar", "*.jar"),
                 "exclude" to listOf<String>()
             )
@@ -150,7 +151,5 @@ dependencies {
 
     //generate qr
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
-
-
 
 }

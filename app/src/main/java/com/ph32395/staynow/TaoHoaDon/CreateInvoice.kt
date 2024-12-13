@@ -1,8 +1,8 @@
 package com.ph32395.staynow.TaoHoaDon
 
-import ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Context
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -64,18 +64,21 @@ class CreateInvoice : AppCompatActivity() {
         setContentView(binding.root)
 
 
+        val idHopDong = intent.getStringExtra("CONTRACT_ID")
 
-        idHopDong = intent.getStringExtra("CONTRACT_ID").toString()
-        Log.d("idHopDong", "idHopDong: $idHopDong")
+        idHopDong?.let {
+            viewModelHopDong.fetchInvoiceDetails(it)
+        }
 
-        viewModelHopDong.fetchInvoiceDetails(idHopDong)
-        //viewModelHopDong.fetchInvoiceDetails("g93M93HQHiK3bbQ6Mafn")
+        // Quan sát dữ liệu và cập nhật UI
         viewModelHopDong.invoiceDetails.observe(this) { fetchedInvoice ->
             invoice = fetchedInvoice
             updateUI(invoice)
             setupCalculationListeners()
         }
-        viewModelHopDong.fetchPreviousUtilities(idHopDong)
+        if (idHopDong != null) {
+            viewModelHopDong.fetchPreviousUtilities(idHopDong)
+        }
         viewModelHopDong.previousUtilities.observe(this) { utilities ->
             binding.editTextSoDienCu.setText(utilities.first?.toString() ?: "0")
             binding.editTextSoNuocCu.setText(utilities.second?.toString() ?: "0")

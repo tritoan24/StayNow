@@ -1,7 +1,6 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
-import ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -573,7 +572,7 @@ private fun observeViewModel() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModelHopDong.navigateToContractDetail.collect { contractId ->
                     contractId?.let {
-                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
+                        val intent = Intent(this@TaoHopDong, ChiTietHopDong::class.java)
                         intent.putExtra("CONTRACT_ID", it)
                         intent.putExtra("Check", 1)
                         startActivity(intent)

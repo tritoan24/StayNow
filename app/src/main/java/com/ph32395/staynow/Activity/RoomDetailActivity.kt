@@ -26,6 +26,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
+import com.google.firebase.dynamiclinks.internal.FirebaseDynamicLinksImpl.createDynamicLink
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.ImagePagerAdapter
 import com.ph32395.staynow.Adapter.ImageRecyclerViewAdapter
@@ -62,6 +64,10 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var tienNghiAdapter: TienNghiAdapter
     private var ManHome = ""
+    private var isFavorite = false
+    private lateinit var roomId: String
+    private lateinit var favoriteIcon: ImageView
+    private val firestore = FirebaseFirestore.getInstance()
 
     private lateinit var viewmodelHome:HomeViewModel
 
@@ -70,8 +76,6 @@ class RoomDetailActivity : AppCompatActivity() {
 
     private var maPhongTro = ""
 
-    private var firestore = FirebaseFirestore.getInstance()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +83,16 @@ class RoomDetailActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
             finish()
+        }
+
+        roomId = intent.getStringExtra("maPhongTro") ?: ""
+        favoriteIcon = findViewById(R.id.iconFavorite)
+
+//        fetch trang thai yeu thich tu Firestore
+        fetchFavoriteStatus()
+//        Nhan vao icon yeu thich
+        favoriteIcon.setOnClickListener {
+            toggleFavoriteStatus()
         }
 
 //        Khởi tạo LoadingUtil
@@ -206,6 +220,65 @@ class RoomDetailActivity : AppCompatActivity() {
         setupRecyViewTienNghi()
 
     }
+
+    private fun toggleFavoriteStatus() {
+        val firestore = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        isFavorite = !isFavorite
+        firestore.collection("PhongTro").document(roomId)
+            .update("Trangthai_yeuthich", isFavorite)
+            .addOnSuccessListener {
+                updateFavoriteIcon()
+                if (isFavorite) {
+                    addToFavorites(userId)
+                } else {
+                    removeFromFavorites(userId)
+                }
+            }
+    }
+
+
+//    Them phong yeu thich vao bang PhongTroYeuThich
+    private fun addToFavorites(userId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        val favoriteData = hashMapOf(
+            "Id_nguoidung" to userId,
+            "Id_phongtro" to roomId,
+            "Thoigian_yeuthich" to System.currentTimeMillis()
+        )
+        firestore.collection("PhongTroYeuThich").document("$userId-$roomId").set(favoriteData)
+    }
+
+//    Xoa phong yeu thich
+    private fun removeFromFavorites(userId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("PhongTroYeuThich").document("$userId-$roomId").delete()
+    }
+
+//    lay danh sach phong co Trangthai_yeuthich = true
+    private fun fetchFavoriteStatus() {
+        firestore.collection("PhongTro")
+            .document(roomId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    isFavorite = document.getBoolean("Trangthai_yeuthich") ?: false
+                    updateFavoriteIcon()
+                }
+            }
+            .addOnFailureListener { e ->
+                // Xử lý lỗi khi fetch
+                Toast.makeText(this, "Lỗi tải trạng thái yêu thích: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    //    Cap nhat lai icon khi thay doi trang thai yeu thich
+    private fun updateFavoriteIcon() {
+        favoriteIcon.setImageResource(if (isFavorite) R.drawable.icon_heart_red else R.drawable.icon_favorite)
+    }
+
     private fun shareLink(dynamicLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain" // Định dạng chia sẻ là văn bản
@@ -242,9 +315,19 @@ class RoomDetailActivity : AppCompatActivity() {
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            layoutManager = GridLayoutManager(context, 4)
+//            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = GridLayoutManager(context, 3)
             adapter = chiTietAdapter
+        }
+    }
+
+    //    danh sach phi dich vu
+    private fun setupListPhiDichVu() {
+        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
+            layoutManager = GridLayoutManager(context, 3)
+            adapter = phiDichVuAdapter
+
+//            addItemDecoration(SpacingItemDecoration(1))
         }
     }
 
@@ -268,15 +351,7 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
-    //    danh sach phi dich vu
-    private fun setupListPhiDichVu() {
-        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
-            layoutManager = GridLayoutManager(context, 3)
-            adapter = phiDichVuAdapter
 
-//            addItemDecoration(SpacingItemDecoration(1))
-        }
-    }
 
     private fun setupImage() {
         //        Thiet lap viewPager va RecyclerView cho anh

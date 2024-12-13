@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,7 +38,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
     private lateinit var emailInfor: TextView
     private lateinit var rcListRoom: RecyclerView
     private lateinit var btnBackCT: ImageView
-    private lateinit var btnNhanTin: LinearLayout
+    private lateinit var btnNhanTin: CardView
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var homViewModel: HomeViewModel

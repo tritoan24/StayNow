@@ -27,6 +27,7 @@ class OrderProcessor(private val context: Context) {
         contractId: String,
         billId: String,
         items: String,
+        typeBill: TypeBill,
         callback: (String?, String?, Long?) -> Unit
     ) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -61,7 +62,7 @@ class OrderProcessor(private val context: Context) {
                     }
                 } else {
                     // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
-                    createOrder(amount, contractId, billId, items) { token, orderUrl ->
+                    createOrder(amount, contractId, billId, items,typeBill) { token, orderUrl ->
                         CoroutineScope(Dispatchers.Main).launch {
                             callback(token, orderUrl, 900)
                         }
@@ -81,10 +82,11 @@ class OrderProcessor(private val context: Context) {
         contractId: String,
         billId: String,
         items: String,
+        typeBill: TypeBill,
         callback: (String?, String?) -> Unit
     ) {
         val apiClient = ApiClient.create()
-        val orderRequest = OrderRequest(amount, contractId, billId, items)
+        val orderRequest = OrderRequest(amount, contractId, billId, items,typeBill)
 
         apiClient.createOrder(orderRequest).enqueue(object : Callback<OrderResponse> {
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
@@ -129,4 +131,9 @@ class OrderProcessor(private val context: Context) {
         }
     }
 
+}
+
+enum class TypeBill {
+    HoaDonHopDong,
+    HoaDonHangThang
 }
