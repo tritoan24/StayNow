@@ -1,15 +1,11 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,10 +44,6 @@ class ContractFragment : Fragment() {
         contractViewModel = ViewModelProvider(this)[ContractViewModel::class.java]
         // Đổi tên tiêu đề và thêm underline cho tiêu đề hợp đồng chờ xác nhận
 
-        val pendingContractsTitle = binding.tvContractsTitle
-        pendingContractsTitle.text = SpannableString("Hợp đồng chờ xác nhận").apply {
-            setSpan(UnderlineSpan(), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        }
         binding.ivBack.tap {
             requireActivity().onBackPressed()
         }
@@ -64,15 +56,15 @@ class ContractFragment : Fragment() {
         setupObservers()
 
         // Quan sát LiveData để nhận giá trị vai trò
-        contractViewModel.userRoleLiveData.observe(viewLifecycleOwner, Observer { role ->
+        contractViewModel.userRoleLiveData.observe(viewLifecycleOwner) { role ->
             val isLandlord = checkUserRole(role)
             if (userId != null) {
                 fetchContractsByUser(userId, isLandlord)
                 setupAdapters(isLandlord)
-                setupRecyclerView(pendingAdapter, "Hợp đồng chờ xác nhận")
+                setupRecyclerView(pendingAdapter, "Hợp đồng đang chờ xác nhận")
 
             }
-        })
+        }
 
         if (userId != null) {
             contractViewModel.getUserRole(userId)
@@ -127,21 +119,37 @@ class ContractFragment : Fragment() {
         binding.tvContractsTitle.text = title
     }
 
-    private fun setupAdapters(isLandlord:Boolean) {
+    private fun setupAdapters(isLandlord: Boolean) {
         activeAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.ACTIVE,isLandlord) { contractId, newStatus ->
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.ACTIVE,
+                isLandlord
+            ) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         pendingAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.PENDING,isLandlord) { contractId, newStatus ->
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.PENDING,
+                isLandlord
+            ) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         expireAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.EXPIRED,isLandlord) { contractId, newStatus ->
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.EXPIRED,
+                isLandlord
+            ) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         terminatedAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.TERMINATED,isLandlord) { contractId, newStatus ->
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.TERMINATED,
+                isLandlord
+            ) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
 
@@ -164,21 +172,44 @@ class ContractFragment : Fragment() {
     }
 
     private fun fetchContractsByUser(userId: String, isLandlord: Boolean) {
-
         if (isLandlord) {
             lifecycleScope.launch {
-                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.ACTIVE))
-                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.PENDING))
-                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.EXPIRED))
-                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.TERMINATED))
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
+                    setOf(ContractStatus.ACTIVE)
+                )
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
+                    setOf(ContractStatus.PENDING)
+                )
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
+                    setOf(ContractStatus.EXPIRED)
+                )
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
+                    setOf(ContractStatus.TERMINATED)
+                )
 
             }
         } else {
             lifecycleScope.launch {
-                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.ACTIVE))
-                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.PENDING))
-                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.EXPIRED))
-                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.TERMINATED))
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
+                    setOf(ContractStatus.ACTIVE)
+                )
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
+                    setOf(ContractStatus.PENDING)
+                )
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
+                    setOf(ContractStatus.EXPIRED)
+                )
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
+                    setOf(ContractStatus.TERMINATED)
+                )
 
             }
         }
@@ -202,7 +233,6 @@ class ContractFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Giải phóng binding để tránh rò rỉ bộ nhớ
         _binding = null
 
         if (activity is MainActivity) {

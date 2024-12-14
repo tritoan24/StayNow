@@ -22,6 +22,7 @@ import com.denzcoskun.imageslider.ImageSlider
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.Model.LoaiPhongTro
 import com.ph32395.staynow.databinding.FragmentHomeBinding
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
@@ -103,7 +104,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.viewLocationSearch.searchLayout.tap {
-            Toast.makeText(context, "Tính năng đang chờ phát triển", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(requireContext(), SearchActivity::class.java))
         }
 
 

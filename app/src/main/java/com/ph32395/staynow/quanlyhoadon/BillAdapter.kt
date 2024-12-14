@@ -2,9 +2,11 @@ package com.ph32395.staynow.quanlyhoadon
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
@@ -12,6 +14,8 @@ import com.ph32395.staynow.databinding.ItemBillBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.utils.showConfirmDialog
 import java.text.NumberFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class BillAdapter(
@@ -34,6 +38,7 @@ class BillAdapter(
     }
 
     // Liên kết dữ liệu vào item
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: BillViewHolder, position: Int) {
         val bill = billList[position]
         holder.bind(bill, status, isLandlord)
@@ -52,6 +57,7 @@ class BillAdapter(
     // ViewHolder cho item hóa đơn
     inner class BillViewHolder(private val binding: ItemBillBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n")
         fun bind(bill: InvoiceMonthlyModel, status: InvoiceStatus, isLandlord: Boolean) {
 
@@ -67,12 +73,12 @@ class BillAdapter(
             binding.tvCustomerName.text = bill.tenKhachHang
             binding.tvBillType.text = "Kiểu hóa đơn: ${bill.kieuHoadon}"
             binding.tvTotalAmount.text = "Tổng tiền: " + formatCurrency(bill.tongTien)
-            binding.tvDate.text = "Ngày: ${bill.ngayTaoHoaDon}"
+            binding.tvDate.text = "Ngày: " + bill.ngayTaoHoaDon
             binding.tvStatus.text = "Trạng thái: ${bill.trangThai}"
 
             binding.btnConfirm.tap {
                 val intent = Intent(binding.root.context, DetailBillActivity::class.java)
-                intent.putExtra("hoaDonHangThang", bill)
+                intent.putExtra("bill", bill)
                 binding.root.context.startActivity(intent)
             }
             binding.btnCancel.tap {
@@ -97,11 +103,12 @@ class BillAdapter(
         val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
         return formatter.format(amount)
     }
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateIsLandlord(newIsLandlord: Boolean) {
         if (isLandlord != newIsLandlord) {
             isLandlord = newIsLandlord
-            notifyDataSetChanged()  // Hoặc chỉ cập nhật các item cần thiết
+            notifyDataSetChanged()
         }
     }
 }

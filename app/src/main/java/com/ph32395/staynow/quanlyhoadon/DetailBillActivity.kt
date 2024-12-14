@@ -40,7 +40,7 @@ class DetailBillActivity : AppCompatActivity() {
         initZaloPay()
 
         // nhận intent từ billAdapter
-        val invoice = intent.getSerializableExtra("hoaDonHangThang") as? InvoiceMonthlyModel
+        val invoice = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
 
         // convert invoice to jsonArrStr
         val gson = Gson()
@@ -71,7 +71,7 @@ class DetailBillActivity : AppCompatActivity() {
                     hideLoading()
                     if (token != null && orderUrl != null) {
                         val intent = Intent(this, ChoosePaymentActivity::class.java)
-                        intent.putExtra("invoice", invoice)
+                        intent.putExtra("bill", invoice)
                         intent.putExtra("zpToken", token)
                         intent.putExtra("orderUrl", orderUrl)
                         intent.putExtra("remainTime", remainTime)

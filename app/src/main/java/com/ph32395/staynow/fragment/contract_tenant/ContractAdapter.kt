@@ -2,8 +2,10 @@ package com.ph32395.staynow.fragment.contract_tenant
 
 import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,9 +74,6 @@ class ContractAdapter(
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
 
-            if (isLandlord) {
-                llBtn.visibility = View.GONE
-            }
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
@@ -101,6 +100,10 @@ class ContractAdapter(
                     tvRemainingTime.visibility = View.GONE
                     llBtn.visibility =
                         if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) View.VISIBLE else View.GONE
+
+                    if (isLandlord) {
+                        llBtn.visibility = View.GONE
+                    }
 
                     btnXacNhan.tap {
 

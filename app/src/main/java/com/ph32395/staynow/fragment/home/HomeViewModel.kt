@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+@Suppress("LABEL_NAME_CLASH", "NAME_SHADOWING")
 class HomeViewModel : ViewModel() {
     private val _selectedLoaiPhongTro = MutableLiveData<String>()
     val selectedLoaiPhongTro: LiveData<String> get() = _selectedLoaiPhongTro
@@ -101,13 +102,13 @@ class HomeViewModel : ViewModel() {
                         _phongDaDang.value =
                             updatedRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
                         _phongDangLuu.value =
-                            updatedRooms.filter { it.second.Trang_thailuu == true }
+                            updatedRooms.filter { it.second.Trang_thailuu }
                         _phongChoDuyet.value =
                             updatedRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
                         _phongDaHuy.value =
                             updatedRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
                         _phongDaChoThue.value =
-                            updatedRooms.filter { it.second.Trang_thaiphong == true }
+                            updatedRooms.filter { it.second.Trang_thaiphong }
                     }
                     .addOnFailureListener { e ->
                         Log.e("HomeViewModel", "Error fetching room details: ", e)
@@ -306,9 +307,7 @@ class HomeViewModel : ViewModel() {
                 val rooms = querySnapshot.documents.mapNotNull { doc ->
                     val roomModel = doc.toObject(PhongTroModel::class.java)
                     roomModel?.let {
-                        if (it.Ma_nguoidung != idUser
-                            && it.Trang_thaiphong == false
-                            && it.Trang_thaiduyet == "DaDuyet") {
+                        if (it.Ma_nguoidung != idUser && !it.Trang_thaiphong && it.Trang_thaiduyet == "DaDuyet") {
                             Pair(doc.id, it)
                         } else {
                             null

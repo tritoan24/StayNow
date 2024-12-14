@@ -68,7 +68,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
             binding.tvLandlordInfo.text = bill.idNguoiGui
             binding.tvTenantInfo.text = bill.idNguoiNhan
 
-            binding.tvDate.text = bill.ngayTaoHoaDon.toString()
+            binding.tvDate.text = bill.ngayTaoHoaDon
             binding.tvInvoiceId.text = "ID hợp đồng: " + bill.idHopDong
             binding.tvNameRoom.text = "Tên phòng: " + bill.tenPhong
             binding.tvAmount.text = "Tổng tiền: " + formatCurrency(bill.tongTien)
