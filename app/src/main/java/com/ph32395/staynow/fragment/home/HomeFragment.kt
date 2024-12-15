@@ -2,12 +2,15 @@ package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -24,6 +27,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow.Model.LoaiPhongTro
+import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.FragmentHomeBinding
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
 import com.ph32395.staynow.hieunt.model.NotificationModel
@@ -58,13 +62,17 @@ class HomeFragment : Fragment() {
         loadingIndicator = binding.loadingIndicator
         // Load dữ liệu ban đầu
         loadData()
-        notificationViewModel = ViewModelProvider(this,ViewModelFactory(requireContext()))[NotificationViewModel::class.java]
-        lifecycleScope.launch (Dispatchers.IO){
+        notificationViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(requireContext())
+        )[NotificationViewModel::class.java]
+        lifecycleScope.launch(Dispatchers.IO) {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 notificationViewModel.notificationsState.collect {
-                    val countNotificationNotSeen = async { it.filter { notificationModel -> !notificationModel.isRead }.size }.await()
-                    withContext(Dispatchers.Main){
-                        if (countNotificationNotSeen > 0){
+                    val countNotificationNotSeen =
+                        async { it.filter { notificationModel -> !notificationModel.isRead }.size }.await()
+                    withContext(Dispatchers.Main) {
+                        if (countNotificationNotSeen > 0) {
                             binding.notificationBadge.visible()
                             binding.notificationBadge.text = countNotificationNotSeen.toString()
                         } else {
@@ -106,7 +114,30 @@ class HomeFragment : Fragment() {
         binding.viewLocationSearch.searchLayout.tap {
             startActivity(Intent(requireContext(), SearchActivity::class.java))
         }
+        binding.viewLocationSearch.locationLayout.tap {
+            // Tạo PopupMenu
+            val popupMenu = PopupMenu(requireContext(), binding.viewLocationSearch.locationLayout)
 
+            // Thêm các item vào PopupMenu
+            popupMenu.menu.add("Hà Nội")
+            popupMenu.menu.add("Hồ Chí Minh")
+
+            popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+                when (item.title) {
+                    "Hà Nội" -> {
+
+                    }
+
+                    "Hồ Chí Minh" -> {
+
+                    }
+
+                }
+
+                true
+            }
+            popupMenu.show()
+        }
 
         //màn hình thông báo tritoancode
         binding.fNotification.tap {

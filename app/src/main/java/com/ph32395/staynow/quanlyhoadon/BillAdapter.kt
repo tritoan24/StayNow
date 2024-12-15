@@ -92,7 +92,9 @@ class BillAdapter(
 
             }
             itemView.tap {
-
+                val intent = Intent(binding.root.context, DetailBillActivity::class.java)
+                intent.putExtra("bill", bill)
+                binding.root.context.startActivity(intent)
             }
         }
 

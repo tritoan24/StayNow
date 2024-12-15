@@ -1,5 +1,6 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -155,19 +156,28 @@ class ContractFragment : Fragment() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupObservers() {
         contractViewModel.activeContracts.observe(viewLifecycleOwner) { contracts ->
             activeAdapter.updateContractList(contracts)
+            val contractSize=contracts.size
+            binding.tvContractsQuantity.text="($contractSize)"
         }
         contractViewModel.pendingContracts.observe(viewLifecycleOwner) { contracts ->
             pendingAdapter.updateContractList(contracts)
+            val contractSize=contracts.size
+            binding.tvContractsQuantity.text="($contractSize)"
 
         }
         contractViewModel.expiredContracts.observe(viewLifecycleOwner) { contracts ->
             expireAdapter.updateContractList(contracts)
+            val contractSize=contracts.size
+            binding.tvContractsQuantity.text="($contractSize)"
         }
         contractViewModel.terminatedContracts.observe(viewLifecycleOwner) { contracts ->
             terminatedAdapter.updateContractList(contracts)
+            val contractSize=contracts.size
+            binding.tvContractsQuantity.text="($contractSize)"
         }
     }
 

@@ -13,6 +13,7 @@ import com.ph32395.staynow.Activity.ChoosePaymentActivity
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
+import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ActivityDetailBillBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessorService
@@ -47,6 +48,9 @@ class DetailBillActivity : AppCompatActivity() {
         val itemsArrStr = gson.toJson(listOf(invoice))
 
         updateUI(invoice!!)
+        if (invoice.trangThai != InvoiceStatus.PENDING) {
+            binding.btnThanhtoan.visibility = View.GONE
+        }
 
         binding.ivBack.tap {
             onBackPressed()
@@ -88,7 +92,7 @@ class DetailBillActivity : AppCompatActivity() {
     private fun updateUI(invoice: InvoiceMonthlyModel) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = "Phòng: "+invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: " + invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayTaoHoaDon}"
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
