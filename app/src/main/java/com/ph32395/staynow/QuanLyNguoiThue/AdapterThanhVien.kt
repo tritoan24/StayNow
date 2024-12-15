@@ -1,6 +1,5 @@
 package com.ph32395.staynow.QuanLyNguoiThue
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.databinding.ItemThongTinThanhVienOTroBinding
-import com.tommasoberlose.progressdialog.ProgressDialogFragment
+import com.techiness.progressdialoglibrary.ProgressDialog
 
 class AdapterThanhVien(
     private val listTv: List<ThanhVien>,
@@ -60,8 +59,12 @@ class AdapterThanhVien(
                 .setPositiveButton("Yes") { d, w ->
                     Log.d(TAG, "onBindViewHolder: yes d $d")
                     Log.d(TAG, "onBindViewHolder: yes w $w")
-                    deleteThanhVien(dataTv.maTv,idHopDong,holder.itemView.context)
-                    ProgressDialogFragment.showProgressBar(holder.itemView.context as Activity)
+                    val progressDialog = ProgressDialog(holder.itemView.context)
+                    with(progressDialog) {
+                        theme = ProgressDialog.THEME_DARK
+                    }
+                    progressDialog.show()
+                    deleteThanhVien(dataTv.maTv,idHopDong,holder.itemView.context,progressDialog)
 
                 }
                 .setNegativeButton("No") { d, w ->
@@ -91,7 +94,12 @@ class AdapterThanhVien(
         }
     }
 
-    private fun deleteThanhVien(thanhVienId: String, idHopDong: String, context: Context) {
+    private fun deleteThanhVien(
+        thanhVienId: String,
+        idHopDong: String,
+        context: Context,
+        progressDialog: ProgressDialog
+    ) {
         dbQuanLyNguoiThue.document(idHopDong)
             .get()
             .addOnSuccessListener { document ->
@@ -116,10 +124,7 @@ class AdapterThanhVien(
                                 .addOnFailureListener { e ->
                                     Log.e("Firestore", "Lỗi khi xóa thành viên: ${e.message}")
                                 }
-                                .addOnCompleteListener {
-                                    ProgressDialogFragment.hideProgressBar(context as Activity)
 
-                                }
                         } else {
                             Log.e("Firestore", "Không tìm thấy thành viên cần xóa")
                         }
@@ -128,6 +133,9 @@ class AdapterThanhVien(
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "Lỗi khi lấy document: ${e.message}")
+            }
+            .addOnCompleteListener {
+                progressDialog.dismiss()
             }
     }
 

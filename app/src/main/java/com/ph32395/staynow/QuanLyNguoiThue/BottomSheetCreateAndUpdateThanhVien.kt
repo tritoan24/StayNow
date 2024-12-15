@@ -2,8 +2,6 @@ package com.ph32395.staynow.QuanLyNguoiThue
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -13,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -24,7 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.ph32395.staynow.databinding.BottomSheetCreateAndUpdateThanhVienBinding
-import com.tommasoberlose.progressdialog.ProgressDialogFragment
+import com.techiness.progressdialoglibrary.ProgressDialog
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -53,14 +50,14 @@ class BottomSheetCreateAndUpdateThanhVien(
         Log.d(TAG, "onCreateView: idHopDong $idHopDong")
         if (dataTv != null) {
             binding.tvTitleBottomSheet.text = "Sửa thành viên"
-            binding.edTenThanhVien.setText(dataTv?.name)
-            binding.edSdt.setText(dataTv?.sdt)
-            binding.edtEmail.setText(dataTv?.email)
-            binding.tvNgayVao.text = dataTv?.ngayVao
+            binding.edTenThanhVien.setText(dataTv.name)
+            binding.edSdt.setText(dataTv.sdt)
+            binding.edtEmail.setText(dataTv.email)
+            binding.tvNgayVao.text = dataTv.ngayVao
             binding.tvNgayVao.setTextColor(Color.BLACK)
             binding.iconAddAvata.visibility = View.GONE
             Glide.with(requireContext())
-                .load(dataTv?.image)
+                .load(dataTv.image)
                 .circleCrop()
                 .into(binding.ivAvatar)
         } else {
@@ -80,9 +77,20 @@ class BottomSheetCreateAndUpdateThanhVien(
             dismiss()
         }
 
+        binding.btnResetFilter.setOnClickListener {
+            binding.ivAvatar.setImageURI(null)
+            binding.iconAddAvata.visibility = View.VISIBLE
+            binding.edSdt.setText("")
+            binding.edTenThanhVien.setText("")
+            binding.edtEmail.setText("")
+            binding.tvNgayVao.text = "Ngày vào"
+            binding.tvNgayVao.setTextColor(Color.GRAY)
+        }
+
+
         binding.btnApply.setOnClickListener {
             if (dataTv == null) {
-                saveUserToFirestore(idHopDong!!,context)
+                saveUserToFirestore(idHopDong!!)
             } else {
                 updateUserToFirestore(idHopDong, dataTv)
             }
@@ -116,17 +124,25 @@ class BottomSheetCreateAndUpdateThanhVien(
         val phone = binding.edSdt.text.toString().trim()
         val email = binding.edtEmail.text.toString().trim()
         val ngayVao = binding.tvNgayVao.text.toString().trim()
-        ProgressDialogFragment.showProgressBar(context as Activity)
+
+        val progressDialog = ProgressDialog(requireContext())
+        with(progressDialog) {
+            theme = ProgressDialog.THEME_DARK
+        }
+        progressDialog.show()
 
         if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || ngayVao.contains("Ngày vào")) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Vui lòng nhập đủ thông tin!", Toast.LENGTH_SHORT).show()
             return
         }
         if (!isValidEmail(email)) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Email không đúng định dạng", Toast.LENGTH_SHORT).show()
             return
         }
         if (!isValidPhone(phone)) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Số điện thoại không đúng định dạng", Toast.LENGTH_SHORT).show()
             return
         }
@@ -140,7 +156,8 @@ class BottomSheetCreateAndUpdateThanhVien(
                 ngayVao = ngayVao,
                 image = itemTv.image.toString()
             )
-            updateThanhVien(idHopDong!!, thanhVien, itemTv.maTv)
+            updateThanhVien(idHopDong!!, thanhVien, itemTv.maTv,progressDialog)
+            Toast.makeText(context, "update thanh cong", Toast.LENGTH_SHORT).show()
             dismiss()
         } else {
             uploadImage(avatarUri!!, itemTv?.maTv!!, object : UploadCallback {
@@ -153,8 +170,8 @@ class BottomSheetCreateAndUpdateThanhVien(
                         image = imageUrl.toString(),
                         ngayVao = ngayVao
                     )
-                    updateThanhVien(idHopDong!!, thanhVien, itemTv.maTv)
-                    Toast.makeText(context, "Them thanh cong", Toast.LENGTH_SHORT).show()
+                    updateThanhVien(idHopDong!!, thanhVien, itemTv.maTv, progressDialog)
+                    Toast.makeText(context, "update thanh cong", Toast.LENGTH_SHORT).show()
                     dismiss()
                 }
 
@@ -168,27 +185,35 @@ class BottomSheetCreateAndUpdateThanhVien(
 
     }
 
-    private fun saveUserToFirestore(idHopDong: String, context: Context?) {
+    private fun saveUserToFirestore(idHopDong: String) {
         val name = binding.edTenThanhVien.text.toString().trim()
         val phone = binding.edSdt.text.toString().trim()
         val email = binding.edtEmail.text.toString().trim()
         val ngayVao = binding.tvNgayVao.text.toString().trim()
 
-        ProgressDialogFragment.showProgressBar(context as Activity)
+        val progressDialog = ProgressDialog(requireContext())
+        with(progressDialog) {
+            theme = ProgressDialog.THEME_DARK
+        }
+        progressDialog.show()
 
         if (name.isEmpty() || phone.isEmpty() || email.isEmpty() || ngayVao.contains("Ngày vào")) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Vui lòng nhập đủ thông tin!", Toast.LENGTH_SHORT).show()
             return
         }
         if (avatarUri == null) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Vui lòng chọn ảnh đại diện!", Toast.LENGTH_SHORT).show()
             return
         }
         if (!isValidEmail(email)) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Email không đúng định dạng", Toast.LENGTH_SHORT).show()
             return
         }
         if (!isValidPhone(phone)) {
+            progressDialog.dismiss()
             Toast.makeText(context, "Số điện thoại không đúng định dạng", Toast.LENGTH_SHORT).show()
             return
         }
@@ -208,12 +233,13 @@ class BottomSheetCreateAndUpdateThanhVien(
                     image = imageUrl.toString(),
                     ngayVao = ngayVao
                 )
-                addThanhVienMoi(thanhVien, idHopDong)
+                addThanhVienMoi(thanhVien, idHopDong, progressDialog)
                 Toast.makeText(context, "Them thanh cong", Toast.LENGTH_SHORT).show()
                 dismiss()
             }
 
             override fun onFailure(e: Exception?) {
+                progressDialog.dismiss()
                 Log.e(TAG, "onFailure: Error Add Thanh Vien msg ${e?.message.toString()}")
 
             }
@@ -257,7 +283,11 @@ class BottomSheetCreateAndUpdateThanhVien(
         fun onFailure(e: Exception?)
     }
 
-    private fun addThanhVienMoi(thanhVienMoi: ThanhVien, idHopDong: String) {
+    private fun addThanhVienMoi(
+        thanhVienMoi: ThanhVien,
+        idHopDong: String,
+        progressDialog: ProgressDialog
+    ) {
         dbQuanLyNguoiThue.document(idHopDong)
             .get()
             .addOnSuccessListener { document ->
@@ -282,15 +312,17 @@ class BottomSheetCreateAndUpdateThanhVien(
             }
             .addOnFailureListener { e ->
                 Log.e("Firestore", "Lỗi khi lấy document: ${e.message}")
-            }.addOnCompleteListener {
-                ProgressDialogFragment.hideProgressBar(context as Activity)
+            }
+            .addOnCompleteListener {
+                progressDialog.dismiss()
             }
     }
 
     private fun updateThanhVien(
         idHopDong: String,
         updatedThanhVien: ThanhVien,
-        idThanhVien: String
+        idThanhVien: String,
+        progressDialog: ProgressDialog
     ) {
         dbQuanLyNguoiThue.document(idHopDong)
             .get()
@@ -326,7 +358,7 @@ class BottomSheetCreateAndUpdateThanhVien(
                 Log.e("Firestore", "Lỗi khi lấy document: ${e.message}")
             }
             .addOnCompleteListener {
-                ProgressDialogFragment.hideProgressBar(context as Activity)
+                progressDialog.dismiss()
             }
     }
 

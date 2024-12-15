@@ -155,6 +155,6 @@ dependencies {
 
 
     //progressdialog
-    implementation ("com.github.tommasoberlose:progress-dialog:1.0.0")
+    implementation("com.github.techinessoverloaded:progress-dialog:1.5.1")
 
 }
