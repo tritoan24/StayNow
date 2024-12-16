@@ -50,55 +50,6 @@
             android:layout_marginEnd="30dp"
             android:background="#C8C8C8" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/custom_edittext_search"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="5dp">
-
-            <EditText
-                android:id="@+id/edtSearch"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:fontFamily="serif"
-                android:hint="Tìm kiếm......."
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:lines="1"
-                android:padding="10dp"
-                android:textSize="13dp" />
-
-
-
-            <ImageView
-                android:id="@+id/ivClearText"
-                android:layout_width="19dp"
-                android:layout_height="19dp"
-                android:src="@drawable/icon_close"
-                android:visibility="invisible" />
-
-            <LinearLayout
-                android:id="@+id/btnSearch"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="15dp"
-                android:background="@drawable/custom_loupe"
-                android:gravity="center">
-
-                <ImageView
-                    android:layout_width="17dp"
-                    android:layout_height="17dp"
-                    android:src="@drawable/icon_search_white" />
-            </LinearLayout>
-
-        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvListUser"
