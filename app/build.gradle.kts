@@ -133,15 +133,15 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
     // Socket
     implementation ("io.socket:socket.io-client:2.0.0")
-    // zalo sdk
     implementation("androidx.room:room-runtime:2.4.3")
     kapt("androidx.room:room-compiler:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
 
+    // zalo sdk
     implementation(
         fileTree(
             mapOf(
-                "dir" to "C:\\Do_an_tot_nghiep_StayNow\\StayNow",
+                "dir" to "D:\\KOT104\\Exercises\\StayNow",
                 "include" to listOf("*.aar", "*.jar"),
                 "exclude" to listOf<String>()
             )
@@ -151,8 +151,6 @@ dependencies {
 
     //generate qr
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
-
-
 
     //progressdialog
     implementation("com.github.techinessoverloaded:progress-dialog:1.5.1")

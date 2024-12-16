@@ -143,6 +143,7 @@
                 <ImageView
                     android:layout_width="70dp"
                     android:layout_height="70dp"
+                    android:layout_marginStart="8dp"
                     android:src="@drawable/ic_zalopay"
                     tools:ignore="ContentDescription" />
 
@@ -161,10 +162,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="20dp"
                 android:orientation="vertical"
                 tools:ignore="UseCompoundDrawables">
-
 
                 <TextView
                     android:layout_width="wrap_content"

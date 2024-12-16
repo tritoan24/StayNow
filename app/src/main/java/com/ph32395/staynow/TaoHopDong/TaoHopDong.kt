@@ -42,6 +42,7 @@ import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
@@ -174,8 +175,9 @@ class TaoHopDong : AppCompatActivity() {
 
         //Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
-        viewModelCccd = ViewModelProvider(this).get(CccdViewModel::class.java)
-        viewModelNotification = ViewModelProvider(this).get(NotificationViewModel::class.java)
+        viewModelCccd = ViewModelProvider(this)[CccdViewModel::class.java]
+        val factory = ViewModelFactory(this)
+        viewModelNotification = ViewModelProvider(this, factory)[NotificationViewModel::class.java]
 
         //Lay du lieu chi tiet thong tin phong tro
         viewModel.fetchChiTietThongTin(maPhongTro)
