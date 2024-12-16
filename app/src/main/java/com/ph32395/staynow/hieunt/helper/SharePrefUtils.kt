@@ -7,6 +7,12 @@ class SharePrefUtils(context: Context) {
     private val pre: SharedPreferences = context.getSharedPreferences("data", Context.MODE_PRIVATE)
     private val editor: SharedPreferences.Editor = pre.edit()
 
+    var isReadTenantInterest
+        get() = pre.getBoolean("isReadTenantInterest", false)
+        set(value) {
+            editor.putBoolean("isReadTenantInterest", value)
+            editor.apply()
+        }
     var isRated
         get() = pre.getBoolean("rated", false)
         set(value) {

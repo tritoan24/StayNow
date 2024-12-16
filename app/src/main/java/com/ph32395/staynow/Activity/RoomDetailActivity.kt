@@ -51,6 +51,8 @@ import com.ph32395.staynow.fragment.RoomManagementFragment
 import com.ph32395.staynow.fragment.home.HomeViewModel
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
+import com.ph32395.staynow.hieunt.helper.SharePrefUtils
+import com.ph32395.staynow.hieunt.view.dialog.TenantInterestDialog
 import com.ph32395.staynow.hieunt.view.feature.schedule_room.ScheduleRoomActivity
 import com.ph32395.staynow.hieunt.widget.launchActivity
 
@@ -173,13 +175,26 @@ class RoomDetailActivity : AppCompatActivity() {
                         confirmAction = { navigateToUpdateCCCD() }
                     )
                 } else {
-                    launchActivity(
-                        Bundle().apply {
-                            putSerializable(ROOM_DETAIL, viewModel.room.value)
-                            putString(ROOM_ID, maPhongTro)
-                        },
-                        ScheduleRoomActivity::class.java
-                    )
+                    if (!SharePrefUtils(this@RoomDetailActivity).isReadTenantInterest){
+                        TenantInterestDialog{
+                            launchActivity(
+                                Bundle().apply {
+                                    putSerializable(ROOM_DETAIL, viewModel.room.value)
+                                    putString(ROOM_ID, maPhongTro)
+                                },
+                                ScheduleRoomActivity::class.java
+                            )
+                        }.show(supportFragmentManager, javaClass.name)
+                    } else {
+                        launchActivity(
+                            Bundle().apply {
+                                putSerializable(ROOM_DETAIL, viewModel.room.value)
+                                putString(ROOM_ID, maPhongTro)
+                            },
+                            ScheduleRoomActivity::class.java
+                        )
+                    }
+
                 }
             }.addOnFailureListener { exception ->
                 // Xử lý lỗi nếu có
