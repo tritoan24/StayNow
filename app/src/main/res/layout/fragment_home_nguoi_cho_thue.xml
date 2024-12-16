@@ -10,7 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_bg">
+        android:background="@color/white">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,25 +79,18 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardViewChuTro"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="150dp"
                 android:elevation="8dp"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="18dp">
 
-                <include
-                    android:id="@+id/view_location_search"
-                    layout="@layout/view_location_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp" />
-
                 <view
                     class="com.ph32395.staynow.view.ItemTaoChuTro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="80dp"
+
                     tools:ignore="MissingClass" />
 
             </androidx.cardview.widget.CardView>
@@ -150,7 +143,6 @@
                 android:layout_below="@id/txtDoiTac"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
-                android:layout_marginHorizontal="20dp"
                 tools:listitem="@layout/item_room_doi_tac"/>
 
         </RelativeLayout>

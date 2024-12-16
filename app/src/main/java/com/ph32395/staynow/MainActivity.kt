@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
+import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private val homeNguoiChoThueFragment = HomeNguoiChoThueFragment() //Nguoi cho thue
     private val messageFragment = MessageFragment()
     private val profileFragment = ProfileFragment()
+    private val phongTroYeuThichFragment = PhongTroYeuThichFragment()
     private var activeFragment: Fragment = homeFragment
 
     private val mDatabase = FirebaseDatabase.getInstance().reference
@@ -105,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
             add(R.id.fragment_container, messageFragment, "MESSAGE").hide(messageFragment)
-//            add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
+            add(R.id.fragment_container, phongTroYeuThichFragment, "FAVORITE").hide(phongTroYeuThichFragment)
             add(R.id.fragment_container, homeFragment, "HOME").hide(homeFragment)
         }.commit()
 //        Nhan vai tro tu Intent
@@ -124,10 +126,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-//                R.id.bottom_notification -> {
-//                    showFragment(notificationFragment)
-//                    true
-//                }
+                R.id.bottom_notification -> {
+                    showFragment(phongTroYeuThichFragment)
+                    true
+                }
 
                 R.id.bottom_message -> {
                     showFragment(messageFragment)
@@ -224,46 +226,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Cong Add
-//    override fun onStart() {
-//        super.onStart()
-//        setUserOnline()
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        setUserOffline()
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        setUserOffline()
-//    }
 //
     override fun onDestroy() {
         super.onDestroy()
         // Cong Add
         // Đặt trạng thái offline khi ứng dụng bị hủy
         myApplication.setOnlineStatus(false)
-    }
-
-
-    private fun setUserOnline() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null) {
-            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("online")
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
-        }
-    }
-
-    private fun setUserOffline() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null) {
-            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("offline")
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
-        }
     }
 
     //nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã

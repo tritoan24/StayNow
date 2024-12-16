@@ -221,59 +221,65 @@ class RoomDetailActivity : AppCompatActivity() {
 
     }
 
+//    Chuyen doi trang thai yei thich
     private fun toggleFavoriteStatus() {
         val firestore = FirebaseFirestore.getInstance()
+//    Lay id nguoi dung hien tai
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        isFavorite = !isFavorite
-        firestore.collection("PhongTro").document(roomId)
-            .update("Trangthai_yeuthich", isFavorite)
-            .addOnSuccessListener {
-                updateFavoriteIcon()
-                if (isFavorite) {
-                    addToFavorites(userId)
-                } else {
-                    removeFromFavorites(userId)
-                }
+//    Kiem tra phong tro da  trong danh sach phong tro yeu thich chua
+    firestore.collection("PhongTroYeuThich")
+        .document("$userId-$roomId")
+        .get()
+        .addOnSuccessListener { documentSnapshot ->
+            if (documentSnapshot.exists()) {
+//                Neu phong co trong ds phong yeu thich thi xoa no di
+                firestore.collection("PhongTroYeuThich")
+                    .document("$userId-$roomId")
+                    .delete()
+                    .addOnSuccessListener {
+                        isFavorite = false
+//                        Cap nhat lai icon trai tim
+                        updateFavoriteIcon()
+                    }
+            } else {
+//                Neu phong tro chua co trong danh sach phong yeu thich thi them vao
+                val favoriteData = hashMapOf(
+                    "Id_nguoidung" to userId,
+                    "Id_phongtro" to roomId,
+                    "Thoigian_yeuthich" to System.currentTimeMillis()
+                )
+
+                firestore.collection("PhongTroYeuThich")
+                    .document("$userId-$roomId")
+                    .set(favoriteData)
+                    .addOnSuccessListener {
+                        isFavorite = true
+                        updateFavoriteIcon()
+                    }
             }
+        }
     }
 
-
-//    Them phong yeu thich vao bang PhongTroYeuThich
-    private fun addToFavorites(userId: String) {
-        val firestore = FirebaseFirestore.getInstance()
-        val favoriteData = hashMapOf(
-            "Id_nguoidung" to userId,
-            "Id_phongtro" to roomId,
-            "Thoigian_yeuthich" to System.currentTimeMillis()
-        )
-        firestore.collection("PhongTroYeuThich").document("$userId-$roomId").set(favoriteData)
-    }
-
-//    Xoa phong yeu thich
-    private fun removeFromFavorites(userId: String) {
-        val firestore = FirebaseFirestore.getInstance()
-        firestore.collection("PhongTroYeuThich").document("$userId-$roomId").delete()
-    }
-
-//    lay danh sach phong co Trangthai_yeuthich = true
+//    Kiem tra trang thai yeu thich
     private fun fetchFavoriteStatus() {
-        firestore.collection("PhongTro")
-            .document(roomId)
+//        lay id nguoi dung hien tai
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val firestore = FirebaseFirestore.getInstance()
+
+//    Kiem tra cos ton tai document yeu thich ben trong khong
+        firestore.collection("PhongTroYeuThich")
+            .document("$userId-$roomId")
             .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    isFavorite = document.getBoolean("Trangthai_yeuthich") ?: false
-                    updateFavoriteIcon()
-                }
+            .addOnSuccessListener { documentSnapshot ->
+//                Neu document to tai thi danh dau yeu thich
+                isFavorite = documentSnapshot.exists()
+                updateFavoriteIcon()
             }
             .addOnFailureListener { e ->
-                // Xử lý lỗi khi fetch
-                Toast.makeText(this, "Lỗi tải trạng thái yêu thích: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Loi khi tai trang thai yeu thich: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
-
     //    Cap nhat lai icon khi thay doi trang thai yeu thich
     private fun updateFavoriteIcon() {
         favoriteIcon.setImageResource(if (isFavorite) R.drawable.icon_heart_red else R.drawable.icon_favorite)

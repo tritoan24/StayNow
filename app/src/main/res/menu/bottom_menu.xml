@@ -8,8 +8,8 @@
 
     <item
         android:id="@+id/bottom_notification"
-        android:title="Notification"
-        android:icon="@drawable/icon_notification"/>
+        android:title="Favorite"
+        android:icon="@drawable/icon_favorite"/>
 
     <item
         android:id="@+id/bottom_message"

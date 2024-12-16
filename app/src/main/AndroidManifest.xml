@@ -43,6 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
+            android:usesCleartextTraffic="true"
             android:exported="false" />
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
