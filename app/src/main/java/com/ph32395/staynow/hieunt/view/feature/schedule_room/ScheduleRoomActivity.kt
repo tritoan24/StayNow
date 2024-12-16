@@ -1,14 +1,12 @@
 package com.ph32395.staynow.hieunt.view.feature.schedule_room
 
 import android.graphics.Color
-import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
-import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.Model.PhongTroModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityScheduleRoomBinding
@@ -28,12 +26,11 @@ import com.ph32395.staynow.hieunt.helper.Default.Collection.TITLE
 import com.ph32395.staynow.hieunt.helper.Default.Collection.TYPE_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_DETAIL
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_ID
-import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
-import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
+import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.ROOM_SCHEDULE
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
-import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.ScheduleRoomModel
+import com.ph32395.staynow.hieunt.view.feature.ScheduleRoomSuccessActivity
 import com.ph32395.staynow.hieunt.view_model.CommonVM
 import com.ph32395.staynow.hieunt.widget.currentBundle
 import com.ph32395.staynow.hieunt.widget.getTextEx
@@ -128,8 +125,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                             pushNotification(scheduleRoomModel){
                                 toastNotification(it)
                             }
-                            launchActivity(MainActivity::class.java)
-                            finish()
+                            launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleRoomModel) }, ScheduleRoomSuccessActivity::class.java)
                         } else {
                             toast("Error")
                         }

@@ -90,6 +90,7 @@
     <string name="title_activity_monthly_invoice">MonthlyInvoice</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="t_l_ch_th_nh_c_ng">Đặt lịch thành công</string>
 
 
 </resources>

@@ -1,6 +1,7 @@
 package com.ph32395.staynow.hieunt.model
 
 import com.google.firebase.firestore.PropertyName
+import java.io.Serializable
 
 data class ScheduleRoomModel (
     @PropertyName("ma_phong_hen") var roomScheduleId: String = "",
@@ -19,4 +20,4 @@ data class ScheduleRoomModel (
     @PropertyName("trang_thai") var status: Int = 0,
     @PropertyName("chu_tro_thay_doi_lich") var changedScheduleByRenter: Boolean = false,
 
-    )
+    ): Serializable

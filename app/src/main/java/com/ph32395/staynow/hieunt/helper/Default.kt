@@ -29,6 +29,7 @@ object Default {
         const val ROOM_DETAIL = "room_detail"
         const val ROOM_ID = "room_id"
         const val OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION = "open_manage_schedule_room_by_notification"
+        const val ROOM_SCHEDULE = "room_schedule"
     }
 
     object SharePreKey {
