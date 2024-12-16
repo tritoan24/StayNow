@@ -1,8 +1,6 @@
 package com.ph32395.staynow.Activity
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -27,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.dynamiclinks.DynamicLink
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData
 import com.google.firebase.dynamiclinks.internal.FirebaseDynamicLinksImpl.createDynamicLink
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
@@ -41,10 +40,11 @@ import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
 import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
-import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
-import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
 import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow.MainActivity
+import com.ph32395.staynow.Model.PhongTroModel
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
+import com.ph32395.staynow.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow.fragment.RoomManagementFragment
@@ -64,11 +64,17 @@ class RoomDetailActivity : AppCompatActivity() {
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var tienNghiAdapter: TienNghiAdapter
     private var ManHome = ""
+    private var isFavorite = false
+    private lateinit var roomId: String
+    private lateinit var favoriteIcon: ImageView
+    private val firestore = FirebaseFirestore.getInstance()
 
     private lateinit var viewmodelHome:HomeViewModel
 
     //khai báo loading animation
     private lateinit var loadingUtil: LoadingUtil
+
+    private var maPhongTro = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,6 +83,16 @@ class RoomDetailActivity : AppCompatActivity() {
 
         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
             finish()
+        }
+
+        roomId = intent.getStringExtra("maPhongTro") ?: ""
+        favoriteIcon = findViewById(R.id.iconFavorite)
+
+//        fetch trang thai yeu thich tu Firestore
+        fetchFavoriteStatus()
+//        Nhan vao icon yeu thich
+        favoriteIcon.setOnClickListener {
+            toggleFavoriteStatus()
         }
 
 //        Khởi tạo LoadingUtil
@@ -89,7 +105,7 @@ class RoomDetailActivity : AppCompatActivity() {
         viewmodelHome = ViewModelProvider(this)[HomeViewModel::class.java]
 
 //        Nhan du lieu tu Intent
-        val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+        maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         ManHome = intent.getStringExtra("ManHome") ?: ""
 
 
@@ -204,6 +220,65 @@ class RoomDetailActivity : AppCompatActivity() {
         setupRecyViewTienNghi()
 
     }
+
+    private fun toggleFavoriteStatus() {
+        val firestore = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        isFavorite = !isFavorite
+        firestore.collection("PhongTro").document(roomId)
+            .update("Trangthai_yeuthich", isFavorite)
+            .addOnSuccessListener {
+                updateFavoriteIcon()
+                if (isFavorite) {
+                    addToFavorites(userId)
+                } else {
+                    removeFromFavorites(userId)
+                }
+            }
+    }
+
+
+//    Them phong yeu thich vao bang PhongTroYeuThich
+    private fun addToFavorites(userId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        val favoriteData = hashMapOf(
+            "Id_nguoidung" to userId,
+            "Id_phongtro" to roomId,
+            "Thoigian_yeuthich" to System.currentTimeMillis()
+        )
+        firestore.collection("PhongTroYeuThich").document("$userId-$roomId").set(favoriteData)
+    }
+
+//    Xoa phong yeu thich
+    private fun removeFromFavorites(userId: String) {
+        val firestore = FirebaseFirestore.getInstance()
+        firestore.collection("PhongTroYeuThich").document("$userId-$roomId").delete()
+    }
+
+//    lay danh sach phong co Trangthai_yeuthich = true
+    private fun fetchFavoriteStatus() {
+        firestore.collection("PhongTro")
+            .document(roomId)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    isFavorite = document.getBoolean("Trangthai_yeuthich") ?: false
+                    updateFavoriteIcon()
+                }
+            }
+            .addOnFailureListener { e ->
+                // Xử lý lỗi khi fetch
+                Toast.makeText(this, "Lỗi tải trạng thái yêu thích: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    //    Cap nhat lai icon khi thay doi trang thai yeu thich
+    private fun updateFavoriteIcon() {
+        favoriteIcon.setImageResource(if (isFavorite) R.drawable.icon_heart_red else R.drawable.icon_favorite)
+    }
+
     private fun shareLink(dynamicLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain" // Định dạng chia sẻ là văn bản
@@ -240,9 +315,19 @@ class RoomDetailActivity : AppCompatActivity() {
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
         findViewById<RecyclerView>(R.id.recyclerViewChiTietThongTin).apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            layoutManager = GridLayoutManager(context, 4)
+//            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = GridLayoutManager(context, 3)
             adapter = chiTietAdapter
+        }
+    }
+
+    //    danh sach phi dich vu
+    private fun setupListPhiDichVu() {
+        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
+            layoutManager = GridLayoutManager(context, 3)
+            adapter = phiDichVuAdapter
+
+//            addItemDecoration(SpacingItemDecoration(1))
         }
     }
 
@@ -266,15 +351,7 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
-    //    danh sach phi dich vu
-    private fun setupListPhiDichVu() {
-        findViewById<RecyclerView>(R.id.recyclerViewPhiDichVu).apply {
-            layoutManager = GridLayoutManager(context, 3)
-            adapter = phiDichVuAdapter
 
-//            addItemDecoration(SpacingItemDecoration(1))
-        }
-    }
 
     private fun setupImage() {
         //        Thiet lap viewPager va RecyclerView cho anh
@@ -294,8 +371,6 @@ class RoomDetailActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-
-
 //        Quan sat chi tiet phong tro chinh
         viewModel.room.observe(this) { room ->
 //            Cap nhat giao dien thong tin phong tro
@@ -360,6 +435,28 @@ class RoomDetailActivity : AppCompatActivity() {
                 intent.putExtra("updateRoomModel", updateRoomModel)
                 startActivity(intent)
             }
+            findViewById<LinearLayout>(R.id.btnSuaPhongLuu).setOnClickListener{
+//                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
+//                intent.putExtra("id_PhongTro", maPhongTro)
+//                startActivity(intent)
+                val updateRoomModel = UpdateRoomModel(
+                    Ten_phongtro = viewModel.room.value?.Ten_phongtro ?: "",
+                    Dia_chi = viewModel.room.value?.Dia_chi ?: "",
+                    Loai_phong = viewModel.roomType.value ?: "",
+                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
+                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
+                    Gia_phong = viewModel.room.value?.Gia_phong ?: 0.0,
+                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
+                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
+                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
+                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
+                    Chi_tietthem = viewModel.room.value?.Mota_chitiet ?: ""
+                )
+                //                    Truyen du lieu qua Intent
+                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
+                intent.putExtra("updateRoomModel", updateRoomModel)
+                startActivity(intent)
+            }
 
 //            Chuc ang go phong chuyen sang man dang luu
             findViewById<LinearLayout>(R.id.btnGoPhong).setOnClickListener {
@@ -385,7 +482,6 @@ class RoomDetailActivity : AppCompatActivity() {
                 )
                 dialog.show(supportFragmentManager, "CustomConfirmationDialog")
             }
-
 //            Chuc nang cho duyet -> dang luu
             findViewById<LinearLayout>(R.id.btnXacNhanHuy).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
@@ -413,10 +509,41 @@ class RoomDetailActivity : AppCompatActivity() {
 
             //            Chuc ang go phong chuyen sang man da  dang
             findViewById<LinearLayout>(R.id.btnDangPhong).setOnClickListener {
-                val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
-                val intent = Intent(this, CapNhatViTri::class.java)
-                intent.putExtra("PHONG_TRO_ID", roomId)
-                startActivity(intent)
+                //Hien thi Dialog xacs nhan
+                val dialog = CustomConfirmationDialog(
+                    message = "Bạn có chắc chắn muốn đăng phòng không?",
+                    onConfirm = {
+                        if ( maPhongTro!= null) {
+
+                            val PhongTro = firestore.collection("PhongTro").document(maPhongTro!!)
+
+                            PhongTro.update(mapOf(
+                                "Trang_thailuu" to false,
+                                "Trang_thaiduyet" to "ChoDuyet"
+                            )).addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    Log.d("Firestore", "Cập nhật thành công")
+                                } else {
+                                    Log.e("Firestore", "Lỗi khi cập nhật: ${task.exception?.message}")
+                                }
+                            }
+
+
+                        }else {
+                            Toast.makeText(this, "Không tìm thấy ID phòng trọ", Toast.LENGTH_SHORT).show()
+                        }
+                        // Hiển thị thông báo
+                        Toast.makeText(this, "Đã đăng phòng trọ!", Toast.LENGTH_SHORT).show()
+                        // Chuyển đến Fragment "Phòng Đang Lưu"
+                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
+                        startActivity(intent)
+                        finish() // Đóng màn hình hiện tại
+                    },
+                    onCancel = {
+
+                    }
+                )
+                dialog.show(supportFragmentManager, "CustomConfirmationDialog")
             }
 
             //            Chuc ang go phong chuyen sang man huy phong

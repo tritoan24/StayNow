@@ -309,6 +309,7 @@
 
                 <!-- Menu Item: Hóa đơn -->
                 <LinearLayout
+                    android:id="@+id/ll_hoadon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -396,6 +397,7 @@
                     android:background="@android:color/darker_gray" />
                 <!-- Menu Item: Bài đăng yêu thích -->
                 <LinearLayout
+                    android:id="@+id/btnBaiDangYeuThich"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

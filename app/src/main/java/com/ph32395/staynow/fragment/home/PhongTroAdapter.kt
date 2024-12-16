@@ -86,7 +86,9 @@ class PhongTroAdapter(
             // Cập nhật giá thuê
             roomPrice.text = "${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
 
+//            Hien thi dien tich
             roomArea.text = "${room.Dien_tich} m²"
+
 
             // Cập nhật số lượt xem
             roomViews.text = "${room.So_luotxemphong}"
@@ -106,6 +108,7 @@ class PhongTroAdapter(
 
 //            Xu ly su kien khi click item sang man chi tiet
             itemView.tap {
+                //Luu thong tin phong tro da xem
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@tap
                 saveRoomToHistory(userId, roomId)
 

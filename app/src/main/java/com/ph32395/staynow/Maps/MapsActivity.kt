@@ -162,9 +162,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             override fun afterTextChanged(s: android.text.Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                fetchSuggestions(s.toString())
+                fetchSuggestions(s.toString())
 //                suggestionsRoom(s.toString().trim(), listRoom)
-                suggestionQuan(s.toString().trim(), listQuan)
+//                suggestionQuan(s.toString().trim(), listQuan)
 
             }
         })
@@ -641,9 +641,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 binding.tvAddressRoom.text = matchedRoom.second.Dia_chi
 
             }
-            val intent = Intent(this, RoomDetailActivity::class.java)
-            intent.putExtra("maPhongTro", matchedRoom?.first)
-            startActivity(intent)
+
+            binding.layoutCardView.setOnClickListener {
+                Log.d(TAG, "addMarkersFromAddresses: ${matchedRoom?.first}")
+                val intent = Intent(this, RoomDetailActivity::class.java)
+                intent.putExtra("maPhongTro", matchedRoom?.first)
+                startActivity(intent)
+            }
+
             bottomSheet.show()
 
 
@@ -675,60 +680,73 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     }
 
+   private fun fetchSuggestions(query: String) {
+            if (query.length < 2) return
 
-    // goi ý tim kiem dia chi maps
-    private fun fetchSuggestions(query: String) {
-        if (query.length < 2) return
+            val apiKey = getCurrentApiKey()
+            RetrofitInstance.api.getPlace(apiKey, query)
+                .enqueue(object : Callback<SuggestionResponse> {
+                    override fun onResponse(
+                        call: Call<SuggestionResponse>,
+                        response: Response<SuggestionResponse>
+                    ) {
+                        val currentKey = getCurrentApiKey()
 
-        val apiKey = getCurrentApiKey()
-        RetrofitInstance.api.getPlace(apiKey, query)
-            .enqueue(object : Callback<SuggestionResponse> {
-                override fun onResponse(
-                    call: Call<SuggestionResponse>,
-                    response: Response<SuggestionResponse>
-                ) {
-                    val currentKey = getCurrentApiKey()
+                        // Kiểm tra giới hạn trong header
+                        val remainingRequests =
+                            response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
+                        if (remainingRequests != null) {
+                            usageMap[currentKey] = 998 - remainingRequests
+                            Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
+                        }
 
-                    // Kiểm tra giới hạn trong header
-                    val remainingRequests =
-                        response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
-                    if (remainingRequests != null) {
-                        usageMap[currentKey] = 998 - remainingRequests
-                        Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
+                        // Nếu vượt quá giới hạn, chuyển sang key mới
+                        if (remainingRequests != null && remainingRequests <= 0) {
+                            rotateApiKey()
+                            fetchSuggestions(query) // Gọi lại với key mới
+                            return
+                        }
+                        Log.d(TAG, "onResponse: response $response")
+                        if (response.isSuccessful && response.body()?.status == "OK") {
+                            val suggestions = response.body()?.predictions ?: emptyList()
+                            Log.d(TAG, "onResponse: suggestions $suggestions ")
+                            val list = suggestions.map { it.description }
+                            Log.d(TAG, "onResponse: list $list")
+                            val adapter = ArrayAdapter(
+                                this@MapsActivity,
+                                android.R.layout.simple_list_item_1,
+                                list
+                            )
+                            binding.autoComplete.setAdapter(adapter)
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            Log.e("Retrofit", "Response error: ${response.errorBody()?.string()}")
+                        }
+                        // Logic xử lý response như cũ
+                        if (response.isSuccessful && response.body()?.status == "OK") {
+                            val suggestions = response.body()?.predictions ?: emptyList()
+                            val list = suggestions.map { it.description }
+
+                            // Tạo adapter và set cho AutoCompleteTextView
+                            val adapter = ArrayAdapter(
+                                this@MapsActivity,
+                                android.R.layout.simple_list_item_1,
+                                list
+                            )
+                            binding.autoComplete.setAdapter(adapter)
+                            adapter.notifyDataSetChanged()
+                        }
                     }
 
-                    // Nếu vượt quá giới hạn, chuyển sang key mới
-                    if (remainingRequests != null && remainingRequests <= 0) {
-                        rotateApiKey()
-                        fetchSuggestions(query) // Gọi lại với key mới
-                        return
+                    override fun onFailure(call: Call<SuggestionResponse>, t: Throwable) {
+                        Log.e("Retrofit", "API call failed: ${t.message}")
                     }
-                    Log.d(TAG, "onResponse: response $response")
-                    if (response.isSuccessful && response.body()?.status == "OK") {
-                        val suggestions = response.body()?.predictions ?: emptyList()
-                        Log.d(TAG, "onResponse: suggestions $suggestions ")
-                        val list = suggestions.map { it.description }
-                        Log.d(TAG, "onResponse: list $list")
-                        val adapter = ArrayAdapter(
-                            this@MapsActivity,
-                            android.R.layout.simple_list_item_1,
-                            list
-                        )
-                        binding.autoComplete.setAdapter(adapter)
-                        adapter.notifyDataSetChanged()
-                    } else {
-                        Log.e("Retrofit", "Response error: ${response.errorBody()?.string()}")
-                    }
-                }
-
-                override fun onFailure(call: Call<SuggestionResponse>, t: Throwable) {
-                    Log.e("Retrofit", "API call failed: ${t.message}")
-                }
-            })
+                })
     }
 
+
     //suggestionsRoom
-    private fun suggestionsRoom(query: String, listRoom: MutableList<PhongTroModel>) {
+    public fun suggestionsRoom(query: String, listRoom: MutableList<PhongTroModel>) {
 
         // Chia chuỗi tìm kiếm thành các từ và loại bỏ các mục rỗng
         val queryWords = query.trim().split("\\s+".toRegex()).filter { it.isNotEmpty() }

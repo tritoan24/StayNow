@@ -7,5 +7,10 @@ data class SuggestionResponse(
 
 data class Prediction(
     val description: String,
-    val place_id: String
+    val place_id: String,
+    val structured_formatting: StructuredFormatting?
+)
+
+data class StructuredFormatting(
+    val secondary_text: String? // Giá trị này có thể null
 )

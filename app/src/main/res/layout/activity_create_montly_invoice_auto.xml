@@ -15,19 +15,40 @@
     tools:context=".TaoHoaDon.CreateInvoice"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="8dp"
+    android:padding="10dp"
     >
 
 
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:layout_marginTop="20dp"
+    >
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tạo hóa đơn hàng tháng"
+        android:text="Hóa đơn tháng "
         android:textSize="24sp"
         android:textColor="@color/purple"
-        android:layout_marginBottom="16dp"/>
+        android:layout_gravity="center"
+        />
+    <TextView
+        android:id="@+id/txtThang"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5"
+        android:textSize="24sp"
+        android:textColor="@color/purple"
+        android:background="@drawable/bg_button_detail"
+        android:paddingHorizontal="10dp"
+        android:gravity="center"
+        />
+
+</LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -242,6 +263,7 @@
         android:layout_marginBottom="8dp">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/edSoNuocCu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -258,7 +280,7 @@
                 android:hint="Chỉ số nước"
                 android:inputType="number"
                 android:textColor="@android:color/black"
-                android:textColorHint="#AE1FFF"/>
+                android:textColorHint="#AE1FFF" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -311,7 +333,6 @@
         app:boxCornerRadiusBottomStart="8dp"
         app:boxCornerRadiusTopEnd="8dp"
         app:boxCornerRadiusTopStart="8dp"
-        android:layout_marginHorizontal="16dp"
      >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -331,7 +352,6 @@
         app:boxCornerRadiusBottomStart="8dp"
         app:boxCornerRadiusTopEnd="8dp"
         app:boxCornerRadiusTopStart="8dp"
-        android:layout_marginHorizontal="16dp"
       >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -348,11 +368,11 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
+        android:layout_marginTop="8dp"
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -395,26 +415,6 @@
             />
         <TextView
             android:id="@+id/tvTienPhong"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textAlignment="textEnd"
-            android:text="10000000"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tiền cọc:"
-            />
-        <TextView
-            android:id="@+id/tvTienCoc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -527,7 +527,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiền Giam"
+            android:text="Tiền giảm"
             />
         <TextView
             android:id="@+id/tvTienGiam"
@@ -571,6 +571,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="10dp"
        >
         <Button
             android:id="@+id/btnCancel"
@@ -587,6 +588,7 @@
             android:layout_weight="1"
             android:text="Tạo hóa đơn"
             android:background="@drawable/bg_button_detail"
+            android:layout_marginLeft="10dp"
             />
 
     </LinearLayout>

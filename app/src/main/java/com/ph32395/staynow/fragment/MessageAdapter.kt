@@ -2,7 +2,9 @@ package com.ph32395.staynow.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -47,6 +49,11 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
                     // Lấy dữ liệu từ Firebase, nếu thiếu thì dùng giá trị mặc định
                     val name = snapshot.child("ho_ten").value?.toString() ?: "Tên người dùng không có"
                     val avatar = snapshot.child("anh_daidien").value?.toString() ?: ""
+                    val status = snapshot.child("status").value?.toString()
+                    Log.d(TAG, "onDataChange:status $status")
+
+                    val statusDrawable = holder.statusUser.background as GradientDrawable
+                    statusDrawable.setColor(if (status == "online") Color.GREEN else Color.GRAY)
 
                     holder.nameUser.text = name
                     val context = holder.itemView.context
@@ -105,6 +112,7 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
         val texting = itemView.tvTexting
         val timeGuiTin = itemView.tvTimeGuiTexting
         val tvNumberTexting = itemView.tvNumberTexting
+        val statusUser = itemView.vTrangThaiUser
     }
 
     // Hàm chuyển đổi timestamp thành giờ phút giây

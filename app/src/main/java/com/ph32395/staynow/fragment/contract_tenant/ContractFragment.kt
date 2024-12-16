@@ -1,6 +1,5 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
-import ContractViewModel
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHopDong.ContractStatus
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.databinding.FragmentContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import kotlinx.coroutines.launch
@@ -52,10 +53,9 @@ class ContractFragment : Fragment() {
             setSpan(UnderlineSpan(), 0, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         binding.ivBack.tap {
-            requireActivity().onBackPressed()  // Gọi phương thức quay lại màn hình trước
+            requireActivity().onBackPressed()
         }
         // Khởi tạo adapter và gán vào RecyclerView
-        setupAdapters()
 
         // Khởi tạo FirebaseAuth và lấy userId
         mAuth = FirebaseAuth.getInstance()
@@ -63,11 +63,20 @@ class ContractFragment : Fragment() {
 
         setupObservers()
 
-        if (userId != null) {
-            fetchContractsByTenant(userId)
-        }
+        // Quan sát LiveData để nhận giá trị vai trò
+        contractViewModel.userRoleLiveData.observe(viewLifecycleOwner, Observer { role ->
+            val isLandlord = checkUserRole(role)
+            if (userId != null) {
+                fetchContractsByUser(userId, isLandlord)
+                setupAdapters(isLandlord)
+                setupRecyclerView(pendingAdapter, "Hợp đồng chờ xác nhận")
 
-        setupRecyclerView(pendingAdapter, "Hợp đồng chờ xác nhận")
+            }
+        })
+
+        if (userId != null) {
+            contractViewModel.getUserRole(userId)
+        }
 
         binding.ivMenu.setOnClickListener {
             val popupMenu = PopupMenu(requireContext(), binding.ivMenu)
@@ -118,21 +127,21 @@ class ContractFragment : Fragment() {
         binding.tvContractsTitle.text = title
     }
 
-    private fun setupAdapters() {
+    private fun setupAdapters(isLandlord:Boolean) {
         activeAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.ACTIVE) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.ACTIVE,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         pendingAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.PENDING) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.PENDING,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         expireAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.EXPIRED) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.EXPIRED,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
         terminatedAdapter =
-            ContractAdapter(contractViewModel, ContractStatus.TERMINATED) { contractId, newStatus ->
+            ContractAdapter(contractViewModel, ContractStatus.TERMINATED,isLandlord) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
 
@@ -154,15 +163,30 @@ class ContractFragment : Fragment() {
         }
     }
 
-    private fun fetchContractsByTenant(userId: String) {
-        lifecycleScope.launch {
-            contractViewModel.fetchContractsByTenant(userId, ContractStatus.ACTIVE)
-            contractViewModel.fetchContractsByTenant(userId, ContractStatus.PENDING)
-            contractViewModel.fetchContractsByTenant(userId, ContractStatus.EXPIRED)
-            contractViewModel.fetchContractsByTenant(userId, ContractStatus.TERMINATED)
+    private fun fetchContractsByUser(userId: String, isLandlord: Boolean) {
+
+        if (isLandlord) {
+            lifecycleScope.launch {
+                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.ACTIVE))
+                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.PENDING))
+                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.EXPIRED))
+                contractViewModel.fetchContractsByLandlordForContractFragment(userId, setOf(ContractStatus.TERMINATED))
+
+            }
+        } else {
+            lifecycleScope.launch {
+                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.ACTIVE))
+                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.PENDING))
+                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.EXPIRED))
+                contractViewModel.fetchContractsByTenantForContractFragment(userId, setOf(ContractStatus.TERMINATED))
+
+            }
         }
     }
 
+    private fun checkUserRole(role: String): Boolean {
+        return role == LoaiTaiKhoan.NguoiChoThue.toString()
+    }
 
     // Hàm kiểm tra trạng thái trống và hiển thị cảnh báo
     private fun checkEmptyState(adapter: ContractAdapter) {
@@ -186,4 +210,9 @@ class ContractFragment : Fragment() {
         }
     }
 
+}
+
+enum class LoaiTaiKhoan {
+    NguoiChoThue,
+    NguoiThue
 }

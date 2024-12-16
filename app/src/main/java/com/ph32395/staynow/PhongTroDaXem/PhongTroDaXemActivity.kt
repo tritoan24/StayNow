@@ -41,8 +41,11 @@ class PhongTroDaXemActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        progressBar.visibility = View.VISIBLE //Hien thi ProgressBar khi bat  dau tai
-        viewModel.fetchRoomHistory(userId)
+//        progressBar.visibility = View.VISIBLE //Hien thi ProgressBar khi bat  dau tai
+        // Quan sát trạng thái tải dữ liệu
+        viewModel.isLoading.observe(this) { isLoading ->
+            progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
 
         viewModel.roomHistoryLiveDate.observe(this) {rooms ->
             progressBar.visibility = View.GONE //An di khi tai xong
@@ -56,6 +59,10 @@ class PhongTroDaXemActivity : AppCompatActivity() {
             }
 
         }
+
+        // Bắt đầu tải dữ liệu
+        progressBar.visibility = View.VISIBLE
+        viewModel.fetchRoomHistory(userId)
 
     }
 

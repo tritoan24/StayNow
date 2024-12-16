@@ -134,10 +134,13 @@ class RoomContract {
             "hoaDonHopDong" to createBillMap(contract.hoaDonHopDong),
             "ngayThanhToan" to contract.ngayThanhToan,
             "ghiChu" to contract.ghiChu,
+            "soDienCu" to contract.soDienCu,
+            "soNuocCu" to contract.soNuocCu
 
 
             )
     }
+
     private fun createRoomInfoMap(roomInfo: RoomInfo): HashMap<String, Any> {
         return hashMapOf(
             "maPhongTro" to roomInfo.maPhongTro,
@@ -255,10 +258,14 @@ class RoomContract {
     }
 
     /**
-     * Lấy danh sách hợp đồng theo chủ nhà.
+     * Lấy danh sách hợp đồng theo chủ trọ và trạng thái
      */
-    suspend fun getContractsByLandlord(landlordId: String): List<HopDong> {
-        return getContracts("chuNha.maNguoiDung", landlordId)
+    fun getContractsByLandlord(
+        landlordId: String,
+        statuses: Set<ContractStatus>? = null, // Hỗ trợ nhiều trạng thái
+        onContractsChanged: (List<HopDong>) -> Unit
+    ) {
+        getContracts("chuNha.maNguoiDung", landlordId, statuses, onContractsChanged)
     }
 
     /**
@@ -267,37 +274,45 @@ class RoomContract {
 
     fun getContractsByTenant(
         tenantId: String,
-        status: ContractStatus? = null,
+        statuses: Set<ContractStatus>? = null, // Hỗ trợ nhiều trạng thái
         onContractsChanged: (List<HopDong>) -> Unit
     ) {
-        getContracts("nguoiThue.maNguoiDung", tenantId, status, onContractsChanged)
+        getContracts("nguoiThue.maNguoiDung", tenantId, statuses, onContractsChanged)
     }
+
+
 
     private fun getContracts(
         field: String,
         value: String,
-        status: ContractStatus? = null,
+        statuses: Set<ContractStatus>? = null, // Hỗ trợ nhiều trạng thái
         onContractsChanged: (List<HopDong>) -> Unit
     ) {
         try {
             var query = contractsCollection.whereEqualTo(field, value)
 
-            // Nếu status được cung cấp, thêm điều kiện lọc theo trạng thái
-            status?.let {
-                query = query.whereEqualTo(
-                    "trangThai",
-                    status.name
-                )  // Giả sử bạn đang lưu trạng thái dưới dạng String
+            // Nếu danh sách trạng thái được cung cấp, thêm điều kiện lọc theo trạng thái
+            statuses?.let {
+                if (it.isNotEmpty()) {
+                    val statusNames =
+                        it.map { status -> status.name } // Lấy danh sách tên trạng thái
+                    query =
+                        query.whereIn("trangThai", statusNames) // whereIn để lọc nhiều trạng thái
+                }
             }
 
             // Lắng nghe sự thay đổi dữ liệu trong Firestore
             query.addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
-                    Log.w("ContractViewModel", "Listen failed.", exception)
+                    Log.w(
+                        "com.ph32395.staynow.TaoHopDong.ContractViewModel",
+                        "Listen failed.",
+                        exception
+                    )
                     return@addSnapshotListener
                 }
 
-                // Nếu dữ liệu thay đổi, parse và gọi callback
+                // Parse dữ liệu và gọi callback
                 val contracts = snapshot?.documents?.mapNotNull { document ->
                     document.toObject(HopDong::class.java)
                 } ?: emptyList()
@@ -306,7 +321,7 @@ class RoomContract {
                 onContractsChanged(contracts)
             }
         } catch (e: Exception) {
-            Log.e("ContractViewModel", "Error fetching contracts", e)
+            Log.e("com.ph32395.staynow.TaoHopDong.ContractViewModel", "Error fetching contracts", e)
             onContractsChanged(emptyList())
         }
     }
@@ -345,7 +360,12 @@ class RoomContract {
                 if (roomId != null) {
                     // Cập nhật trạng thái phòng trọ
                     roomsCollection.document(roomId)
-                        .update("Trang_thaiphong", false)
+                        .update(
+                            mapOf(
+                                "Trang_thaiphong" to false,
+                                "Trang_thaiduyet" to ""
+                            )
+                        )
                         .await()
                 }
             }
@@ -355,6 +375,7 @@ class RoomContract {
             onFailure(e)
         }
     }
+
     suspend fun getAllContractsByUser(userId: String): List<HopDong> {
         return try {
             val db = FirebaseFirestore.getInstance()
@@ -370,7 +391,6 @@ class RoomContract {
             emptyList() // Trả về danh sách rỗng nếu có lỗi
         }
     }
-
 
 
 }

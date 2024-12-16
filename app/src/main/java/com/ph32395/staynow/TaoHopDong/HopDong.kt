@@ -42,7 +42,10 @@ data class HopDong(
     val trangThai: ContractStatus = ContractStatus.PENDING,
 
     // Thông tin hóa đơn
-    val hoaDonHopDong: Invoice = Invoice()
+    val hoaDonHopDong: Invoice = Invoice(),
+
+    val soDienCu: Int = 0,
+    val soNuocCu: Int = 0,
 ):Serializable
 
 // Thông tin chi tiết về phòng
@@ -151,6 +154,7 @@ data class UtilityFeeDetail(
 enum class InvoiceStatus {
     PENDING,
     PAID,
+    ACTIVE,
     OVERDUE,
     CANCELLED,
     DONE

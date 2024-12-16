@@ -1,6 +1,6 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
-import ContractViewModel
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
@@ -17,6 +17,7 @@ import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ItemContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
+import com.ph32395.staynow.utils.showConfirmDialog
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -24,6 +25,7 @@ import java.time.temporal.ChronoUnit
 class ContractAdapter(
     private val viewmodel: ContractViewModel,
     private val type: ContractStatus,
+    private val isLandlord: Boolean,
     private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit
 ) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
@@ -38,7 +40,7 @@ class ContractAdapter(
     @SuppressLint("NotifyDataSetChanged")
     override fun onBindViewHolder(holder: ContractViewHolder, position: Int) {
         val contract = contractList[position]
-        holder.bind(contract, type)
+        holder.bind(contract, type, isLandlord)
 
     }
 
@@ -68,7 +70,11 @@ class ContractAdapter(
 
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n", "DefaultLocale")
-        fun bind(contract: HopDong, type: ContractStatus) {
+        fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
+
+            if (isLandlord) {
+                llBtn.visibility = View.GONE
+            }
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
@@ -95,6 +101,7 @@ class ContractAdapter(
                     tvRemainingTime.visibility = View.GONE
                     llBtn.visibility =
                         if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) View.VISIBLE else View.GONE
+
                     btnXacNhan.tap {
 
                         val intent = Intent(itemView.context, BillContractActivity::class.java)
@@ -105,11 +112,18 @@ class ContractAdapter(
                         itemView.context.startActivity(intent)
                     }
                     btnCancel.tap {
-                        onStatusUpdated(
-                            contract.maHopDong,
-                            ContractStatus.TERMINATED
-                        )
-                        updateContractList(contractList)
+                        showConfirmDialog(
+                            itemView.context,
+                            "Hủy Hợp Đồng",
+                            "Bạn có chắc chắn muốn hủy hợp đồng này?"
+                        ) {
+                            onStatusUpdated(
+                                contract.maHopDong,
+                                ContractStatus.TERMINATED
+                            )
+                            updateContractList(contractList)
+                        }
+
                     }
                 }
 

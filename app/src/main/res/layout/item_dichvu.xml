@@ -3,7 +3,6 @@
     android:id="@+id/item_dichvu"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-        android:orientation="vertical"
     android:layout_marginBottom="8dp"
     android:layout_margin="4dp"
     android:background="@drawable/border_selected"
@@ -15,6 +14,15 @@
         android:gravity="center"
 
         >
+        <!-- Hình ảnh xóa góc phải -->
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|top"
+            android:src="@drawable/ic_delete"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" />
 
         <!-- Hình ảnh nội thất -->
         <ImageView
@@ -47,14 +55,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
-            android:textSize="12sp"
-            android:layout_gravity="center"
-            />
-        <TextView
-            android:id="@+id/donviDichvu"
-            android:layout_width= "wrap_content"
-            android:layout_height="wrap_content"
-            android:text="VND"
             android:textSize="12sp"
             android:layout_gravity="center"
             />
