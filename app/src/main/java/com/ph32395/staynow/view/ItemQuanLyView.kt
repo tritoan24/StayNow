@@ -7,8 +7,12 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.ph32395.staynow.QuanLyNguoiThue.QuanLyNguoiThueActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.R
+import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
+import com.ph32395.staynow.quanlyhoadon.BillManagementActivity
 
 class ItemQuanLyView @JvmOverloads constructor(
     context: Context,
@@ -20,10 +24,10 @@ class ItemQuanLyView @JvmOverloads constructor(
         LayoutInflater.from(context).inflate(R.layout.view_item_quan_ly, this, true)
 
 //        Khoi tao su kien click va chi dinh  tung chuc nang
-        setupItemClick(R.id.item_quan_ly_phong) { onItemClicked("QuanLyPhong")}
-        setupItemClick(R.id.item_quan_ly_hop_dong) { onItemClicked("QuanLyHopDong")}
-        setupItemClick(R.id.item_quan_ly_hoa_don) { onItemClicked("QuanLyHoaDon")}
-        setupItemClick(R.id.item_quan_ly_nguoi_thue) { onItemClicked("QuanLyNguoiThue")}
+        setupItemClick(R.id.item_quan_ly_phong) { onItemClicked("QuanLyPhong") }
+        setupItemClick(R.id.item_quan_ly_hop_dong) { onItemClicked("QuanLyHopDong") }
+        setupItemClick(R.id.item_quan_ly_hoa_don) { onItemClicked("QuanLyHoaDon") }
+        setupItemClick(R.id.item_quan_ly_nguoi_thue) { onItemClicked("QuanLyNguoiThue") }
     }
 
     private fun setupItemClick(itemId: Int, action: () -> Unit) {
@@ -37,11 +41,27 @@ class ItemQuanLyView @JvmOverloads constructor(
             }
 
             "QuanLyHopDong" -> {
-                Toast.makeText(context, "Quan ly hop dong", Toast.LENGTH_SHORT).show()
+                val fragmentManager = (context as AppCompatActivity).supportFragmentManager
+                val fragmentTag = "ContractFragment"
+
+                // Fragment chưa tồn tại, tạo mới và thêm vào
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                val newFragment = ContractFragment()
+
+                // Ẩn Bottom Navigation
+                val activity = context as androidx.fragment.app.FragmentActivity
+                if (activity is MainActivity) {
+                    activity.setBottomNavigationVisibility(false)
+                }
+
+                fragmentTransaction.replace(R.id.fragment_container, newFragment, fragmentTag)
+                fragmentTransaction.addToBackStack(fragmentTag)
+                fragmentTransaction.commit()
+
             }
 
             "QuanLyHoaDon" -> {
-                Toast.makeText(context, "Quan ly hoa don", Toast.LENGTH_SHORT).show()
+                context.startActivity(Intent(context, BillManagementActivity::class.java))
             }
 
             "QuanLyNguoiThue" -> {

@@ -1,6 +1,7 @@
 package com.ph32395.staynow.fragment.home
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
+@Suppress("LABEL_NAME_CLASH", "NAME_SHADOWING")
 class HomeViewModel : ViewModel() {
     private val _selectedLoaiPhongTro = MutableLiveData<String>()
     val selectedLoaiPhongTro: LiveData<String> get() = _selectedLoaiPhongTro
@@ -28,7 +30,6 @@ class HomeViewModel : ViewModel() {
     private val _roomList = MutableLiveData<List<Pair<String, PhongTroModel>>>()
     val roomList: LiveData<List<Pair<String, PhongTroModel>>> get() = _roomList
     private val cachedRooms = mutableMapOf<String, List<Pair<String, PhongTroModel>>>()
-
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -62,61 +63,61 @@ class HomeViewModel : ViewModel() {
         _selectedLoaiPhongTro.value = idLoaiPhong
     }
 
-//    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
-    fun loadRoomByStatus(maNguoiDung:String) {
-    //Test
-    firestore.collection("PhongTro")
-        .whereEqualTo("Ma_nguoidung", maNguoiDung) // Lọc theo mã người dùng
-        .get()
-        .addOnSuccessListener { snapshot ->
-            val allRooms = snapshot.documents.mapNotNull { doc ->
-                doc.toObject(PhongTroModel::class.java)?.let { room ->
-                    Pair(doc.id, room)
+    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    fun loadRoomByStatus(maNguoiDung: String) {
+        //Test
+        firestore.collection("PhongTro")
+            .whereEqualTo("Ma_nguoidung", maNguoiDung) // Lọc theo mã người dùng
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val allRooms = snapshot.documents.mapNotNull { doc ->
+                    doc.toObject(PhongTroModel::class.java)?.let { room ->
+                        Pair(doc.id, room)
+                    }
+                }
+
+                if (allRooms.isNotEmpty()) {
+                    val roomIds = allRooms.map { it.first } // Lấy danh sách id của phòng trọ
+
+                    // Truy vấn thông tin diện tích từ bảng ChiTietThongTin
+                    firestore.collection("ChiTietThongTin")
+                        .whereIn("ma_phongtro", roomIds)
+                        .whereEqualTo("ten_thongtin", "Diện tích")
+                        .get()
+                        .addOnSuccessListener { chiTietSnapshot ->
+                            val chiTietMap = chiTietSnapshot.documents.associate { doc ->
+                                doc.getString("ma_phongtro") to doc.getDouble("so_luong_donvi")
+                            }
+
+                            // Cập nhật thông tin diện tích cho từng phòng
+                            val updatedRooms = allRooms.map { (id, room) ->
+                                room.Dien_tich = chiTietMap[id]?.toLong()
+                                Pair(id, room)
+                            }
+
+                            // Cập nhật LiveData
+                            _roomListCT.value = updatedRooms
+
+                            // Phân loại phòng trọ
+                            _phongDaDang.value =
+                                updatedRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
+                            _phongDangLuu.value =
+                                updatedRooms.filter { it.second.Trang_thailuu }
+                            _phongChoDuyet.value =
+                                updatedRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                            _phongDaHuy.value =
+                                updatedRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
+                            _phongDaChoThue.value =
+                                updatedRooms.filter { it.second.Trang_thaiphong }
+                        }
+                        .addOnFailureListener { e ->
+                            Log.e("HomeViewModel", "Error fetching room details: ", e)
+                        }
                 }
             }
-
-            if (allRooms.isNotEmpty()) {
-                val roomIds = allRooms.map { it.first } // Lấy danh sách id của phòng trọ
-
-                // Truy vấn thông tin diện tích từ bảng ChiTietThongTin
-                firestore.collection("ChiTietThongTin")
-                    .whereIn("ma_phongtro", roomIds)
-                    .whereEqualTo("ten_thongtin", "Diện tích")
-                    .get()
-                    .addOnSuccessListener { chiTietSnapshot ->
-                        val chiTietMap = chiTietSnapshot.documents.associate { doc ->
-                            doc.getString("ma_phongtro") to doc.getDouble("so_luong_donvi")
-                        }
-
-                        // Cập nhật thông tin diện tích cho từng phòng
-                        val updatedRooms = allRooms.map { (id, room) ->
-                            room.Dien_tich = chiTietMap[id]?.toLong()
-                            Pair(id, room)
-                        }
-
-                        // Cập nhật LiveData
-                        _roomListCT.value = updatedRooms
-
-                        // Phân loại phòng trọ
-                        _phongDaDang.value =
-                            updatedRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
-                        _phongDangLuu.value =
-                            updatedRooms.filter { it.second.Trang_thailuu == true }
-                        _phongChoDuyet.value =
-                            updatedRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
-                        _phongDaHuy.value =
-                            updatedRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
-                        _phongDaChoThue.value =
-                            updatedRooms.filter { it.second.Trang_thaiphong == true }
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("HomeViewModel", "Error fetching room details: ", e)
-                    }
+            .addOnFailureListener { e ->
+                Log.e("HomeViewModel", "Error fetching rooms: ", e)
             }
-        }
-        .addOnFailureListener { e ->
-            Log.e("HomeViewModel", "Error fetching rooms: ", e)
-        }
     }
 
     //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
@@ -273,7 +274,6 @@ class HomeViewModel : ViewModel() {
                 }
         }
     }
-
     private fun handleRoomList(snapshot: QuerySnapshot) {
         // Bọc vào coroutine để đảm bảo thực thi trên IO thread
         viewModelScope.launch(Dispatchers.IO) {
@@ -293,6 +293,7 @@ class HomeViewModel : ViewModel() {
             }
         }
     }
+
     //    lay du lieu danh sach hien thi o man chu tro phong tro su dung Kotlin Coroutines
     fun updateRoomListWithCoroutines() {
 //        Lay id tai khoan dang nhap
@@ -306,9 +307,7 @@ class HomeViewModel : ViewModel() {
                 val rooms = querySnapshot.documents.mapNotNull { doc ->
                     val roomModel = doc.toObject(PhongTroModel::class.java)
                     roomModel?.let {
-                        if (it.Ma_nguoidung != idUser
-                            && it.Trang_thaiphong == false
-                            && it.Trang_thaiduyet == "DaDuyet") {
+                        if (it.Ma_nguoidung != idUser && !it.Trang_thaiphong && it.Trang_thaiduyet == "DaDuyet") {
                             Pair(doc.id, it)
                         } else {
                             null

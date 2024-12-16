@@ -13,6 +13,7 @@ import com.ph32395.staynow.Activity.ChoosePaymentActivity
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
+import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ActivityDetailBillBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessorService
@@ -30,7 +31,7 @@ class DetailBillActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBillBinding
     private lateinit var loadingIndicator: LottieAnimationView
 
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBillBinding.inflate(layoutInflater)
@@ -40,13 +41,20 @@ class DetailBillActivity : AppCompatActivity() {
         initZaloPay()
 
         // nhận intent từ billAdapter
-        val invoice = intent.getSerializableExtra("hoaDonHangThang") as? InvoiceMonthlyModel
-
+        val invoice = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
+        val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
 
         updateUI(invoice!!)
+        if (detail != null) {
+            binding.btnThanhtoan.visibility = View.GONE
+            binding.tvTitle.text = "Chi tiết hóa đơn hàng tháng"
+        }
+        if (invoice.trangThai != InvoiceStatus.PENDING) {
+            binding.btnThanhtoan.visibility = View.GONE
+        }
 
         binding.ivBack.tap {
             onBackPressed()
@@ -71,7 +79,7 @@ class DetailBillActivity : AppCompatActivity() {
                     hideLoading()
                     if (token != null && orderUrl != null) {
                         val intent = Intent(this, ChoosePaymentActivity::class.java)
-                        intent.putExtra("invoice", invoice)
+                        intent.putExtra("bill", invoice)
                         intent.putExtra("zpToken", token)
                         intent.putExtra("orderUrl", orderUrl)
                         intent.putExtra("remainTime", remainTime)
@@ -88,11 +96,13 @@ class DetailBillActivity : AppCompatActivity() {
     private fun updateUI(invoice: InvoiceMonthlyModel) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = "Phòng: "+invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: " + invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayTaoHoaDon}"
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvServiceFee.text = formatCurrency(invoice.tongTienDichVu)
+        binding.tvTienGiam.text = formatCurrency(invoice.tienGiam)
+        binding.tvTienThem.text = formatCurrency(invoice.tienThem)
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
 
         // Phí cố định
