@@ -55,11 +55,10 @@ class ContractAdapter(
 
     override fun getItemCount(): Int = contractList.size
 
-    // Tạo phương thức để cập nhật danh sách hợp đồng khi có thay đổi
     @SuppressLint("NotifyDataSetChanged")
     fun updateContractList(newList: List<HopDong>) {
         contractList = newList
-        notifyDataSetChanged() // Thông báo adapter cập nhật lại danh sách
+        notifyDataSetChanged()
     }
 
     inner class ContractViewHolder(itemView: ItemContractBinding) :

@@ -39,16 +39,13 @@ class ContractFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate layout và gán cho binding
         _binding = FragmentContractBinding.inflate(inflater, container, false)
         // Khởi tạo ViewModel
         contractViewModel = ViewModelProvider(this)[ContractViewModel::class.java]
-        // Đổi tên tiêu đề và thêm underline cho tiêu đề hợp đồng chờ xác nhận
 
         binding.ivBack.tap {
             requireActivity().onBackPressed()
         }
-        // Khởi tạo adapter và gán vào RecyclerView
 
         // Khởi tạo FirebaseAuth và lấy userId
         mAuth = FirebaseAuth.getInstance()
@@ -63,7 +60,6 @@ class ContractFragment : Fragment() {
                 fetchContractsByUser(userId, isLandlord)
                 setupAdapters(isLandlord)
                 setupRecyclerView(pendingAdapter, "Hợp đồng đang chờ xác nhận")
-
             }
         }
 
@@ -160,24 +156,17 @@ class ContractFragment : Fragment() {
     private fun setupObservers() {
         contractViewModel.activeContracts.observe(viewLifecycleOwner) { contracts ->
             activeAdapter.updateContractList(contracts)
-            val contractSize=contracts.size
-            binding.tvContractsQuantity.text="($contractSize)"
+
         }
         contractViewModel.pendingContracts.observe(viewLifecycleOwner) { contracts ->
             pendingAdapter.updateContractList(contracts)
-            val contractSize=contracts.size
-            binding.tvContractsQuantity.text="($contractSize)"
 
         }
         contractViewModel.expiredContracts.observe(viewLifecycleOwner) { contracts ->
             expireAdapter.updateContractList(contracts)
-            val contractSize=contracts.size
-            binding.tvContractsQuantity.text="($contractSize)"
         }
         contractViewModel.terminatedContracts.observe(viewLifecycleOwner) { contracts ->
             terminatedAdapter.updateContractList(contracts)
-            val contractSize=contracts.size
-            binding.tvContractsQuantity.text="($contractSize)"
         }
     }
 

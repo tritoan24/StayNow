@@ -138,15 +138,9 @@ dependencies {
     implementation("androidx.room:room-ktx:2.4.3")
 
     // zalo sdk
-    implementation(
-        fileTree(
-            mapOf(
-                "dir" to "D:\\KOT104\\Exercises\\StayNow",
-                "include" to listOf("*.aar", "*.jar"),
-                "exclude" to listOf<String>()
-            )
-        )
-    )
+
+    implementation(files("libs/zpdk-release-v3.1.aar"))
+
     implementation ("androidx.appcompat:appcompat:1.7.0")
 
     //generate qr
