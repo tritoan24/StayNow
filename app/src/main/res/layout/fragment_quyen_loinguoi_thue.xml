@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".QuyenLoiKyHopDong.QuyenLoinguoiThueFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/logo"
+            android:layout_marginEnd="20dp"
+            app:shapeAppearanceOverlay="@style/RoundedImageView"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title_quyenloi"
+            android:layout_marginStart="20dp"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:letterSpacing="0.05"
+            android:fontFamily="serif"
+            />
+    </LinearLayout>
+
+    <!--    Text 1-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_agree"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nguoi_thue1"
+            android:letterSpacing="0.05"
+            android:lineSpacingExtra="2dp"
+            android:fontFamily="serif"
+            />
+    </LinearLayout>
+
+    <!--    Text 2-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_agree"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nguoi_thue_2"
+            android:letterSpacing="0.05"
+            android:lineSpacingExtra="2dp"
+            android:fontFamily="serif"
+            />
+    </LinearLayout>
+
+    <!--    Text 3-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_agree"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nguoi_thue_3"
+            android:letterSpacing="0.05"
+            android:lineSpacingExtra="2dp"
+            android:fontFamily="serif"
+            />
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/checkQuyenNguoiThue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tôi đã đọc, không hiển thị lại"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:fontFamily="serif"
+        android:layout_marginStart="8dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="20dp"
+        android:buttonTint="@color/black" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="60dp"
+        >
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:id="@+id/btnHuyNguoiThue"
+            android:text="Hủy"
+            android:textColor="@color/black"
+            android:fontFamily="serif"
+            android:layout_marginEnd="20dp"
+            android:textSize="14sp"
+            android:background="@drawable/custom_btn_huy" />
+        <Button
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:id="@+id/btnXacNhanNguoiThue"
+            android:text="Xác Nhận"
+            android:layout_marginStart="20dp"
+            android:fontFamily="serif"
+            android:textSize="14sp"
+            android:background="@drawable/custom_buttom" />
+    </LinearLayout>
+
+</LinearLayout>
