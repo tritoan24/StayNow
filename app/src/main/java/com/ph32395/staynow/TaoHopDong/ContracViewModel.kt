@@ -398,23 +398,4 @@ class ContractViewModel : ViewModel() {
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()
     val previousUtilities: LiveData<Pair<Int, Int>> get() = _previousUtilities
 
-
-    // Kiểm tra xem người thuê và người cho thuê đã có thông tin trong bảng contract_messages hay chưa
-    fun checkMessageStatus(tenantId: String, landlordId: String) {
-        val contractMessagesRef = FirebaseFirestore.getInstance().collection("contract_messages")
-            .whereEqualTo("tenantId", tenantId)
-            .whereEqualTo("landlordId", landlordId)
-            .get()
-
-        contractMessagesRef.addOnCompleteListener { task ->
-            if (task.isSuccessful && !task.result.isEmpty) {
-                // Nếu tìm thấy thông tin nhắn tin giữa người thuê và người cho thuê
-                contractStatus.value = "Bạn có thể nhắn tin vì đã có thông tin hợp đồng"
-            } else {
-                // Không tìm thấy thông tin nhắn tin, thông báo hợp đồng chưa ký
-                contractStatus.value = "Không có thông tin nhắn tin nào, vui lòng ký hợp đồng trước"
-            }
-        }
-    }
-
 }

@@ -1,6 +1,7 @@
 package com.ph32395.staynow.TaoHopDong
 
 import android.util.Log
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.Dispatchers
@@ -89,7 +90,13 @@ class RoomContract {
 
                         // Cập nhật trạng thái phòng
                         val roomRef = roomsCollection.document(contract.thongtinphong.maPhongTro)
-                        transaction.update(roomRef, "Trang_thaiphong", true)
+                        val currentDate = Timestamp.now()
+
+                        transaction.update(roomRef, mapOf(
+                            "Trang_thaiphong" to true,
+                            "Ngay_duocthue" to currentDate
+                        ))
+
 
                         // Xóa lịch hẹn
                         Log.d(
@@ -363,7 +370,7 @@ class RoomContract {
                         .update(
                             mapOf(
                                 "Trang_thaiphong" to false,
-                                "Trang_thaiduyet" to ""
+                                "Trang_thaiduyet" to "DaDuyet"
                             )
                         )
                         .await()

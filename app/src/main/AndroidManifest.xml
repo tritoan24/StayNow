@@ -118,9 +118,6 @@
             android:name=".ChucNangTimKiem.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".CapNhatViTriPhong.CapNhatViTri"
-            android:exported="false" />
-        <activity
             android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
             android:exported="false" />
         <activity

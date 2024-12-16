@@ -30,7 +30,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.ph32395.staynow.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow.ChucNangChung.LoadingUtil
-import com.ph32395.staynow.DiaChiGHN.GHNViewModel
 import com.ph32395.staynow.DichVu.DichVu
 import com.ph32395.staynow.DichVu.DichVuAddServiceUtil
 import com.ph32395.staynow.DichVu.DichVuViewModel
@@ -127,12 +126,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     var soluongdv = 0
 
 
-    private lateinit var loadingAnimation: LottieAnimationView
     private lateinit var completionAnimation: LottieAnimationView
     private lateinit var loadingUtil: LoadingUtil
-
-
-    private lateinit var ghnViewModel: GHNViewModel
 
 
     private lateinit var mMap: GoogleMap
@@ -249,7 +244,6 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         firestore = FirebaseFirestore.getInstance()
 
 
-        loadingAnimation = findViewById(R.id.loadingAnimation)
         completionAnimation = findViewById(R.id.completionAnimation)
 
 
@@ -319,47 +313,6 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         }
 
 
-        // Khởi tạo ViewModel
-        // Khởi tạo ViewModel
-        ghnViewModel = ViewModelProvider(this).get(GHNViewModel::class.java)
-
-//        binding.roomAddress.setOnClickListener {
-//            // Call the selectLocationDialog to let the user select a location (Province, District, Ward)
-//            selectLocationDialog(
-//                context = this,
-//                title = "Chọn Tỉnh",
-//                itemType = "Province",
-//                ghnViewModel = ghnViewModel,
-//                onItemSelected = { selectedItem ->
-//                    when (selectedItem) {
-//                        is Ward -> {
-//                            ward = selectedItem.WardName
-//                        }
-//
-//                        is District -> {
-//                            district = selectedItem.DistrictName
-//                        }
-//
-//                        is Province -> {
-//                            city = selectedItem.ProvinceName
-//                        }
-//
-//                        is String -> {
-//                            addressDetail = selectedItem
-//                        }
-//                    }
-//
-//                    // Cập nhật chuỗi fullAddress và fullAddressDetail theo yêu cầu
-//                    fullAddress = "$ward, $district, $city"
-//                    fullAddressDeltail = "$addressDetail, $ward, $district, $city"
-//
-//                    // Hiển thị địa chỉ đầy đủ
-//                    binding.roomAddress.text = fullAddressDeltail
-//                }
-//            )
-//        }
-
-        // Handling Image Picker (Existing functionality for image selection)
         binding.addImage.setOnClickListener {
             TedImagePicker.with(this)
                 .startMultiImage { uriList ->
@@ -373,7 +326,6 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 DichVuAdapter.addDichVu(newDichVu)
             }
         }
-
 
 
         // Quan sát LiveData từ ViewModel
@@ -519,8 +471,15 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         val roomName = binding.roomName.text.toString()
         val roomPrice = CurrencyFormatTextWatcher.getUnformattedValue(binding.roomPrice).toInt()
         val description = binding.description.text.toString()
+        val dcQuanhuyen = Dc_quanhuyen
+        val dcTinhtp = Dc_tinhtp
+
 
         //validate
+        if (fullAddressDeltail.isEmpty()) {
+            binding.roomAddress.error = "Địa chỉ không được để trống"
+            return
+        }
         if (roomName.isEmpty()) {
             binding.roomName.error = "Tên phòng trọ không được để trống"
             return
@@ -529,12 +488,11 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             binding.roomPrice.error = "Giá phòng không được để trống"
             return
         }
+        if(roomPrice < 0){
+            Toast.makeText(this, "Giá phòng không được âm", Toast.LENGTH_SHORT).show()
+        }
         if (description.isEmpty()) {
             binding.description.error = "Mô tả không được để trống"
-            return
-        }
-        if (fullAddressDeltail.isEmpty()) {
-            binding.roomAddress.error = "Địa chỉ không được để trống"
             return
         }
         if (selectedNoiThatList.isEmpty()) {
@@ -573,10 +531,6 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         }
 
 
-        // Hiển thị hoạt ảnh loading khi bắt đầu tải dữ liệu
-        loadingAnimation.visibility = View.VISIBLE
-        loadingAnimation.setAnimation("loading.json")
-        loadingAnimation.playAnimation()
 
 
         val ThoiGian_taophong = System.currentTimeMillis()
@@ -615,6 +569,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                                 roomPrice,
                                 description,
                                 imageUrls,
+                                dcQuanhuyen,
+                                dcTinhtp,
                                 Trang_thailuu,
                                 Trang_thaiduyet,
                                 ThoiGian_taophong,
@@ -638,6 +594,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         roomPrice: Int,
         description: String,
         imageUrls: List<String>,
+        dc_quanhuyen: String,
+        dc_tinhtp: String,
         Trang_thailuu: Boolean,
         Trang_thaiduyet: String,
         ThoiGian_taophong: Long,
@@ -658,8 +616,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     "Dia_chi" to fullAddressct,
                     "Dia_chichitiet" to fullAddressDeltail,
                     "Trang_thaidc" to false,
-                    "Dc_quanhuyen" to Dc_quanhuyen,
-                    "Dc_tinhtp" to Dc_tinhtp,
+                    "Dc_quanhuyen" to dc_quanhuyen,
+                    "Dc_tinhtp" to dc_tinhtp,
                     "Ma_loaiphong" to Ma_loaiphong,
                     "Ma_gioiTinh" to Ma_gioiTinh,
                     "Trang_thailuu" to Trang_thailuu,
@@ -685,7 +643,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
                 withContext(Dispatchers.Main) {
                     // Ẩn loadingAnimation và hiển thị completionAnimation sau khi lưu thành công
-                    loadingAnimation.visibility = View.GONE
+                    loadingUtil.show()
                     completionAnimation.setAnimation("done.json")
                     completionAnimation.visibility = View.VISIBLE
                     completionAnimation.playAnimation()
@@ -711,7 +669,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    loadingAnimation.visibility = View.GONE
+                    loadingUtil.hide()
                     Toast.makeText(
                         this@TaoPhongTro,
                         "Lỗi khi lưu dữ liệu: ${e.message}",
@@ -839,7 +797,8 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                         // Lấy description và secondary_text từ mỗi prediction
                         val list = suggestions.map { prediction ->
                             val description = prediction.description
-                            val secondaryText = prediction.structured_formatting?.secondary_text ?: "N/A"
+                            val secondaryText =
+                                prediction.structured_formatting?.secondary_text ?: "N/A"
                             val district = prediction.compound?.district ?: "N/A" // Lấy district
                             val province = prediction.compound?.province ?: "N/A" // Lấy province
 
@@ -856,7 +815,9 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                             fullAddressDeltail = description
 
                             // Kiểm tra "số" trong 10 ký tự đầu tiên của description
-                            if (description.substring(0, minOf(description.length, 10)).contains("số", ignoreCase = true)) {
+                            if (description.substring(0, minOf(description.length, 10))
+                                    .contains("số", ignoreCase = true)
+                            ) {
                                 val indexOfNgo = description.indexOf("ngõ", ignoreCase = true)
                                 if (indexOfNgo != -1) {
                                     // Nếu tìm thấy "ngõ", lấy từ vị trí "ngõ"

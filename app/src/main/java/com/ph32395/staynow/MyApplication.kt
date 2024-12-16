@@ -16,13 +16,14 @@ class MyApplication : Application() {
         super.onCreate()
 
         // Khởi tạo Firebase
-        FirebaseApp.initializeApp(this)
+//        FirebaseApp.initializeApp(this)
 
         // Đặt trạng thái người dùng
         setOnlineStatusListener()
     }
 
     private fun setOnlineStatusListener() {
+        Log.e("StatusUpdate", "da goi den ham set onnnn")
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val userStatusRef = Firebase.database.reference.child("NguoiDung").child(userId).child("status")
 
@@ -30,8 +31,10 @@ class MyApplication : Application() {
         val connectedRef = Firebase.database.reference.child(".info/connected")
         connectedRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
+                Log.e("StatusUpdate", "dang vao ondatachange")
                 val isConnected = snapshot.getValue(Boolean::class.java) ?: false
                 if (isConnected) {
+                    Log.e("StatusUpdate", "chua tao tai khoanr da tao id usser ")
                     // Khi kết nối, cập nhật trạng thái online
                     userStatusRef.setValue("online")
                         .addOnFailureListener { Log.e("StatusUpdate", "Failed to update status") }

@@ -77,7 +77,35 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
-
+//        FirebaseMessaging.getInstance().getToken()
+//            .addOnCompleteListener(
+//                object : OnCompleteListener<String?> {
+//                    override fun onComplete(task: Task<String?>) {
+//                        if (!task.isSuccessful) {
+//                            Log.w(
+//                                ContentValues.TAG,
+//                                "Fetching FCM registration token failed",
+//                                task.exception
+//                            )
+//                            return
+//                        }
+//
+//                        // Get new FCM registration token
+//                        val token = task.result
+//
+//                        //lưu token này vào database
+//                        if (currentUser != null) {
+//
+//                            Log.d("token", "tạo ra cái khỉ gió ở đây này ")
+//                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
+//                                .setValue(token)
+//
+//
+//                        }
+//                        //nếu không có người dùng nào đăng nhập thì không lưu token
+//
+//                    }
+//                })
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {

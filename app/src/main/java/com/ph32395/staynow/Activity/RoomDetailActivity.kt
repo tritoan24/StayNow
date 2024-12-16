@@ -37,7 +37,6 @@ import com.ph32395.staynow.Adapter.SpacingItemDecoration
 import com.ph32395.staynow.Adapter.TienNghiAdapter
 import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.CCCD.CCCD
-import com.ph32395.staynow.CapNhatViTriPhong.CapNhatViTri
 import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow.QuanLyPhongTro.custom.CustomConfirmationDialog
