@@ -73,33 +73,35 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(
-                object : OnCompleteListener<String?> {
-                    override fun onComplete(task: Task<String?>) {
-                        if (!task.isSuccessful) {
-                            Log.w(
-                                ContentValues.TAG,
-                                "Fetching FCM registration token failed",
-                                task.exception
-                            )
-                            return
-                        }
-
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        //lưu token này vào database
-                        if (currentUser != null) {
-                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-                                .setValue(token)
-
-
-                        }
-                        //nếu không có người dùng nào đăng nhập thì không lưu token
-
-                    }
-                })
+//        FirebaseMessaging.getInstance().getToken()
+//            .addOnCompleteListener(
+//                object : OnCompleteListener<String?> {
+//                    override fun onComplete(task: Task<String?>) {
+//                        if (!task.isSuccessful) {
+//                            Log.w(
+//                                ContentValues.TAG,
+//                                "Fetching FCM registration token failed",
+//                                task.exception
+//                            )
+//                            return
+//                        }
+//
+//                        // Get new FCM registration token
+//                        val token = task.result
+//
+//                        //lưu token này vào database
+//                        if (currentUser != null) {
+//
+//                            Log.d("token", "tạo ra cái khỉ gió ở đây này ")
+//                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
+//                                .setValue(token)
+//
+//
+//                        }
+//                        //nếu không có người dùng nào đăng nhập thì không lưu token
+//
+//                    }
+//                })
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
@@ -245,25 +247,6 @@ class MainActivity : AppCompatActivity() {
         // Cong Add
         // Đặt trạng thái offline khi ứng dụng bị hủy
         myApplication.setOnlineStatus(false)
-    }
-
-
-    private fun setUserOnline() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null) {
-            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("online")
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
-        }
-    }
-
-    private fun setUserOffline() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null) {
-            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("offline")
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
-        }
     }
 
     //nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã

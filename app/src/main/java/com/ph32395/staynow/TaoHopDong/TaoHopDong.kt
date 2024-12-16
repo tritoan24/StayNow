@@ -40,6 +40,8 @@ import com.ph32395.staynow.CCCD.CccdViewModel
 import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
@@ -56,6 +58,7 @@ class TaoHopDong : AppCompatActivity() {
     private val viewModelHopDong: ContractViewModel by viewModels()
     private lateinit var viewModel: RoomDetailViewModel
     private lateinit var viewModelCccd: CccdViewModel
+    private lateinit var viewModelNotification: NotificationViewModel
     private var utilityFees: List<UtilityFee> = listOf()
 
     // Khai báo phần lịch
@@ -172,6 +175,7 @@ class TaoHopDong : AppCompatActivity() {
         //Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
         viewModelCccd = ViewModelProvider(this).get(CccdViewModel::class.java)
+        viewModelNotification = ViewModelProvider(this).get(NotificationViewModel::class.java)
 
         //Lay du lieu chi tiet thong tin phong tro
         viewModel.fetchChiTietThongTin(maPhongTro)
@@ -496,7 +500,7 @@ private fun observeViewModel() {
             ngayKetThuc = tvEndDate.text.toString(),
             thoiHanThue = tvMonth.text.toString(),
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
-            ghiChu = note.text.toString(),
+            ghiChu = note.text.toString().trim(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
             soDienCu = edSodien.text.toString().toInt(),
             soNuocCu = edSonuoc.text.toString().toInt(),
@@ -559,7 +563,6 @@ private fun observeViewModel() {
 
             tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
             noiThat = listFurniture, // Danh sách String chứa tên nội thất
-
             dieuKhoan = editorDieuKhoan.html,
 
             // Thêm các thông tin khác
@@ -578,6 +581,20 @@ private fun observeViewModel() {
                         startActivity(intent)
                         // Reset giá trị sau khi chuyển màn
                         viewModelHopDong.resetNavigation()
+                        // Gửi thông báo
+                        val notificationModel = NotificationModel(
+                            title = "Hợp đồng mới",
+                            message = "Bạn có một hợp đồng mới",
+                            date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
+                            typeNotification = "HopDongMoi",
+                            mapLink = null,
+                            timestamp = System.currentTimeMillis(),
+                            idModel = it,
+
+
+                        )
+                        viewModelNotification.sendNotification (notificationModel, maNguoiThue)
                         // Đóng màn hình hiện tại sau khi chuyển màn
                         finish()
                         loadingUtil.hide()
@@ -655,6 +672,11 @@ private fun observeViewModel() {
             toast("Ngày thanh toán không hợp lệ")
             return false
         }
+        if (edSodien.text.toString().isEmpty() || edSonuoc.text.toString().isEmpty() || soNguoio.text.toString().isEmpty()) {
+            toast("Vui lòng nhập đầy đủ thông tin")
+            return false
+        }
+
         // Thêm các validation khác
         return true
     }

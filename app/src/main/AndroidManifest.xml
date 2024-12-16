@@ -37,9 +37,9 @@
             android:exported="false" />
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
-            android:exported="false" />
+            android:exported="false"
         android:usesCleartextTraffic="true"
-        >
+        />
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:windowSoftInputMode="adjustResize"
@@ -119,9 +119,6 @@
             android:exported="false" />
         <activity
             android:name=".ChucNangTimKiem.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CapNhatViTriPhong.CapNhatViTri"
             android:exported="false" />
         <activity
             android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
