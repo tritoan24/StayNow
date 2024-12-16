@@ -47,8 +47,12 @@
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
         </activity>
+
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.ThayDoiNgonNgu"
             android:exported="false" />
         <activity
             android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"

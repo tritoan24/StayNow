@@ -306,15 +306,6 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"/>
     <!-- RecyclerView for Furniture List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewLoaiPhong"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Furniture_List"
-        android:textColor="@color/purple"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
     <TextView
         android:id="@+id/sectionTienNghi"
         android:layout_width="wrap_content"
@@ -351,7 +342,6 @@
         android:id="@+id/addRoomButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Lưu Phòng Trọ"
         android:background="@drawable/bg_button"
         android:text="@string/Stay_Room"
         android:backgroundTint="@color/purple"
@@ -364,7 +354,6 @@
             android:layout_height="wrap_content"
             android:text="@string/Posting_a_room"
             android:backgroundTint="@color/purple"
-            android:text="Đăng Phòng Trọ"
             android:background="@drawable/bg_button"
             android:textColor="@android:color/white"
             android:padding="12dp"/>

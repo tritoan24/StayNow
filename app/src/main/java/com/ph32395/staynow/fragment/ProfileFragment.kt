@@ -80,7 +80,6 @@ class ProfileFragment : Fragment() {
         llContract = view.findViewById(R.id.ll_hopdong)
         llBill = view.findViewById(R.id.ll_hoadon)
         btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
-        btnBaiDangYeuThich = view.findViewById(R.id.btnBaiDangYeuThich)
         seperatedLichsu = view.findViewById(R.id.viewlichsu)
         seperatedHoadon = view.findViewById(R.id.viewhoadon)
         seperatedHopdong = view.findViewById(R.id.viewhopdong)
