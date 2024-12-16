@@ -62,19 +62,24 @@ class MessageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         Log.d(TAG, "onCreate:userId $userId")
-        fetchChatList(userId!!) {
-            Log.d(TAG, "onCreate:it List chat $it")
-            adapterMessage = MessageAdapter(it) {
-                Log.d(TAG, "onCreate: it.time $it")
-                val intent = Intent(context, TextingMessengeActivity::class.java)
-                intent.putExtra("chatId", it.chatId)
-                intent.putExtra("userChat", it.otherUserId)
-                startActivity(intent)
-            }
-            binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
-            binding.rcvListTinNhan.adapter = adapterMessage
+        if (userId == null) {
+            Log.d("MessageFragment", "Error null exception")
+        } else {
+            fetchChatList(userId!!) {
+                Log.d(TAG, "onCreate:it List chat $it")
+                adapterMessage = MessageAdapter(it) {
+                    Log.d(TAG, "onCreate: it.time $it")
+                    val intent = Intent(context, TextingMessengeActivity::class.java)
+                    intent.putExtra("chatId", it.chatId)
+                    intent.putExtra("userChat", it.otherUserId)
+                    startActivity(intent)
+                }
+                binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
+                binding.rcvListTinNhan.adapter = adapterMessage
 
+            }
         }
+
         fetchListUser {
             val adapter = UserStatusOnOfAdapter(it){
                 val intent = Intent(context,TextingMessengeActivity::class.java)

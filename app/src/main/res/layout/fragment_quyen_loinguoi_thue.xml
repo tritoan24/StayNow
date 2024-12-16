@@ -120,22 +120,22 @@
         android:gravity="center"
         android:layout_marginTop="60dp"
         >
-        <Button
-            android:layout_width="150dp"
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/btnHuyNguoiThue"
             android:text="Hủy"
             android:textColor="@color/black"
             android:fontFamily="serif"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="3dp"
             android:textSize="14sp"
             android:background="@drawable/custom_btn_huy" />
-        <Button
-            android:layout_width="150dp"
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/btnXacNhanNguoiThue"
             android:text="Xác Nhận"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="3dp"
             android:fontFamily="serif"
             android:textSize="14sp"
             android:background="@drawable/custom_buttom" />

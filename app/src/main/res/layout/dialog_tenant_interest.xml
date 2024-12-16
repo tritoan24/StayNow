@@ -20,17 +20,19 @@
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:src="@drawable/logo"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
             app:shapeAppearanceOverlay="@style/RoundedImageView"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/title_quyenloi"
-            android:layout_marginStart="20dp"
-            android:textSize="20dp"
+            android:layout_marginStart="15dp"
+            android:textSize="18dp"
             android:textAlignment="center"
             android:textStyle="bold"
+            android:textColor="@color/purple_border_bottom"
             android:letterSpacing="0.05"
             android:fontFamily="serif"
             />
@@ -40,20 +42,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="50dp"
         android:orientation="horizontal">
         <ImageView
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_gravity="center"
             android:src="@drawable/icon_agree"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="10dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/chu_tro_1"
+            android:text="@string/nguoi_thue1"
             android:letterSpacing="0.05"
             android:lineSpacingExtra="2dp"
+            android:textColor="@color/black"
             android:fontFamily="serif"
             />
     </LinearLayout>
@@ -69,12 +72,13 @@
             android:layout_height="15dp"
             android:layout_gravity="center"
             android:src="@drawable/icon_agree"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="10dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/chu_tro_2"
+            android:text="@string/nguoi_thue_2"
             android:letterSpacing="0.05"
+            android:textColor="@color/black"
             android:lineSpacingExtra="2dp"
             android:fontFamily="serif"
             />
@@ -91,12 +95,13 @@
             android:layout_height="15dp"
             android:layout_gravity="center"
             android:src="@drawable/icon_agree"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="10dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/nguoi_thue_3"
             android:letterSpacing="0.05"
+            android:textColor="@color/black"
             android:lineSpacingExtra="2dp"
             android:fontFamily="serif"
             />
@@ -124,25 +129,15 @@
         android:paddingBottom="2dp"
         >
         <Button
-            android:layout_width="150dp"
-            android:layout_height="50dp"
-            android:id="@+id/btn_cancel"
-            android:text="Hủy"
-            android:textColor="@color/black"
-            android:fontFamily="serif"
-            android:layout_marginEnd="20dp"
-            android:textSize="14sp"
-            android:background="@drawable/custom_btn_huy" />
-        <Button
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/btn_confirm"
             android:text="Xác Nhận"
             android:textColor="@color/white"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:fontFamily="serif"
             android:textSize="14sp"
-            android:background="@drawable/custom_buttom" />
+            android:backgroundTint="#471BC4"/>
     </LinearLayout>
 
 

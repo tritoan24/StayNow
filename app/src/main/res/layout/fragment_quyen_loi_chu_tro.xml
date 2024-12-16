@@ -120,8 +120,8 @@
         android:gravity="center"
         android:layout_marginTop="32dp"
         >
-        <Button
-            android:layout_width="150dp"
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/btnHuyChuTro"
             android:text="Hủy"
@@ -130,8 +130,8 @@
             android:layout_marginEnd="20dp"
             android:textSize="14sp"
             android:background="@drawable/custom_btn_huy" />
-        <Button
-            android:layout_width="150dp"
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/btnXacNHanChuTro"
             android:text="Xác Nhận"

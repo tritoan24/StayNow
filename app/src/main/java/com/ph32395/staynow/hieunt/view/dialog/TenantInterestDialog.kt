@@ -19,10 +19,6 @@ class TenantInterestDialog(
 
                 }
             }
-            btnCancel.tap {
-                onClickButton()
-                dismiss()
-            }
             btnConfirm.tap {
                 onClickButton()
                 if (cbRead.isChecked){
