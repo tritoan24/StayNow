@@ -78,6 +78,7 @@ object Default {
         const val TYPE_SCHEDULE_ROOM_TENANT = "type_schedule_room_tenant"
         const val TYPE_NOTI_BILL_MONTHLY = "invoiceCreation"
         const val TYPE_NOTI_BILL_MONTHLY_REMIND = "invoiceRemind"
+        const val TYPE_NOTI_MASSAGES = "send_massage"
     }
 
 }

@@ -60,6 +60,7 @@ class NotificationViewModel(private val dao: NotificationDao) : ViewModel() {
                     "time" to notification.time,
                     "timestamp" to notification.timestamp,
                     "title" to notification.title,
+                    "idModel" to notification.idModel,
                     "typeNotification" to notification.typeNotification
                 )
 
