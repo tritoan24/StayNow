@@ -96,10 +96,7 @@ class HomeNguoiChoThueFragment : Fragment() {
             refreshData()
         }
 
-//        Nhan vao thanh tim kiem
-        binding.viewLocationSearch.searchLayout.setOnClickListener {
-            startActivity(Intent(context, SearchActivity::class.java))
-        }
+
 
         return binding.root
     }

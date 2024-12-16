@@ -26,12 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PhongTroYeuThich.PhongTroYeuThichActivity"
-            android:exported="false" />
+
         <activity
             android:name=".quanlyhoadon.DetailBillActivity"
             android:exported="false" />
@@ -40,6 +35,7 @@
             android:exported="false" />
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
+            android:usesCleartextTraffic="true"
             android:exported="false" />
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"

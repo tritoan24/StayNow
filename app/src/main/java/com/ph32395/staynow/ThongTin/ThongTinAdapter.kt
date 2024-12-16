@@ -2,6 +2,7 @@ package com.ph32395.staynow.ThongTin
 
 import android.content.Context
 import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.EditText
@@ -9,17 +10,30 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
-import com.ph32395.staynow.DichVu.DichVu
 import com.ph32395.staynow.Interface.AdapterTaoPhongTroEnteredListenner
+import com.ph32395.staynow.Model.ChiTietThongTinModel
 import com.ph32395.staynow.databinding.ItemThongtinBinding
+import java.text.DecimalFormat
+
 class ThongTinAdapter(
     private val context: Context,
-    private val thongtinList: List<ThongTin>,
-    private val listener: AdapterTaoPhongTroEnteredListenner
+    private var thongtinList: List<ThongTin>,
+    private val listener: AdapterTaoPhongTroEnteredListenner,
+    private val existingChiTietList: List<ChiTietThongTinModel>? = null
 ) : RecyclerView.Adapter<ThongTinAdapter.ThongTinViewHolder>() {
 
-    private val pricesMap = mutableMapOf<Int, Int>()
+    private val pricesMap = mutableMapOf<Int, Long>()
+    init {
+        Log.d("ThongTinAdapter", "Danh sách thông tin khi khởi tạo: $thongtinList")
 
+        existingChiTietList?.forEachIndexed { index, chiTiet ->
+            val matchingIndex = thongtinList.indexOfFirst { it.Ten_thongtin == chiTiet.ten_thongtin }
+            if (matchingIndex != -1) {
+                pricesMap[matchingIndex] = chiTiet.so_luong_donvi
+            }
+
+        }
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThongTinViewHolder {
         val binding = ItemThongtinBinding.inflate(LayoutInflater.from(context), parent, false)
         return ThongTinViewHolder(binding)
@@ -27,6 +41,7 @@ class ThongTinAdapter(
 
     override fun onBindViewHolder(holder: ThongTinViewHolder, position: Int) {
         val thongtin = thongtinList[position]
+//        Log.d("ThongTinAdapter", "Binding item: ${thongtin.Ten_thongtin}, Price: ${pricesMap[position]}")
         holder.bind(thongtin, position)
     }
 
@@ -45,20 +60,35 @@ class ThongTinAdapter(
             if (price != null) {
                 binding.giaThongTin.text = "$price"
             }
-
+            if (price != null) {
+                val priceStr = price.toString() // Chuyển đổi giá trị thành chuỗi để kiểm tra độ dài
+                if (priceStr.length >= 4) {
+                    // Định dạng chuỗi số thành định dạng có dấu phân cách
+                    val formattedPrice = DecimalFormat("#,###").format(price)
+                    binding.giaThongTin.text = "$formattedPrice"
+                } else {
+                    binding.giaThongTin.text = "$price"
+                }
+            }
             binding.itemDichvu.setOnClickListener {
                 showInputDialog(thongTin, position)
             }
         }
     }
-
+    fun updateData(newList: List<ThongTin>) {
+        thongtinList = newList
+        notifyDataSetChanged() // Làm mới danh sách hiển thị
+    }
     private fun showInputDialog(thongTin: ThongTin, position: Int) {
         val editText = EditText(context)
-        editText.hint = "Nhập giá tiền"
+        editText.hint = "Nhập giá trị"
         editText.inputType = InputType.TYPE_CLASS_NUMBER
 
+        // Nếu đã có giá trị trước đó, hiển thị sẵn
+        editText.setText(pricesMap[position]?.toString() ?: "")
+
         SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-            .setTitleText("Nhập giá tiền cho ${thongTin.Ten_thongtin}")
+            .setTitleText("Nhập giá trị cho ${thongTin.Ten_thongtin}")
             .setConfirmText("Xác nhận")
             .setCustomView(editText) // Thêm EditText vào dialog
             .setConfirmClickListener { sDialog ->
@@ -67,15 +97,14 @@ class ThongTinAdapter(
                     val price = inputText.toIntOrNull()
                     if (price != null) {
                         // Lưu giá vào map
-                        pricesMap[position] = price
+                        pricesMap[position] = price.toLong()
 
                         // Cập nhật lại TextView giá tiền trong RecyclerView
                         notifyItemChanged(position)
 
-                        // Kiểm tra xem đã nhập đủ giá cho tất cả Thông tin chưa
                         if(pricesMap.size == thongtinList.size) {
                             val priceList = thongtinList.mapIndexed { index, thongTin ->
-                                thongTin to (pricesMap[index] ?: 0)
+                                thongTin to (pricesMap[index] ?: 0).toInt() // Chuyển về Int
                             }
                             listener.onThongTinimfor(priceList)
                         }
@@ -90,4 +119,5 @@ class ThongTinAdapter(
             }
             .show()
     }
+
 }

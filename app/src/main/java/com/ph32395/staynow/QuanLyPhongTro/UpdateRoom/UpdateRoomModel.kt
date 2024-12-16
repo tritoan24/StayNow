@@ -1,11 +1,14 @@
 package com.ph32395.staynow.QuanLyPhongTro.UpdateRoom
-
 import android.os.Parcelable
+import com.ph32395.staynow.Model.ChiTietThongTin
 import com.ph32395.staynow.Model.ChiTietThongTinModel
 import com.ph32395.staynow.Model.NoiThatModel
 import com.ph32395.staynow.Model.PhiDichVuModel
 import com.ph32395.staynow.Model.TienNghiModel
-import kotlinx.android.parcel.Parcelize
+import com.ph32395.staynow.NoiThat.NoiThat
+import com.ph32395.staynow.TaoPhongTro.PhiDichVu
+import com.ph32395.staynow.TienNghi.TienNghi
+import kotlinx.parcelize.Parcelize
 import java.io.Serializable
 
 @Parcelize

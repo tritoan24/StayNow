@@ -60,6 +60,13 @@
     <string name="go_to_setting" translatable="false">Go to setting</string>
     <string name="t_ph_ng" translatable="false">Đặt phòng</string>
 
+    <string name="title_quyenloi" translatable="false">Quyền lợi khi ký \n hợp đồng qua \n ứng dụng StayNow</string>
+    <string name="nguoi_thue1" translatable="false"> Khi ký kết hợp bên ứng dụng StayNow người thuê trọ sẽ được bảo vệ về pháp lý nếu phòng trọ phát sinh các khoản phí khác ngoài hợp đồng.</string>
+    <string name="nguoi_thue_2" translatable="false">Chủ trọ không ký kết hợp đồng qua ứng dụng khi này StayNow sẽ nhờ pháp luật can thiệp để đòi lại quyền lợi cho người thuê trọ.</string>
+    <string name="nguoi_thue_3" translatable="false">Các vấn đề về hợp đồng sẽ được StayNow bảo hộ 100% trong thời hạn hợp đồng theo đúng quy định.</string>
+    <string name="chu_tro_1" translatable="false">Khi ký người chủ trọ kí kết hợp đồng bên ứng dụng StayNow sẽ được bảo vệ về pháp lý khi người thuê trọ vi phạm hợp đồng.</string>
+    <string name="chu_tro_2" translatable="false">Nếu người thuê trọ phá vỡ hợp đồng, bỏ trốn, không chịu đóng tiền phòng, tiền dịch vụ, ăn cắp, phá hoại tài sản khi này StayNow sẽ nhờ pháp luật can thiệp để đòi lại quyền lợi cho người chủ trọ</string>
+
 
     <!-- key Goong map api  -->
 

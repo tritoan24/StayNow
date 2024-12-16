@@ -53,8 +53,7 @@ public class DoiMK extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         // Xử lý nút quay lại
         buttonBack.setOnClickListener(view -> {
-            startActivity(new Intent(DoiMK.this, MainActivity.class));
-            finish();
+            onBackPressed();
         });
 
         // Xử lý đổi mật khẩu
