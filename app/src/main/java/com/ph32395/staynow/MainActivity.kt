@@ -70,6 +70,8 @@ class MainActivity : AppCompatActivity() {
         // Cong Add
         myApplication = application as MyApplication
         myApplication.setOnlineStatus(true) // Đặt trạng thái online khi vào màn chính
+        binding.bottomNavigation.itemIconTintList = null
+        binding.bottomNavigation.itemActiveIndicatorColor = null
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
@@ -167,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu_nguoi_chothue)
 
 //                Cap nhat chuc nang FloatingActionButton
-                binding.fabSearch.setImageResource(R.drawable.icon_add_room) //Thay doi Icon
+                binding.fabSearch.setImageResource(R.drawable.add_room_2) //Thay doi Icon
                 binding.fabSearch.setOnClickListener {
 //                    chuyen sang man hinh them phong tro
                     startActivity(Intent(this@MainActivity, TaoPhongTro::class.java))
@@ -204,7 +206,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu)
 
 //                Cap nhat FAB search
-                binding.fabSearch.setImageResource(R.drawable.icon_search_bottom)
+                binding.fabSearch.setImageResource(R.drawable.search_svg)
                 binding.fabSearch.setOnClickListener {
                     startActivity(Intent(this@MainActivity, SearchActivity::class.java))
                 }

@@ -4,21 +4,21 @@
         <item
             android:id="@+id/bottom_home_nguoichothue"
             android:title="Home"
-            android:icon="@drawable/icon_home"/>
+            android:icon="@drawable/icon_home_svg"/>
 
     <item
         android:id="@+id/bottom_management_room"
         android:title="Calendar"
-        android:icon="@drawable/ic_management_lich_hen"/>
+        android:icon="@drawable/calendar"/>
 
     <item
         android:id="@+id/bottom_message"
         android:title="Message"
-        android:icon="@drawable/icon_message"/>
+        android:icon="@drawable/chat"/>
 
     <item
         android:id="@+id/bottom_profile"
         android:title="Profile"
-        android:icon="@drawable/icon_profile"/>
+        android:icon="@drawable/user_svg"/>
 
 </menu>
