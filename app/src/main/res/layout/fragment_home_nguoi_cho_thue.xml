@@ -109,7 +109,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Quản lý cho thuê"
+                    android:text="@string/Rental_Management"
                     android:textSize="15sp"
                     android:textColor="@color/black"
                     android:layout_marginTop="8dp"
@@ -128,7 +128,7 @@
                 android:id="@+id/txtDoiTac"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Đối tác StayNow"
+                android:text="@string/StayNow_Partners"
                 android:layout_below="@id/cardViewQuanLy"
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="20dp"

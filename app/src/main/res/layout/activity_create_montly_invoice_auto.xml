@@ -15,44 +15,23 @@
     tools:context=".TaoHoaDon.CreateInvoice"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="10dp"
+    android:padding="8dp"
     >
 
 
 
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center"
-    android:layout_marginTop="20dp"
-    >
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hóa đơn tháng "
+        android:text="@string/Create_monthly_invoices"
         android:textSize="24sp"
         android:textColor="@color/purple"
-        android:layout_gravity="center"
-        />
-    <TextView
-        android:id="@+id/txtThang"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="5"
-        android:textSize="24sp"
-        android:textColor="@color/purple"
-        android:background="@drawable/bg_button_detail"
-        android:paddingHorizontal="10dp"
-        android:gravity="center"
-        />
-
-</LinearLayout>
-
+        android:layout_marginBottom="16dp"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Phí Cố Định"
+        android:text="@string/Flat_Fee"
         android:textStyle="bold"/>
     <TableLayout
         android:layout_width="wrap_content"
@@ -77,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.2"
                 android:padding="8dp"
-                android:text="Tên dịch vụ"
+                android:text="@string/Service_Name"
                 android:textSize="12dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
@@ -86,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="8dp"
-                android:text="Đơn giá"
+                android:text="@string/Unit_Price"
                 android:textSize="12dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
@@ -105,7 +84,7 @@
                 android:layout_weight="1"
                 android:padding="8dp"
                 android:textSize="12dp"
-                android:text="Thành tiền"
+                android:text="@string/into_money"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </TableRow>
@@ -119,7 +98,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Phí Biến Động"
+        android:text="@string/Variable_fees"
         android:textStyle="bold"/>
 
     <TableLayout
@@ -145,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.6"
                 android:padding="8dp"
-                android:text="Tên dịch vụ"
+                android:text="@string/Service_Name"
                 android:textSize="12dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
@@ -154,7 +133,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:padding="8dp"
-                android:text="Đơn giá"
+                android:text="@string/Unit_Price"
                 android:textSize="12dp"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
@@ -164,7 +143,7 @@
                 android:layout_weight="0.3"
                 android:padding="8dp"
                 android:textSize="12dp"
-                android:text="Đơn vị"
+                android:text="@string/Unit"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
             <TextView
@@ -173,7 +152,7 @@
                 android:layout_weight="0.5"
                 android:padding="8dp"
                 android:textSize="12dp"
-                android:text="Thành tiền"
+                android:text="@string/into_money"
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
         </TableRow>
@@ -207,7 +186,7 @@
                 android:id="@+id/editTextSoDienCu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Chỉ số điện cũ"
+                android:hint="@string/Old_Power_Indicator"
                 android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textColorHint="#AE1FFF" />
@@ -228,7 +207,7 @@
                 android:id="@+id/editTextSoDienMoi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Chỉ số điện mới"
+                android:hint="@string/New_Power_Indicator"
                 android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textColorHint="#AE1FFF" />
@@ -247,7 +226,7 @@
                 android:id="@+id/editSoDien"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Số Lượng"
+                android:hint="@string/Amount"
                 android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textColorHint="#AE1FFF"
@@ -263,7 +242,6 @@
         android:layout_marginBottom="8dp">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/edSoNuocCu"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -277,10 +255,10 @@
                 android:id="@+id/editTextSoNuocCu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Chỉ số nước"
+                android:hint="@string/Water_Indicator"
                 android:inputType="number"
                 android:textColor="@android:color/black"
-                android:textColorHint="#AE1FFF" />
+                android:textColorHint="#AE1FFF"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -299,7 +277,7 @@
                 android:id="@+id/editTextSoNuocMoi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Chỉ số nước mới"
+                android:hint="@string/New_water_Indicator"
                 android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textColorHint="#AE1FFF" />
@@ -318,7 +296,7 @@
                 android:id="@+id/editSoNuoc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Số Lượng"
+                android:hint="@string/Amount"
                 android:inputType="number"
                 android:textColor="@android:color/black"
                 android:textColorHint="#AE1FFF"
@@ -333,13 +311,14 @@
         app:boxCornerRadiusBottomStart="8dp"
         app:boxCornerRadiusTopEnd="8dp"
         app:boxCornerRadiusTopStart="8dp"
+        android:layout_marginHorizontal="16dp"
      >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editPhiThem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tiền thêm"
+            android:hint="@string/Extra_money"
             android:inputType="number"
             android:textColor="@android:color/black"
             android:textColorHint="#AE1FFF"
@@ -352,13 +331,14 @@
         app:boxCornerRadiusBottomStart="8dp"
         app:boxCornerRadiusTopEnd="8dp"
         app:boxCornerRadiusTopStart="8dp"
+        android:layout_marginHorizontal="16dp"
       >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTienGiam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tiền giảm"
+            android:hint="@string/Reduced_money"
             android:inputType="number"
             android:textColor="@android:color/black"
             android:textColorHint="#AE1FFF"
@@ -368,11 +348,11 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
         app:boxCornerRadiusBottomEnd="16dp"
         app:boxCornerRadiusBottomStart="16dp"
         app:boxCornerRadiusTopEnd="16dp"
         app:boxCornerRadiusTopStart="16dp"
-        android:layout_marginTop="8dp"
         >
 
         <com.google.android.material.textfield.TextInputEditText
@@ -380,7 +360,7 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:gravity="top"
-            android:hint="Nhập ghi chú của bạn"
+            android:hint="@string/Enter_your_notes"
             android:inputType="textMultiLine"
             android:maxLines="6"
             android:minLines="3"
@@ -392,7 +372,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tính Tiền"
+        android:text="@string/Billing"
         android:textAlignment="center"
         />
 
@@ -411,10 +391,30 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiền phòng:"
+            android:text="@string/Room_Fee"
             />
         <TextView
             android:id="@+id/tvTienPhong"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textAlignment="textEnd"
+            android:text="10000000"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Deposit"
+            />
+        <TextView
+            android:id="@+id/tvTienCoc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -439,7 +439,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tổng phí cố định:"
+            android:text="@string/Total_fixed_charges"
             />
         <TextView
             android:id="@+id/tvTongTienPhiCoDinh"
@@ -459,7 +459,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tổng phí biến đổi: "
+            android:text="@string/Total_variable_fees"
             />
         <TextView
             android:id="@+id/tvTongTienPhiBienDoi"
@@ -479,7 +479,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tổng phí dịch vụ:"
+            android:text=""
             />
         <TextView
             android:id="@+id/tvTongTien"
@@ -506,7 +506,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiền thêm"
+            android:text="@string/Extra_money"
             />
         <TextView
             android:id="@+id/tvTienThem"
@@ -527,7 +527,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tiền giảm"
+            android:text="@string/Reduced_money"
             />
         <TextView
             android:id="@+id/tvTienGiam"
@@ -555,7 +555,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tổng hóa đơn"
+            android:text="@string/Total_bill"
             />
     <TextView
         android:id="@+id/tvTongHoaDon"
@@ -571,14 +571,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="10dp"
        >
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Hủy"
+            android:text="@string/Cancle"
             android:background="@drawable/bg_button_detail"
             />
         <Button
@@ -586,9 +585,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Tạo hóa đơn"
+            android:text="@string/Create_invoices"
             android:background="@drawable/bg_button_detail"
-            android:layout_marginLeft="10dp"
             />
 
     </LinearLayout>

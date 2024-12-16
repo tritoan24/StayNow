@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gilroy_bold"
-                android:text="Hợp đồng"
+                android:text="@string/Contract"
                 android:textColor="@color/black"
                 android:textSize="22sp"
                 tools:ignore="HardcodedText" />
@@ -89,6 +89,16 @@
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tv_contracts_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingBottom="8dp"
+        android:text="@string/Contract_pending_confirmation"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:ignore="HardcodedText" />
 
     <!-- List 1: RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView

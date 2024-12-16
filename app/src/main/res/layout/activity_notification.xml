@@ -22,7 +22,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Thông báo"
+            android:text="@string/Notification"
             android:layout_marginStart="12dp"
             android:textSize="24sp"
             android:textColor="@color/black"

@@ -64,7 +64,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
-                        android:text="Lưu phiên đăng nhập"
+                        android:text="@string/Save_a_login_session"
                         android:textSize="16sp"
                         android:textColor="@android:color/black" />
 
@@ -98,7 +98,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:text="Phương thức thanh toán"
+                        android:text="@string/Payment_Methods"
                         android:textSize="16sp"
                         android:textColor="@android:color/black" />
                     <View
@@ -148,7 +148,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Cập nhật thông tin"
+                    android:text="@string/Update_information"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
 
@@ -188,7 +188,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Đổi mật khẩu"
+                    android:text="@string/Change_Password"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
                 <View
@@ -237,7 +237,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Theme"
+                    android:text="@string/Theme"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
 
@@ -255,6 +255,7 @@
 
             <!-- Language -->
             <LinearLayout
+                android:id="@+id/btnLanguage"
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -271,7 +272,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Ngôn ngữ"
+                    android:text="@string/Languege"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
                 <View
@@ -309,7 +310,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Thông tin ứng dụng"
+                    android:text="@string/App_Info"
                     android:textSize="16sp"
                     android:textColor="@android:color/black" />
                 <View

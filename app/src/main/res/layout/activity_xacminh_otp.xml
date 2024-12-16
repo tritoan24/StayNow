@@ -31,7 +31,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Xác minh OTP"
+                android:text="@string/OTP_Verification"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:layout_marginStart="16dp"
@@ -52,7 +52,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Xác Minh"
+            android:text="@string/Verify"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -62,7 +62,7 @@
         <TextView
             android:layout_width="300dp"
             android:layout_height="22dp"
-            android:text="Nhập mã để xác minh tài khoản của bạn"
+            android:text="@string/Enter_the_code_to_verify_your_account"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:layout_marginLeft="40dp"
@@ -72,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mã OTP"
+            android:text="@string/OTP_code"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:layout_marginLeft="55dp"
@@ -158,7 +158,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="50dp"
             android:layout_marginLeft="50dp"
-            android:text="Xác nhận"
+            android:text="@string/Verify"
             android:background="@drawable/button_background_doimk"
             android:textColor="@android:color/white"/>
         <Button
@@ -167,7 +167,7 @@
             android:layout_height="48dp"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="50dp"
-            android:text="Gửi lại mã OTP"
+            android:text="@string/Resend_OTP_code"
             android:background="@drawable/button_background_doimk"
             android:textColor="@android:color/white"/>
 
@@ -181,7 +181,7 @@
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
-               android:text="Gửi lại mã:"
+               android:text="@string/Resend_the_following_code"
                android:textSize="16sp"
                android:layout_marginRight="5dp"
                android:textStyle="bold"

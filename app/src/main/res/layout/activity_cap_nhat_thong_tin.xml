@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cập nhật thông tin"
+            android:text="@string/Update_information"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginStart="16dp"
@@ -79,7 +79,7 @@
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="12dp"
-                    android:hint="Họ và Tên"
+                    android:hint="@string/Full_name"
                     android:padding="10dp"
 
                     />
@@ -100,7 +100,7 @@
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/imgphone"
                     android:drawablePadding="12dp"
-                    android:hint="Số điện thoại"
+                    android:hint="@string/Phone"
                     android:inputType="phone"
                     android:padding="10dp"
 

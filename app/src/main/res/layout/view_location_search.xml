@@ -51,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Tìm kiếm..."
+            android:text="@string/Search"
             android:textColor="#666262"
             android:gravity="center"
             android:textSize="12sp"

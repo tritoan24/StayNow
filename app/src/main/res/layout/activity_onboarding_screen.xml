@@ -26,7 +26,7 @@
         android:layout_height="60dp"
         android:layout_gravity="bottom"
         android:background="@drawable/custom_buttom"
-        android:text="Bắt Đầu Sử Dụng"
+        android:text="@string/Get_started"
         android:textColor="@color/white"
         android:visibility="gone" />
 

@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thông tin người dùng"
+                android:text="@string/User_Information"
                 android:textSize="20sp"
                 android:layout_margin="10dp"
                 android:layout_marginStart="16dp"
@@ -136,7 +136,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Điện thoại"
+                        android:text="@string/Phone"
                         android:textSize="14sp"
                         android:textColor="@color/black" />
                 </LinearLayout>
@@ -203,7 +203,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Phòng hiện có"
+            android:text="@string/Available_Rooms"
             android:textSize="23sp"
             android:layout_marginLeft="10dp"
             android:textStyle="bold"

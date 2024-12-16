@@ -12,7 +12,7 @@
         android:id="@+id/dialogMessage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bạn có chắc chắn muốn chuyển trạng thái không?"
+        android:text="@string/Are_you_sure_you_want_to_switch_statuses"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:gravity="center"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
-            android:text="Hủy"
+            android:text="@string/Cancle"
             android:backgroundTint="@color/gray"
             android:textColor="@color/white" />
 
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="Xác nhận"
+            android:text="@string/Confirm"
             android:backgroundTint="@color/purple"
             android:textColor="@color/white" />
     </LinearLayout>

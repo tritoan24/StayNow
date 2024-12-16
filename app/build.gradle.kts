@@ -134,7 +134,7 @@ dependencies {
     // Socket
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
-   implementation("androidx.room:room-runtime:2.4.3")
+    implementation("androidx.room:room-runtime:2.4.3")
     kapt("androidx.room:room-compiler:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
 

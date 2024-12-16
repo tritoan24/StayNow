@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Nhập mã được gửi đến "
+            android:text="@string/Enter_the_code_sent_to"
             android:textColor="#404969"
             android:textSize="14sp"
             tools:ignore="HardcodedText" />
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginTop="5dp"
-        android:text="Nếu chưa nhận được mã, hãy ấn gửi lại"
+        android:text="@string/If_you_haven_received_the_code_yet_click_Resend"
         android:textColor="#F44336"
         android:textSize="12sp"
         android:textStyle="italic"
@@ -173,7 +173,7 @@
         android:layout_marginTop="40dp"
         android:background="@drawable/custom_buttom"
         android:gravity="center"
-        android:text="Xác Nhận"
+        android:text="@string/Confirm"
         android:textSize="16sp"
         tools:ignore="HardcodedText" />
 
@@ -191,7 +191,7 @@
             android:layout_marginHorizontal="10dp"
             android:background="?attr/selectableItemBackground"
             android:enabled="false"
-            android:text="Gửi lại mã sau"
+            android:text="@string/Resend_the_following_code"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />

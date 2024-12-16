@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:inputType="numberDecimal"
-        android:hint="Giá trị" />
+        android:hint="@string/Value" />
 
     <!-- Spinner để chọn đơn vị -->
     <Spinner

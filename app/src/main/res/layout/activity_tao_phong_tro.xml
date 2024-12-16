@@ -35,7 +35,7 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thêm phòng trọ"
+            android:text="@string/Add_a_room"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginStart="8dp" />
@@ -123,7 +123,7 @@
         android:id="@+id/sectionInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Thông tin phòng"
+        android:text="@string/Room_information"
         android:textColor="@color/purple"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -294,7 +294,7 @@
         android:id="@+id/sectionNoiThat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Danh sách nội thất"
+        android:text="@string/Furniture_List"
         android:textColor="@color/purple"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -306,11 +306,20 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"/>
     <!-- RecyclerView for Furniture List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLoaiPhong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Furniture_List"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
     <TextView
         android:id="@+id/sectionTienNghi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Danh sách Tiện Nghi"
+        android:text="@string/List_of_Amenities"
         android:textColor="@color/purple"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -344,6 +353,8 @@
         android:layout_height="wrap_content"
         android:text="Lưu Phòng Trọ"
         android:background="@drawable/bg_button"
+        android:text="@string/Stay_Room"
+        android:backgroundTint="@color/purple"
         android:textColor="@android:color/white"
         android:padding="12dp"
         android:layout_marginRight="10dp"/>
@@ -351,6 +362,8 @@
             android:id="@+id/addRoomButton2"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:text="@string/Posting_a_room"
+            android:backgroundTint="@color/purple"
             android:text="Đăng Phòng Trọ"
             android:background="@drawable/bg_button"
             android:textColor="@android:color/white"
