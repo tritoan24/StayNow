@@ -36,7 +36,7 @@ class BillContractActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBillContractBinding
     private lateinit var loadingIndicator: LottieAnimationView
 
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBillContractBinding.inflate(layoutInflater)
@@ -48,7 +48,7 @@ class BillContractActivity : AppCompatActivity() {
         // nhận intent từ contractAdapter
         val invoice = intent.getSerializableExtra("hoaDonHopDong") as? Invoice
         val contract = intent.getSerializableExtra("hopDong") as? HopDong
-
+        val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
@@ -63,9 +63,17 @@ class BillContractActivity : AppCompatActivity() {
         if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID) {
             binding.btnThanhtoan.visibility = View.GONE
         }
+        if (detail != null) {
+            binding.btnThanhtoan.visibility = View.GONE
+            binding.tvTitle.text = "Chi tiết hóa đơn hợp đồng"
+        }
 
         binding.btnThanhtoan.tap {
-            showConfirmDialog(this, "Xác nhận thanh toán","Bạn đã kiểm tra kĩ thông tin rồi chứ ?"){
+            showConfirmDialog(
+                this,
+                "Xác nhận thanh toán",
+                "Bạn đã kiểm tra kĩ thông tin rồi chứ ?"
+            ) {
                 showLoading()
                 val orderProcessor = OrderProcessor(this)
                 orderProcessor.checkAndCreateOrder(
@@ -99,7 +107,7 @@ class BillContractActivity : AppCompatActivity() {
     private fun updateUI(invoice: Invoice, contract: HopDong) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = "Phòng: "+invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: " + invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
         binding.tvInvoicePeriod.text = "Thời hạn thuê:${
             calculateRentalPeriod(

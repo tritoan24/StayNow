@@ -1,22 +1,32 @@
 package com.ph32395.staynow.quanlyhoadon
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
+import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ItemBillBinding
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.utils.showConfirmDialog
 import java.text.NumberFormat
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Locale
+import androidx.lifecycle.Observer
 
 class BillAdapter(
     private val status: InvoiceStatus,
@@ -87,6 +97,7 @@ class BillAdapter(
                     "Xác nhận hủy hóa đơn",
                     "Bạn có chắc chắn muốn hủy hóa đơn này không?"
                 ) {
+                    handlePaymentSuccess(itemView.context, bill)
                     listener?.onInvoiceStatusUpdate(bill.idHoaDon, InvoiceStatus.CANCELLED)
                 }
 
@@ -94,6 +105,7 @@ class BillAdapter(
             itemView.tap {
                 val intent = Intent(binding.root.context, DetailBillActivity::class.java)
                 intent.putExtra("bill", bill)
+                intent.putExtra("detail", "detail")
                 binding.root.context.startActivity(intent)
             }
         }
@@ -113,4 +125,42 @@ class BillAdapter(
             notifyDataSetChanged()
         }
     }
+}
+
+private fun handlePaymentSuccess(context: Context, bill: InvoiceMonthlyModel) {
+
+    val notification = NotificationModel(
+        title = "Thanh toán hóa đơn dịch vụ",
+        message = "Hóa đơn dịch vụ với mã hóa đơn ${bill.idHoaDon} đã bị hủy",
+        date = Calendar.getInstance().time.toString(),
+        time = "0",
+        mapLink = null,
+        isRead = false,
+        isPushed = true,
+        idModel = bill.idHoaDon,
+        typeNotification = "hoadonhangthang"
+    )
+
+    val factory = ViewModelFactory(context)
+    val notificationViewModel = ViewModelProvider(
+        context as AppCompatActivity,
+        factory
+    )[NotificationViewModel::class.java]
+
+    // Gửi thông báo đến cả hai người
+    val recipientIds = listOf(bill.idNguoiGui, bill.idNguoiNhan)
+    recipientIds.forEach { recipientId ->
+        notificationViewModel.sendNotification(notification, recipientId)
+    }
+    // Giám sát trạng thái gửi thông báo
+    notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
+        if (isSuccess) {
+            // Thông báo thành công
+            Toast.makeText(context, "Thông báo đã được gửi!", Toast.LENGTH_SHORT).show()
+        } else {
+            // Thông báo thất bại
+            Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
+        }
+    })
+
 }

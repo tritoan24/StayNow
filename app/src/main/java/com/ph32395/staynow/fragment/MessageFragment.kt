@@ -62,7 +62,8 @@ class MessageFragment : Fragment() {
         super.onCreate(savedInstanceState)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         Log.d(TAG, "onCreate:userId $userId")
-        fetchChatList(userId!!) {
+        if(userId == null) return
+        fetchChatList(userId) {
             Log.d(TAG, "onCreate:it List chat $it")
             adapterMessage = MessageAdapter(it) {
                 Log.d(TAG, "onCreate: it.time $it")

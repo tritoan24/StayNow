@@ -78,7 +78,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Bạn có thể nhờ người khác quét hộ"
+                android:text="Bạn có thể dùng thiết bị khác để quét"
                 android:textColor="@color/gray"
                 android:textSize="13sp"
                 android:textStyle="italic"
@@ -157,12 +157,47 @@
 
             </LinearLayout>
 
-            <ImageView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:src="@drawable/hintthanhtoan"
-                tools:ignore="ContentDescription" />
+                android:orientation="vertical"
+                tools:ignore="UseCompoundDrawables">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Bước 1: Mở Zalopay"
+                    android:textColor="@color/light_blue_900"
+                    android:textSize="16sp"
+                    android:textStyle="italic"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Bước 2: Chọn thanh toán và quét mã QR"
+                    android:textColor="@color/light_blue_900"
+                    android:textSize="16sp"
+                    android:textStyle="italic"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Bước 3: Xác nhận thanh toán ở ứng dụng "
+                    android:textColor="@color/light_blue_900"
+                    android:textSize="16sp"
+                    android:textStyle="italic"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
 

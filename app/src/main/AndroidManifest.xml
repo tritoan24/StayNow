@@ -38,8 +38,7 @@
         <activity
             android:name=".quanlyhoadon.BillManagementActivity"
             android:exported="false" />
-        android:usesCleartextTraffic="true"
-        >
+
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:windowSoftInputMode="adjustResize"
@@ -162,7 +161,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".ManGioiThieu.OnboardingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -186,7 +185,7 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".ManGioiThieu.OnboardingActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity

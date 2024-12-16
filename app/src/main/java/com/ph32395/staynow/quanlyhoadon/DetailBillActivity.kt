@@ -31,7 +31,7 @@ class DetailBillActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailBillBinding
     private lateinit var loadingIndicator: LottieAnimationView
 
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailBillBinding.inflate(layoutInflater)
@@ -42,12 +42,16 @@ class DetailBillActivity : AppCompatActivity() {
 
         // nhận intent từ billAdapter
         val invoice = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
-
+        val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
 
         updateUI(invoice!!)
+        if (detail != null) {
+            binding.btnThanhtoan.visibility = View.GONE
+            binding.tvTitle.text = "Chi tiết hóa đơn hàng tháng"
+        }
         if (invoice.trangThai != InvoiceStatus.PENDING) {
             binding.btnThanhtoan.visibility = View.GONE
         }
@@ -97,6 +101,8 @@ class DetailBillActivity : AppCompatActivity() {
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvServiceFee.text = formatCurrency(invoice.tongTienDichVu)
+        binding.tvTienGiam.text = formatCurrency(invoice.tienGiam)
+        binding.tvTienThem.text = formatCurrency(invoice.tienThem)
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
 
         // Phí cố định

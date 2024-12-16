@@ -3,6 +3,7 @@ package com.ph32395.staynow.Activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
@@ -34,18 +35,18 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
         if (contract != null) {
             binding.tvInvoiceId.text = contract.hoaDonHopDong.idHoaDon
-            binding.tvLandlordInfo.text = contract.hoaDonHopDong.idNguoigui
-            binding.tvTenantInfo.text = contract.hoaDonHopDong.idNguoinhan
+            binding.tvLandlordId.text = contract.hoaDonHopDong.idNguoigui
+            binding.tvTenantId.text = contract.hoaDonHopDong.idNguoinhan
             binding.tvAmount.text = contract.hoaDonHopDong.tongTien.toString()
             binding.tvAddress.text = contract.thongtinphong.diaChiPhong
             binding.tvStartDate.text = contract.ngayBatDau
             binding.tvEndDate.text = contract.ngayKetThuc
             binding.tvDate.text = contract.ngayThanhToan.toString()
             binding.tvInvoiceId.text = "ID hợp đồng: " + contract.maHopDong
-            binding.tvLandlordInfo.text = contract.chuNha.hoTen
+            binding.tvLandlordName.text = contract.chuNha.hoTen
             binding.tvLandlordAddress.text = contract.chuNha.diaChi
             binding.tvLandlordBd.text = contract.chuNha.ngaySinh
-            binding.tvTenantInfo.text = contract.nguoiThue.hoTen
+            binding.tvTenantName.text = contract.nguoiThue.hoTen
             binding.tvTenantAddress.text = contract.nguoiThue.diaChi
             binding.tvTenantBd.text = contract.nguoiThue.ngaySinh
             binding.tvNameRoom.text = "Tên phòng: " + contract.thongtinphong.tenPhong
@@ -64,17 +65,18 @@ class SuccessPaymentActivity : AppCompatActivity() {
         }
 
         if (bill != null) {
+            hideUIForInvoice()
             binding.tvInvoiceId.text = bill.idHoaDon
-            binding.tvLandlordInfo.text = bill.idNguoiGui
-            binding.tvTenantInfo.text = bill.idNguoiNhan
-
-            binding.tvDate.text = bill.ngayTaoHoaDon
+            binding.tvLandlordId.text = bill.idNguoiGui
+            binding.tvTenantId.text = bill.idNguoiNhan
+            binding.tvTenantName.text = bill.tenKhachHang
             binding.tvInvoiceId.text = "ID hợp đồng: " + bill.idHopDong
             binding.tvNameRoom.text = "Tên phòng: " + bill.tenPhong
             binding.tvAmount.text = "Tổng tiền: " + formatCurrency(bill.tongTien)
             binding.tvAmountRoom.text =
                 "Tiền phòng: " + formatCurrency(bill.tienPhong)
             binding.tvDate.text = formatServerTime(bill.paymentDate)
+
         }
 
         binding.btnGoHome.tap {
@@ -85,6 +87,18 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
     }
 
+    private fun hideUIForInvoice() {
+        binding.tvLandlordBd.visibility = View.GONE
+        binding.tvLandlordAddress.visibility = View.GONE
+        binding.tvAddress.visibility = View.GONE
+        binding.tvClause.visibility = View.GONE
+        binding.tvTerm.visibility = View.GONE
+        binding.tvAmountDeposit.visibility = View.GONE
+        binding.tvTenantAddress.visibility = View.GONE
+        binding.tvTenantBd.visibility = View.GONE
+        binding.tvEndDate.visibility = View.GONE
+        binding.tvStartDate.visibility = View.GONE
+    }
 
     // Định dạng tiền tệ
     private fun formatCurrency(amount: Double): String {
@@ -99,6 +113,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
         return dateFormat.format(date)
     }
+
 
 }
 
