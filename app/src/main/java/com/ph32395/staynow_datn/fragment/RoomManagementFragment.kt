@@ -25,6 +25,8 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.StatusRoom.CONFIRMED
 import com.ph32395.staynow_datn.hieunt.helper.Default.StatusRoom.WAIT
 import com.ph32395.staynow_datn.hieunt.helper.Default.StatusRoom.WATCHED
 import com.ph32395.staynow_datn.hieunt.helper.Default.listScheduleState
+import com.ph32395.staynow_datn.hieunt.helper.SharePrefUtils
+import com.ph32395.staynow_datn.hieunt.view.dialog.RenterInterestDialog
 import com.ph32395.staynow_datn.hieunt.view.dialog.UpdateRoomScheduleDialog
 import com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room.adapter.RenterManageScheduleRoomAdapter
 import com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room.adapter.ScheduleStateAdapter
@@ -98,7 +100,13 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 }
             },
             onClickCreateContract = {
-                createContract(it.roomId, it.tenantId, it.roomScheduleId)
+                if (SharePrefUtils(requireContext()).isReadRenterInterest){
+                    createContract(it.roomId, it.tenantId, it.roomScheduleId)
+                } else {
+                    RenterInterestDialog{
+                        createContract(it.roomId, it.tenantId, it.roomScheduleId)
+                    }.show(childFragmentManager,javaClass.name)
+                }
             }
         )
 

@@ -117,7 +117,7 @@
                 android:background="@color/color_line"/>
         </LinearLayout>
     </FrameLayout>
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/tv_confirm"
         android:layout_width="match_parent"
         android:layout_height="44dp"

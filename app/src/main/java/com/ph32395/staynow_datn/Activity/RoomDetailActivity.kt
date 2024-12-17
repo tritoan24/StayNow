@@ -11,7 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatButton
+import com.google.android.material.button.MaterialButton
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -195,7 +195,7 @@ class RoomDetailActivity : AppCompatActivity() {
                 Log.e("RoomManagementFragment", "Error fetching user data", exception)
             }
         }
-        findViewById<AppCompatButton>(R.id.viewInfor).setOnClickListener{
+        findViewById<MaterialButton>(R.id.viewInfor).setOnClickListener{
             val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
             viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
                 intent.putExtra("idUser",ma_NguoiDung)

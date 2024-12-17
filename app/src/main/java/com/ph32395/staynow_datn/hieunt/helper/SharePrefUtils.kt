@@ -13,6 +13,14 @@ class SharePrefUtils(context: Context) {
             editor.putBoolean("isReadTenantInterest", value)
             editor.apply()
         }
+
+    var isReadRenterInterest
+        get() = pre.getBoolean("isReadRenterInterest", false)
+        set(value) {
+            editor.putBoolean("isReadRenterInterest", value)
+            editor.apply()
+        }
+
     var isRated
         get() = pre.getBoolean("rated", false)
         set(value) {
