@@ -183,7 +183,7 @@ private fun handlePayment(
 
     if (status == "success") {
         val intent = Intent(context, SuccessPaymentActivity::class.java)
-        intent.putExtra("invoiceId", bill)
+        intent.putExtra("bill", bill)
         context.startActivity(intent)
     }
 
