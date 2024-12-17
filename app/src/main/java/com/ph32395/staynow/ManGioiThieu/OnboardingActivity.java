@@ -1,5 +1,6 @@
 package com.ph32395.staynow.ManGioiThieu;
 
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +29,10 @@ public class OnboardingActivity extends AppCompatActivity {
 
     private static final String PREFS_NAME = "AppSettings";
     private static final String LANGUAGE_KEY = "Language";
+
+    private static final String FIRST_TIME_KEY = "first_time";
+    private static final String PREFS_NAMEY = "MyAppPrefs";
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -97,10 +102,17 @@ public class OnboardingActivity extends AppCompatActivity {
         });
 
         btnBatDau.setOnClickListener(v -> {
-            // Lưu trạng thái hoàn thành Onboarding
+            // Chuyển hướng đến hoạt động chính của ứng dụng
+
+
+            SharedPreferences prefsd = getSharedPreferences(PREFS_NAMEY, MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefsd.edit();
+            editor.putBoolean(FIRST_TIME_KEY, false);
+            editor.apply();
             startActivity(new Intent(OnboardingActivity.this, DangKy.class));
             finish();
         });
+
     }
 
     private void setLocale(String languageCode) {

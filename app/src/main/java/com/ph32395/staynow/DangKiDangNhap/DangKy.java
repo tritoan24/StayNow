@@ -250,6 +250,7 @@ public class DangKy extends AppCompatActivity {
                                 Intent intent = new Intent(DangKy.this, OTPActivity.class);
                                 intent.putExtra("uid", user.getUid());
                                 intent.putExtra("email", user.getEmail());
+                                intent.putExtra("pass", passwordEditText.getText().toString().trim());
                                 startActivity(intent);
 
                             });
