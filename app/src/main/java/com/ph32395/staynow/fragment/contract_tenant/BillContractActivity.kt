@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import com.ph32395.staynow.Activity.ChoosePaymentActivity
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.Invoice
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
@@ -35,6 +36,7 @@ class BillContractActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBillContractBinding
     private lateinit var loadingIndicator: LottieAnimationView
+    private lateinit var contractViewModel: ContractViewModel
 
     @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,19 +50,30 @@ class BillContractActivity : AppCompatActivity() {
         // nhận intent từ contractAdapter
         val invoice = intent.getSerializableExtra("hoaDonHopDong") as? Invoice
         val contract = intent.getSerializableExtra("hopDong") as? HopDong
+        val contractId = intent.getStringExtra("contractId")
         val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
+        if (contractId != null) {
+            contractViewModel.fetchInvoiceDetails(
+                contractId
+            )
+            contractViewModel.invoiceDetails.observe(this) { invoice ->
 
-        updateUI(invoice!!, contract!!)
+                updateUI(invoice, null)
+            }
+        } else {
+            updateUI(invoice!!, contract!!)
+
+        }
 
         binding.ivBack.tap {
             onBackPressed()
             finish()
         }
 
-        if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID) {
+        if (contract?.hoaDonHopDong?.trangThai == InvoiceStatus.PAID) {
             binding.btnThanhtoan.visibility = View.GONE
         }
         if (detail != null) {
@@ -76,25 +89,30 @@ class BillContractActivity : AppCompatActivity() {
             ) {
                 showLoading()
                 val orderProcessor = OrderProcessor(this)
-                orderProcessor.checkAndCreateOrder(
-                    invoice.tongTien,
-                    contract.maHopDong,
-                    contract.hoaDonHopDong.idHoaDon,
-                    itemsArrStr,
-                    TypeBill.HoaDonHopDong,
-                ) { token, orderUrl, remainTime ->
-                    if (token != null && orderUrl != null) {
-                        val intent = Intent(this, ChoosePaymentActivity::class.java)
-                        intent.putExtra("contract", contract)
-                        intent.putExtra("zpToken", token)
-                        intent.putExtra("orderUrl", orderUrl)
-                        intent.putExtra("remainTime", remainTime)
-                        Log.d("remainTimeBillContract", remainTime.toString())
-                        hideLoading()
-                        startActivity(intent)
+                invoice?.let { it1 ->
+                    contract?.let { it2 ->
+                        orderProcessor.checkAndCreateOrder(
+                            it1.tongTien,
+                            it2.maHopDong,
+                            contract.hoaDonHopDong.idHoaDon,
+                            itemsArrStr,
+                            TypeBill.HoaDonHopDong,
+                        ) { token, orderUrl, remainTime ->
+                            if (token != null && orderUrl != null) {
+                                val intent = Intent(this, ChoosePaymentActivity::class.java)
+                                intent.putExtra("contract", contract)
+                                intent.putExtra("zpToken", token)
+                                intent.putExtra("orderUrl", orderUrl)
+                                intent.putExtra("remainTime", remainTime)
+                                Log.d("remainTimeBillContract", remainTime.toString())
+                                hideLoading()
+                                startActivity(intent)
 
-                    } else {
-                        Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
                     }
                 }
             }
@@ -104,8 +122,11 @@ class BillContractActivity : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateUI(invoice: Invoice, contract: HopDong) {
-        // Thông tin chung hóa đơn
+    private fun updateUI(invoice: Invoice, contract: HopDong?) {
+        if (contract == null) {
+            binding.tvReminderDate.visibility = View.GONE
+        }
+
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
         binding.tvRoomName.text = "Phòng: " + invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
@@ -116,7 +137,7 @@ class BillContractActivity : AppCompatActivity() {
             )
         }, tính từ ngày ${invoice.ngayLap} đến hết ngày ${invoice.kyHoaDon}"
         binding.tvReminderDate.text =
-            "Các chi phí dịch vụ cố định và phí biến động sẽ được tính vào hóa đơn hàng tháng. Chúng tôi sẽ nhắc nhở bạn vào ngày ${contract.ngayThanhToan} tháng sau."
+            "Các chi phí dịch vụ cố định và phí biến động sẽ được tính vào hóa đơn hàng tháng. Chúng tôi sẽ nhắc nhở bạn vào ngày ${contract?.ngayThanhToan} tháng sau."
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvRoomDeposit.text = formatCurrency(invoice.tienCoc)

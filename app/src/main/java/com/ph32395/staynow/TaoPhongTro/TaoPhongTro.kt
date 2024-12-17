@@ -286,6 +286,10 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 }
         }
 
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
+
         binding.roomName.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 // Hiển thị Snackbar khi trường nhập liệu được focus
@@ -304,12 +308,14 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             TrangThaiPhong = false
             // Gọi hàm lưu phòng với trạng thái là "Lưu"
             saveRoomToFirestore(isSaved = true, trangThaiPhong = TrangThaiPhong)
+            loadingUtil.show()
         }
 
         // Logic khi nhấn nút "Đăng"
         binding.addRoomButton2.setOnClickListener {
             TrangThaiPhong = false
             saveRoomToFirestore(isSaved = false, trangThaiPhong = TrangThaiPhong)
+            loadingUtil.show()
         }
 
 

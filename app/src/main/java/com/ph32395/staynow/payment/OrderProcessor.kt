@@ -195,10 +195,10 @@ private fun handlePayment(context: Context, contract: HopDong, status: String) {
     )[NotificationViewModel::class.java]
 
     // Gửi thông báo đến cả hai người
-    val recipientIds = listOf(contract.nguoiThue.maNguoiDung, contract.chuNha.maNguoiDung)
-    recipientIds.forEach { recipientId ->
-        notificationViewModel.sendNotification(notification, recipientId)
-    }
+    val recipientIds =contract.nguoiThue.maNguoiDung
+
+        notificationViewModel.sendNotification(notification,recipientIds)
+
     // Giám sát trạng thái gửi thông báo
     notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
         if (isSuccess) {

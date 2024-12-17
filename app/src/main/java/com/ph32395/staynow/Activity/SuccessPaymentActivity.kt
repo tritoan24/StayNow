@@ -51,7 +51,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
         }
 
-        if (bill != null) {
+        if (bill?.equals("") == false) {
             hideUIForInvoice()
             binding.tvInvoiceId.text = bill.idHoaDon
             binding.tvTenantName.text = bill.tenKhachHang

@@ -37,7 +37,7 @@ class MessageFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_message, container, false)
         binding.btnAdminSuport.setOnClickListener {
-            val adminId = "BCvWcFi8M9PAeMnKLv2SefBzRe23" // ID của admin bạn muốn truyền
+            val adminId = "MrKVY9AwTDh497zwaDb2xwfDMlI3" // ID của admin bạn muốn truyền
             val userId =
                 FirebaseAuth.getInstance().currentUser?.uid  // Lấy ID của người dùng hiện tại
             Log.d(TAG, "onCreate: userId $userId")
@@ -56,26 +56,31 @@ class MessageFragment : Fragment() {
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         Log.d(TAG, "onCreate:userId $userId")
-        fetchChatList(userId!!) {
-            if (it.isEmpty()) {
-                binding.layoutMessageNull.visibility = View.VISIBLE
-                binding.rcvListTinNhan.visibility = View.GONE
-            } else {
-                binding.layoutMessageNull.visibility = View.GONE
-                binding.rcvListTinNhan.visibility = View.VISIBLE
-                Log.d(TAG, "onCreate:it List chat $it")
-                adapterMessage = MessageAdapter(it) {
-                    Log.d(TAG, "onCreate: it.time $it")
-                    val intent = Intent(context, TextingMessengeActivity::class.java)
-                    intent.putExtra("chatId", it.chatId)
-                    intent.putExtra("userChat", it.otherUserId)
-                    startActivity(intent)
-                }
-                binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
-                binding.rcvListTinNhan.adapter = adapterMessage
+        if (userId == null) {
+            Log.d("MessagerFragment", "Khong co iuser")
+        } else {
+            fetchChatList(userId) {
+                if (it.isEmpty()) {
+                    binding.layoutMessageNull.visibility = View.VISIBLE
+                    binding.rcvListTinNhan.visibility = View.GONE
+                } else {
+                    binding.layoutMessageNull.visibility = View.GONE
+                    binding.rcvListTinNhan.visibility = View.VISIBLE
+                    Log.d(TAG, "onCreate:it List chat $it")
+                    adapterMessage = MessageAdapter(it) {
+                        Log.d(TAG, "onCreate: it.time $it")
+                        val intent = Intent(context, TextingMessengeActivity::class.java)
+                        intent.putExtra("chatId", it.chatId)
+                        intent.putExtra("userChat", it.otherUserId)
+                        startActivity(intent)
+                    }
+                    binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
+                    binding.rcvListTinNhan.adapter = adapterMessage
 
+                }
             }
         }
+
         fetchStatusMessage {
             val adapter = UserStatusOnOfAdapter(it) {
                 val intent = Intent(context, TextingMessengeActivity::class.java)
