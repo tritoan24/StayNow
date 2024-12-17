@@ -29,10 +29,13 @@ import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_CONTRACT_
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
+import com.ph32395.staynow.quanlyhoadon.DetailBillActivity
 import com.ph32395.staynow.quanlyhoadon.BillManagementActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -82,21 +85,29 @@ class NotificationService : Service() {
 
     private fun getNotification(notificationModel: NotificationModel): Notification {
         Log.d("idHopDong", "idHopDongput: ${notificationModel.idModel}")
-        when (notificationModel.typeNotification){
+        when (notificationModel.typeNotification) {
             TYPE_SCHEDULE_ROOM_TENANT -> {
                 Intent(this, TenantManageScheduleRoomActivity::class.java)
             }
+
             TYPE_SCHEDULE_ROOM_RENTER -> {
-                Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) }
+                Intent(this, MainActivity::class.java).apply {
+                    putExtra(
+                        OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION,
+                        true
+                    )
+                }
             }
+
             TYPE_NOTI_BILL_MONTHLY -> {
                 Intent(this, CreateInvoice::class.java).apply {
                     putExtra("CONTRACT_ID", notificationModel.idModel)
                 }
             }
-            TYPE_NOTI_MASSAGES ->{
-                Intent(this,TextingMessengeActivity::class.java).apply {
-                    putExtra("userId",notificationModel.idModel)
+
+            TYPE_NOTI_MASSAGES -> {
+                Intent(this, TextingMessengeActivity::class.java).apply {
+                    putExtra("userId", notificationModel.idModel)
                 }
             }
             TYPE_CONTRACT_DONE ->{
@@ -108,6 +119,19 @@ class NotificationService : Service() {
                 Intent(this, BillManagementActivity::class.java).apply {
                 }
             }
+
+            TYPE_NOTI_PAYMENT_CONTRACT -> {
+                Intent(this, BillContractActivity::class.java).apply {
+                    putExtra("contractId", notificationModel.idModel)
+                }
+            }
+
+            TYPE_NOTI_PAYMENT_INVOICE -> {
+                Intent(this, DetailBillActivity::class.java).apply {
+                    putExtra("invoiceId", notificationModel.idModel)
+                }
+            }
+
             else -> {
                 null
             }
@@ -118,7 +142,14 @@ class NotificationService : Service() {
                 .setContentText(notificationModel.message)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true)
-                .setContentIntent(PendingIntent.getActivity(this, System.currentTimeMillis().toInt(), it, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
+                .setContentIntent(
+                    PendingIntent.getActivity(
+                        this,
+                        System.currentTimeMillis().toInt(),
+                        it,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
+                )
                 .build()
         } ?: return NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.logoapp)
@@ -155,11 +186,19 @@ class NotificationService : Service() {
                                     updateNotificationIsPushed(notification) { isCompletion ->
                                         if (isCompletion) {
                                             launch(Dispatchers.Main) {
-                                                Toast.makeText(this@NotificationService, "Thông báo mới", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    this@NotificationService,
+                                                    "Thông báo mới",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         } else {
                                             launch(Dispatchers.Main) {
-                                                Toast.makeText(this@NotificationService, "Lỗi khi hiển thị thông báo", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(
+                                                    this@NotificationService,
+                                                    "Lỗi khi hiển thị thông báo",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         }
                                     }
@@ -170,7 +209,11 @@ class NotificationService : Service() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@NotificationService, "Lỗi khi lấy thông báo", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this@NotificationService,
+                        "Lỗi khi lấy thông báo",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     Log.e("NotificationServiceZZZ", "Error: ${error.message}")
                 }
             })
@@ -194,13 +237,19 @@ class NotificationService : Service() {
                                 IS_PUSHED to true
                             )
                             notificationRef.updateChildren(updates).addOnSuccessListener {
-                                    onCompletion.invoke(true)
-                                    Log.d("NotificationServiceZZZ", "Notification isPushed updated successfully.")
+                                onCompletion.invoke(true)
+                                Log.d(
+                                    "NotificationServiceZZZ",
+                                    "Notification isPushed updated successfully."
+                                )
 
                             }
                                 .addOnFailureListener { exception ->
-                                        onCompletion.invoke(false)
-                                        Log.e("NotificationServiceZZZ", "Failed to update isPushed: ${exception.message}")
+                                    onCompletion.invoke(false)
+                                    Log.e(
+                                        "NotificationServiceZZZ",
+                                        "Failed to update isPushed: ${exception.message}"
+                                    )
                                 }
                         }
                     }
@@ -208,7 +257,10 @@ class NotificationService : Service() {
 
                 override fun onCancelled(error: DatabaseError) {
                     onCompletion.invoke(false)
-                    Log.e("NotificationServiceZZZ", "Error fetching notifications: ${error.message}")
+                    Log.e(
+                        "NotificationServiceZZZ",
+                        "Error fetching notifications: ${error.message}"
+                    )
                 }
             })
         }

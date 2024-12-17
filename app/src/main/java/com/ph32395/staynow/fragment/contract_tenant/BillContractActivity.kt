@@ -50,7 +50,9 @@ class BillContractActivity : AppCompatActivity() {
         // nhận intent từ contractAdapter
         val invoice = intent.getSerializableExtra("hoaDonHopDong") as? Invoice
         val contract = intent.getSerializableExtra("hopDong") as? HopDong
+
         val contractId = intent.getStringExtra("contractId")
+
         val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
@@ -60,7 +62,6 @@ class BillContractActivity : AppCompatActivity() {
                 contractId
             )
             contractViewModel.invoiceDetails.observe(this) { invoice ->
-
                 updateUI(invoice, null)
             }
         } else {
@@ -205,6 +206,5 @@ class BillContractActivity : AppCompatActivity() {
             .also { StrictMode.setThreadPolicy(it) }
         ZaloPaySDK.init(Constants.APP_ID, Environment.SANDBOX)
     }
-
 
 }

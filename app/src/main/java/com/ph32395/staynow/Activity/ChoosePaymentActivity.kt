@@ -14,6 +14,7 @@ import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.databinding.ActivityChoosePaymentBinding
+import com.ph32395.staynow.hieunt.helper.Default
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
@@ -52,10 +53,7 @@ class ChoosePaymentActivity : AppCompatActivity() {
         socketManager.on("paymentCallback") {
             runOnUiThread {
                 try {
-                    if (bill != null) {
-                        sendNotify(bill)
-                    }
-
+                    sendNotify(bill, contract)
                     val intent = Intent(this, SuccessPaymentActivity::class.java)
                     intent.putExtra("itemData", contract)
                     startActivity(intent)
@@ -153,17 +151,23 @@ class ChoosePaymentActivity : AppCompatActivity() {
         ZaloPaySDK.getInstance().onResult(intent)
     }
 
-    fun sendNotify(bill: InvoiceMonthlyModel) {
-        val notification = NotificationModel(
-            title = "Thanh toán hóa đơn hàng tháng",
-            message = "Thanh toán thành công cho hóa đơn ${bill!!.idHoaDon}",
-            date = Calendar.getInstance().time.toString(), // Lấy ngày hiện tại
-            time = "0",
-            mapLink = null,
-            isRead = false,
-            isPushed = true,
-            idModel = bill.idHoaDon
-        )
+    private fun sendNotify(bill: InvoiceMonthlyModel?, contract: HopDong?) {
+
+        val notification = (bill?.idHoaDon ?: contract?.maHopDong)?.let {
+            val message =
+                if (bill != null) "Thanh toán thành công cho hóa đơn ${bill.idHoaDon}" else "Thanh toán thành công cho hợp đồng ${contract?.maHopDong}"
+            NotificationModel(
+                title = "Thanh toán hóa đơn hàng tháng",
+                message = message,
+                date = Calendar.getInstance().time.toString(),
+                time = "0",
+                mapLink = null,
+                isRead = false,
+                isPushed = true,
+                idModel = it,
+                typeNotification = if (bill != null) Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE else Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+            )
+        }
 
         val factory = ViewModelFactory(this)
         val notificationViewModel = ViewModelProvider(
@@ -172,9 +176,8 @@ class ChoosePaymentActivity : AppCompatActivity() {
         )[NotificationViewModel::class.java]
 
         // Gửi thông báo đến cả hai người
-        val recipientIds = listOf(bill.idNguoiGui, bill.idNguoiNhan)
-        recipientIds.forEach { recipientId ->
-            notificationViewModel.sendNotification(notification, recipientId)
+        bill?.let { listOf(it.idNguoiGui, bill.idNguoiNhan) }?.forEach { recipientId ->
+            notification?.let { notificationViewModel.sendNotification(it, recipientId) }
         }
         // Giám sát trạng thái gửi thông báo
         notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->

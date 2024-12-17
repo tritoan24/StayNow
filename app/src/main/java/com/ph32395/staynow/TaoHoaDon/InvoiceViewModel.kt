@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 
+@Suppress("DEPRECATION")
 class InvoiceViewModel : ViewModel() {
 
     private val firestore = FirebaseFirestore.getInstance()
@@ -16,6 +17,9 @@ class InvoiceViewModel : ViewModel() {
     // LiveData để quan sát danh sách hóa đơn
     private val _invoices = MutableLiveData<List<InvoiceMonthlyModel>>()
     val invoices: LiveData<List<InvoiceMonthlyModel>> get() = _invoices
+
+    private val _invoice = MutableLiveData<InvoiceMonthlyModel?>()
+    val invoice: LiveData<InvoiceMonthlyModel?> get() = _invoice
 
     // Thêm một hóa đơn mới
     fun addInvoice(
@@ -49,6 +53,24 @@ class InvoiceViewModel : ViewModel() {
             }
     }
 
+    fun fetchInvoiceById(invoiceId: String) {
+        invoiceCollection.document(invoiceId)
+            .addSnapshotListener { documentSnapshot, exception ->
+                if (exception != null) {
+                    Log.e("InvoiceViewModel", "Error fetching invoice by ID: ", exception)
+                    _invoice.value = null
+                    return@addSnapshotListener
+                }
+
+                // Chuyển đổi document thành đối tượng InvoiceMonthlyModel
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    _invoice.value = documentSnapshot.toObject<InvoiceMonthlyModel>()
+                } else {
+                    _invoice.value = null // Không tìm thấy hóa đơn
+                    Log.e("InvoiceViewModel", "Invoice not found for ID: $invoiceId")
+                }
+            }
+    }
     fun fetchInvoicesForUser(type: String,userId: String, trangThai: InvoiceStatus) {
         invoiceCollection
             .whereEqualTo("trangThai", trangThai)
@@ -70,7 +92,6 @@ class InvoiceViewModel : ViewModel() {
                 }
             }
     }
-
 
     fun fetchInvoicesByContractIdAndStatus(contractId: String, trangThai: InvoiceStatus?) {
         // Tạo truy vấn cơ bản dựa trên contractId
@@ -111,7 +132,6 @@ class InvoiceViewModel : ViewModel() {
                 Log.e("InvoiceViewModel", "Error updating invoice status: ", exception)
             }
     }
-
 
     // Xóa một hóa đơn
     fun deleteInvoice(invoiceId: String, onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {

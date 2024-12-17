@@ -1,5 +1,6 @@
 package com.ph32395.staynow.payment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
+import com.ph32395.staynow.hieunt.helper.Default
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
@@ -168,6 +170,7 @@ class OrderProcessor(private val context: Context) {
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 private fun handlePayment(context: Context, contract: HopDong, status: String) {
 
     val messageSuccess =
@@ -184,7 +187,7 @@ private fun handlePayment(context: Context, contract: HopDong, status: String) {
         isRead = false,
         isPushed = true,
         idModel = contract.maHopDong,
-        typeNotification = "hoadonhopdong"
+        typeNotification = Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
     )
 
     val factory = ViewModelFactory(context)
@@ -193,10 +196,9 @@ private fun handlePayment(context: Context, contract: HopDong, status: String) {
         factory
     )[NotificationViewModel::class.java]
 
-    // Gửi thông báo đến cả hai người
-    val recipientIds =contract.nguoiThue.maNguoiDung
+    val recipientIds = contract.nguoiThue.maNguoiDung
 
-        notificationViewModel.sendNotification(notification,recipientIds)
+    notificationViewModel.sendNotification(notification, recipientIds)
 
     // Giám sát trạng thái gửi thông báo
     notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
