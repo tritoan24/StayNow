@@ -257,6 +257,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         loadingUtil = LoadingUtil(this)
         loadingUtil.show()
 
+
         // Khởi tạo RecyclerView
         binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
         binding.RcTienNghi.layoutManager = GridLayoutManager(this, 3)
@@ -283,6 +284,10 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     displaySelectedImages(uriList)
 
                 }
+        }
+
+        binding.btnBack.setOnClickListener {
+            finish()
         }
 
         binding.roomName.setOnFocusChangeListener { _, hasFocus ->
