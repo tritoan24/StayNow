@@ -342,6 +342,7 @@
 
 
 
+
     <!-- Strings  id update -->
     <string name="default_web_client_id">918655571270-u0aorv0f23meel967mfomasbc5e2ngns.apps.googleusercontent.com</string>
 
@@ -390,6 +391,7 @@
     <string name="nguoi_thue_3" translatable="false">Các vấn đề về hợp đồng sẽ được StayNow bảo hộ 100% trong thời hạn hợp đồng theo đúng quy định.</string>
     <string name="chu_tro_1" translatable="false">Khi ký người chủ trọ kí kết hợp đồng bên ứng dụng StayNow sẽ được bảo vệ về pháp lý khi người thuê trọ vi phạm hợp đồng.</string>
     <string name="chu_tro_2" translatable="false">Nếu người thuê trọ phá vỡ hợp đồng, bỏ trốn, không chịu đóng tiền phòng, tiền dịch vụ, ăn cắp, phá hoại tài sản khi này StayNow sẽ nhờ pháp luật can thiệp để đòi lại quyền lợi cho người chủ trọ</string>
+    <string name="nguoi_thue_4" translatable="false">Khi người dùng không tuân thủ theo các điều khoản của StayNow, nếu có bất kỳ điều gì xảy ra người dùng hoàn toàn phải chịu trách nhiệm.</string>
 
 
     <!-- key Goong map api  -->
