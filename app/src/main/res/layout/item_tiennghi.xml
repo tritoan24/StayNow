@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/border_selected"
+    android:layout_marginBottom="8dp"
+    android:layout_margin="4dp"
+        android:padding="7dp">
+
+        <!-- Hình ảnh nội thất -->
+        <ImageView
+            android:id="@+id/tiennghiImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/ic_launcher_background"
+            />
+
+        <!-- Tên nội thất -->
+        <TextView
+            android:id="@+id/tiennghiName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tên"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center_vertical"
+            />
+
+    </LinearLayout>
+

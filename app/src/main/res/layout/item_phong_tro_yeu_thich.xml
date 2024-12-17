@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginVertical="8dp"
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+
+        <!-- Phần hiển thị ảnh của phòng trọ -->
+        <ImageView
+            android:id="@+id/imagePhongTroYeuThich"
+            android:layout_width="120dp"
+            android:layout_height="110dp"
+            android:background="@drawable/border_image"
+            android:src="@drawable/room"
+            tools:ignore="ContentDescription" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="8dp">
+            <!-- Phần tên của phòng trọ -->
+            <TextView
+                android:id="@+id/txtTenPhongTroYeuThich"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="8dp"
+                android:text="Tên phòng trọ"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText" />
+
+            <!-- Phần giá thuê -->
+            <TextView
+                android:id="@+id/tvGiaThueYeuThich"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Giá thuê: 2,000,000 VND"
+                android:textColor="#EF1606"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText" />
+
+            <!-- Phần địa chỉ của phòng trọ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="start"
+                    android:src="@drawable/ic_location_room"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/txtDiaChiYeuThich"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:text="Địa chỉ"
+                    android:textColor="@android:color/black"
+                    android:textSize="12sp"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+
+            <!--                Thoi gina dang-->
+            <TextView
+                android:id="@+id/txtThoiGianYeuThich"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:text="20 phút trước"
+                android:textColor="#24C12A"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

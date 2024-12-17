@@ -1,0 +1,12 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Nền màu trắng -->
+    <solid android:color="@android:color/white" />
+
+    <!-- Bo góc cho thẻ -->
+    <corners android:radius="12dp" />
+
+    <!-- Đổ bóng hoặc viền -->
+    <stroke
+        android:width="1dp"
+        android:color="#D3D3D3" /> <!-- Màu viền (nhạt) -->
+</shape>

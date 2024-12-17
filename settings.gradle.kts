@@ -16,8 +16,13 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+        flatDir {
+            dirs("app/libs")
+        }
     }
 }
 
 rootProject.name = "StayNow"
 include(":app")
+include(":horizontal_calendar")

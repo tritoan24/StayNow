@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_dichvu"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:layout_margin="4dp"
+    android:background="@drawable/border_selected"
+        android:padding="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+
+        >
+        <!-- Hình ảnh xóa góc phải -->
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|top"
+            android:src="@drawable/ic_delete"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp" />
+
+        <!-- Hình ảnh nội thất -->
+        <ImageView
+            android:id="@+id/dichvuImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_launcher_background"
+            />
+
+        <!-- Tên nội thất -->
+        <TextView
+            android:id="@+id/dichvuName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tên"
+            android:textSize="14sp"
+            android:textAlignment="center"
+            />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="8dp">
+
+        <!-- Gia Tien -->
+        <TextView
+            android:id="@+id/giaDichvu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="12sp"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+

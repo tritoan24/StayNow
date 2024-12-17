@@ -1,30 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- permission notifications -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- service -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
-        tools:targetApi="31">
+        android:usesCleartextTraffic="true">
+
         <activity
-            android:name=".ManGioiThieu.OnboardingActivity"
+            android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
+            android:exported="false" />
+        <activity
+            android:name=".quanlyhoadon.DetailBillActivity"
+            android:exported="false" />
+        <activity
+            android:name=".quanlyhoadon.HistoryBillContactActivity"
+            android:exported="false" />
+        <activity
+            android:name=".quanlyhoadon.BillManagementActivity"
             android:exported="false"
-            android:theme="@style/Theme.StayNow" />
+            android:usesCleartextTraffic="true" />
         <activity
-            android:name=".ManGioiThieu.OnboardingScreen"
+            android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity
+            android:name=".TaoHoaDon.ChoiceContract"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".BaoMat.ThayDoiNgonNgu"
             android:exported="false" />
         <activity
-            android:name=".DangNhap"
+            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"
             android:exported="false" />
+
+        <service
+            android:name=".hieunt.service.NotificationService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
+
+        <activity
+            android:name=".PhongTroDaXem.PhongTroDaXemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.SuccessPaymentActivity"
+            android:exported="true" />
+        <activity
+            android:name=".fragment.contract_tenant.BillContractActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hieunt.view.feature.notification.NotificationActivity"
+            android:exported="true" />
+        <activity
+            android:name=".Activity.ChoosePaymentActivity"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="app"
+                    android:scheme="demozpdk" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".BaoMat.ThongTinNguoiDung"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.PhanHoi"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBbxMwcxk6XCMozn8FBoElb9lO5WaQLbC8" />
+
+        <activity
+            android:name=".Maps.MapsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
+            android:exported="true" />
+        <activity
+            android:name=".BaoMat.CapNhatThongTin"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.CaiDat"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.QuenMK"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.DoiMK"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.FullScreenImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ChucNangTimKiem.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".QuanLyPhongTro.QuanLyPhongTroActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activity.RoomDetailActivity"
+            android:exported="true"
+            tools:ignore="AppLinkUrlError">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="staynowshare.page.link"
+                    android:pathPrefix="/roomDetail"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ThongTinThanhToan.PaymentInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CCCD.CCCD"
+            android:exported="false" />
+        <activity
+            android:name=".TaoHoaDon.CreateInvoice"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.OTPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hieunt.view.feature.no_internet.NoInternetActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hieunt.view.feature.schedule_room.ScheduleRoomActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Activity.SplashActivity"
             android:exported="true">
@@ -34,6 +168,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TaoHopDong.ChiTietHopDong"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.DangKy"
+            android:exported="false"
+            android:theme="@style/Theme.StayNow" />
+        <activity
+            android:name=".DangKiDangNhap.DangNhap"
+            android:exported="false"
+            android:theme="@style/Theme.StayNow" />
+        <activity
+            android:name=".TaoHopDong.TaoHopDong"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".ManGioiThieu.OnboardingActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DangKiDangNhap.ChonLoaiTK"
+            android:exported="false" />
+        <activity
+            android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
+            android:exported="true" />
+        <activity
+            android:name=".TaoPhongTro.TaoPhongTro"
+            android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
+        <meta-data
+            android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"
+            android:value="@string/default_web_client_id" />
     </application>
 
 </manifest>

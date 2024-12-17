@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="24dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardElevation="0dp"
+    android:layout_marginBottom="16dp"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
+        <TextView
+            android:id="@+id/tv_name_renter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chủ trọ: Ngo Trung Hieu"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/inter_semi_bold"/>
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SDT: 0899430751"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:fontFamily="@font/inter_medium"
+            />
+        <TextView
+            android:id="@+id/tv_name_room"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phong tro gia re"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_medium"
+            />
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thời gian: 18:00 ngày 22-11-2024"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_medium"
+            android:layout_marginBottom="8dp"
+            />
+        <LinearLayout
+            android:id="@+id/ll_cancel_and_leave"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tv_cancel_schedule"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_button_detail"
+                android:text="Hủy lịch hẹn"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginEnd="12dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tv_leave_schedule"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_button"
+                android:text="Rời lịch hẹn"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+        </LinearLayout>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_notification"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            android:fontFamily="@font/inter_semi_bold"
+            android:gravity="center"
+            android:layout_marginVertical="12dp"
+            android:text="Chủ trọ yêu cầu đổi lịch hẹn như trên, bạn có đồng ý với chủ trọ ?"/>
+        <LinearLayout
+            android:id="@+id/ll_yes_or_no"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tv_no"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_button_detail"
+                android:text="Không đồng ý"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_marginEnd="12dp"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/tv_yes"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_button"
+                android:text="Đồng ý"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <ScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="visible">
+
+        <!--    Chung -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!--        Icon-->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                tools:ignore="MissingClass">
+
+                <!-- ViewPager -->
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <!-- Icon Back -->
+                <ImageView
+                    android:id="@+id/iconBack"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/icon_back"
+                    android:contentDescription="Back icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_margin="16dp" />
+
+                <!-- Icon Favorite -->
+                <ImageView
+                    android:id="@+id/iconFavorite"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/icon_favorite"
+                    android:contentDescription="Favorite icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_margin="16dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--        Danh sach anh nho-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_marginStart="10dp"
+                tools:ignore="MissingClass" />
+
+            <!--        Loai phong va gioi tinh-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                >
+
+                <!--            Loai phong-->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="4dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginStart="10dp"
+                    app:cardCornerRadius="10dp"
+                    tools:ignore="MissingClass">
+
+                    <TextView
+                        android:id="@+id/txtLoaiPhong"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="6dp"
+                        android:paddingVertical="4dp"
+                        android:textSize="15sp"/>
+                </androidx.cardview.widget.CardView>
+
+                <!--            Gioi tinh-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="15dp"
+                    >
+<!--                    Icon gioi tinh-->
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/img_gender"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        tools:ignore="MissingClass" />
+                    <TextView
+                        android:id="@+id/txtGioiTinh"
+                        android:layout_marginTop="2dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:layout_marginStart="5dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--        LinearLayout chung de cach margin-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    >
+                <!--            Ten phong-->
+                <TextView
+                    android:id="@+id/txtTenPhongTro"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:text="@string/Room_Name"
+                    android:textStyle="bold"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_weight="0.2"
+                        android:src="@drawable/share"
+                        android:id="@+id/shareRoom"
+                        android:layout_gravity="end"
+                        />
+
+                </LinearLayout>
+
+                <!--            Tien coc-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/icon_monney"/>
+                    <TextView
+                        android:id="@+id/txtGiaThue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textStyle="italic"
+                        android:layout_marginStart="5dp"
+                        android:textColor="@color/red"/>
+                </LinearLayout>
+
+                <!--            Dia chi-->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/icon_address"/>
+                    <TextView
+                        android:id="@+id/txtDiaChi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:layout_marginStart="5dp" />
+                </LinearLayout>
+
+                <!--            Thong tin chu tro-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardThongTinChuTro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardElevation="4dp"
+                    app:cardCornerRadius="20dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    tools:ignore="MissingClass">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="14dp">
+                        <!--                    Avatar chu tro-->
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/imgAvatarChuTro"
+                            android:layout_width="54dp"
+                            android:layout_height="54dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/CircularShape"/>
+
+                        <!--                    Ten va trang thai-->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_vertical"
+                            android:layout_marginStart="10dp"
+                            android:layout_weight="1">
+<!--                            Ten nguoi dang bai-->
+                            <TextView
+                                android:id="@+id/txtTenChuTro"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="14sp"
+                                android:textColor="@color/black"
+                                android:layout_marginBottom="10dp"/>
+                        </LinearLayout>
+
+                        <!--                    Nut xem chi tiet-->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/viewInfor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:text="@string/View_details"
+                            android:textSize="12sp"
+                            android:paddingHorizontal="4dp"
+                            android:layout_marginStart="35dp"
+                            android:background="@drawable/bg_button_detail"
+                            android:layout_weight="1"
+                            />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--            Thong tin phong tro-->
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardElevation="4dp"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
+
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fillViewport="true">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewChiTietThongTin"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            tools:listitem="@layout/item_chitiet_thongtin"
+                            android:layout_marginEnd="4dp"
+                            android:layout_marginStart="4dp"
+                            />
+
+                    </androidx.core.widget.NestedScrollView>
+
+                </androidx.cardview.widget.CardView>
+
+                <!--            Phi dich vu-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Service_Fee"
+                    android:textSize="18sp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="30dp"/>
+
+                <!--            Thong tin phi dich vu-->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewPhiDichVu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/item_phi_dichvu"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+                <!--            Noi that-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Interior"
+                    android:textSize="18sp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="25dp"/>
+
+                <!--            Thong tin noi that-->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewNoiThat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/item_noi_that_chitiet"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+                <!--            Tien nghi-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tiện Nghi"
+                    android:textSize="18sp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="25dp"/>
+
+                <!--            Thong tin tien nghi-->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewTienNghi"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        tools:listitem="@layout/item_tien_nghi_chitiet"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginStart="4dp"
+                        />
+
+                </androidx.cardview.widget.CardView>
+
+                <!--            Chi tiet them-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Chi Tiết Thêm"
+                    android:layout_marginStart="10dp"
+                    android:textSize="18sp"
+                    android:layout_marginTop="25dp"/>
+
+                <!--            Noi dung chi tiet them-->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:cardBackgroundColor="@color/white"
+                    app:cardElevation="4dp"
+                    android:elevation="8dp"
+                    app:cardCornerRadius="18dp">
+
+                    <TextView
+                        android:id="@+id/txtChiTietThem"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="15dp"
+                        android:textSize="14sp"/>
+
+                </androidx.cardview.widget.CardView>
+                <!--    đây là phần chức năng cho phòng đã đc đăng -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongTrenHone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Đặt Phòng-->
+                        <LinearLayout
+                            android:id="@+id/ll_schedule_room"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/icon_dat_lich"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Book_a_room"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+<!--                Chuc nang dang dang-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongDangDang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Go phong-->
+                        <LinearLayout
+                            android:id="@+id/btnGoPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_go_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Room_removal"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Sua phong-->
+                        <LinearLayout
+                            android:id="@+id/btnSuaPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_chinh_sua"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Room_Repair"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Sao chep-->
+                        <LinearLayout
+                            android:id="@+id/btnSaoChep"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_sao_chep"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Copy"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Tao hop dong-->
+                        <LinearLayout
+                            android:id="@+id/btnTaoHopDong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_tao_hop_dong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Create_a_Guild_Meeting"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Huy Phong-->
+                        <LinearLayout
+                            android:id="@+id/btnHuyPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_huy_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Cancellation"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--                Chuc nang duoc luu-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongDangLuu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Dang phong-->
+                        <LinearLayout
+                            android:id="@+id/btnDangPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_dang_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Room_post"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Sua phong-->
+                        <LinearLayout
+                            android:id="@+id/btnSuaPhongLuu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_chinh_sua"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Room_Repair"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Tao hop dong-->
+                        <LinearLayout
+                            android:id="@+id/btnTaoHopDongLuu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_tao_hop_dong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Create_a_Guild_Meeting"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <!--                    Huy Phong-->
+                        <LinearLayout
+                            android:id="@+id/btnHuyPhongLuu"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_huy_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Cancellation"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--                Chuc nang da bi huy-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangPhongDaBiHuy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Luu phong-->
+                        <LinearLayout
+                            android:id="@+id/btnLuuPhong"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_luu_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Stay_in_the_room"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!--                Xac nhan huy o cho duyet-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardViewChucNangChoDuyet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/white"
+                    android:layout_marginTop="25dp"
+                    android:layout_gravity="center_horizontal"
+                    app:cardCornerRadius="18dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardElevation="4dp"
+                    android:visibility="gone"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginHorizontal="10dp">
+
+                        <!--                    Xac nhan huy sang luu phong-->
+                        <LinearLayout
+                            android:id="@+id/btnXacNhanHuy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_huy_phong"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Cancellation_Confirmation"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- ProgressBar để hiển thị khi tải -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingIndicator"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerInParent="true"
+        app:lottie_fileName="loading.json"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+</RelativeLayout>

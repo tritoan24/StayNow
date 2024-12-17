@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/border_selected"
+    android:layout_marginBottom="8dp"
+    android:layout_margin="4dp"
+    android:gravity="center"
+        android:padding="8dp">
+
+
+        <!-- Tên nội thất -->
+        <TextView
+            android:id="@+id/tenLoaiPhong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Room_type_name"
+            android:textSize="12sp"
+            android:layout_gravity="center_vertical"
+            />
+
+
+    </LinearLayout>
+
