@@ -200,7 +200,6 @@
     <string name="Please_wait_for_the_host" translatable="false">Vui lòng đợi chủ nhà xác nhận lịch hẹn của bạn nhé. Sau khi chủ nhà xác nhận lịch hẹn của bạn bạn sẽ có đầy đủ thông tin về địa chỉ và người chủ trọ.</string>
 
     <!-- Welcom-->
-    <string name="Welcome_to_StayNow_new" translatable="false">Chào mừng bạn đến với StayNow</string>
 
     <!-- Succes_payment-->
     <string name="Invoice_code" translatable="false">Mã hóa đơn: #1234567</string>
@@ -227,15 +226,13 @@
     <!-- tao phòng trọ -->
     <string name="Add_a_room" translatable="false">Thêm phòng trọ</string>
     <string name="Room_information" translatable="false">Thông tin phòng</string>
-    <string name="Enter_Address" translatable="false">Nhập địa chỉ</string>
-    <string name="Name_house_number" translatable="false">Tên/ số nhà *</string>
+    <string name="Name_house_number" translatable="false">Tên phòng*</string>
     <string name="Room_Rate" translatable="false">Giá phòng *</string>
-    <string name="Description" translatable="false">Mô tả</string>
+    <string name="Description" translatable="false">Nhập mô tả của bạn</string>
     <string name="Service_Information" translatable="false">Thông tin dịch vụ</string>
     <string name="Furniture_List" translatable="false">Danh sách nội thất</string>
     <string name="List_of_Amenities" translatable="false">Danh sách tiện nghi</string>
-    <string name="Stay_Room" translatable="false">Lưu phòng trọ</string>
-    <string name="Posting_a_room" translatable="false">Đăng phòng trọ</string>
+
 
     <!-- manage_schedule_room -->
     <string name="Waiting_for_confirmation" translatable="false">Chờ xác nhận</string>
@@ -341,8 +338,16 @@
     <string name="onboarding_desc_3" translatable="false">Quản lý hóa đơn, hợp đồng và thanh toán chỉ với vài thao tác.</string>
 
 
+    <string name="Add_Stay_Room" translatable="false">Lưu phòng trọ</string>
+    <string name="Post_a_room" translatable="false">Đăng phòng trọ</string>
 
 
+    <string name="Room_address" translatable="false">Địa chỉ phòng:</string>
+    <string name="Address_not_selected" translatable="false">Chưa chọn địa chỉ</string>
+    <string name="Provide_images" translatable="false">Cung cấp hình ảnh</string>
+    <string name="Preferred_gender" translatable="false">Giới tính ưu tiên</string>
+
+    <string name="Welcome_to_StayNow" translatable="false">Chào mừng bạn đến với StayNow</string>
 
 
     <!-- Strings  id update -->

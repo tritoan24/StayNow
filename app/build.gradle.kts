@@ -141,7 +141,7 @@ dependencies {
     implementation(
         fileTree(
             mapOf(
-                "dir" to "C:\\Do_an_tot_nghiep_StayNow\\StayNow",
+                "dir" to "C:\\Staynow_DuAnTotNghiep\\StayNow",
                 "include" to listOf("*.aar", "*.jar"),
                 "exclude" to listOf<String>()
             )

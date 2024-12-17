@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="Tìm kiếm......."
+                android:hint="@string/Search"
                 android:completionThreshold="1"
                 android:padding="10dp"
                 android:textSize="11sp" />
@@ -107,14 +107,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:text="Địa chỉ phòng:   "
+            android:text="@string/Room_address"
             />
         <TextView
             android:id="@+id/roomAddress"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.7"
-            android:text="Chưa chọn địa chỉ"
+            android:text="@string/Address_not_selected"
             android:textStyle="italic"
             />
     </LinearLayout>
@@ -142,7 +142,7 @@
             android:id="@+id/roomName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tên phòng *"
+            android:hint="@string/Name_house_number"
             android:textColor="@android:color/black"
             android:textColorHint="#AE1FFF"/>
     </com.google.android.material.textfield.TextInputLayout>
@@ -159,7 +159,7 @@
             android:id="@+id/roomPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Giá phòng *"
+            android:hint="@string/Room_Rate"
             android:inputType="number"
             android:textColor="@android:color/black"
             android:textColorHint="#AE1FFF"/>
@@ -179,7 +179,7 @@
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:gravity="top"
-            android:hint="Nhập mô tả của bạn"
+            android:hint="@string/Description"
             android:inputType="textMultiLine"
             android:maxLines="6"
             android:minLines="3"
@@ -210,7 +210,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Phí dịch vụ"
+                    android:text="@string/Service_Fee"
                     android:textColor="@color/purple"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -232,7 +232,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cung cấp hình ảnh"
+                android:text="@string/Provide_images"
                 android:textColor="@color/purple"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -260,7 +260,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Giới tính ưu tiên"
+        android:text="@string/Preferred_gender"
         android:textColor="@color/purple"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -275,7 +275,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Loại phòng"
+        android:text="@string/Room_Type"
         android:textColor="@color/purple"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -343,7 +343,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_button"
-        android:text="@string/Stay_Room"
+        android:text="@string/Add_Stay_Room"
         android:backgroundTint="@color/purple"
         android:textColor="@android:color/white"
         android:padding="12dp"
@@ -352,7 +352,7 @@
             android:id="@+id/addRoomButton2"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="@string/Posting_a_room"
+            android:text="@string/Post_a_room"
             android:backgroundTint="@color/purple"
             android:background="@drawable/bg_button"
             android:textColor="@android:color/white"
