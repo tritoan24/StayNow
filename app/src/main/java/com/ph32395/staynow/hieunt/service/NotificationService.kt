@@ -20,16 +20,20 @@ import com.ph32395.staynow.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.TaoHoaDon.CreateInvoice
+import com.ph32395.staynow.fragment.contract_tenant.BillContractActivity
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
 import com.ph32395.staynow.hieunt.helper.Default.Collection.IS_PUSHED
 import com.ph32395.staynow.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_CONTRACT_DONE
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
+import com.ph32395.staynow.quanlyhoadon.BillManagementActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -93,6 +97,15 @@ class NotificationService : Service() {
             TYPE_NOTI_MASSAGES ->{
                 Intent(this,TextingMessengeActivity::class.java).apply {
                     putExtra("userId",notificationModel.idModel)
+                }
+            }
+            TYPE_CONTRACT_DONE ->{
+                Intent(this, BillContractActivity::class.java).apply {
+                    putExtra("contractId",notificationModel.idModel)
+                }
+            }
+            TYPE_NOTI_BILL_MONTHLY_REMIND ->{
+                Intent(this, BillManagementActivity::class.java).apply {
                 }
             }
             else -> {

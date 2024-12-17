@@ -21,6 +21,7 @@ import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRM
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_TENANT
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
@@ -33,6 +34,7 @@ import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
+import com.ph32395.staynow.quanlyhoadon.DetailBillActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -92,6 +94,13 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     // Navigate to textingMassages
                     val intent = Intent(this, TextingMessengeActivity::class.java).apply {
                         putExtra("userId", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+                TYPE_NOTI_BILL_MONTHLY_REMIND ->{
+                    // Navigate to invoice creation
+                    val intent = Intent(this, DetailBillActivity::class.java).apply {
+                        putExtra("invoiceId", notification.idModel)
                     }
                     startActivity(intent)
                 }

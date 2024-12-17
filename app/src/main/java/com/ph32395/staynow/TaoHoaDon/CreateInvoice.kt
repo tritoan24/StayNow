@@ -19,6 +19,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.ChucNangChung.CurrencyFormatTextWatcher
+import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Invoice
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
@@ -56,6 +57,9 @@ class CreateInvoice : AppCompatActivity() {
     private var tenPhong: String = ""
     private var tienCoc: Double = 0.0
     private val phiCoDinhList = mutableListOf<UtilityFeeDetail>()
+
+    private lateinit var loadingUtil: LoadingUtil
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +104,7 @@ class CreateInvoice : AppCompatActivity() {
         tongPhiDichVu = tongTienDichVuCoDinh + tongTienPhiBienDong
         tongTienHoaDon = tienPhong + tongPhiDichVu
 
+        loadingUtil = LoadingUtil(this)
 
         // Lấy thông tin người nhận và người gửi
         idNguoiNhan = invoice.idNguoinhan
@@ -166,7 +171,8 @@ class CreateInvoice : AppCompatActivity() {
             if(soDienCu != invoice.soDienCu){
               Toast.makeText(this, "Số điện cũ đã bị thay đổi", Toast.LENGTH_SHORT).show()
             }
-//            saveInvoice()
+            loadingUtil.show()
+            saveInvoice()
         }
 
         // định dạng số tiền nhập vào
@@ -354,13 +360,14 @@ class CreateInvoice : AppCompatActivity() {
             val factory = ViewModelFactory(applicationContext) // Hoặc context cần thiết
             val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
             Toast.makeText(this, "Tạo hóa đơn thành công", Toast.LENGTH_SHORT).show()
+            loadingUtil.hide()
             //gọi hàm update số điện số nc
             viewModelHopDong.updatePreviousUtilities(
                 idHopDong,
                 binding.editTextSoDienMoi.text.toString().toInt(),
                 binding.editTextSoNuocMoi.text.toString().toInt()
             )
-
+            Log.d("Invoice", "idHopDong: $idHopDong")
             // Giám sát trạng thái gửi thông báo
             notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->
                 if (isSuccess) {
