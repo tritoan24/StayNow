@@ -8,6 +8,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow_datn.ChucNangTimKiem.SearchActivity
@@ -22,6 +23,7 @@ import com.ph32395.staynow_datn.fragment.home_chu_tro.HomeNguoiChoThueFragment
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.SystemUtils
 import com.ph32395.staynow_datn.hieunt.service.NotificationService
+import com.ph32395.staynow_datn.hieunt.widget.currentBundle
 import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
@@ -59,6 +61,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun replaceFragment(id: Int, fragment: Fragment) {
+        val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+        ft.replace(id, fragment)
+        ft.commit()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -68,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         // Cong Add
         myApplication = application as MyApplication
         myApplication.setOnlineStatus(true) // Đặt trạng thái online khi vào màn chính

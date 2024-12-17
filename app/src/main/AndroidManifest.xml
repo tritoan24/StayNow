@@ -101,6 +101,9 @@
             android:name=".Maps.MapsActivity"
             android:exported="true" />
         <activity
+            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
+            android:exported="true" />
+        <activity
             android:name=".BaoMat.CapNhatThongTin"
             android:exported="false" />
         <activity
@@ -186,9 +189,6 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"

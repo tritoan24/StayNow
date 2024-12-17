@@ -55,6 +55,8 @@ class CreateInvoice : AppCompatActivity() {
     private var tenKhachHang: String = ""
     private var tenPhong: String = ""
     private var tienCoc: Double = 0.0
+    private var soDienCu = 0
+    private var soNuocCu = 0
     private val phiCoDinhList = mutableListOf<UtilityFeeDetail>()
 
     private lateinit var loadingUtil: LoadingUtil
@@ -85,6 +87,8 @@ class CreateInvoice : AppCompatActivity() {
         viewModelHopDong.previousUtilities.observe(this) { utilities ->
             binding.editTextSoDienCu.setText(utilities.first?.toString() ?: "0")
             binding.editTextSoNuocCu.setText(utilities.second?.toString() ?: "0")
+            soNuocCu = utilities.second ?: 0
+            soDienCu = utilities.first ?: 0
         }
         binding.btnCancel.setOnClickListener {
             finish()
@@ -360,12 +364,31 @@ class CreateInvoice : AppCompatActivity() {
             val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
             Toast.makeText(this, "Tạo hóa đơn thành công", Toast.LENGTH_SHORT).show()
             loadingUtil.hide()
-            //gọi hàm update số điện số nc
-            viewModelHopDong.updatePreviousUtilities(
-                idHopDong,
-                binding.editTextSoDienMoi.text.toString().toInt(),
-                binding.editTextSoNuocMoi.text.toString().toInt()
-            )
+
+            if(soDienCu==0){
+                //gọi hàm update số điện số nc
+                viewModelHopDong.updatePreviousUtilities(
+                    idHopDong,
+                    0,
+                    binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
+                )
+            }else if (soNuocCu ==0){
+                viewModelHopDong.updatePreviousUtilities(
+                    idHopDong,
+                    binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
+                    0
+                )
+            }else {
+                viewModelHopDong.updatePreviousUtilities(
+                    idHopDong,
+                    binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
+                    binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
+                )
+            }
+
+            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soDienCu)
+            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soNuocCu)
+
             Log.d("Invoice", "idHopDong: $idHopDong")
             // Giám sát trạng thái gửi thông báo
             notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->
@@ -378,8 +401,6 @@ class CreateInvoice : AppCompatActivity() {
                 }
             })
 
-            val soDienCu =   binding.editTextSoDienMoi.text.toString().toInt()
-            val soNuocCu =  binding.editTextSoNuocMoi.text.toString().toInt()
             val message = if (invoice.soDienCu != soDienCu || invoice.soNuocCu != soNuocCu) {
                 "Đến ngày cần thanh toán hóa đơn cho tháng ${hoaDonMon.hoaDonThang}. Lưu ý: Đã có sự thay đổi về số điện hoặc số nước!"
             } else {
@@ -396,7 +417,8 @@ class CreateInvoice : AppCompatActivity() {
                 isRead = false,
                 isPushed = true,
                 typeNotification = "invoiceRemind",
-                idModel = idHopDong
+                idModel = idHopDong,
+                timestamp = System.currentTimeMillis(),
             )
 
             val recipientId = idNguoiNhan

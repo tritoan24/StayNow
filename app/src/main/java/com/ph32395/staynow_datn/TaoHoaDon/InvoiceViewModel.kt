@@ -54,21 +54,25 @@ class InvoiceViewModel : ViewModel() {
     }
 
     fun fetchInvoiceById(invoiceId: String) {
-        invoiceCollection.document(invoiceId)
-            .addSnapshotListener { documentSnapshot, exception ->
-                if (exception != null) {
-                    Log.e("InvoiceViewModel", "Error fetching invoice by ID: ", exception)
-                    _invoice.value = null
-                    return@addSnapshotListener
-                }
+        // Ensure the full path is used
+        val fullPath = "HoaDon/$invoiceId" // Adjust the collection name as needed
 
-                // Chuyển đổi document thành đối tượng InvoiceMonthlyModel
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    _invoice.value = documentSnapshot.toObject<InvoiceMonthlyModel>()
+        FirebaseFirestore.getInstance()
+            .collection("HoaDon") // Ensure this matches your Firestore collection name
+            .document(invoiceId)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val invoice = documentSnapshot.toObject<InvoiceMonthlyModel>()
+                    _invoice.value = invoice
                 } else {
-                    _invoice.value = null // Không tìm thấy hóa đơn
+                    _invoice.value = null
                     Log.e("InvoiceViewModel", "Invoice not found for ID: $invoiceId")
                 }
+            }
+            .addOnFailureListener { exception ->
+                Log.e("InvoiceViewModel", "Error fetching invoice by ID: ", exception)
+                _invoice.value = null
             }
     }
     fun fetchInvoicesForUser(type: String,userId: String, trangThai: InvoiceStatus) {

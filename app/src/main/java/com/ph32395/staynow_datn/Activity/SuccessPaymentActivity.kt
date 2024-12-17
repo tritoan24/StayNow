@@ -48,7 +48,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
             binding.tvAmount.text = "Tổng tiền: " + formatCurrency(contract.hoaDonHopDong.tongTien)
             binding.tvAddress.text = "Địa chỉ: " + contract.thongtinphong.diaChiPhong
             binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue
-            binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
+//            binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
 
             binding.tvAmountServiceChange.visibility = View.GONE
             binding.tvAmountService.visibility = View.GONE
@@ -96,12 +96,21 @@ class SuccessPaymentActivity : AppCompatActivity() {
         return formatter.format(amount)
     }
 
-    private fun formatServerTime(serverTime: String): String {
-        val date = Date(serverTime.toLong())
-        // Định dạng ngày giờ theo chuẩn mong muốn
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-        return dateFormat.format(date)
+    private fun formatServerTime(serverTime: String?): String {
+        return try {
+            if (!serverTime.isNullOrEmpty()) {
+                val date = Date(serverTime.toLong())
+                val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                dateFormat.format(date)
+            } else {
+                "N/A" // Giá trị mặc định nếu serverTime rỗng hoặc null
+            }
+        } catch (e: NumberFormatException) {
+            Log.e("SuccessPaymentActivity", "Invalid server time: $serverTime", e)
+            "N/A" // Trả về giá trị mặc định khi xảy ra lỗi
+        }
     }
+
 
 }
 

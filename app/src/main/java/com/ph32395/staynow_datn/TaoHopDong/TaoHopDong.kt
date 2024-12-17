@@ -192,6 +192,22 @@ class TaoHopDong : AppCompatActivity() {
         viewModelCccd.fetchCccdDataNT(maNguoiThue)
 
 
+        // Quan sát trạng thái hiển thị của EditText điện
+        viewModelHopDong.isElectricityInputVisible.observe(this) { isVisible ->
+            edSodien.visibility = if (isVisible) View.VISIBLE else View.GONE
+        }
+
+        // Quan sát trạng thái hiển thị của EditText nước
+        viewModelHopDong.isWaterInputVisible.observe(this) { isVisible ->
+            edSonuoc.visibility = if (isVisible) View.VISIBLE else View.GONE
+        }
+
+        viewModel.phiDichVuList.observe(this) { phiDichVuList ->
+            // Cập nhật trạng thái hiển thị
+            viewModelHopDong.updateUtilityInputVisibility(phiDichVuList)
+        }
+
+
 
         viewModel.room.observe(this) { room ->
             Log.d("TaoHopDong", "room: $room")
@@ -503,8 +519,8 @@ private fun observeViewModel() {
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
             ghiChu = note.text.toString().trim(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
-            soDienCu = edSodien.text.toString().toInt(),
-            soNuocCu = edSonuoc.text.toString().toInt(),
+            soDienCu = edSodien.text.toString().toIntOrNull() ?: 0,
+            soNuocCu = edSonuoc.text.toString().toIntOrNull() ?: 0,
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -528,9 +544,9 @@ private fun observeViewModel() {
             thongTinTaiChinh = FinancialInfo(
                 giaThue = giaPhong,
                 tienCoc = tienCoc,
-                soDienht = edSodien.text.toString().toInt(),
-                soNguoio = soNguoio.text.toString().toInt(),
-                soNuocht = edSonuoc.text.toString().toInt(),
+                soDienht = edSodien.text.toString().toIntOrNull()?:0,
+                soNguoio = soNguoio.text.toString().toIntOrNull()?:0,
+                soNuocht = edSonuoc.text.toString().toIntOrNull()?:0,
                 phiDichVu = utilityFees
             ),
             thongtinphong = RoomInfo(
@@ -558,8 +574,8 @@ private fun observeViewModel() {
                 idNguoigui = auth.currentUser?.uid ?: "",
                 ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
                 paymentDate = "",
-                soDienCu = edSodien.text.toString().toInt(),
-                soNuocCu = edSonuoc.text.toString().toInt(),
+                soDienCu = edSodien.text.toString().toIntOrNull()?:0,
+                soNuocCu = edSonuoc.text.toString().toIntOrNull()?:0,
             ),
 
             tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
@@ -673,7 +689,7 @@ private fun observeViewModel() {
             toast("Ngày thanh toán không hợp lệ")
             return false
         }
-        if (edSodien.text.toString().isEmpty() || edSonuoc.text.toString().isEmpty() || soNguoio.text.toString().isEmpty()) {
+        if (soNguoio.text.toString().isEmpty()) {
             toast("Vui lòng nhập đầy đủ thông tin")
             return false
         }

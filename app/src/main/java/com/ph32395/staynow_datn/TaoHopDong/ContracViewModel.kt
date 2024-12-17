@@ -11,6 +11,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.Model.NguoiDungModel
+import com.ph32395.staynow_datn.Model.PhiDichVuModel
+import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,8 +59,43 @@ class ContractViewModel : ViewModel() {
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> get() = _loading
 
+
+    private val _isElectricityInputVisible = MutableLiveData<Boolean>()
+    val isElectricityInputVisible: LiveData<Boolean> = _isElectricityInputVisible
+
+    private val _isWaterInputVisible = MutableLiveData<Boolean>()
+    val isWaterInputVisible: LiveData<Boolean> = _isWaterInputVisible
+
+
+
     val contractStatus = MutableLiveData<String>()
     val errorMessage = MutableLiveData<String>()
+
+
+
+    // Phương thức để kiểm tra và cập nhật trạng thái hiển thị
+    fun updateUtilityInputVisibility(utilityFees: List<PhiDichVuModel>) {
+        // Kiểm tra phí điện
+        val electricityFee = utilityFees.find {
+            it.ten_dichvu == "Điện" && it.don_vi == "Số"
+        }
+        _isElectricityInputVisible.value = electricityFee != null
+
+        // Kiểm tra phí nước
+        val waterFee = utilityFees.find {
+            it.ten_dichvu == "Nước" && it.don_vi == "Khối"
+        }
+        _isWaterInputVisible.value = waterFee != null
+    }
+
+    // Phương thức hỗ trợ để kiểm tra xem một phí có phải là phí biến động không
+    fun isDynamicFee(fee: UtilityFeeDetail): Boolean {
+        return when (fee.tenDichVu) {
+            "Điện" -> fee.donVi == "Số"
+            "Nước" -> fee.donVi == "Khối"
+            else -> false
+        }
+    }
 
     fun saveContract(contract: HopDong, appointmentId: String) {
         viewModelScope.launch(Dispatchers.IO + SupervisorJob()) {
@@ -160,6 +197,9 @@ class ContractViewModel : ViewModel() {
                 )
             }
     }
+
+
+
 
     //lấy contract tenant theo userID và theo 1 hoặc nhiều trạng thái
 //    ----------------------------
@@ -408,6 +448,10 @@ class ContractViewModel : ViewModel() {
             contractStatus.value = "Lỗi: ${e.message}"
         }
     }
+
+
+
+
 
     // LiveData để lưu trữ kết quả
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()

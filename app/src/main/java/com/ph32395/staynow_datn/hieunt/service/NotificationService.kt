@@ -26,6 +26,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_CONTRACT_DONE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
@@ -108,6 +109,9 @@ class NotificationService : Service() {
                 Intent(this, BillContractActivity::class.java).apply {
                     putExtra("contractId", notificationModel.idModel)
                 }
+            }
+            TYPE_NOTI_CONTRACT -> {
+                Intent(this, NotificationActivity::class.java)
             }
 
             TYPE_NOTI_BILL_MONTHLY_REMIND -> {

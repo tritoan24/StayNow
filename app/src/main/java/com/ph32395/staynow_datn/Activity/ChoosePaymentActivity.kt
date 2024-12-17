@@ -142,7 +142,7 @@ class ChoosePaymentActivity : AppCompatActivity() {
             factory
         )[NotificationViewModel::class.java]
 
-        val recipientIds = bill?.idNguoiNhan
+        val recipientIds = bill?.idNguoiGui
 
         if (notification != null) {
             if (recipientIds != null) {

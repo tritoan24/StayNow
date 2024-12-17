@@ -64,7 +64,9 @@ class DetailBillActivity : AppCompatActivity() {
             }
         }
 
-        updateUI(invoice!!)
+        if(invoice!=null){
+            updateUI(invoice)
+        }
 
         if (detail != null) {
             binding.btnThanhtoan.visibility = View.GONE
@@ -73,7 +75,7 @@ class DetailBillActivity : AppCompatActivity() {
         if (notify != null) {
             binding.btnThanhtoan.visibility = View.GONE
         }
-        if (invoice.trangThai != InvoiceStatus.PENDING) {
+        if (invoice?.trangThai != InvoiceStatus.PENDING) {
             binding.btnThanhtoan.visibility = View.GONE
         }
 
@@ -92,8 +94,8 @@ class DetailBillActivity : AppCompatActivity() {
                 showLoading()
                 val orderProcessor = OrderProcessorService(this)
                 orderProcessor.checkAndCreateOrder(
-                    invoice.tongTien,
-                    invoice.idHoaDon,
+                    invoice?.tongTien ?: 0.0,
+                    invoice?.idHoaDon?:"",
                     itemsArrStr,
                     TypeBill.HoaDonHangThang
                 ) { token, orderUrl, remainTime ->
