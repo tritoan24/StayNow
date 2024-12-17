@@ -65,6 +65,7 @@ public class DangKy extends AppCompatActivity {
 
 
         loadingUtil = new LoadingUtil(this);
+
         // Khởi tạo Firebase Auth và Realtime Database
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -271,7 +272,6 @@ public class DangKy extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        loadingUtil = new LoadingUtil(this);
 
         if (requestCode == RC_SIGN_IN_REGISTER) {
             loadingUtil.show();

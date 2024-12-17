@@ -646,6 +646,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d(TAG, "addMarkersFromAddresses: ${matchedRoom?.first}")
                 val intent = Intent(this, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", matchedRoom?.first)
+                intent.putExtra("ManHome", "ManND")
+
                 startActivity(intent)
             }
 

@@ -37,7 +37,7 @@ class MessageFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_message, container, false)
         binding.btnAdminSuport.setOnClickListener {
-            val adminId = "MrKVY9AwTDh497zwaDb2xwfDMlI3" // ID của admin bạn muốn truyền
+            val adminId = "oNzHlt3U8gNirb9DmT7sf72HXb92" // ID của admin bạn muốn truyền
             val userId =
                 FirebaseAuth.getInstance().currentUser?.uid  // Lấy ID của người dùng hiện tại
             Log.d(TAG, "onCreate: userId $userId")

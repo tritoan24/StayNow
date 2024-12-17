@@ -64,29 +64,37 @@ class HomeViewModel : ViewModel() {
 
     //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
     fun loadRoomByStatus(maNguoiDung: String) {
-        //Test
+        // Lắng nghe thay đổi trong bảng PhongTro
         firestore.collection("PhongTro")
             .whereEqualTo("Ma_nguoidung", maNguoiDung) // Lọc theo mã người dùng
-            .get()
-            .addOnSuccessListener { snapshot ->
-                val allRooms = snapshot.documents.mapNotNull { doc ->
-                    doc.toObject(PhongTroModel::class.java)?.let { room ->
-                        Pair(doc.id, room)
-                    }
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("HomeViewModel", "Error listening to rooms: ", error)
+                    return@addSnapshotListener
                 }
 
-                if (allRooms.isNotEmpty()) {
+                if (snapshot != null && !snapshot.isEmpty) {
+                    val allRooms = snapshot.documents.mapNotNull { doc ->
+                        doc.toObject(PhongTroModel::class.java)?.let { room ->
+                            Pair(doc.id, room)
+                        }
+                    }
+
                     val roomIds = allRooms.map { it.first } // Lấy danh sách id của phòng trọ
 
-                    // Truy vấn thông tin diện tích từ bảng ChiTietThongTin
+                    // Lắng nghe thay đổi trong bảng ChiTietThongTin
                     firestore.collection("ChiTietThongTin")
                         .whereIn("ma_phongtro", roomIds)
                         .whereEqualTo("ten_thongtin", "Diện tích")
-                        .get()
-                        .addOnSuccessListener { chiTietSnapshot ->
-                            val chiTietMap = chiTietSnapshot.documents.associate { doc ->
-                                doc.getString("ma_phongtro") to doc.getDouble("so_luong_donvi")
+                        .addSnapshotListener { chiTietSnapshot, chiTietError ->
+                            if (chiTietError != null) {
+                                Log.e("HomeViewModel", "Error listening to room details: ", chiTietError)
+                                return@addSnapshotListener
                             }
+
+                            val chiTietMap = chiTietSnapshot?.documents?.associate { doc ->
+                                doc.getString("ma_phongtro") to doc.getDouble("so_luong_donvi")
+                            } ?: emptyMap()
 
                             // Cập nhật thông tin diện tích cho từng phòng
                             val updatedRooms = allRooms.map { (id, room) ->
@@ -97,9 +105,10 @@ class HomeViewModel : ViewModel() {
                             // Cập nhật LiveData
                             _roomListCT.value = updatedRooms
 
-                            // Phân loại phòng trọ
                             _phongDaDang.value =
-                                updatedRooms.filter { it.second.Trang_thaiduyet == "DaDuyet" }
+                                updatedRooms.filter {
+                                    it.second.Trang_thaiduyet == "DaDuyet" && it.second.Trang_thaiphong == false
+                                }
                             _phongDangLuu.value =
                                 updatedRooms.filter { it.second.Trang_thailuu }
                             _phongChoDuyet.value =
@@ -109,15 +118,12 @@ class HomeViewModel : ViewModel() {
                             _phongDaChoThue.value =
                                 updatedRooms.filter { it.second.Trang_thaiphong }
                         }
-                        .addOnFailureListener { e ->
-                            Log.e("HomeViewModel", "Error fetching room details: ", e)
-                        }
+                } else {
+                    Log.d("HomeViewModel", "No rooms found for user: $maNguoiDung")
                 }
             }
-            .addOnFailureListener { e ->
-                Log.e("HomeViewModel", "Error fetching rooms: ", e)
-            }
     }
+
 
     //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
     fun updateRoomStatus(roomId: String, trangThaiDuyet: String, trangThaiLuu: Boolean) {
