@@ -373,7 +373,7 @@ public class DangKy extends AppCompatActivity {
                 }
             });
         }
-    
+
 
         // Kiểm tra xem có phải là kết quả chọn ảnh không
         if (resultCode == Activity.RESULT_OK && data != null) {

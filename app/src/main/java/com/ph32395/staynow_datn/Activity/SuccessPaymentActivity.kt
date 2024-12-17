@@ -3,6 +3,7 @@ package com.ph32395.staynow_datn.Activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow_datn.MainActivity
@@ -49,18 +50,26 @@ class SuccessPaymentActivity : AppCompatActivity() {
             binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue
             binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
 
+            binding.tvAmountServiceChange.visibility = View.GONE
+            binding.tvAmountService.visibility = View.GONE
+            binding.tvAmountDefault.visibility = View.GONE
+
         }
 
-        if (bill!=null) {
+        if (bill != null) {
             hideUIForInvoice()
             binding.tvInvoiceId.text = bill.idHoaDon
             binding.tvTenantName.text = bill.tenKhachHang
-            binding.tvInvoiceId.text = "ID hợp đồng: " + bill.idHopDong
             binding.tvNameRoom.text = "Tên phòng: " + bill.tenPhong
             binding.tvAmount.text = "Tổng tiền: " + formatCurrency(bill.tongTien)
             binding.tvAmountRoom.text =
                 "Tiền phòng: " + formatCurrency(bill.tienPhong)
             binding.tvDate.text = formatServerTime(bill.paymentDate)
+            binding.tvAmountService.text =
+                "Tổng tiền dịch vụ: " + formatCurrency(bill.tongTienDichVu)
+            binding.tvAmountDefault.text = "Tổng phí cố định: " + formatCurrency(bill.tongPhiCoDinh)
+            binding.tvAmountServiceChange.text =
+                "Tổng phí biến động: " + formatCurrency(bill.tongPhiBienDong)
 
         }
 
@@ -77,6 +86,8 @@ class SuccessPaymentActivity : AppCompatActivity() {
         binding.tvTerm.visibility = View.GONE
         binding.tvAmountDeposit.visibility = View.GONE
         binding.tvTenantAddress.visibility = View.GONE
+        binding.tvTenant.visibility = View.GONE
+        binding.tvLandlord.visibility = View.GONE
     }
 
     // Định dạng tiền tệ
@@ -87,12 +98,10 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
     private fun formatServerTime(serverTime: String): String {
         val date = Date(serverTime.toLong())
-
         // Định dạng ngày giờ theo chuẩn mong muốn
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
         return dateFormat.format(date)
     }
-
 
 }
 

@@ -103,24 +103,26 @@ class NotificationService : Service() {
                     putExtra("userId", notificationModel.idModel)
                 }
             }
-            TYPE_CONTRACT_DONE ->{
-                Intent(this, BillContractActivity::class.java).apply {
-                    putExtra("contractId",notificationModel.idModel)
-                }
-            }
-            TYPE_NOTI_BILL_MONTHLY_REMIND ->{
-                Intent(this, BillManagementActivity::class.java).apply {
-                }
-            }
 
-            TYPE_NOTI_PAYMENT_CONTRACT -> {
+            TYPE_CONTRACT_DONE -> {
                 Intent(this, BillContractActivity::class.java).apply {
                     putExtra("contractId", notificationModel.idModel)
                 }
             }
 
+            TYPE_NOTI_BILL_MONTHLY_REMIND -> {
+                Intent(this, BillManagementActivity::class.java).apply {
+                }
+            }
+
+            TYPE_NOTI_PAYMENT_CONTRACT -> {
+                Intent(this, NotificationActivity::class.java).apply {
+                    putExtra("contractId", notificationModel.idModel)
+                }
+            }
+
             TYPE_NOTI_PAYMENT_INVOICE -> {
-                Intent(this, DetailBillActivity::class.java).apply {
+                Intent(this, NotificationActivity::class.java).apply {
                     putExtra("invoiceId", notificationModel.idModel)
                 }
             }
