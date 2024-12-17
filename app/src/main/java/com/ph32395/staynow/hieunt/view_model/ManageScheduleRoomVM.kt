@@ -200,7 +200,7 @@ class ManageScheduleRoomVM : ViewModel() {
             val mapLink =
                 if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT)
                     null
-                else "geo:0,0?q=${Uri.encode(data.roomAddress)}"
+                else data.roomAddress
             val notificationData = hashMapOf(
                 TITLE to titleNotification,
                 MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",

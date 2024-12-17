@@ -82,7 +82,7 @@
 
     <!-- Chosse payment-->
     <string name="Payment_Options" translatable="false">Lựa chọn thanh toán</string>
-    <string name="You_can_ask_someone_else_to_scan_for_you" translatable="false">Bạn có thể nhờ người khác quét hộ</string>
+    <string name="You_can_ask_someone_else_to_scan_for_you" translatable="false">Bạn có thể dùng thiết bị khác để quét</string>
     <string name="QR_code_scanning_time_for_payment" translatable="false">Thời gian quét mã QR để thanh toán</string>
     <string name="event" translatable="false">còn</string>
     <string name="Pay_with" translatable="false">Thanh toán với</string>

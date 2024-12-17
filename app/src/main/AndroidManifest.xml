@@ -192,6 +192,9 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
+            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
+            android:exported="false" />
+        <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"
             android:exported="false" />
         <activity
