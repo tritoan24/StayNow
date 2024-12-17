@@ -33,7 +33,6 @@ import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_
 import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
-import com.ph32395.staynow.hieunt.view.feature.notification.NotificationActivity
 import com.ph32395.staynow.quanlyhoadon.DetailBillActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
