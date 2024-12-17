@@ -376,8 +376,7 @@ class TaoHopDong : AppCompatActivity() {
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerViewThongTinChiTiet() {
         findViewById<RecyclerView>(R.id.listViewThongTin).apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-//            layoutManager = GridLayoutManager(context, 4)
+            layoutManager = GridLayoutManager(context, 4)
             adapter = chiTietAdapter
 
             // Thêm SpacingItemDecoration để tạo khoảng cách đều giữa các item

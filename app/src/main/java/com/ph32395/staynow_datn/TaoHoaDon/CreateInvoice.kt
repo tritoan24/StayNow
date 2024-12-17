@@ -1,6 +1,7 @@
 package com.ph32395.staynow_datn.TaoHoaDon
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
+import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow_datn.TaoHopDong.Invoice
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
@@ -399,6 +401,9 @@ class CreateInvoice : AppCompatActivity() {
 
             val recipientId = idNguoiNhan
             notificationViewModel.sendNotification(notification, recipientId)
+
+            //chuyển sang màn home khi tạo hóa đơn thành công
+            startActivity(Intent(this, MainActivity::class.java))
 
         }, {
             Toast.makeText(this, "Lỗi khi tạo hóa đơn", Toast.LENGTH_SHORT).show()

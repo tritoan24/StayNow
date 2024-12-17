@@ -101,6 +101,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     // Navigate to invoice creation
                     val intent = Intent(this, DetailBillActivity::class.java).apply {
                         putExtra("invoiceId", notification.idModel)
+                        putExtra("notify","notify")
                     }
                     startActivity(intent)
                 }
