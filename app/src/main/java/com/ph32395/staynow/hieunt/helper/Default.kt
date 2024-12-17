@@ -81,6 +81,8 @@ object Default {
         const val TYPE_NOTI_MASSAGES = "send_massage"
         const val TYPE_CONTRACT_DONE = "ContractInvoice"
 
+        const val TYPE_NOTI_PAYMENT_CONTRACT = "hoadonhopdong"
+        const val TYPE_NOTI_PAYMENT_INVOICE = "hoadonhangthang"
     }
 
 }

@@ -51,7 +51,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
         }
 
-        if (bill?.equals("") == false) {
+        if (bill!=null) {
             hideUIForInvoice()
             binding.tvInvoiceId.text = bill.idHoaDon
             binding.tvTenantName.text = bill.tenKhachHang
@@ -68,7 +68,6 @@ class SuccessPaymentActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
 
     }
 

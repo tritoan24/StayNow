@@ -41,7 +41,7 @@ public class OnboardingActivity extends AppCompatActivity {
 
         // Lấy ngôn ngữ đã lưu và áp dụng
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        String savedLanguage = prefs.getString(LANGUAGE_KEY, "en");
+        String savedLanguage = prefs.getString(LANGUAGE_KEY, "vi");
         setLocale(savedLanguage);
 
         setContentView(R.layout.activity_onboarding_screen);

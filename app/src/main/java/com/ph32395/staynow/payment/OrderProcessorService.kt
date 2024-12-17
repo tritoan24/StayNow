@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
+import com.ph32395.staynow.hieunt.helper.Default
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
@@ -158,13 +159,13 @@ class OrderProcessorService(private val context: Context) {
 
 private fun handlePayment(
     context: Context,
-    billId: InvoiceMonthlyModel,
+    bill: InvoiceMonthlyModel,
     status: String
 ) {
     val messageSuccess =
-        "Thanh toán thành công cho hóa đơn $billId"
+        "Thanh toán thành công cho hóa đơn $bill"
     val messageError =
-        "Thanh toán không thành công cho hóa đơn $billId"
+        "Thanh toán không thành công cho hóa đơn $bill"
 
     val notification = NotificationModel(
         title = "Thanh toán hóa đơn hàng tháng",
@@ -174,8 +175,8 @@ private fun handlePayment(
         mapLink = null,
         isRead = false,
         isPushed = true,
-        idModel = billId.idHoaDon,
-        typeNotification = "hoadonhangthang"
+        idModel = bill.idHoaDon,
+        typeNotification = Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
     )
 
     val factory = ViewModelFactory(context)
@@ -184,11 +185,10 @@ private fun handlePayment(
         factory
     )[NotificationViewModel::class.java]
 
-    // Gửi thông báo đến cả hai người
-    val recipientIds = listOf(billId.idNguoiGui, billId.idNguoiNhan)
-    recipientIds.forEach { recipientId ->
-        notificationViewModel.sendNotification(notification, recipientId)
-    }
+    val recipientId = bill.idNguoiNhan
+
+    notificationViewModel.sendNotification(notification, recipientId)
+
     // Giám sát trạng thái gửi thông báo
     notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
         if (isSuccess) {
@@ -202,7 +202,7 @@ private fun handlePayment(
 
     if (status == "success") {
         val intent = Intent(context, SuccessPaymentActivity::class.java)
-        intent.putExtra("billId", billId)
+        intent.putExtra("invoiceId", bill)
         context.startActivity(intent)
     }
 

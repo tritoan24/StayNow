@@ -11,6 +11,7 @@ import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
 import com.ph32395.staynow.Activity.ChoosePaymentActivity
 import com.ph32395.staynow.TaoHoaDon.InvoiceMonthlyModel
+import com.ph32395.staynow.TaoHoaDon.InvoiceViewModel
 import com.ph32395.staynow.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow.TaoHopDong.Adapter.VariableFeeAdapter
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
@@ -30,6 +31,7 @@ class DetailBillActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailBillBinding
     private lateinit var loadingIndicator: LottieAnimationView
+    private lateinit var invoiceViewModel: InvoiceViewModel
 
     @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,12 +44,24 @@ class DetailBillActivity : AppCompatActivity() {
 
         // nhận intent từ billAdapter
         val invoice = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
+        val invoiceId = intent.getStringExtra("invoiceId")
+
         val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
 
+        if (invoiceId != null) {
+            invoiceViewModel.fetchInvoiceById(invoiceId)
+            invoiceViewModel.invoice.observe(this) { invoices ->
+                if (invoice != null) {
+                    invoices?.let { updateUI(it) }
+                }
+            }
+        }
+
         updateUI(invoice!!)
+
         if (detail != null) {
             binding.btnThanhtoan.visibility = View.GONE
             binding.tvTitle.text = "Chi tiết hóa đơn hàng tháng"
