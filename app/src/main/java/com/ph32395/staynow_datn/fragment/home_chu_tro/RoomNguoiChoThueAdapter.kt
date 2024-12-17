@@ -103,7 +103,7 @@ class RoomNguoiChoThueAdapter(
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
-                intent.putExtra("ManHome", loaiTaiKhoan)
+                intent.putExtra("ManHome", "sdk")
                 context.startActivity(intent)
 
 //                goi view model de tang so luot xem

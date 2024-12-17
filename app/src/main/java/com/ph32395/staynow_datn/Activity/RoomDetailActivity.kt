@@ -425,6 +425,10 @@ class RoomDetailActivity : AppCompatActivity() {
                 } else if (trangThaiPhong == true) {
                     findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
                 }
+                else if(ManHome == "sdk"){
+                    findViewById<CardView>(R.id.cardViewChucNangPhongTrenHone).visibility = View.GONE
+
+                }
             }
 
 

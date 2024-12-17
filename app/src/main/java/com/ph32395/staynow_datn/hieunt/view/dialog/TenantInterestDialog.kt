@@ -9,7 +9,7 @@ import com.ph32395.staynow_datn.hieunt.widget.tap
 
 class TenantInterestDialog(
     private val onClickButton : () -> Unit
-): BaseFragmentDialog<DialogTenantInterestBinding>(false) {
+): BaseFragmentDialog<DialogTenantInterestBinding>(true) {
     override fun initView() {
         binding.apply {
             cbRead.setOnCheckedChangeListener { buttonView, isChecked ->
