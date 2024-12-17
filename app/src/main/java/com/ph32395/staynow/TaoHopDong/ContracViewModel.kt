@@ -370,29 +370,44 @@ class ContractViewModel : ViewModel() {
     }
 
     fun updatePreviousUtilities(contractId: String, newSoDienCu: Int, newSoNuocCu: Int) {
+        // Log toàn bộ thông tin để kiểm tra
+        Log.d("ContractViewModel", "Original ContractId: $contractId")
+
+        // Kiểm tra xem contractId có chứa "/" không
+        val actualContractId = if (contractId.contains("/")) {
+            contractId.split("/").last()
+        } else {
+            contractId
+        }
+
+        Log.d("ContractViewModel", "Processed ContractId: $actualContractId")
+
         val db = FirebaseFirestore.getInstance()
 
-        // Lấy tham chiếu tới tài liệu hợp đồng cần cập nhật
-        val contractRef = db.collection("HopDong").document(contractId)
+        try {
+            val contractRef = db.collection("HopDong").document(actualContractId)
 
-        // Cập nhật các trường soDienCu và soNuocCu
-        contractRef.update(
-            "soDienCu", newSoDienCu,
-            "soNuocCu", newSoNuocCu
-        )
-            .addOnSuccessListener {
-                // Log thành công và cập nhật thông báo nếu cần
-                Log.d("ContractViewModel", "Cập nhật số điện cũ và số nước cũ thành công")
-                // Cập nhật LiveData hoặc thông báo cho UI
-                contractStatus.value = "Cập nhật số điện và nước cũ thành công"
-            }
-            .addOnFailureListener { exception ->
-                // Log lỗi khi cập nhật không thành công
-                Log.e("ContractViewModel", "Lỗi khi cập nhật số điện và nước cũ: ${exception.message}", exception)
-                contractStatus.value = "Có lỗi khi cập nhật số điện và nước cũ: ${exception.message}"
-            }
+            // Tạo map chứa các trường cần cập nhật
+            val updates = mapOf(
+                "soDienCu" to newSoDienCu,
+                "soNuocCu" to newSoNuocCu
+            )
+
+            // Cập nhật các trường soDienCu và soNuocCu
+            contractRef.update(updates)
+                .addOnSuccessListener {
+                    Log.d("ContractViewModel", "Cập nhật số điện cũ và số nước cũ thành công")
+                    contractStatus.value = "Cập nhật số điện và nước cũ thành công"
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("ContractViewModel", "Lỗi khi cập nhật số điện và nước cũ: ${exception.message}", exception)
+                    contractStatus.value = "Có lỗi khi cập nhật số điện và nước cũ: ${exception.message}"
+                }
+        } catch (e: Exception) {
+            Log.e("ContractViewModel", "Lỗi khi tạo document reference: ${e.message}", e)
+            contractStatus.value = "Lỗi: ${e.message}"
+        }
     }
-
 
     // LiveData để lưu trữ kết quả
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()
