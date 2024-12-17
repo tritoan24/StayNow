@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.SuccessPaymentActivity
 import com.ph32395.staynow.TaoHopDong.HopDong
+import com.ph32395.staynow.hieunt.helper.Default
 import com.ph32395.staynow.hieunt.model.NotificationModel
 import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
@@ -184,7 +185,7 @@ private fun handlePayment(context: Context, contract: HopDong, status: String) {
         isRead = false,
         isPushed = true,
         idModel = contract.maHopDong,
-        typeNotification = "hoadonhopdong"
+        typeNotification = Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
     )
 
     val factory = ViewModelFactory(context)

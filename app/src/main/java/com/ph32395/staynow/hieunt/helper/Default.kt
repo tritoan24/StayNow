@@ -79,6 +79,8 @@ object Default {
         const val TYPE_NOTI_BILL_MONTHLY = "invoiceCreation"
         const val TYPE_NOTI_BILL_MONTHLY_REMIND = "invoiceRemind"
         const val TYPE_NOTI_MASSAGES = "send_massage"
+        const val TYPE_NOTI_PAYMENT_CONTRACT = "hoadonhopdong"
+        const val TYPE_NOTI_PAYMENT_INVOICE = "hoadonhangthang"
     }
 
 }
