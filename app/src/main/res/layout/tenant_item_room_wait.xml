@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="44dp"
             android:orientation="horizontal">
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_cancel_schedule"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -63,7 +63,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_marginEnd="12dp"/>
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_leave_schedule"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -90,7 +90,7 @@
             android:layout_height="44dp"
             android:orientation="horizontal"
             android:visibility="gone">
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_no"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -100,7 +100,7 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:layout_marginEnd="12dp"/>
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/tv_yes"
                 android:layout_width="0dp"
                 android:layout_weight="1"
