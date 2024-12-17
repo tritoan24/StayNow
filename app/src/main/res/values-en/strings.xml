@@ -4,7 +4,7 @@
 
     <!-- Bottom Navigation -->
     <string name="Search" translatable="false">Search</string>
-    <string name="Calender" translatable="false">Calander</string>
+    <string name="Calender" translatable="false">Calender</string>
     <string name="Message" translatable="false">Message</string>
     <string name="Profile" translatable="false">Profile</string>
 
@@ -180,7 +180,7 @@
     <string name="Please_wait_for_the_host" translatable="false">Please wait for the host to confirm your appointment. After the host confirms, you will have all the information about the address and the landlord.</string>
 
     <!-- Welcom-->
-    <string name="Welcome_to_StayNow" translatable="false">Welcome to StayNow</string>
+    <string name="Welcome_to_StayNow_new" translatable="false">Welcome to StayNow</string>
 
     <!-- Succes_payment-->
     <string name="Invoice_code" translatable="false">Invoice Code: #1234567</string>
