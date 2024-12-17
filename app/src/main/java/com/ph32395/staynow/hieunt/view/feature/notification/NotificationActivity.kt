@@ -29,6 +29,7 @@ import com.ph32395.staynow.hieunt.model.NotificationWithDateModel
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
 import com.ph32395.staynow.hieunt.view.feature.notification.adapter.NotificationWithDateAdapter
 import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.hieunt.widget.visible
@@ -62,7 +63,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                         }
 
                         TITLE_CANCELED_BY_RENTER, TITLE_LEAVED_BY_RENTER -> {
-                            Intent(this, TenantManageScheduleRoomActivity::class.java)
+                            launchActivity(TenantManageScheduleRoomActivity::class.java)
                         }
                     }
                 }
@@ -74,7 +75,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                         }
 
                         TITLE_CANCELED_BY_TENANT, TITLE_LEAVED_BY_TENANT -> {
-                            Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) }
+                            startActivity(Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) })
                         }
                     }
                 }
