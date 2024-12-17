@@ -367,7 +367,7 @@ class CreateInvoice : AppCompatActivity() {
                 binding.editTextSoDienMoi.text.toString().toInt(),
                 binding.editTextSoNuocMoi.text.toString().toInt()
             )
-
+            Log.d("Invoice", "idHopDong: $idHopDong")
             // Giám sát trạng thái gửi thông báo
             notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->
                 if (isSuccess) {

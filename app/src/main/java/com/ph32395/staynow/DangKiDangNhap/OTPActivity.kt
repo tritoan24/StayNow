@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.databinding.ActivityOtpactivityBinding
 import com.ph32395.staynow.utils.Constants
@@ -36,9 +37,13 @@ class OTPActivity : AppCompatActivity() {
     private val endpointVerifyOtp = Constants.ENDPOINT_VERIFY_OTP
     private val endpointResendOtp = Constants.ENDPOINT_RESEND_OTP
     private var countDownTimer: CountDownTimer? = null
+    private lateinit var loadingUtil: LoadingUtil
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        loadingUtil = LoadingUtil(this)
 
         binding = ActivityOtpactivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -55,9 +60,11 @@ class OTPActivity : AppCompatActivity() {
 
         val uid = intent.getStringExtra("uid") ?: ""
         val email = intent.getStringExtra("email") ?: ""
+        val pass = intent.getStringExtra("pass") ?: ""
         binding.tvEmail.text = email
 
         binding.btnVerifyOtp.setOnClickListener {
+            loadingUtil.show()
             val otp = getOtpFromInputs()
             if (otp.length == 6) {
 
@@ -69,10 +76,12 @@ class OTPActivity : AppCompatActivity() {
                     endpointVerifyOtp,
                     object : OtpService.OtpCallback {
                         override fun onSuccess() {
+                            loadingUtil.hide()
                             checkAccountTypeInRealtimeDatabase(uid) // Xử lý logic thành công
                         }
 
                         override fun onFailure(errorMessage: String) {
+                            loadingUtil.hide()
                             Log.d("OTP", "Lỗi gửi OTP: $errorMessage")
                         }
 
@@ -83,6 +92,7 @@ class OTPActivity : AppCompatActivity() {
             }
         }
         binding.btnResendOtp.setOnClickListener {
+            loadingUtil.show()
             binding.btnResendOtp.isClickable = false  // Vô hiệu hóa nút "Resend OTP" ngay khi bấm
 
             OtpService.reSendOtpToServer(
@@ -93,11 +103,13 @@ class OTPActivity : AppCompatActivity() {
                 object : OtpService.OtpCallback {
                     override fun onSuccess() {
                         runOnUiThread {
+                            loadingUtil.hide()
                             Log.d("OTP", "Gửi lại OTP thành công")
                         }
                     }
 
                     override fun onFailure(errorMessage: String) {
+                        loadingUtil.hide()
                         Log.d("OTP", "Lỗi gửi lại OTP: $errorMessage")
                     }
                 })

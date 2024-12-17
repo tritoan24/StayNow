@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow.BaoMat.CapNhatThongTin
 import com.ph32395.staynow.CCCD.CCCD
 import com.ph32395.staynow.TaoHopDong.TaoHopDong
 import com.ph32395.staynow.ThongTinThanhToan.PaymentInfoActivity
@@ -168,7 +169,10 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 toast("Có lỗi xảy ra!")
         }
     }
-
+    private fun navigateToUpdateSDT() {
+        val intent = Intent(requireContext(), CapNhatThongTin::class.java)
+        startActivity(intent)
+    }
     private fun navigateToUpdateCCCD() {
         val intent = Intent(requireContext(), CCCD::class.java)
         startActivity(intent)
@@ -188,10 +192,19 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         userRef.get().addOnSuccessListener { snapshot ->
             val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
             val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+            val sdt = snapshot.child("sdt").value as? String ?: ""
+
             Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
             Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
 
-            if (!statusCCCD) {
+            if (sdt == "ChuaCo")  {
+                showWarningDialog(
+                    context = requireContext(),
+                    title = "Bạn chưa cập nhật số điện thoại",
+                    content = "Hãy cập nhật số điện thoại để tiếp tục",
+                    confirmAction = { navigateToUpdateSDT() }
+                )
+            } else if (!statusCCCD) {
                 showWarningDialog(
                     context = requireContext(),
                     title = "Bạn chưa cập nhật CCCD",
