@@ -55,7 +55,13 @@ class OrderProcessor(private val context: Context) {
 
                         if (querySnapshot == null || querySnapshot.isEmpty) {
                             // Không có dữ liệu phù hợp -> Tạo đơn mới
-                            createOrder(amount, contractId, billId, items, typeBill) { token, orderUrl ->
+                            createOrder(
+                                amount,
+                                contractId,
+                                billId,
+                                items,
+                                typeBill
+                            ) { token, orderUrl ->
                                 CoroutineScope(Dispatchers.Main).launch {
                                     callback(token, orderUrl, 900)
                                 }
@@ -89,7 +95,13 @@ class OrderProcessor(private val context: Context) {
                             }
                         } else {
                             // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
-                            createOrder(amount, contractId, billId, items, typeBill) { token, orderUrl ->
+                            createOrder(
+                                amount,
+                                contractId,
+                                billId,
+                                items,
+                                typeBill
+                            ) { token, orderUrl ->
                                 CoroutineScope(Dispatchers.Main).launch {
                                     callback(token, orderUrl, 900)
                                 }
@@ -137,7 +149,7 @@ class OrderProcessor(private val context: Context) {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
-                        handlePaymentSuccess(context, contract)
+                        handlePayment(context, contract, "success")
                     }
 
                     override fun onPaymentCanceled(s: String?, s1: String?) {
@@ -149,20 +161,24 @@ class OrderProcessor(private val context: Context) {
                         s: String?,
                         s1: String?
                     ) {
-                        Toast.makeText(context, "Lỗi thanh toán", Toast.LENGTH_SHORT).show()
+                        handlePayment(context, contract, "error")
                     }
                 })
         }
     }
 }
 
-private fun handlePaymentSuccess(context: Context, contract: HopDong) {
-    Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
+private fun handlePayment(context: Context, contract: HopDong, status: String) {
+
+    val messageSuccess =
+        "Thanh toán thành công cho hợp đồng ${contract.maHopDong}\nMã hóa đơn ${contract.hoaDonHopDong.idHoaDon}"
+    val messageError =
+        "Thanh toán không thành công cho hợp đồng ${contract.maHopDong}\nMã hóa đơn ${contract.hoaDonHopDong.idHoaDon}"
 
     val notification = NotificationModel(
         title = "Thanh toán hóa đơn hợp đồng",
-        message = "Thanh toán thành công cho hợp đồng ${contract.maHopDong}\nMã hóa đơn ${contract.hoaDonHopDong.idHoaDon}",
-        date = Calendar.getInstance().time.toString(), // Lấy ngày hiện tại
+        message = if (status == "success") messageSuccess else messageError,
+        date = Calendar.getInstance().time.toString(),
         time = "0",
         mapLink = null,
         isRead = false,
@@ -192,11 +208,14 @@ private fun handlePaymentSuccess(context: Context, contract: HopDong) {
             Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
         }
     })
-    // Chuyển đến SuccessPaymentActivity
-    val intent = Intent(context, SuccessPaymentActivity::class.java)
-    intent.putExtra("itemData", contract)
-    context.startActivity(intent)
+
+    if (status == "success") {
+        val intent = Intent(context, SuccessPaymentActivity::class.java)
+        intent.putExtra("itemData", contract)
+        context.startActivity(intent)
+    }
 }
+
 
 enum class TypeBill {
     HoaDonHopDong,

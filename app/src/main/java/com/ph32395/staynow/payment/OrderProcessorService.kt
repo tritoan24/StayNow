@@ -135,7 +135,7 @@ class OrderProcessorService(private val context: Context) {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
-                        handlePaymentSuccess(context, billId)
+                        handlePayment(context, billId, "success")
                     }
 
                     override fun onPaymentCanceled(s: String?, s1: String?) {
@@ -147,7 +147,7 @@ class OrderProcessorService(private val context: Context) {
                         s: String?,
                         s1: String?
                     ) {
-                        Toast.makeText(context, "Lỗi thanh toán", Toast.LENGTH_SHORT).show()
+                        handlePayment(context, billId, "error")
                     }
                 })
         }
@@ -156,16 +156,20 @@ class OrderProcessorService(private val context: Context) {
 }
 
 
-private fun handlePaymentSuccess(
+private fun handlePayment(
     context: Context,
     billId: InvoiceMonthlyModel,
+    status: String
 ) {
-    Toast.makeText(context, "Thanh toán thành công!", Toast.LENGTH_SHORT).show()
+    val messageSuccess =
+        "Thanh toán thành công cho hóa đơn $billId"
+    val messageError =
+        "Thanh toán không thành công cho hóa đơn $billId"
 
     val notification = NotificationModel(
         title = "Thanh toán hóa đơn hàng tháng",
-        message = "Thanh toán thành công cho hóa đơn $billId",
-        date = Calendar.getInstance().time.toString(), // Lấy ngày hiện tại
+        message = if (status == "success") messageSuccess else messageError,
+        date = Calendar.getInstance().time.toString(),
         time = "0",
         mapLink = null,
         isRead = false,
@@ -196,8 +200,10 @@ private fun handlePaymentSuccess(
         }
     })
 
-    // Chuyển đến SuccessPaymentActivity
-    val intent = Intent(context, SuccessPaymentActivity::class.java)
-    intent.putExtra("billId", billId)
-    context.startActivity(intent)
+    if (status == "success") {
+        val intent = Intent(context, SuccessPaymentActivity::class.java)
+        intent.putExtra("billId", billId)
+        context.startActivity(intent)
+    }
+
 }

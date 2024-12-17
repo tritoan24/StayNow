@@ -72,21 +72,11 @@
             android:id="@+id/tv_contracts_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hợp đồng chờ xác nhận"
+            android:text="Hợp đồng đang chờ xác nhận"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/tv_contracts_quantity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="3"
-            android:textColor="@color/purple_border_bottom"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            tools:ignore="HardcodedText" />
     </LinearLayout>
 
 

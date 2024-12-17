@@ -35,30 +35,17 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
         if (contract != null) {
             binding.tvInvoiceId.text = contract.hoaDonHopDong.idHoaDon
-            binding.tvLandlordId.text = contract.hoaDonHopDong.idNguoigui
-            binding.tvTenantId.text = contract.hoaDonHopDong.idNguoinhan
             binding.tvAmount.text = contract.hoaDonHopDong.tongTien.toString()
             binding.tvAddress.text = contract.thongtinphong.diaChiPhong
-            binding.tvStartDate.text = contract.ngayBatDau
-            binding.tvEndDate.text = contract.ngayKetThuc
             binding.tvDate.text = contract.ngayThanhToan.toString()
             binding.tvInvoiceId.text = "ID hợp đồng: " + contract.maHopDong
             binding.tvLandlordName.text = contract.chuNha.hoTen
             binding.tvLandlordAddress.text = contract.chuNha.diaChi
-            binding.tvLandlordBd.text = contract.chuNha.ngaySinh
             binding.tvTenantName.text = contract.nguoiThue.hoTen
             binding.tvTenantAddress.text = contract.nguoiThue.diaChi
-            binding.tvTenantBd.text = contract.nguoiThue.ngaySinh
             binding.tvNameRoom.text = "Tên phòng: " + contract.thongtinphong.tenPhong
             binding.tvAmount.text = "Tổng tiền: " + formatCurrency(contract.hoaDonHopDong.tongTien)
-            binding.tvAmountRoom.text =
-                "Tiền phòng: " + formatCurrency(contract.hoaDonHopDong.tienPhong)
-            binding.tvAmountDeposit.text =
-                "Tiền cọc: " + formatCurrency(contract.hoaDonHopDong.tienCoc)
             binding.tvAddress.text = "Địa chỉ: " + contract.thongtinphong.diaChiPhong
-            binding.tvStartDate.text = "Ngày bắt đầu: " + contract.ngayBatDau
-            binding.tvEndDate.text = "Ngày kết thúc: " + contract.ngayKetThuc
-            binding.tvClause.text = "Điều khoản: " + contract.dieuKhoan
             binding.tvTerm.text = "Thời hạn thuê: " + contract.thoiHanThue
             binding.tvDate.text = formatServerTime(contract.hoaDonHopDong.paymentDate)
 
@@ -67,8 +54,6 @@ class SuccessPaymentActivity : AppCompatActivity() {
         if (bill != null) {
             hideUIForInvoice()
             binding.tvInvoiceId.text = bill.idHoaDon
-            binding.tvLandlordId.text = bill.idNguoiGui
-            binding.tvTenantId.text = bill.idNguoiNhan
             binding.tvTenantName.text = bill.tenKhachHang
             binding.tvInvoiceId.text = "ID hợp đồng: " + bill.idHopDong
             binding.tvNameRoom.text = "Tên phòng: " + bill.tenPhong
@@ -88,16 +73,11 @@ class SuccessPaymentActivity : AppCompatActivity() {
     }
 
     private fun hideUIForInvoice() {
-        binding.tvLandlordBd.visibility = View.GONE
         binding.tvLandlordAddress.visibility = View.GONE
         binding.tvAddress.visibility = View.GONE
-        binding.tvClause.visibility = View.GONE
         binding.tvTerm.visibility = View.GONE
         binding.tvAmountDeposit.visibility = View.GONE
         binding.tvTenantAddress.visibility = View.GONE
-        binding.tvTenantBd.visibility = View.GONE
-        binding.tvEndDate.visibility = View.GONE
-        binding.tvStartDate.visibility = View.GONE
     }
 
     // Định dạng tiền tệ
