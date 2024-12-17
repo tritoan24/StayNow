@@ -257,7 +257,6 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         loadingUtil = LoadingUtil(this)
         loadingUtil.show()
 
-
         // Khởi tạo RecyclerView
         binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
         binding.RcTienNghi.layoutManager = GridLayoutManager(this, 3)
@@ -304,12 +303,14 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             TrangThaiPhong = false
             // Gọi hàm lưu phòng với trạng thái là "Lưu"
             saveRoomToFirestore(isSaved = true, trangThaiPhong = TrangThaiPhong)
+            loadingUtil.show()
         }
 
         // Logic khi nhấn nút "Đăng"
         binding.addRoomButton2.setOnClickListener {
             TrangThaiPhong = false
             saveRoomToFirestore(isSaved = false, trangThaiPhong = TrangThaiPhong)
+            loadingUtil.show()
         }
 
 
