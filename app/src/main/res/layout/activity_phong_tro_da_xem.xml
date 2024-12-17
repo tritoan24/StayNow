@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".PhongTroDaXem.PhongTroDaXemActivity">
 
 <!--    Thanh tieu de-->
@@ -27,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Lịch sử phòng trọ đã xem"
+            android:text="@string/Viewed_motel_room_history"
             android:textColor="@color/black"
             android:textSize="18sp"
             />
@@ -57,7 +58,8 @@
         android:id="@+id/recyclerViewPhongDaXem"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="20dp"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         />

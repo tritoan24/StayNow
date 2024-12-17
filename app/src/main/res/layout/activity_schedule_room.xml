@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chọn ngày:"
+                android:text="@string/Select_dates"
                 android:layout_marginStart="16dp"
                 android:textSize="14sp"
                 android:fontFamily="@font/inter_medium"
@@ -64,7 +64,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chọn giờ:"
+                android:text="@string/Select_times"
                 android:layout_marginStart="16dp"
                 android:textSize="14sp"
                 android:fontFamily="@font/inter_medium"
@@ -148,7 +148,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ghi chú:"
+                android:text="@string/Notes"
                 android:layout_marginStart="16dp"
                 android:textSize="14sp"
                 android:fontFamily="@font/inter_medium"
@@ -165,7 +165,7 @@
                 android:backgroundTint="@null"
                 android:paddingHorizontal="16dp"
                 android:text=""
-                android:hint="Ghi chú (nếu có)"
+                android:hint="@string/Notes_if_applicable"
                 android:textSize="14sp"
                 android:textColor="@color/black"
                 />
@@ -178,7 +178,7 @@
                 android:textSize="15sp"
                 android:fontFamily="@font/gilroy_medium"
                 android:layout_marginTop="16dp"
-                android:text="Vui lòng đợi chủ nhà xác nhận lịch hẹn của bạn nhé. Sau khi chủ nhà xác nhận lịch hẹn của bạn bạn sẽ có đầy đủ thông tin về địa chỉ và người chủ trọ."
+                android:text="@string/Please_wait_for_the_host"
                 />
             <View
                 android:layout_width="0dp"
@@ -190,7 +190,7 @@
                 android:layout_height="48dp"
                 android:layout_marginHorizontal="16dp"
                 android:gravity="center"
-                android:text="Xác Nhận"
+                android:text="@string/Confirm"
                 android:textColor="@color/white"
                 android:fontFamily="@font/inter_bold"
                 android:background="@drawable/bg_button"

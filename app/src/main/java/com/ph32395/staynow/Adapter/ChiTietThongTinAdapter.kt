@@ -39,6 +39,7 @@ class ChiTietThongTinAdapter(
             Glide.with(itemView.context).load(chiTiet.icon_thongtin).into(iconThongTin)
             tenThongTin.text = chiTiet.ten_thongtin
             val soLuong= chiTiet.so_luong_donvi.toString()
+
             if (soLuong.length >= 5) {
 //                Format thanh VND
                 val formattedAmount = NumberFormat.getCurrencyInstance(Locale("vi", "VN")).apply {
@@ -46,9 +47,15 @@ class ChiTietThongTinAdapter(
                 }.format(soLuong.toLong())
                 soLuongDonVi.text = formattedAmount
             } else {
-                soLuongDonVi.text = soLuong
+                if (chiTiet.ten_thongtin == "Số Người") {
+                    donVi.text = "/${chiTiet.don_vi}"
+                    soLuongDonVi.text = "$soLuong người"
+                } else {
+                    donVi.text = chiTiet.don_vi
+                    soLuongDonVi.text = soLuong
+                }
             }
-            donVi.text = chiTiet.don_vi
+//
         }
     }
 }

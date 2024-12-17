@@ -1,5 +1,6 @@
 package com.ph32395.staynow.quanlyhoadon
 
+import android.annotation.SuppressLint
 import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,7 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
     private lateinit var contractViewModel: ContractViewModel
     private val invoiceViewModel: InvoiceViewModel by viewModels()
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBillManagementBinding.inflate(layoutInflater)
@@ -65,6 +67,8 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
 
         contractViewModel.allContracts.observe(this) { contracts ->
             contractAdapter.submitList(contracts)
+            val contractSize = contracts.size
+            binding.tvContractsQuantity.text = "($contractSize)"
         }
 
 
@@ -75,6 +79,8 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
                 Log.d("BillManagementActivity", "Invoices: ${invoices.size}")
             }
             billAdapter.submitList(invoices)
+            val invoiceSize = invoices.size
+            binding.tvInvoicesQuantity.text = "($invoiceSize)"
         }
 
 

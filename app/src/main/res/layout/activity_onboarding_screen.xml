@@ -18,19 +18,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabIndicatorColor="@color/purple"
-        app:tabSelectedTextColor="@color/black"
-        app:tabTextColor="@color/my_light_secondary"
-        app:tabIndicatorHeight="4dp" />
+        app:tabRippleColor="@android:color/transparent" />
 
     <Button
         android:id="@+id/btn_bat_dau"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@drawable/custom_buttom"
-        android:text="Bắt Đầu Sử Dụng"
-        android:textColor="@color/white"
-        android:visibility="gone"
         android:layout_gravity="bottom"
-        />
+        android:background="@drawable/custom_buttom"
+        android:text="@string/Get_started"
+        android:textColor="@color/white"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Tạo hợp đồng"
+            android:text="@string/Create_a_Guild_Meeting"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:gravity="center"
-            android:text="Tạo hóa đơn"
+            android:text="@string/Create_invoices"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 

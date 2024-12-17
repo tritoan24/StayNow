@@ -33,6 +33,7 @@
             android:text="Hà Nội"
             android:textColor="@android:color/black"
             android:textSize="12sp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
     </LinearLayout>
@@ -50,7 +51,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Tìm kiếm..."
+            android:text="@string/Search"
             android:textColor="#666262"
             android:gravity="center"
             android:textSize="12sp"

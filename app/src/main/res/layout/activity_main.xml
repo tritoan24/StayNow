@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@color/grey_bg">
+    android:background="@color/white">
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -21,26 +21,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_menu_nguoi_chothue"
-        android:background="@drawable/bg_botton_nav"
         android:layout_margin="10dp"
-        app:itemIconTint="@color/bottom_navigation_colors"
-        app:itemTextColor="@color/bottom_navigation_colors"/>
-
-
-
+        android:background="@drawable/bg_botton_nav"
+        app:itemBackground="@null"
+        app:itemIconTint="@null"
+        app:itemTextColor="@color/bottom_navigation_colors"
+        app:menu="@menu/bottom_menu_nguoi_chothue" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_search_bottom"
+        android:src="@drawable/search_svg"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="62dp"
-        android:backgroundTint="@color/flt_bottom"
+        android:backgroundTint="@color/white"
+        app:tint="@null"
         android:elevation="8dp"
         app:shapeAppearanceOverlay="@style/FABCornerShape"
-        android:tint="@color/white"/>
+        />
 
 </RelativeLayout>

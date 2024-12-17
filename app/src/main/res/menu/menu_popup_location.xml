@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/location_hanoi"
+        android:title="Hà Nội"/>
+    <item
+        android:id="@+id/location_sg"
+        android:title="Sài Gòn"/>
+    <item
+        android:id="@+id/location_danang"
+        android:title="Đà Nẵng"/>
+</menu>

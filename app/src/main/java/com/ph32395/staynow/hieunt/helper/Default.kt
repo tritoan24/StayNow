@@ -29,6 +29,7 @@ object Default {
         const val ROOM_DETAIL = "room_detail"
         const val ROOM_ID = "room_id"
         const val OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION = "open_manage_schedule_room_by_notification"
+        const val ROOM_SCHEDULE = "room_schedule"
     }
 
     object SharePreKey {
@@ -69,6 +70,7 @@ object Default {
         const val TITLE_CANCELED_BY_TENANT = "Lịch hẹn đã bị hủy bỏ bởi người thuê"
         const val TITLE_LEAVED_BY_RENTER = "Lịch hẹn đã thay đổi bởi chủ trọ"
         const val TITLE_LEAVED_BY_TENANT = "Lịch hẹn đã thay đổi bởi người thuê"
+        const val TITLE_SCHEDULE_ROOM_SUCCESSFULLY = "Phòng trọ đã được đặt thành công"
     }
 
     object TypeNotification{
@@ -76,6 +78,7 @@ object Default {
         const val TYPE_SCHEDULE_ROOM_TENANT = "type_schedule_room_tenant"
         const val TYPE_NOTI_BILL_MONTHLY = "invoiceCreation"
         const val TYPE_NOTI_BILL_MONTHLY_REMIND = "invoiceRemind"
+        const val TYPE_NOTI_MASSAGES = "send_massage"
     }
 
 }

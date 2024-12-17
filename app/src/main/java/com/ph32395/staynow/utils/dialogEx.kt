@@ -13,8 +13,8 @@ fun showConfirmDialog(
     val dialog = SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
         .setTitleText(title)
         .setContentText(message)
-        .setConfirmText("OK")
-        .setCancelText("NO")
+        .setConfirmText("Đồng ý")
+        .setCancelText("Hủy bỏ")
         .setConfirmClickListener { sweetAlertDialog ->
             sweetAlertDialog.dismiss()
             onConfirm()

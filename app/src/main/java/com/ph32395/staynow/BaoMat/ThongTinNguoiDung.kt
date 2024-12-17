@@ -54,7 +54,8 @@ class ThongTinNguoiDung : AppCompatActivity() {
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
-        btnNhanTin = findViewById(R.id.btnNhanTin)
+        //cong comment
+//        btnNhanTin = findViewById(R.id.btnNhanTin)
         btnBackCT = findViewById(R.id.btnBackCT)
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -118,11 +119,12 @@ class ThongTinNguoiDung : AppCompatActivity() {
         }
 
         //Chuyen den man nhan tin
-        btnNhanTin.setOnClickListener {
-            val intent = Intent(this,TextingMessengeActivity::class.java)
-            intent.putExtra("userId",userId)
-            startActivity(intent)
-        }
+        //cong Comment
+//        btnNhanTin.setOnClickListener {
+//            val intent = Intent(this,TextingMessengeActivity::class.java)
+//            intent.putExtra("userId",userId)
+//            startActivity(intent)
+//        }
 
 
 

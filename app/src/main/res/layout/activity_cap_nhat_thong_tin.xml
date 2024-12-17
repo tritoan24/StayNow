@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
+    android:background="@color/white"
     tools:context=".BaoMat.CapNhatThongTin">
 
     <!-- Header with Back Button and Title -->
@@ -26,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cập nhật thông tin"
+            android:text="@string/Update_information"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginStart="16dp"
@@ -38,7 +39,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingHorizontal="24dp">
 
             <ImageView
                 android:id="@+id/update_avatar"
@@ -78,7 +79,7 @@
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="12dp"
-                    android:hint="Họ và Tên"
+                    android:hint="@string/Full_name"
                     android:padding="10dp"
 
                     />
@@ -99,7 +100,7 @@
                     android:background="@android:color/transparent"
                     android:drawableLeft="@drawable/imgphone"
                     android:drawablePadding="12dp"
-                    android:hint="Số điện thoại"
+                    android:hint="@string/Phone"
                     android:inputType="phone"
                     android:padding="10dp"
 
@@ -147,14 +148,21 @@
                     android:gravity="center_vertical" />
             </androidx.cardview.widget.CardView>
 
-            <Button
-                android:id="@+id/btnUpdateInfor"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="61dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:text="Cập nhật"
-                android:background="@drawable/button_background_doimk"
-                android:textColor="@android:color/white"/>
+                android:gravity="center_horizontal">
+                <Button
+                    android:id="@+id/btnUpdateInfor"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Cập nhật"
+                    android:textStyle="bold"
+                    android:background="@drawable/button_background_doimk"
+                    android:textColor="@android:color/white"/>
+            </LinearLayout>
+
         </LinearLayout>
 
 

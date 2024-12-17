@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
-                android:text="Chung cư mini"
+                android:text="@string/Mini_Apartment"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 />
@@ -53,7 +53,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="serif"
-                android:text="300000 VND"
+                android:text="@string/VND"
                 android:textSize="11sp"
                 android:textColor="@color/red"/>
 
@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="serif"
-                android:text="123 "
+                android:text="@string/Number"
                 android:textSize="10sp"
                 android:textColor="#5E5D5D"/>
         </LinearLayout>

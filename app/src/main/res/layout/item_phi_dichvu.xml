@@ -15,7 +15,7 @@
         android:id="@+id/txtTenDichVu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dien"
+        android:text="@string/Electric"
         android:textSize="12sp"/>
     <LinearLayout
         android:layout_width="wrap_content"

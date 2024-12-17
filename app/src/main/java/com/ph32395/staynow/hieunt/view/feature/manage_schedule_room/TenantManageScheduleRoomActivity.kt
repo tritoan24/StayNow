@@ -1,5 +1,6 @@
 package com.ph32395.staynow.hieunt.view.feature.manage_schedule_room
 
+import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -102,7 +103,7 @@ class TenantManageScheduleRoomActivity :
     override fun dataObserver() {
         showLoading()
         viewModel.fetchAllScheduleByTenant(FirebaseAuth.getInstance().currentUser?.uid.toString()) {
-            viewModel.filerScheduleRoomState(WAIT)
+            viewModel.filerScheduleRoomState(0)
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -120,12 +121,12 @@ class TenantManageScheduleRoomActivity :
                 launch {
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
-                            scheduleStateAdapter?.listData?.map { scheduleState ->
+                            listScheduleState.map { scheduleState ->
                                 val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
-                        scheduleStateAdapter?.addListObserver(newList ?: listScheduleState)
+                        scheduleStateAdapter?.addListObserver(newList)
                     }
                 }
             }

@@ -14,7 +14,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Khai báo thông tin thanh toán"
+            android:text="@string/Declaration_of_payment_information"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_gravity="center_horizontal"
@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Số điện thoại liên kết ZaloPay"
+            android:text="@string/ZaloPay_Linked_Phone_Number"
             android:textSize="16sp"
             android:paddingBottom="8dp" />
 
@@ -32,7 +32,7 @@
             android:id="@+id/etPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập số điện thoại"
+            android:hint="@string/Enter_a_phone_number"
             android:inputType="phone"
             android:padding="12dp"
             android:background="@drawable/cardview_border"
@@ -42,7 +42,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tên tài khoản ZaloPay"
+            android:text="@string/ZaloPay_Account_Name"
             android:textSize="16sp"
             android:paddingBottom="8dp" />
 
@@ -50,7 +50,7 @@
             android:id="@+id/etAccountName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập tên tài khoản"
+            android:hint="@string/Enter_the_account_name"
             android:inputType="text"
             android:padding="12dp"
             android:background="@drawable/cardview_border"
@@ -60,7 +60,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mã QR ZaloPay (tùy chọn)"
+            android:text="@string/ZaloPay_QR_code_optional"
             android:textSize="16sp"
             android:paddingBottom="8dp" />
 
@@ -81,7 +81,7 @@
             android:id="@+id/btnUploadQr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tải mã QR lên"
+            android:text="@string/Upload_your_QR_code"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="16dp"
             android:background="@drawable/bg_button_detail"
@@ -94,7 +94,7 @@
             android:id="@+id/btnSavePaymentInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lưu thông tin"
+            android:text="@string/Save_information"
             android:textColor="@android:color/white"
             android:padding="12dp"
             android:background="@drawable/bg_button_detail"

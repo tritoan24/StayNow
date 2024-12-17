@@ -8,7 +8,7 @@
         android:id="@+id/tv_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Chờ xác nhận"
+        android:text="@string/Waiting_for_confirmation"
         android:textSize="15sp"
         android:textColor="#8E8E93"
         android:fontFamily="@font/gilroy_medium"

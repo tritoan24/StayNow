@@ -15,7 +15,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="Phong tro hai nguoi"
+        android:text="@string/Two_person_room"
         android:fontFamily="serif"
         android:textSize="11sp"
         android:layout_marginStart="10dp"

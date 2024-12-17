@@ -20,7 +20,9 @@
             android:fontFamily="serif"
             android:textColor="@color/black"
             android:text="Chào bạn. bạn cần hỗ trợ gì ạ?"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:maxWidth="220dp"
+            />
 
     </LinearLayout>
     <TextView

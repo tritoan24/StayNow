@@ -1,7 +1,7 @@
 package com.ph32395.staynow.fragment.contract_tenant
 
-import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.view.LayoutInflater
@@ -9,18 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.ph32395.staynow.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow.TaoHopDong.ContractStatus
+import com.ph32395.staynow.TaoHopDong.ContractViewModel
 import com.ph32395.staynow.TaoHopDong.HopDong
 import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ItemContractBinding
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.utils.showConfirmDialog
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
+import java.util.Calendar
 
 class ContractAdapter(
     private val viewmodel: ContractViewModel,
@@ -72,9 +81,6 @@ class ContractAdapter(
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
 
-            if (isLandlord) {
-                llBtn.visibility = View.GONE
-            }
 
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
@@ -102,6 +108,10 @@ class ContractAdapter(
                     llBtn.visibility =
                         if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) View.VISIBLE else View.GONE
 
+                    if (isLandlord) {
+                        llBtn.visibility = View.GONE
+                    }
+
                     btnXacNhan.tap {
 
                         val intent = Intent(itemView.context, BillContractActivity::class.java)
@@ -122,6 +132,7 @@ class ContractAdapter(
                                 ContractStatus.TERMINATED
                             )
                             updateContractList(contractList)
+                            handlePaymentSuccess(itemView.context, contract)
                         }
 
                     }
@@ -140,6 +151,7 @@ class ContractAdapter(
             itemView.tap {
                 val intent = Intent(itemView.context, ChiTietHopDong::class.java)
                 intent.putExtra("CONTRACT_ID", contract.maHopDong)
+                intent.putExtra("detail", "detail")
                 itemView.context.startActivity(intent)
             }
 
@@ -168,4 +180,42 @@ class ContractAdapter(
             "Lỗi định dạng ngày"
         }
     }
+}
+
+private fun handlePaymentSuccess(context: Context, contract: HopDong) {
+
+    val notification = NotificationModel(
+        title = "Thanh toán hóa đơn hợp đồng",
+        message = "Hóa đơn hợp đồng với mã hóa đơn ${contract.hoaDonHopDong.idHoaDon} đã bị hủy",
+        date = Calendar.getInstance().time.toString(),
+        time = "0",
+        mapLink = null,
+        isRead = false,
+        isPushed = true,
+        idModel = contract.maHopDong,
+        typeNotification = "hoadonhopdong"
+    )
+
+    val factory = ViewModelFactory(context)
+    val notificationViewModel = ViewModelProvider(
+        context as AppCompatActivity,
+        factory
+    )[NotificationViewModel::class.java]
+
+    // Gửi thông báo đến cả hai người
+    val recipientIds = listOf(contract.nguoiThue.maNguoiDung, contract.chuNha.maNguoiDung)
+    recipientIds.forEach { recipientId ->
+        notificationViewModel.sendNotification(notification, recipientId)
+    }
+    // Giám sát trạng thái gửi thông báo
+    notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
+        if (isSuccess) {
+            // Thông báo thành công
+            Toast.makeText(context, "Thông báo đã được gửi!", Toast.LENGTH_SHORT).show()
+        } else {
+            // Thông báo thất bại
+            Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
+        }
+    })
+
 }

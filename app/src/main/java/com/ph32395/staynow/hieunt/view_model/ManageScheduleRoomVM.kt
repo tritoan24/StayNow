@@ -53,17 +53,22 @@ class ManageScheduleRoomVM : ViewModel() {
     fun fetchAllScheduleByTenant(tenantId: String, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val querySnapshot = firestore.collection(DAT_PHONG)
+                firestore.collection(DAT_PHONG)
                     .whereEqualTo(TENANT_ID, tenantId)
-                    .get()
-                    .await()
-                val scheduleRooms = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject<ScheduleRoomModel>()
-                }
-                _allScheduleRoomState.value = scheduleRooms
-                Log.d("ManageScheduleRoomVM", "listScheduleRooms: $scheduleRooms")
-
-                onCompletion.invoke(true)
+                    .addSnapshotListener { querySnapshot, exception ->
+                        if (exception != null) {
+                            Log.d("ManageScheduleRoomVM", "Error: ${exception.message}")
+                            _allScheduleRoomState.value = emptyList()  // Khi có lỗi xảy ra
+                            onCompletion.invoke(false)
+                        } else {
+                            val scheduleRooms = querySnapshot?.documents?.mapNotNull { document ->
+                                document.toObject<ScheduleRoomModel>()
+                            } ?: emptyList()
+                            _allScheduleRoomState.value = scheduleRooms
+                            Log.d("ManageScheduleRoomVM", "listScheduleRooms: $scheduleRooms")
+                            onCompletion.invoke(true)
+                        }
+                    }
             } catch (e: Exception) {
                 Log.d("ManageScheduleRoomVM", "Error: ${e.message}")
                 _allScheduleRoomState.value = emptyList()
@@ -75,16 +80,22 @@ class ManageScheduleRoomVM : ViewModel() {
     fun fetchAllScheduleByRenter(renterId: String, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val querySnapshot = firestore.collection(DAT_PHONG)
+                firestore.collection(DAT_PHONG)
                     .whereEqualTo(RENTER_ID, renterId)
-                    .get()
-                    .await()
-                val scheduleRooms = querySnapshot.documents.mapNotNull { document ->
-                    document.toObject<ScheduleRoomModel>()
-                }
-                _allScheduleRoomState.value = scheduleRooms
-                Log.d("ManageScheduleRoomVM", "listScheduleRooms: $scheduleRooms")
-                onCompletion.invoke(true)
+                    .addSnapshotListener { querySnapshot, exception ->
+                        if (exception != null) {
+                            Log.d("ManageScheduleRoomVM", "Error: ${exception.message}")
+                            _allScheduleRoomState.value = emptyList()  // Khi có lỗi xảy ra
+                            onCompletion.invoke(false)
+                        } else {
+                            val scheduleRooms = querySnapshot?.documents?.mapNotNull { document ->
+                                document.toObject<ScheduleRoomModel>()
+                            } ?: emptyList()
+                            _allScheduleRoomState.value = scheduleRooms
+                            Log.d("ManageScheduleRoomVM", "listScheduleRooms: $scheduleRooms")
+                            onCompletion.invoke(true)
+                        }
+                    }
             } catch (e: Exception) {
                 Log.d("ManageScheduleRoomVM", "Error: ${e.message}")
                 _allScheduleRoomState.value = emptyList()

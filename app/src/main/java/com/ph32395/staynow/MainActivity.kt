@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
+import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
@@ -26,6 +27,7 @@ import com.ph32395.staynow.fragment.home_chu_tro.HomeNguoiChoThueFragment
 import com.ph32395.staynow.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow.hieunt.helper.SystemUtils
 import com.ph32395.staynow.hieunt.service.NotificationService
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -35,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private val homeNguoiChoThueFragment = HomeNguoiChoThueFragment() //Nguoi cho thue
     private val messageFragment = MessageFragment()
     private val profileFragment = ProfileFragment()
+    private val phongTroYeuThichFragment = PhongTroYeuThichFragment()
     private var activeFragment: Fragment = homeFragment
 
     private val mDatabase = FirebaseDatabase.getInstance().reference
@@ -63,11 +66,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
+        val savedLanguage = sharedPreferences.getString("Language", "en") // Mặc định là tiếng Anh
+        setLocale(savedLanguage!!)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         // Cong Add
         myApplication = application as MyApplication
         myApplication.setOnlineStatus(true) // Đặt trạng thái online khi vào màn chính
+        binding.bottomNavigation.itemIconTintList = null
+        binding.bottomNavigation.itemActiveIndicatorColor = null
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
@@ -107,7 +117,7 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
             add(R.id.fragment_container, messageFragment, "MESSAGE").hide(messageFragment)
-//            add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
+            add(R.id.fragment_container, phongTroYeuThichFragment, "FAVORITE").hide(phongTroYeuThichFragment)
             add(R.id.fragment_container, homeFragment, "HOME").hide(homeFragment)
         }.commit()
 //        Nhan vai tro tu Intent
@@ -118,6 +128,7 @@ class MainActivity : AppCompatActivity() {
 //        Cap nhat giao dien theo vai tro
         updateUIForRole()
 
+
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
             Log.d("MainActivity", "Selected item: ${item.itemId}")
             when (item.itemId) {
@@ -126,10 +137,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-//                R.id.bottom_notification -> {
-//                    showFragment(notificationFragment)
-//                    true
-//                }
+                R.id.bottom_notification -> {
+                    showFragment(phongTroYeuThichFragment)
+                    true
+                }
 
                 R.id.bottom_message -> {
                     showFragment(messageFragment)
@@ -156,6 +167,18 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+    private fun setLocale(languageCode: String) {
+        val locale = Locale(languageCode)
+        Locale.setDefault(locale)
+
+        val resources = resources
+        val config = resources.configuration
+        val displayMetrics = resources.displayMetrics
+
+        config.setLocale(locale)
+        resources.updateConfiguration(config, displayMetrics)
+    }
+
 
     //    Ham cap nhat giao dien dua tren vai tro nguoi dung
     private fun updateUIForRole() {
@@ -167,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu_nguoi_chothue)
 
 //                Cap nhat chuc nang FloatingActionButton
-                binding.fabSearch.setImageResource(R.drawable.icon_add_room) //Thay doi Icon
+                binding.fabSearch.setImageResource(R.drawable.add_room_2) //Thay doi Icon
                 binding.fabSearch.setOnClickListener {
 //                    chuyen sang man hinh them phong tro
                     startActivity(Intent(this@MainActivity, TaoPhongTro::class.java))
@@ -204,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu)
 
 //                Cap nhat FAB search
-                binding.fabSearch.setImageResource(R.drawable.icon_search_bottom)
+                binding.fabSearch.setImageResource(R.drawable.search_svg)
                 binding.fabSearch.setOnClickListener {
                     startActivity(Intent(this@MainActivity, SearchActivity::class.java))
                 }
@@ -226,21 +249,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Cong Add
-//    override fun onStart() {
-//        super.onStart()
-//        setUserOnline()
-//    }
-//
-//    override fun onStop() {
-//        super.onStop()
-//        setUserOffline()
-//    }
-//
-//    override fun onPause() {
-//        super.onPause()
-//        setUserOffline()
-//    }
 //
     override fun onDestroy() {
         super.onDestroy()

@@ -3,13 +3,11 @@ package com.ph32395.staynow.fragment
 import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -32,10 +30,11 @@ import com.ph32395.staynow.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow.DangKiDangNhap.DangNhap
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.PhongTroDaXem.PhongTroDaXemActivity
-import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichActivity
+import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.contract_tenant.ContractFragment
 import com.ph32395.staynow.hieunt.database.db.AppDatabase
+import com.ph32395.staynow.hieunt.service.NotificationService
 import com.ph32395.staynow.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
 import com.ph32395.staynow.hieunt.widget.launchActivity
 import com.ph32395.staynow.hieunt.widget.tap
@@ -55,9 +54,11 @@ class ProfileFragment : Fragment() {
     private lateinit var nextPhanhoi: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
-    private lateinit var prefs: SharedPreferences
     private lateinit var btnPhongTroDaXem: LinearLayout
     private lateinit var btnBaiDangYeuThich: LinearLayout
+    private lateinit var seperatedLichsu: View
+    private lateinit var seperatedHoadon: View
+    private lateinit var seperatedHopdong: View
 
 
     @SuppressLint("MissingInflatedId")
@@ -79,11 +80,10 @@ class ProfileFragment : Fragment() {
         llContract = view.findViewById(R.id.ll_hopdong)
         llBill = view.findViewById(R.id.ll_hoadon)
         btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
-        btnBaiDangYeuThich = view.findViewById(R.id.btnBaiDangYeuThich)
+        seperatedLichsu = view.findViewById(R.id.viewlichsu)
+        seperatedHoadon = view.findViewById(R.id.viewhoadon)
+        seperatedHopdong = view.findViewById(R.id.viewhopdong)
 
-        btnBaiDangYeuThich.setOnClickListener {
-            launchActivity(PhongTroYeuThichActivity::class.java)
-        }
 
         btnPhongTroDaXem.setOnClickListener {
             launchActivity(PhongTroDaXemActivity::class.java)
@@ -137,15 +137,21 @@ class ProfileFragment : Fragment() {
                             view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
                         val scheduleRoom = view.findViewById<LinearLayout>(R.id.ll_schedule_room)
                         if (registerLayout != null) {
-                            if ("ChuNha".equals(accountType)) {
+                            if ("NguoiChoThue" == accountType) {
                                 registerLayout.visibility = View.GONE
                                 scheduleRoom.visibility = View.GONE
+                                llBill.visibility = View.GONE
+                                llContract.visibility = View.GONE
+                                seperatedLichsu.visibility = View.GONE
+                                seperatedHoadon.visibility = View.GONE
+                                seperatedHopdong.visibility = View.GONE
+
                             } else {
                                 registerLayout.visibility = View.VISIBLE
                                 scheduleRoom.visibility = View.VISIBLE
                             }
                         } else {
-                            Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.");
+                            Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.")
                         }
                     }
 
@@ -161,7 +167,7 @@ class ProfileFragment : Fragment() {
             AppDatabase.getInstance(requireContext()).notificationDao().deleteAllNotification()
             setUserOffline() // Đánh dấu trạng thái offline nếu cần
             mAuth.signOut() // Đăng xuất Firebase
-
+            requireActivity().stopService(Intent(requireContext(), NotificationService::class.java))
             // Đăng xuất tài khoản Google
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
             val googleSignInClient = GoogleSignIn.getClient(requireActivity(), gso)
@@ -173,6 +179,7 @@ class ProfileFragment : Fragment() {
                         putBoolean("is_logged_in", false)
                         apply()
                     }
+
                     // Chuyển về màn hình đăng nhập
                     val intent = Intent(requireActivity(), DangNhap::class.java)
                     startActivity(intent)
@@ -225,7 +232,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun replaceFragment(fragment: androidx.fragment.app.Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
         if (context is androidx.fragment.app.FragmentActivity) {
             val activity = context as androidx.fragment.app.FragmentActivity
 

@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Xin Chào"
+                android:text="@string/Hello"
                 android:id="@+id/loginTiltle"
                 android:textSize="30sp"
                 android:textAlignment="center"
@@ -45,7 +45,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Hãy đăng nhập vào tài khoản của bạn"
+                android:text="@string/Log_in_to_your_account"
                 android:id="@+id/logintext"
                 android:textSize="14sp"
                 android:textAlignment="center"
@@ -65,7 +65,7 @@
                     android:id="@+id/username"
                     android:drawableLeft="@drawable/profile"
                     android:drawablePadding="12dp"
-                    android:hint="Email"
+                    android:hint="@string/Email"
                     android:padding="10dp"
                     android:background="@android:color/transparent"
                     android:textColor="@color/black"
@@ -95,7 +95,7 @@
                         android:background="@android:color/transparent"
                         android:drawableLeft="@drawable/password"
                         android:drawablePadding="20dp"
-                        android:hint="Mật khẩu"
+                        android:hint="@string/Password"
                         android:inputType="textPassword"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
@@ -120,7 +120,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Nhớ tài khoản"
+                    android:text="@string/Remember_your_account"
                     android:textStyle="italic" />
 
                 <TextView
@@ -128,7 +128,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Quên mật khẩu"
+                    android:text="@string/Forgot_Password"
                     android:gravity="end"
                     android:textStyle="italic"
                     android:textColor="@color/purple"
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/loginButton"
-                android:text="Đăng Nhập"
+                android:text="@string/Login"
                 android:textSize="14sp"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/custom_buttom" />
@@ -147,7 +147,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/loginWithGGButton"
-                android:text="Đăng Nhập Với Google"
+                android:text="@string/Login_google"
                 android:textSize="14sp"
                 android:drawableLeft="@drawable/icongoogle"
                 android:layout_marginTop="15dp"
@@ -166,20 +166,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bạn chưa có tài khoản?  "
+            android:text="@string/Don_have_an_account_yet"
             android:textSize="14sp"
             android:textAlignment="center"
             android:textColor="@color/black"
            />
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Đăng ký ngay"
-            android:textSize="14sp"
-            android:textAlignment="center"
             android:id="@+id/txtdangky"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/Register_now"
+            android:textAlignment="center"
             android:textColor="@color/purple"
-            />
+            android:textSize="14sp" />
 
     </LinearLayout>
         </LinearLayout>

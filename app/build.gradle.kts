@@ -134,7 +134,7 @@ dependencies {
     // Socket
     implementation ("io.socket:socket.io-client:2.0.0")
     // zalo sdk
-   implementation("androidx.room:room-runtime:2.4.3")
+    implementation("androidx.room:room-runtime:2.4.3")
     kapt("androidx.room:room-compiler:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
 
@@ -151,5 +151,10 @@ dependencies {
 
     //generate qr
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
+
+
+    //progressdialog
+    implementation("com.github.techinessoverloaded:progress-dialog:1.5.1")
 
 }

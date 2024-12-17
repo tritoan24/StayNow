@@ -1,44 +1,48 @@
 package com.ph32395.staynow.PhongTroYeuThich
 
-import android.annotation.SuppressLint
+import com.ph32395.staynow.Model.PhongTroModel
+import com.ph32395.staynow.R
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.ph32395.staynow.Model.PhongTroModel
-import com.ph32395.staynow.R
 
-class PhongTroYeuThichActivity : AppCompatActivity() {
+class PhongTroYeuThichFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PhongTroYeuThichAdapter
-    private lateinit var btnBack: ImageView
     private lateinit var progressBar: ProgressBar
     private lateinit var txtPhongYeuThich: TextView
     private val favoriteList = mutableListOf<Pair<String, PhongTroModel>>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_phong_tro_yeu_thich)
-        progressBar = findViewById(R.id.progressBarPhongTroYeuThich)
-        txtPhongYeuThich = findViewById(R.id.txtPhongYeuThich)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.activity_phong_tro_yeu_thich, container, false)
 
-        btnBack = findViewById(R.id.iconBackPhongTroYeuThich)
-        btnBack.setOnClickListener {
-            finish()
-        }
+        progressBar = view.findViewById(R.id.progressBarPhongTroYeuThich)
+        txtPhongYeuThich = view.findViewById(R.id.txtPhongYeuThich)
+        recyclerView = view.findViewById(R.id.recyclerViewPhongTroYeuThich)
 
-        recyclerView = findViewById(R.id.recyclerViewPhongTroYeuThich)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         adapter = PhongTroYeuThichAdapter(favoriteList) { room ->
             removeFromFavorites(room)
@@ -48,19 +52,19 @@ class PhongTroYeuThichActivity : AppCompatActivity() {
         fetchFavorites()
     }
 
-//    Lay danh sach phong troeu thích
+    // Lấy danh sách phòng trọ yêu thích
     private fun fetchFavorites() {
-        progressBar.visibility = View.VISIBLE //Hien thi ProgressBar
-        txtPhongYeuThich.visibility = View.GONE //An thong bao khong co phong
+        progressBar.visibility = View.VISIBLE // Hiển thị ProgressBar
+        txtPhongYeuThich.visibility = View.GONE // Ẩn thông báo không có phòng
         recyclerView.visibility = View.GONE
-//  su dung addSnapshotListener de lang nghe thay doi
+
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         FirebaseFirestore.getInstance().collection("PhongTroYeuThich")
             .whereEqualTo("Id_nguoidung", userId)
             .addSnapshotListener { snapshot, error ->
-                progressBar.visibility = View.GONE //An ProgressBar khi tai du lieu thanh cong
+                progressBar.visibility = View.GONE // Ẩn ProgressBar khi tải dữ liệu thành công
                 if (error != null) {
-                    Toast.makeText(this, "Lỗi lắng nghe dữ liệu: ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Lỗi lắng nghe dữ liệu: ${error.message}", Toast.LENGTH_SHORT).show()
                     return@addSnapshotListener
                 }
 
@@ -73,16 +77,14 @@ class PhongTroYeuThichActivity : AppCompatActivity() {
                         val favoriteTime = doc.getLong("Thoigian_yeuthich") ?: 0L
                         fetchRoomDetail(roomId, favoriteTime)
                     }
-                    recyclerView.visibility = View.VISIBLE //Hien thi danh sach phong
+                    recyclerView.visibility = View.VISIBLE // Hiển thị danh sách phòng
                 } else {
-                    txtPhongYeuThich.visibility = View.VISIBLE //Hien thi thong bao
-//                    adapter.notifyDataSetChanged()
+                    txtPhongYeuThich.visibility = View.VISIBLE // Hiển thị thông báo
                 }
             }
     }
 
     private fun fetchRoomDetail(maPhongTro: String, favoriteTime: Long) {
-
         FirebaseFirestore.getInstance().collection("PhongTro")
             .document(maPhongTro)
             .get()
@@ -109,7 +111,8 @@ class PhongTroYeuThichActivity : AppCompatActivity() {
             }
     }
 
-//    Xoa phong tro yeu thích
+
+    // Xóa phòng trọ yêu thích
     private fun removeFromFavorites(room: PhongTroModel) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val pairToRemove = favoriteList.find { it.second == room } ?: return
