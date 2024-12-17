@@ -88,7 +88,7 @@
                     android:layout_marginTop="15dp" />
 
                 <view
-                    class="com.ph32395.staynow.view.ItemTienIchView"
+                    class="com.ph32395.staynow_datn.view.ItemTienIchView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="80dp"

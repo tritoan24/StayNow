@@ -1,0 +1,27 @@
+package com.ph32395.staynow_datn.utils
+
+import android.content.Context
+import cn.pedant.SweetAlert.SweetAlertDialog
+
+
+fun showConfirmDialog(
+    context: Context,
+    title: String,
+    message: String,
+    onConfirm: () -> Unit // Callback khi nhấn "OK"
+) {
+    val dialog = SweetAlertDialog(context, SweetAlertDialog.WARNING_TYPE)
+        .setTitleText(title)
+        .setContentText(message)
+        .setConfirmText("Đồng ý")
+        .setCancelText("Hủy bỏ")
+        .setConfirmClickListener { sweetAlertDialog ->
+            sweetAlertDialog.dismiss()
+            onConfirm()
+        }
+        .setCancelClickListener { sweetAlertDialog ->
+            sweetAlertDialog.dismiss()
+        }
+
+    dialog.show()
+}

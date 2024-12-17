@@ -11,12 +11,12 @@ plugins {
 
 
 android {
-    namespace = "com.ph32395.staynow"
+    namespace = "com.ph32395.staynow_datn"
     compileSdk = 34
 
 
     defaultConfig {
-        applicationId = "com.ph32395.staynow"
+        applicationId = "com.ph32395.staynow_datn"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

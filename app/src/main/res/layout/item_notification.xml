@@ -18,7 +18,7 @@
             android:layout_height="12dp"
             android:background="@drawable/ic_red_oval"
             android:layout_marginEnd="8dp"/>
-        <com.ph32395.staynow.hieunt.custom_view.MovableTextView
+        <com.ph32395.staynow_datn.hieunt.custom_view.MovableTextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

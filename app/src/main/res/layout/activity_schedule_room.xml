@@ -81,7 +81,7 @@
                     android:orientation="horizontal"
                     android:layout_marginHorizontal="106dp"
                     >
-                    <com.ph32395.staynow.hieunt.custom_view.WheelView
+                    <com.ph32395.staynow_datn.hieunt.custom_view.WheelView
                         android:id="@+id/hour_wheel_view"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -102,7 +102,7 @@
                     <View
                         android:layout_width="60dp"
                         android:layout_height="0dp"/>
-                    <com.ph32395.staynow.hieunt.custom_view.WheelView
+                    <com.ph32395.staynow_datn.hieunt.custom_view.WheelView
                         android:id="@+id/minute_wheel_view"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
