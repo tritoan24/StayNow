@@ -13,6 +13,7 @@ import com.ph32395.staynow_datn.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
+import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
@@ -23,6 +24,8 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.SystemUtils
@@ -77,7 +80,12 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                         }
 
                         TITLE_CANCELED_BY_TENANT, TITLE_LEAVED_BY_TENANT -> {
-                            startActivity(Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) })
+                            startActivity(Intent(this, MainActivity::class.java).apply {
+                                putExtra(
+                                    OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION,
+                                    true
+                                )
+                            })
                         }
                     }
                 }
@@ -97,10 +105,29 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     }
                     startActivity(intent)
                 }
-                TYPE_NOTI_BILL_MONTHLY_REMIND ->{
+
+                TYPE_NOTI_BILL_MONTHLY_REMIND -> {
                     // Navigate to invoice creation
                     val intent = Intent(this, DetailBillActivity::class.java).apply {
                         putExtra("invoiceId", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+
+                TYPE_NOTI_PAYMENT_INVOICE -> {
+                    // Navigate to invoice creation
+                    val intent = Intent(this, DetailBillActivity::class.java).apply {
+                        putExtra("invoiceId", notification.idModel)
+                        putExtra("notify", "notify")
+                    }
+                    startActivity(intent)
+                }
+
+                TYPE_NOTI_PAYMENT_CONTRACT -> {
+                    // Navigate to invoice creation
+                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                        putExtra("contractId", notification.idModel)
+                        putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }

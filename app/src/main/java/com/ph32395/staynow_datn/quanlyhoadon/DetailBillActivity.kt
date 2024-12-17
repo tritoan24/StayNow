@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
@@ -39,6 +40,7 @@ class DetailBillActivity : AppCompatActivity() {
         binding = ActivityDetailBillBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadingIndicator = binding.loadingIndicator
+        invoiceViewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
 
         initZaloPay()
 
@@ -47,6 +49,8 @@ class DetailBillActivity : AppCompatActivity() {
         val invoiceId = intent.getStringExtra("invoiceId")
 
         val detail = intent.getStringExtra("detail")
+        val notify = intent.getStringExtra("notify")
+
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
@@ -65,6 +69,9 @@ class DetailBillActivity : AppCompatActivity() {
         if (detail != null) {
             binding.btnThanhtoan.visibility = View.GONE
             binding.tvTitle.text = "Chi tiết hóa đơn hàng tháng"
+        }
+        if (notify != null) {
+            binding.btnThanhtoan.visibility = View.GONE
         }
         if (invoice.trangThai != InvoiceStatus.PENDING) {
             binding.btnThanhtoan.visibility = View.GONE

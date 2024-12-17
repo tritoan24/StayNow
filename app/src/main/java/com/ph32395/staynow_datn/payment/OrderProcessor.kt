@@ -19,6 +19,7 @@ import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +30,6 @@ import java.util.Calendar
 
 class OrderProcessor(private val context: Context) {
     private val db = FirebaseFirestore.getInstance()
-
     fun checkAndCreateOrder(
         amount: Double,
         contractId: String,
@@ -42,80 +42,47 @@ class OrderProcessor(private val context: Context) {
             try {
                 val currentTime = System.currentTimeMillis()
 
-                // Lắng nghe thay đổi từ Firestore
-                db.collection("PaymentTransaction")
+                // Truy vấn Firestore
+                val querySnapshot = db.collection("PaymentTransaction")
                     .whereEqualTo("contractId", contractId)
                     .whereEqualTo("status", "PENDING")
-                    .addSnapshotListener { querySnapshot, error ->
-                        if (error != null) {
-                            Log.e("FirestoreListener", "Listen failed.", error)
-                            CoroutineScope(Dispatchers.Main).launch {
-                                callback(null, null, null)
-                            }
-                            return@addSnapshotListener
-                        }
+                    .get()
+                    .await()
 
-                        if (querySnapshot == null || querySnapshot.isEmpty) {
-                            // Không có dữ liệu phù hợp -> Tạo đơn mới
-                            createOrder(
-                                amount,
-                                contractId,
-                                billId,
-                                items,
-                                typeBill
-                            ) { token, orderUrl ->
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    callback(token, orderUrl, 900)
-                                }
-                            }
-                            return@addSnapshotListener
-                        }
+                val validOrder = querySnapshot.documents.firstOrNull { doc ->
+                    val expireTime =
+                        doc.getLong("app_time")!! + doc.getLong("expire_duration_seconds")!! * 1000
+                    expireTime > currentTime
+                }
 
-                        val validOrder = querySnapshot.documents.firstOrNull { doc ->
-                            val appTime = doc.getLong("app_time")
-                            val expireDurationSeconds = doc.getLong("expire_duration_seconds")
-                            if (appTime != null && expireDurationSeconds != null) {
-                                val expireTime = appTime + expireDurationSeconds * 1000
-                                expireTime > currentTime
-                            } else {
-                                false // Bỏ qua tài liệu nếu thiếu dữ liệu
-                            }
-                        }
+                if (validOrder != null) {
+                    val token = validOrder.getString("zp_trans_token")
+                    val orderUrl = validOrder.getString("order_url")
 
-                        if (validOrder != null) {
-                            val token = validOrder.getString("zp_trans_token")
-                            val orderUrl = validOrder.getString("order_url")
-
-                            // Tính toán thời gian còn lại (remainTime)
-                            val expireTime =
-                                validOrder.getLong("app_time")!! + validOrder.getLong("expire_duration_seconds")!! * 1000
-                            val remainTime = expireTime - currentTime
-
-                            Log.d("remainTimeOrderProcessor", remainTime.toString())
-                            CoroutineScope(Dispatchers.Main).launch {
-                                callback(token, orderUrl, remainTime)
-                            }
-                        } else {
-                            // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
-                            createOrder(
-                                amount,
-                                contractId,
-                                billId,
-                                items,
-                                typeBill
-                            ) { token, orderUrl ->
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    callback(token, orderUrl, 900)
-                                }
-                            }
+                    // Tính toán thời gian còn lại (remainTime)
+                    val expireTime =
+                        validOrder.getLong("app_time")!! + validOrder.getLong("expire_duration_seconds")!! * 1000
+                    val remainTime =
+                        expireTime - currentTime // Thời gian còn lại
+                    Log.d("remainTimeOrderProcessor", remainTime.toString())
+                    CoroutineScope(Dispatchers.Main).launch {
+                        callback(token, orderUrl, remainTime)
+                    }
+                } else {
+                    // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
+                    createOrder(amount, contractId, billId, items, typeBill) { token, orderUrl ->
+                        CoroutineScope(Dispatchers.Main).launch {
+                            callback(token, orderUrl, 900)
                         }
                     }
+                }
             } catch (e: Exception) {
                 CoroutineScope(Dispatchers.Main).launch {
                     callback(null, null, null)
                 }
             }
         }
+
     }
 
     private fun createOrder(

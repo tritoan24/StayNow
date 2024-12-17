@@ -374,7 +374,7 @@ public class DangNhap extends AppCompatActivity {
                 public void onSignInFailed(Exception e) {
                     showFailureAnimation("Hủy chọn tài khoản");
                     loadingUtil.hide();
-                        }
+                }
             });
         }
     }

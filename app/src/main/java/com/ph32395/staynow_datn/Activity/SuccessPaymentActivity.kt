@@ -3,6 +3,7 @@ package com.ph32395.staynow_datn.Activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow_datn.MainActivity
@@ -51,7 +52,7 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
         }
 
-        if (bill!=null) {
+        if (bill != null) {
             hideUIForInvoice()
             binding.tvInvoiceId.text = bill.idHoaDon
             binding.tvTenantName.text = bill.tenKhachHang
@@ -87,12 +88,10 @@ class SuccessPaymentActivity : AppCompatActivity() {
 
     private fun formatServerTime(serverTime: String): String {
         val date = Date(serverTime.toLong())
-
         // Định dạng ngày giờ theo chuẩn mong muốn
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
         return dateFormat.format(date)
     }
-
 
 }
 
