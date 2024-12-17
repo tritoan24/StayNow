@@ -25,6 +25,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/gilroy_bold"
@@ -50,10 +51,13 @@
     <ScrollView
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="15dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:paddingBottom="50dp"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 

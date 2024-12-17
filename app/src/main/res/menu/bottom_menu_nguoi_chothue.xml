@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
+        <item
             android:id="@+id/bottom_home_nguoichothue"
-            android:title="@string/Home"
-            android:icon="@drawable/icon_home"/>
+            android:title="Home"
+            android:icon="@drawable/icon_home_svg"/>
 
     <item
         android:id="@+id/bottom_management_room"
-        android:title="@string/Calender"
-        android:icon="@drawable/ic_management_lich_hen"/>
+        android:title="Calendar"
+        android:icon="@drawable/calendar"/>
 
     <item
         android:id="@+id/bottom_message"
-        android:title="@string/Message"
-        android:icon="@drawable/icon_message"/>
+        android:title="Message"
+        android:icon="@drawable/chat"/>
 
     <item
         android:id="@+id/bottom_profile"
-        android:title="@string/Profile"
-        android:icon="@drawable/icon_profile"/>
+        android:title="Profile"
+        android:icon="@drawable/user_svg"/>
 
 </menu>

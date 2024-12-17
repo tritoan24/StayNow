@@ -1,7 +1,6 @@
 // TaoHopDongActivity.kt
 package com.ph32395.staynow.TaoHopDong
 
-import ContractViewModel
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +30,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Adapter.ChiTietThongTinAdapter
 import com.ph32395.staynow.Adapter.NoiThatAdapter
 import com.ph32395.staynow.Adapter.PhiDichVuAdapter
@@ -39,6 +40,8 @@ import com.ph32395.staynow.CCCD.CccdViewModel
 import com.ph32395.staynow.ChucNangChung.LoadingUtil
 import com.ph32395.staynow.R
 import com.ph32395.staynow.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow.hieunt.model.NotificationModel
+import com.ph32395.staynow.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow.hieunt.widget.toast
 import com.ph32395.staynow.utils.DateUtils
 import jp.wasabeef.richeditor.RichEditor
@@ -55,6 +58,7 @@ class TaoHopDong : AppCompatActivity() {
     private val viewModelHopDong: ContractViewModel by viewModels()
     private lateinit var viewModel: RoomDetailViewModel
     private lateinit var viewModelCccd: CccdViewModel
+    private lateinit var viewModelNotification: NotificationViewModel
     private var utilityFees: List<UtilityFee> = listOf()
 
     // Khai báo phần lịch
@@ -113,6 +117,7 @@ class TaoHopDong : AppCompatActivity() {
     private lateinit var editorDieuKhoan: RichEditor
     private lateinit var note: TextView
     private lateinit var btnBack: Button
+    private lateinit var btncardview: CardView
 
     private lateinit var maPhongTro: String
     private lateinit var maNguoiThue: String
@@ -170,6 +175,7 @@ class TaoHopDong : AppCompatActivity() {
         //Khoi tao viewModel
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
         viewModelCccd = ViewModelProvider(this).get(CccdViewModel::class.java)
+        viewModelNotification = ViewModelProvider(this).get(NotificationViewModel::class.java)
 
         //Lay du lieu chi tiet thong tin phong tro
         viewModel.fetchChiTietThongTin(maPhongTro)
@@ -345,6 +351,14 @@ class TaoHopDong : AppCompatActivity() {
                 createAndSaveContract()
             }
         }
+
+        //ấn vào phòng trọ
+        btncardview.setOnClickListener{
+            val intent = Intent(this, RoomDetailActivity::class.java)
+            intent.putExtra("maPhongTro", maPhongTro)
+            startActivity(intent)
+        }
+
     }
 
 
@@ -486,8 +500,10 @@ private fun observeViewModel() {
             ngayKetThuc = tvEndDate.text.toString(),
             thoiHanThue = tvMonth.text.toString(),
             ngayThanhToan = txtNgayThanhToan.text.toString().toInt(),
-            ghiChu = note.text.toString(),
+            ghiChu = note.text.toString().trim(),
             soNguoiO = soNguoio.text.toString().toIntOrNull() ?: 1,
+            soDienCu = edSodien.text.toString().toInt(),
+            soNuocCu = edSonuoc.text.toString().toInt(),
             chuNha = PersonInfo(
                 maNguoiDung = auth.currentUser?.uid ?: "",
                 hoTen = txtHoTenCT.text.toString(),
@@ -547,7 +563,6 @@ private fun observeViewModel() {
 
             tienNghi = listAmenities, // Danh sách String chứa tên tiện nghi
             noiThat = listFurniture, // Danh sách String chứa tên nội thất
-
             dieuKhoan = editorDieuKhoan.html,
 
             // Thêm các thông tin khác
@@ -560,12 +575,26 @@ private fun observeViewModel() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModelHopDong.navigateToContractDetail.collect { contractId ->
                     contractId?.let {
-                        val intent = Intent(this@TaoHopDong, ChiTietHoaDon::class.java)
+                        val intent = Intent(this@TaoHopDong, ChiTietHopDong::class.java)
                         intent.putExtra("CONTRACT_ID", it)
                         intent.putExtra("Check", 1)
                         startActivity(intent)
                         // Reset giá trị sau khi chuyển màn
                         viewModelHopDong.resetNavigation()
+                        // Gửi thông báo
+                        val notificationModel = NotificationModel(
+                            title = "Hợp đồng mới",
+                            message = "Bạn có một hợp đồng mới",
+                            date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
+                            typeNotification = "HopDongMoi",
+                            mapLink = null,
+                            timestamp = System.currentTimeMillis(),
+                            idModel = it,
+
+
+                        )
+                        viewModelNotification.sendNotification (notificationModel, maNguoiThue)
                         // Đóng màn hình hiện tại sau khi chuyển màn
                         finish()
                         loadingUtil.hide()
@@ -622,6 +651,9 @@ private fun observeViewModel() {
         // Quay lại
         btnBack = findViewById(R.id.btnBack)
 
+        // ấn vào phòng trọ
+        btncardview = findViewById(R.id.cardViewPhongTro)
+
         // Ngày thanh toán
         txtNgayThanhToan = findViewById(R.id.editTextNgayThanhToan)
 
@@ -640,6 +672,11 @@ private fun observeViewModel() {
             toast("Ngày thanh toán không hợp lệ")
             return false
         }
+        if (edSodien.text.toString().isEmpty() || edSonuoc.text.toString().isEmpty() || soNguoio.text.toString().isEmpty()) {
+            toast("Vui lòng nhập đầy đủ thông tin")
+            return false
+        }
+
         // Thêm các validation khác
         return true
     }

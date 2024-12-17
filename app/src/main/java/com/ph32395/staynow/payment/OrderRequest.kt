@@ -5,5 +5,12 @@ data class OrderRequest(
     val contractId: String,
     val billId: String,
     val items: String,
+    val typeBill: TypeBill
+)
+data class OrderRequestService(
+    val amount: Double,
+    val billId: String,
+    val items: String,
+    val typeBill: TypeBill
 )
 

@@ -11,6 +11,9 @@ interface ApiClient {
     @POST("/api/create-order")
     fun createOrder(@Body request: OrderRequest): Call<OrderResponse>
 
+    @POST("/api/create-order-service")
+    fun createOrderService(@Body request: OrderRequestService): Call<OrderResponse>
+
     companion object {
         fun create(): ApiClient {
             return Retrofit.Builder()

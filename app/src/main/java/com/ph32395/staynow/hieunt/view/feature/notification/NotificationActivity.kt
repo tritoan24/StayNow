@@ -1,13 +1,19 @@
 package com.ph32395.staynow.hieunt.view.feature.notification
 
 
+import android.content.Intent
+import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.ph32395.staynow.ChucNangNhanTinCC.TextingMessengeActivity
+import com.ph32395.staynow.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow.databinding.ActivityNotificationBinding
 import com.ph32395.staynow.hieunt.base.BaseActivity
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
+import com.ph32395.staynow.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow.hieunt.helper.SystemUtils
 import com.ph32395.staynow.hieunt.model.NotificationWithDateModel
 import com.ph32395.staynow.hieunt.view.feature.notification.adapter.NotificationWithDateAdapter
@@ -36,7 +42,29 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                         toast("Đã xem!")
                     }
                 }
+
             }
+            when (notification.typeNotification) {
+                TYPE_NOTI_BILL_MONTHLY -> {
+                    // Navigate to invoice creation
+                    val intent = Intent(this, CreateInvoice::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+                TYPE_NOTI_MASSAGES ->{
+                    // Navigate to textingMassages
+                    val intent = Intent(this, TextingMessengeActivity::class.java).apply {
+                        putExtra("userId", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+                // Add more navigation cases as needed
+                else -> {
+                    // Optional: handle default navigation or show a message
+                }
+            }
+            Log.d("hiweuyhr", "Notification clicked: ${notification.idModel}")
         }
         binding.rvNotifications.adapter = notificationWithDateAdapter
         binding.ivBack.tap {

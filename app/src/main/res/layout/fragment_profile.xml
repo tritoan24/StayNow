@@ -260,6 +260,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/viewlichsu"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
@@ -303,12 +304,14 @@
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
                 <View
+                    android:id="@+id/viewhoadon"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />
 
                 <!-- Menu Item: Hóa đơn -->
                 <LinearLayout
+                    android:id="@+id/ll_hoadon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -347,6 +350,7 @@
                 </LinearLayout>
 
                 <View
+                    android:id="@+id/viewhopdong"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@android:color/darker_gray" />

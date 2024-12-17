@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -48,6 +50,8 @@ public class DangNhap extends AppCompatActivity {
     private RegisterWithGoogle registerWithGoogle;
     private DatabaseReference mDatabase;
     private ImageView img_anhienpass;
+
+    private View blockingView;
 
 
     private LoadingUtil loadingUtil;
@@ -148,6 +152,7 @@ public class DangNhap extends AppCompatActivity {
                                                             editor.putBoolean("is_logged_in", true);
                                                             editor.putString("check", loaiTaiKhoan);
                                                             editor.apply();
+                                                            loadingUtil.hide();
 
 //                                                            Chuyen sang man Main
                                                             startActivity(new Intent(DangNhap.this, MainActivity.class));
@@ -170,14 +175,17 @@ public class DangNhap extends AppCompatActivity {
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-                                            showFailureAnimation("ỗi kết nối tới máy chủ");
+                                            showFailureAnimation("lỗi kết nối tới máy chủ");
+                                            loadingUtil.hide();
                                         }
                                     });
                                 } else {
                                     showFailureAnimation("Lỗi xác thực người dùng");
+                                    loadingUtil.hide();
                                 }
                             } else {
                                 showFailureAnimation("Email hoặc mật khẩu không đúng");
+                                loadingUtil.hide();
                             }
                         });
             }
@@ -191,7 +199,6 @@ public class DangNhap extends AppCompatActivity {
         });
 
         btnDangNhapGoogle.setOnClickListener(v -> {
-            loadingUtil.show();
             Intent signInIntent = registerWithGoogle.getGoogleSignInClient().getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN_REGISTER);
         });
@@ -271,9 +278,12 @@ public class DangNhap extends AppCompatActivity {
         loadingUtil = new LoadingUtil(this);
 
         if (requestCode == RC_SIGN_IN_REGISTER) {
+            loadingUtil.show();
             registerWithGoogle.handleSignInResult(requestCode, data, new RegisterWithGoogle.OnSignInResultListener() {
                 @Override
                 public void onSignInSuccess(FirebaseUser user) {
+                    loadingUtil.show();
+
                     String email = user.getEmail();
 
                     // Kiểm tra email đã tồn tại trong Firebase Realtime Database
@@ -349,15 +359,22 @@ public class DangNhap extends AppCompatActivity {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     showFailureAnimation("Lỗi khi kiểm tra tài khoản");
+                                    // Loại bỏ lớp phủ nếu nó tồn tại
+                                    // Loại bỏ lớp phủ nếu nó tồn tại
+                                    if (loadingUtil.blockingView != null) {
+                                        ViewGroup rootView = findViewById(android.R.id.content);
+                                        rootView.removeView(loadingUtil.blockingView);
+                                        loadingUtil.blockingView = null;  // Đảm bảo không tham chiếu lại lớp phủ
+                                    }
                                 }
                             });
                 }
 
                 @Override
                 public void onSignInFailed(Exception e) {
+                    showFailureAnimation("Hủy chọn tài khoản");
                     loadingUtil.hide();
-                    showFailureAnimation("Đăng nhập thất bại");
-                }
+                        }
             });
         }
     }

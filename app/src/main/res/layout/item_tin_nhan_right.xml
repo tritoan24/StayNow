@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
         android:fontFamily="serif"
         android:text="1:11:11"
         android:textColor="#515050"
@@ -23,6 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginBottom="15dp"
         android:background="@drawable/custom_layout_item_tin_nhan_right"
         android:padding="10dp">
 
@@ -33,7 +35,9 @@
             android:fontFamily="serif"
             android:text="Chào bạn. bạn cần hỗ trợ gì ạ?"
             android:textColor="@color/white"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:maxWidth="220dp"
+            />
 
     </LinearLayout>
 

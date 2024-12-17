@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="start"
     >
@@ -11,6 +11,7 @@
         android:padding="10dp"
         android:layout_marginTop="15dp"
         android:layout_marginStart="5dp"
+        android:layout_marginBottom="15dp"
         >
         <TextView
             android:id="@+id/tvTinNhanLeft"
@@ -18,8 +19,10 @@
             android:layout_height="wrap_content"
             android:fontFamily="serif"
             android:textColor="@color/black"
-            android:text="@string/Hello_What_support_do_you_need"
-            android:textSize="12sp" />
+            android:text="Chào bạn. bạn cần hỗ trợ gì ạ?"
+            android:textSize="12sp"
+            android:maxWidth="220dp"
+            />
 
     </LinearLayout>
     <TextView
@@ -32,7 +35,9 @@
         android:textColor="#515050"
         android:text="1:11:11"
         android:textSize="9sp"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:layout_marginBottom="10dp"
+        />
 
 
 </LinearLayout>

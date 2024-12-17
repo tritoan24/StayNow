@@ -2,7 +2,6 @@ package com.ph32395.staynow.fragment.contract_tenant
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.os.StrictMode
 import android.util.Log
@@ -21,7 +20,9 @@ import com.ph32395.staynow.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow.databinding.ActivityBillContractBinding
 import com.ph32395.staynow.hieunt.widget.tap
 import com.ph32395.staynow.payment.OrderProcessor
+import com.ph32395.staynow.payment.TypeBill
 import com.ph32395.staynow.utils.Constants
+import com.ph32395.staynow.utils.showConfirmDialog
 import vn.zalopay.sdk.Environment
 import vn.zalopay.sdk.ZaloPaySDK
 import java.text.NumberFormat
@@ -35,7 +36,7 @@ class BillContractActivity : AppCompatActivity() {
     private lateinit var binding: ActivityBillContractBinding
     private lateinit var loadingIndicator: LottieAnimationView
 
-    @SuppressLint("SuspiciousIndentation")
+    @SuppressLint("SuspiciousIndentation", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityBillContractBinding.inflate(layoutInflater)
@@ -47,7 +48,7 @@ class BillContractActivity : AppCompatActivity() {
         // nhận intent từ contractAdapter
         val invoice = intent.getSerializableExtra("hoaDonHopDong") as? Invoice
         val contract = intent.getSerializableExtra("hopDong") as? HopDong
-
+        val detail = intent.getStringExtra("detail")
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
@@ -62,32 +63,42 @@ class BillContractActivity : AppCompatActivity() {
         if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID) {
             binding.btnThanhtoan.visibility = View.GONE
         }
+        if (detail != null) {
+            binding.btnThanhtoan.visibility = View.GONE
+            binding.tvTitle.text = "Chi tiết hóa đơn hợp đồng"
+        }
 
         binding.btnThanhtoan.tap {
-            showLoading()
-            val orderProcessor = OrderProcessor(this)
-            orderProcessor.checkAndCreateOrder(
-                invoice.tongTien,
-                contract.maHopDong,
-                contract.hoaDonHopDong.idHoaDon,
-                itemsArrStr
-            ) { token, orderUrl, remainTime ->
-                hideLoading()
-                if (token != null && orderUrl != null) {
-                    val intent = Intent(this, ChoosePaymentActivity::class.java)
-                    intent.putExtra("contract", contract)
-                    intent.putExtra("itemsArrStr", itemsArrStr)
-                    intent.putExtra("zpToken", token)
-                    intent.putExtra("orderUrl", orderUrl)
-                    intent.putExtra("remainTime", remainTime)
-                    Log.d("remainTimeBillContract", remainTime.toString())
+            showConfirmDialog(
+                this,
+                "Xác nhận thanh toán",
+                "Bạn đã kiểm tra kĩ thông tin rồi chứ ?"
+            ) {
+                showLoading()
+                val orderProcessor = OrderProcessor(this)
+                orderProcessor.checkAndCreateOrder(
+                    invoice.tongTien,
+                    contract.maHopDong,
+                    contract.hoaDonHopDong.idHoaDon,
+                    itemsArrStr,
+                    TypeBill.HoaDonHopDong,
+                ) { token, orderUrl, remainTime ->
+                    if (token != null && orderUrl != null) {
+                        val intent = Intent(this, ChoosePaymentActivity::class.java)
+                        intent.putExtra("contract", contract)
+                        intent.putExtra("zpToken", token)
+                        intent.putExtra("orderUrl", orderUrl)
+                        intent.putExtra("remainTime", remainTime)
+                        Log.d("remainTimeBillContract", remainTime.toString())
+                        hideLoading()
+                        startActivity(intent)
 
-                    startActivity(intent)
-
-                } else {
-                    Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Lỗi khi tạo đơn hàng", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
+
         }
 
     }
@@ -96,7 +107,7 @@ class BillContractActivity : AppCompatActivity() {
     private fun updateUI(invoice: Invoice, contract: HopDong) {
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: " + invoice.tenPhong
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayLap}"
         binding.tvInvoicePeriod.text = "Thời hạn thuê:${
             calculateRentalPeriod(
@@ -160,13 +171,11 @@ class BillContractActivity : AppCompatActivity() {
 
 
     private fun showLoading() {
-        binding.container.setBackgroundColor(Color.parseColor("#A9A9A9"));
         loadingIndicator.visibility = View.VISIBLE
         loadingIndicator.playAnimation()
     }
 
     private fun hideLoading() {
-        binding.container.setBackgroundColor(Color.TRANSPARENT)
         loadingIndicator.visibility = View.GONE
     }
 
@@ -174,12 +183,6 @@ class BillContractActivity : AppCompatActivity() {
         StrictMode.ThreadPolicy.Builder().permitAll().build()
             .also { StrictMode.setThreadPolicy(it) }
         ZaloPaySDK.init(Constants.APP_ID, Environment.SANDBOX)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        setIntent(intent)
-        ZaloPaySDK.getInstance().onResult(intent)
     }
 
 

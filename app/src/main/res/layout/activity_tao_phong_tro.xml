@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="16dp"
+    >
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:fillViewport="true"
-    android:padding="16dp">
+    android:padding="16dp"
+    >
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:id="@+id/main"
-    android:scrollbars="vertical"
-    android:padding="16dp">
-
+    >
     <!-- Header với nút back và tiêu đề -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,9 +26,10 @@
 
         <ImageView
             android:id="@+id/backButton"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:contentDescription="Back" />
+            android:layout_width="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_height="30dp"
+            android:src="@drawable/icon_back_search" />
 
         <TextView
             android:id="@+id/title"
@@ -40,6 +41,83 @@
             android:layout_marginStart="8dp" />
     </LinearLayout>
 
+    <!-- Form nhập thông tin phòng -->
+<!--    <Button-->
+<!--        android:id="@+id/roomAddress"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="nhập địa chỉ"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        android:padding="12dp"-->
+<!--        app:backgroundTint= "#0F0F0F"-->
+
+<!--        />-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/custom_edittext_search"
+            android:padding="5dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="top">
+
+
+
+            <AutoCompleteTextView
+                android:id="@+id/autoComplete"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="Tìm kiếm......."
+                android:completionThreshold="1"
+                android:padding="10dp"
+                android:textSize="11sp" />
+            <LinearLayout
+                android:id="@+id/btngetIndex"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/currentlocation" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:layout_marginTop="10dp"
+        >
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:text="Địa chỉ phòng:   "
+            />
+        <TextView
+            android:id="@+id/roomAddress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:text="Chưa chọn địa chỉ"
+            android:textStyle="italic"
+            />
+    </LinearLayout>
     <!-- Phần: Thông tin phòng -->
     <TextView
         android:id="@+id/sectionInfo"
@@ -51,72 +129,124 @@
         android:textStyle="bold"
         android:layout_marginTop="16dp" />
 
-    <!-- Form nhập thông tin phòng -->
-    <Button
-        android:id="@+id/roomAddress"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Enter_Address"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:hintAnimationEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/roomName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tên phòng *"
+            android:textColor="@android:color/black"
+            android:textColorHint="#AE1FFF"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="8dp"
+        app:boxCornerRadiusBottomStart="8dp"
+        app:boxCornerRadiusTopEnd="8dp"
+        app:boxCornerRadiusTopStart="8dp"
+        app:hintAnimationEnabled="true">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/roomPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Giá phòng *"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="#AE1FFF"/>
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:boxCornerRadiusBottomEnd="16dp"
+        app:boxCornerRadiusBottomStart="16dp"
+        app:boxCornerRadiusTopEnd="16dp"
+        app:boxCornerRadiusTopStart="16dp"
         android:layout_marginTop="8dp"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        app:backgroundTint= "#0F0F0F"
+        >
 
-        />
-    <EditText
-        android:id="@+id/roomName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/Name_house_number"
-        android:layout_marginTop="8dp" />
-
-
-    <EditText
-        android:id="@+id/roomPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/Room_Rate"
-        android:layout_marginTop="8dp" />
-
-
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/Description"
-        android:layout_marginTop="8dp" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:gravity="top"
+            android:hint="Nhập mô tả của bạn"
+            android:inputType="textMultiLine"
+            android:maxLines="6"
+            android:minLines="3"
+            android:textColor="@android:color/black"
+            android:textColorHint="#AE1FFF"/>
+    </com.google.android.material.textfield.TextInputLayout>
     <!-- Phần: Thông tin dịch vụ -->
-    <TextView
-        android:id="@+id/sectionServiceInfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Service_Information"
-        android:textColor="@color/purple"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/listViewThongTin"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        />
+        android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listViewDichVu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="vertical"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listViewThongTin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Phí dịch vụ"
+                    android:textColor="@color/purple"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
+                <ImageButton
+                    android:id="@+id/fabAddDichVu"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_margin="16dp"
+                    android:background="@drawable/addservice" />
+            </LinearLayout>
 
 
-    <ImageButton
-        android:id="@+id/addImage"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/addavatar"
-        />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listViewDichVu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cung cấp hình ảnh"
+                android:textColor="@color/purple"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp" />
+
+            <ImageButton
+                android:id="@+id/addImage"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/addavatar" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
     
     <!-- Khung chọn hình ảnh -->
     <androidx.recyclerview.widget.RecyclerView
@@ -127,9 +257,14 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         />
-
-
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Giới tính ưu tiên"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listViewGioiTinh"
         android:layout_width="match_parent"
@@ -137,6 +272,22 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Loại phòng"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewLoaiPhong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
 
     <!-- RecyclerView for Furniture List -->
     <TextView
@@ -148,7 +299,6 @@
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_marginTop="16dp" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -156,15 +306,6 @@
         android:layout_marginTop="16dp"
         android:orientation="vertical"/>
     <!-- RecyclerView for Furniture List -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewLoaiPhong"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/Furniture_List"
-        android:textColor="@color/purple"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp" />
     <TextView
         android:id="@+id/sectionTienNghi"
         android:layout_width="wrap_content"
@@ -190,6 +331,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="17dp"
         >
 
 
@@ -199,22 +342,21 @@
         android:id="@+id/addRoomButton"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_button"
         android:text="@string/Stay_Room"
         android:backgroundTint="@color/purple"
         android:textColor="@android:color/white"
-        android:layout_marginTop="16dp"
-        android:padding="12dp"/>
+        android:padding="12dp"
+        android:layout_marginRight="10dp"/>
         <Button
             android:id="@+id/addRoomButton2"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="@string/Posting_a_room"
             android:backgroundTint="@color/purple"
+            android:background="@drawable/bg_button"
             android:textColor="@android:color/white"
-            android:layout_marginTop="16dp"
             android:padding="12dp"/>
-
-
     </LinearLayout>
 
 
@@ -228,21 +370,23 @@
         android:layout_height="match_parent">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/loadingAnimation"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            android:visibility="gone" />
-
-        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/completionAnimation"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
             app:lottie_autoPlay="true"
             android:visibility="gone" />
-
+        <!-- ProgressBar để hiển thị khi tải -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingIndicator"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_centerInParent="true"
+            app:lottie_fileName="loading.json"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
     </FrameLayout>
+
 </RelativeLayout>

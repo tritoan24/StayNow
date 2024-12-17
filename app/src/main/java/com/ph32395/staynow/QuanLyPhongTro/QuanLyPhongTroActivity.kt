@@ -2,20 +2,15 @@ package com.ph32395.staynow.QuanLyPhongTro
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.ph32395.staynow.CheckRoleActivity
 import com.ph32395.staynow.MainActivity
 import com.ph32395.staynow.R
 import com.ph32395.staynow.fragment.home.HomeViewModel

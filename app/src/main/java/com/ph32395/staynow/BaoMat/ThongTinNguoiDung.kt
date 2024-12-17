@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,7 +38,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
     private lateinit var emailInfor: TextView
     private lateinit var rcListRoom: RecyclerView
     private lateinit var btnBackCT: ImageView
-    private lateinit var btnNhanTin: LinearLayout
+    private lateinit var btnNhanTin: CardView
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var homViewModel: HomeViewModel
@@ -53,7 +54,8 @@ class ThongTinNguoiDung : AppCompatActivity() {
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
-        btnNhanTin = findViewById(R.id.btnNhanTin)
+        //cong comment
+//        btnNhanTin = findViewById(R.id.btnNhanTin)
         btnBackCT = findViewById(R.id.btnBackCT)
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -117,11 +119,12 @@ class ThongTinNguoiDung : AppCompatActivity() {
         }
 
         //Chuyen den man nhan tin
-        btnNhanTin.setOnClickListener {
-            val intent = Intent(this,TextingMessengeActivity::class.java)
-            intent.putExtra("userId",userId)
-            startActivity(intent)
-        }
+        //cong Comment
+//        btnNhanTin.setOnClickListener {
+//            val intent = Intent(this,TextingMessengeActivity::class.java)
+//            intent.putExtra("userId",userId)
+//            startActivity(intent)
+//        }
 
 
 

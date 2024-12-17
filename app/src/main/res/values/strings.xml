@@ -7,6 +7,8 @@
     <string name="first_fragment_label" translatable="false">First Fragment</string>
     <string name="second_fragment_label" translatable="false">Second Fragment</string>
     <string name="next" translatable="false">Next</string>
+    <string name="cancel" translatable="false">Cancel</string>
+    <string name="select_location" translatable="false">Select location</string>
     <string name="previous" translatable="false">Previous</string>
 
     <string name="Home" translatable="false">Nhà</string>
@@ -385,6 +387,13 @@
     <string name="you_must_allow_all_permission_to_use_this_app_with_full_feature" translatable="false">You must allow all Permission to use this app with full feature.</string>
     <string name="go_to_setting" translatable="false">Go to setting</string>
 
+    <string name="title_quyenloi" translatable="false">Quyền lợi khi ký hợp đồng qua ứng dụng StayNow</string>
+    <string name="nguoi_thue1" translatable="false"> Khi ký kết hợp bên ứng dụng StayNow người thuê trọ sẽ được bảo vệ về pháp lý nếu phòng trọ phát sinh các khoản phí khác ngoài hợp đồng.</string>
+    <string name="nguoi_thue_2" translatable="false">Chủ trọ không ký kết hợp đồng qua ứng dụng khi này StayNow sẽ nhờ pháp luật can thiệp để đòi lại quyền lợi cho người thuê trọ.</string>
+    <string name="nguoi_thue_3" translatable="false">Các vấn đề về hợp đồng sẽ được StayNow bảo hộ 100% trong thời hạn hợp đồng theo đúng quy định.</string>
+    <string name="chu_tro_1" translatable="false">Khi ký người chủ trọ kí kết hợp đồng bên ứng dụng StayNow sẽ được bảo vệ về pháp lý khi người thuê trọ vi phạm hợp đồng.</string>
+    <string name="chu_tro_2" translatable="false">Nếu người thuê trọ phá vỡ hợp đồng, bỏ trốn, không chịu đóng tiền phòng, tiền dịch vụ, ăn cắp, phá hoại tài sản khi này StayNow sẽ nhờ pháp luật can thiệp để đòi lại quyền lợi cho người chủ trọ</string>
+
 
     <!-- key Goong map api  -->
 
@@ -415,6 +424,7 @@
     <string name="title_activity_monthly_invoice">MonthlyInvoice</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="t_l_ch_th_nh_c_ng">Đặt lịch thành công</string>
 
 
 </resources>

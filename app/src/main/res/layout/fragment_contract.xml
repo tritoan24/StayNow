@@ -59,16 +59,36 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tv_contracts_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingBottom="8dp"
-        android:text="@string/Contract_pending_confirmation"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:ignore="HardcodedText" />
+        tools:ignore="UselessLeaf">
+
+        <TextView
+            android:id="@+id/tv_contracts_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hợp đồng chờ xác nhận"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/tv_contracts_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="3"
+            android:textColor="@color/purple_border_bottom"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
 
     <!-- List 1: RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
@@ -80,10 +100,10 @@
         android:id="@+id/ic_empty_list"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="150dp"
-        android:visibility="gone"
         android:layout_gravity="center"
+        android:layout_marginTop="150dp"
         android:src="@drawable/ic_empty_list"
+        android:visibility="gone"
         tools:ignore="ContentDescription" />
 
 

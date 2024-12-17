@@ -114,7 +114,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
     override fun dataObserver() {
         showLoadingIfNotBaseActivity()
         viewModel.fetchAllScheduleByRenter(FirebaseAuth.getInstance().currentUser?.uid.toString()) {
-            viewModel.filerScheduleRoomState(WAIT)
+            viewModel.filerScheduleRoomState(0)
         }
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -132,12 +132,12 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 launch {
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
-                            scheduleStateAdapter?.listData?.map { scheduleState ->
+                            listScheduleState.map { scheduleState ->
                                 val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
-                        scheduleStateAdapter?.addListObserver(newList ?: listScheduleState)
+                        scheduleStateAdapter?.addListObserver(newList)
                     }
                 }
             }

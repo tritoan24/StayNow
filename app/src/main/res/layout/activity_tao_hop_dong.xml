@@ -13,130 +13,132 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="30dp"
-        android:elevation="8dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="18dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="8dp">
-
-            <!-- Phần hiển thị ảnh của phòng trọ -->
-            <ImageView
-                android:id="@+id/imagePhongTro"
-                android:layout_width="120dp"
-                android:layout_height="110dp"
-                android:background="@drawable/border_image"
-                android:src="@drawable/room"
-                tools:ignore="ContentDescription" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:orientation="vertical">
-                <!-- Phần tên của phòng trọ -->
-
-                <!-- Phần giá thuê -->
-                <TextView
-                    android:id="@+id/txtTenPhongTro"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Tên phòng trọ"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
-
-                <TextView
-                    android:id="@+id/tvGiaThue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Giá thuê: 2,000,000 VND"
-                    android:textColor="#EF1606"
-                    android:textSize="12sp"
-                    tools:ignore="HardcodedText" />
-
-                <!-- Phần địa chỉ của phòng trọ -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="start"
-                    android:orientation="horizontal"
-                    tools:ignore="UseCompoundDrawables">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_gravity="start"
-                        android:src="@drawable/ic_location_room"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/txtDiaChiHome"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
-                        android:text="Địa chỉ"
-                        android:textColor="@android:color/black"
-                        android:textSize="12sp"
-                        tools:ignore="HardcodedText" />
-                </LinearLayout>
-
-
-                <!--                Dien tich phong-->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:orientation="horizontal"
-                    tools:ignore="InefficientWeight,UseCompoundDrawables">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginEnd="4dp"
-                        android:src="@drawable/ic_dientich"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/txtDienTich"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="25m²"
-                        android:textColor="@android:color/black"
-                        android:textSize="12sp"
-                        tools:ignore="HardcodedText" />
-                </LinearLayout>
-
-
-            </LinearLayout>
-        </LinearLayout>
-
-
-    </androidx.cardview.widget.CardView>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp">
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardViewPhongTro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="8dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="18dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <!-- Phần hiển thị ảnh của phòng trọ -->
+                    <ImageView
+                        android:id="@+id/imagePhongTro"
+                        android:layout_width="120dp"
+                        android:layout_height="110dp"
+                        android:background="@drawable/border_image"
+                        android:src="@drawable/room"
+                        tools:ignore="ContentDescription" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:orientation="vertical">
+                        <!-- Phần tên của phòng trọ -->
+
+                        <!-- Phần giá thuê -->
+                        <TextView
+                            android:id="@+id/txtTenPhongTro"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="Tên phòng trọ"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/tvGiaThue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Giá thuê: 2,000,000 VND"
+                            android:textColor="#EF1606"
+                            android:textSize="12sp"
+                            tools:ignore="HardcodedText" />
+
+                        <!-- Phần địa chỉ của phòng trọ -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="start"
+                            android:orientation="horizontal"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="start"
+                                android:src="@drawable/ic_location_room"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/txtDiaChiHome"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:text="Địa chỉ"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+
+
+                        <!--                Dien tich phong-->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal"
+                            tools:ignore="InefficientWeight,UseCompoundDrawables">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_marginEnd="4dp"
+                                android:src="@drawable/ic_dientich"
+                                tools:ignore="ContentDescription" />
+
+                            <TextView
+                                android:id="@+id/txtDienTich"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="25m²"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                tools:ignore="HardcodedText" />
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+            </androidx.cardview.widget.CardView>
 
             <!-- Thông tin bên cho  thuê -->
             <androidx.constraintlayout.utils.widget.MotionLabel

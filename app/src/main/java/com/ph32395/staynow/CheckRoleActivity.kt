@@ -58,4 +58,6 @@ class CheckRoleActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+
 }

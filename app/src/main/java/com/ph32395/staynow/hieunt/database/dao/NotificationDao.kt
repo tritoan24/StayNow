@@ -19,6 +19,9 @@ interface NotificationDao {
     @Update
     fun updateNotification(model: NotificationModel)
 
+    @Query("DELETE FROM NotificationModel")
+    fun deleteAllNotification()
+
     @Query("SELECT COUNT(*) FROM NotificationModel WHERE timestamp = :timestamp")
     fun isNotificationExists(timestamp: Long): Int
 

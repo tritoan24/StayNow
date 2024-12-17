@@ -33,6 +33,7 @@
             android:text="Hà Nội"
             android:textColor="@android:color/black"
             android:textSize="12sp"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:textStyle="bold"
             tools:ignore="HardcodedText" />
     </LinearLayout>

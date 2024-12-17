@@ -16,6 +16,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.messaging.FirebaseMessaging
 import com.ph32395.staynow.ChucNangTimKiem.SearchActivity
+import com.ph32395.staynow.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow.databinding.ActivityMainBinding
 import com.ph32395.staynow.fragment.MessageFragment
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private val homeNguoiChoThueFragment = HomeNguoiChoThueFragment() //Nguoi cho thue
     private val messageFragment = MessageFragment()
     private val profileFragment = ProfileFragment()
+    private val phongTroYeuThichFragment = PhongTroYeuThichFragment()
     private var activeFragment: Fragment = homeFragment
 
     private val mDatabase = FirebaseDatabase.getInstance().reference
@@ -43,9 +45,14 @@ class MainActivity : AppCompatActivity() {
 
     private val PREFS_NAME: String = "MyAppPrefs"
     private var userRole: String = ""
+    // Cong Add
+    private lateinit var myApplication: MyApplication
 
     override fun onResume() {
         super.onResume()
+        // Cong Add
+        // Khi trở về màn chính, đảm bảo người dùng online
+        myApplication.setOnlineStatus(true)
         if (!SystemUtils.isServiceRunning(this, NotificationService::class.java)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 startForegroundService(Intent(this, NotificationService::class.java))
@@ -66,44 +73,51 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // Cong Add
+        myApplication = application as MyApplication
+        myApplication.setOnlineStatus(true) // Đặt trạng thái online khi vào màn chính
+        binding.bottomNavigation.itemIconTintList = null
+        binding.bottomNavigation.itemActiveIndicatorColor = null
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 finishAffinity()
             }
         })
-        FirebaseMessaging.getInstance().getToken()
-            .addOnCompleteListener(
-                object : OnCompleteListener<String?> {
-                    override fun onComplete(task: Task<String?>) {
-                        if (!task.isSuccessful) {
-                            Log.w(
-                                ContentValues.TAG,
-                                "Fetching FCM registration token failed",
-                                task.exception
-                            )
-                            return
-                        }
-
-                        // Get new FCM registration token
-                        val token = task.result
-
-                        //lưu token này vào database
-                        if (currentUser != null) {
-                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-                                .setValue(token)
-
-
-                        }
-                        //nếu không có người dùng nào đăng nhập thì không lưu token
-
-                    }
-                })
+//        FirebaseMessaging.getInstance().getToken()
+//            .addOnCompleteListener(
+//                object : OnCompleteListener<String?> {
+//                    override fun onComplete(task: Task<String?>) {
+//                        if (!task.isSuccessful) {
+//                            Log.w(
+//                                ContentValues.TAG,
+//                                "Fetching FCM registration token failed",
+//                                task.exception
+//                            )
+//                            return
+//                        }
+//
+//                        // Get new FCM registration token
+//                        val token = task.result
+//
+//                        //lưu token này vào database
+//                        if (currentUser != null) {
+//
+//                            Log.d("token", "tạo ra cái khỉ gió ở đây này ")
+//                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
+//                                .setValue(token)
+//
+//
+//                        }
+//                        //nếu không có người dùng nào đăng nhập thì không lưu token
+//
+//                    }
+//                })
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
             add(R.id.fragment_container, messageFragment, "MESSAGE").hide(messageFragment)
-//            add(R.id.fragment_container, notificationFragment, "NOTIFICATION").hide(notificationFragment)
+            add(R.id.fragment_container, phongTroYeuThichFragment, "FAVORITE").hide(phongTroYeuThichFragment)
             add(R.id.fragment_container, homeFragment, "HOME").hide(homeFragment)
         }.commit()
 //        Nhan vai tro tu Intent
@@ -123,10 +137,10 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
 
-//                R.id.bottom_notification -> {
-//                    showFragment(notificationFragment)
-//                    true
-//                }
+                R.id.bottom_notification -> {
+                    showFragment(phongTroYeuThichFragment)
+                    true
+                }
 
                 R.id.bottom_message -> {
                     showFragment(messageFragment)
@@ -176,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu_nguoi_chothue)
 
 //                Cap nhat chuc nang FloatingActionButton
-                binding.fabSearch.setImageResource(R.drawable.icon_add_room) //Thay doi Icon
+                binding.fabSearch.setImageResource(R.drawable.add_room_2) //Thay doi Icon
                 binding.fabSearch.setOnClickListener {
 //                    chuyen sang man hinh them phong tro
                     startActivity(Intent(this@MainActivity, TaoPhongTro::class.java))
@@ -213,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigation.inflateMenu(R.menu.bottom_menu)
 
 //                Cap nhat FAB search
-                binding.fabSearch.setImageResource(R.drawable.icon_search_bottom)
+                binding.fabSearch.setImageResource(R.drawable.search_svg)
                 binding.fabSearch.setOnClickListener {
                     startActivity(Intent(this@MainActivity, SearchActivity::class.java))
                 }
@@ -235,44 +249,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    override fun onStart() {
-        super.onStart()
-        setUserOnline()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        setUserOffline()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        setUserOffline()
-    }
-
+//
     override fun onDestroy() {
         super.onDestroy()
-        setUserOffline()
-    }
-
-
-    private fun setUserOnline() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null) {
-            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("online")
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
-        }
-    }
-
-    private fun setUserOffline() {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid
-        if (uid != null) {
-            val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("offline")
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
-        }
+        // Cong Add
+        // Đặt trạng thái offline khi ứng dụng bị hủy
+        myApplication.setOnlineStatus(false)
     }
 
     //nếu sủ dụng back của android thì phải kiểm tra xem có fragment nào trc đó không đã

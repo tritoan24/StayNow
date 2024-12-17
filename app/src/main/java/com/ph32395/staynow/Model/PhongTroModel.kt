@@ -21,7 +21,9 @@ data class PhongTroModel(
     var Dien_tich: Long? = 0L,
     val Trang_thaiduyet: String = "",
     val Trang_thailuu: Boolean = false,
-    val Trang_thaiphong: Boolean = false
+    val Trang_thaiphong: Boolean = false,
+    val Trangthai_yeuthich: Boolean = false,
+    var Thoigian_yeuthich: Long? = null
 ): Serializable{
     constructor() : this("", "", "", "", "", "", "",false, 0.0, 0, 0L, 0L, 0L,ArrayList(), "")
 }

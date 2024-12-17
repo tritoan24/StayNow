@@ -1,26 +1,15 @@
 package com.ph32395.staynow.TaoHopDong
 
 import android.annotation.SuppressLint
-import android.content.Intent
-
 import android.os.Bundle
 import android.text.Html
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.firestore.FirebaseFirestore
-import com.ph32395.staynow.R
 import com.ph32395.staynow.databinding.ActivityChiTietHopDongBinding
-import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -45,60 +34,56 @@ class ChiTietHopDong : AppCompatActivity() {
         }
 
 
-
         // Get contract ID from intent
         val contractId = intent.getStringExtra("CONTRACT_ID")
-        val Check = intent.getIntExtra("Check",0)
 
         // Fetch contract details
         contractId?.let { fetchContractDetails(it) }
-
-        if(Check == 1){
-            binding.seenContract.visibility = View.VISIBLE
-        }
-        else{
-            binding.seenContract.visibility = View.GONE
-        }
 
 
     }
 
 
+    @SuppressLint("SetTextI18n")
     private fun renderContractDetails(contractData: HopDong) {
         binding.apply {
             // Contract Information
             tvContractCode.text = "Hợp đồng số: ${contractData.maHopDong}"
 
             // Landlord Information
-            tvLandlordName.text = "${contractData.chuNha.hoTen}"
-            tvLandlordAddress.text = "${contractData.chuNha.diaChi}"
-            tvLandlordPhone.text = "${contractData.chuNha.soDienThoai}"
-            tvLandlordCccd.text = "${contractData.chuNha.soCCCD}"
-            tvLandlordBirth.text = "${contractData.chuNha.ngaySinh}"
-            tvLandlordDatecccd.text = "${contractData.chuNha.ngayCapCCCD}"
+            tvLandlordName.text = contractData.chuNha.hoTen
+            tvLandlordAddress.text = contractData.chuNha.diaChi
+            tvLandlordPhone.text = contractData.chuNha.soDienThoai
+            tvLandlordCccd.text = contractData.chuNha.soCCCD
+            tvLandlordBirth.text = contractData.chuNha.ngaySinh
+            tvLandlordDatecccd.text = contractData.chuNha.ngayCapCCCD
 
             // Tenant Information
-            tvTenantName.text = "${contractData.nguoiThue.hoTen}"
-            tvTenantAddress.text = "${contractData.nguoiThue.diaChi}"
-            tvTenantPhone.text = "${contractData.nguoiThue.soDienThoai}"
-            tvTenantCccd.text = "${contractData.nguoiThue.soCCCD}"
-            tvTenantBirth.text = "${contractData.nguoiThue.ngaySinh}"
-            tvTenantDatecccd.text = "${contractData.nguoiThue.ngayCapCCCD}"
+            tvTenantName.text = contractData.nguoiThue.hoTen
+            tvTenantAddress.text = contractData.nguoiThue.diaChi
+            tvTenantPhone.text = contractData.nguoiThue.soDienThoai
+            tvTenantCccd.text = contractData.nguoiThue.soCCCD
+            tvTenantBirth.text = contractData.nguoiThue.ngaySinh
+            tvTenantDatecccd.text = contractData.nguoiThue.ngayCapCCCD
 
             // Room Information
             tvRoomName.text = "Tên Phòng: ${contractData.thongtinphong.tenPhong}"
-            tvRoomAddress.text = "Bên A đồng ý cho bên B thuê 01 phòng ở tại địa chỉ: ${contractData.thongtinphong.diaChiPhong}"
+            tvRoomAddress.text =
+                "Bên A đồng ý cho bên B thuê 01 phòng ở tại địa chỉ: ${contractData.thongtinphong.diaChiPhong}"
 
             // Financial Information
-            tvRentPrice.text = "Giá Thuê: ${formatCurrency(contractData.thongTinTaiChinh.giaThue)}/tháng"
-            tvDeposit.text = "Tiền Cọc: ${formatCurrency(contractData.thongTinTaiChinh.tienCoc)}/tháng"
+            tvRentPrice.text =
+                "Giá Thuê: ${formatCurrency(contractData.thongTinTaiChinh.giaThue)}/tháng"
+            tvDeposit.text =
+                "Tiền Cọc: ${formatCurrency(contractData.thongTinTaiChinh.tienCoc)}/tháng"
 
             //thông tin giá dịch vụ
             val phiDichVu = contractData.thongTinTaiChinh.phiDichVu
             //in ra thong tin các phí dịch vụ
             for (i in phiDichVu.indices) {
                 val tv = TextView(this@ChiTietHopDong)
-                tv.text = "${phiDichVu[i].tenDichVu}: ${formatCurrency(phiDichVu[i].giaTien)}/${phiDichVu[i].donVi}"
+                tv.text =
+                    "${phiDichVu[i].tenDichVu}: ${formatCurrency(phiDichVu[i].giaTien)}/${phiDichVu[i].donVi}"
                 tv.textSize = 14f
                 tv.setPadding(0, 0, 0, 10)
                 tvServiceFee.addView(tv)
@@ -106,8 +91,8 @@ class ChiTietHopDong : AppCompatActivity() {
 
 
             //thời hạn thuê
-            tvContractTime.text = "Hợp đồng có giá trị kể từ ngày ${contractData.ngayBatDau} đến ngày ${contractData.ngayKetThuc} với thời hạn thuê là ${contractData.thoiHanThue}"
-
+            tvContractTime.text =
+                "Hợp đồng có giá trị kể từ ngày ${contractData.ngayBatDau} đến ngày ${contractData.ngayKetThuc} với thời hạn thuê là ${contractData.thoiHanThue}"
 
 
             // Amenities and Furniture
@@ -118,7 +103,9 @@ class ChiTietHopDong : AppCompatActivity() {
             val dateFormatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val parsedDate = dateFormatter.parse(contractData.ngayTao)
             val calendar = Calendar.getInstance()
-            calendar.time = parsedDate
+            if (parsedDate != null) {
+                calendar.time = parsedDate
+            }
 
             tvdatecreatecontract.text = "Hôm nay, ngày ${calendar.get(Calendar.DAY_OF_MONTH)}" +
                     " tháng ${calendar.get(Calendar.MONTH) + 1} " +
@@ -126,7 +113,10 @@ class ChiTietHopDong : AppCompatActivity() {
 
 
             //điều khoản hợp đồng
-            val formattedText = Html.fromHtml(contractData.dieuKhoan, Html.FROM_HTML_MODE_COMPACT) // Chuyển HTML sang Spanned
+            val formattedText = Html.fromHtml(
+                contractData.dieuKhoan,
+                Html.FROM_HTML_MODE_COMPACT
+            ) // Chuyển HTML sang Spanned
             tvContractDieukhoan.append(formattedText)
             tvContractNote.text = "Ghi chú: ${contractData.ghiChu}"
 
@@ -134,13 +124,7 @@ class ChiTietHopDong : AppCompatActivity() {
             btnBack.setOnClickListener {
                 finish()
             }
-            // Sự kiện xem hóa đơn
-            seenContract.setOnClickListener {
-                //chuyển id hợp đồng sao màn hình hợp đồng
-                val intent = Intent(this@ChiTietHopDong, ChiTietHoaDon::class.java)
-                intent.putExtra("CONTRACT_ID", contractData.maHopDong)
-                startActivity(intent)
-            }
+
         }
     }
 
@@ -161,28 +145,42 @@ class ChiTietHopDong : AppCompatActivity() {
 
                         // Thông tin chủ nhà
                         chuNha = PersonInfo(
-                            hoTen = (document.get("chuNha") as? Map<*, *>)?.get("hoTen") as? String ?: "Chưa cập nhật",
-                            diaChi = (document.get("chuNha") as? Map<*, *>)?.get("diaChi") as? String ?: "Chưa cập nhật",
-                            soDienThoai = (document.get("chuNha") as? Map<*, *>)?.get("soDienThoai") as? String ?: "Chưa cập nhật",
-                            soCCCD = (document.get("chuNha") as? Map<*, *>)?.get("soCCCD") as? String ?: "Chưa cập nhật",
-                            ngayCapCCCD = (document.get("chuNha") as? Map<*, *>)?.get("ngayCapCCCD") as? String ?: "Chưa cập nhật",
-                            ngaySinh = (document.get("chuNha") as? Map<*, *>)?.get("ngaySinh") as? String ?: "Chưa cập nhật"
+                            hoTen = (document.get("chuNha") as? Map<*, *>)?.get("hoTen") as? String
+                                ?: "Chưa cập nhật",
+                            diaChi = (document.get("chuNha") as? Map<*, *>)?.get("diaChi") as? String
+                                ?: "Chưa cập nhật",
+                            soDienThoai = (document.get("chuNha") as? Map<*, *>)?.get("soDienThoai") as? String
+                                ?: "Chưa cập nhật",
+                            soCCCD = (document.get("chuNha") as? Map<*, *>)?.get("soCCCD") as? String
+                                ?: "Chưa cập nhật",
+                            ngayCapCCCD = (document.get("chuNha") as? Map<*, *>)?.get("ngayCapCCCD") as? String
+                                ?: "Chưa cập nhật",
+                            ngaySinh = (document.get("chuNha") as? Map<*, *>)?.get("ngaySinh") as? String
+                                ?: "Chưa cập nhật"
                         ),
 
                         // Thông tin người thuê
                         nguoiThue = PersonInfo(
-                            hoTen = (document.get("nguoiThue") as? Map<*, *>)?.get("hoTen") as? String ?: "Chưa cập nhật",
-                            diaChi = (document.get("nguoiThue") as? Map<*, *>)?.get("diaChi") as? String ?: "Chưa cập nhật",
-                            soDienThoai = (document.get("nguoiThue") as? Map<*, *>)?.get("soDienThoai") as? String ?: "Chưa cập nhật",
-                            soCCCD = (document.get("nguoiThue") as? Map<*, *>)?.get("soCCCD") as? String ?: "Chưa cập nhật",
-                            ngayCapCCCD = (document.get("nguoiThue") as? Map<*, *>)?.get("ngayCapCCCD") as? String ?: "Chưa cập nhật",
-                            ngaySinh = (document.get("nguoiThue") as? Map<*, *>)?.get("ngaySinh") as? String ?: "Chưa cập nhật"
+                            hoTen = (document.get("nguoiThue") as? Map<*, *>)?.get("hoTen") as? String
+                                ?: "Chưa cập nhật",
+                            diaChi = (document.get("nguoiThue") as? Map<*, *>)?.get("diaChi") as? String
+                                ?: "Chưa cập nhật",
+                            soDienThoai = (document.get("nguoiThue") as? Map<*, *>)?.get("soDienThoai") as? String
+                                ?: "Chưa cập nhật",
+                            soCCCD = (document.get("nguoiThue") as? Map<*, *>)?.get("soCCCD") as? String
+                                ?: "Chưa cập nhật",
+                            ngayCapCCCD = (document.get("nguoiThue") as? Map<*, *>)?.get("ngayCapCCCD") as? String
+                                ?: "Chưa cập nhật",
+                            ngaySinh = (document.get("nguoiThue") as? Map<*, *>)?.get("ngaySinh") as? String
+                                ?: "Chưa cập nhật"
                         ),
 
                         // Thông tin phòng
                         thongtinphong = RoomInfo(
-                            tenPhong = (document.get("thongtinphong") as? Map<*, *>)?.get("tenPhong") as? String ?: "Chưa cập nhật",
-                            diaChiPhong = (document.get("thongtinphong") as? Map<*, *>)?.get("diaChiPhong") as? String ?: "Chưa cập nhật",
+                            tenPhong = (document.get("thongtinphong") as? Map<*, *>)?.get("tenPhong") as? String
+                                ?: "Chưa cập nhật",
+                            diaChiPhong = (document.get("thongtinphong") as? Map<*, *>)?.get("diaChiPhong") as? String
+                                ?: "Chưa cập nhật",
                             thongTinChiTiet = (document.get("thongtinphong.thongTinChiTiet") as? List<Map<*, *>>)?.map {
                                 RoomDetail(
                                     ten = it["ten"] as? String ?: "",
@@ -194,9 +192,12 @@ class ChiTietHopDong : AppCompatActivity() {
 
                         // Thông tin tài chính
                         thongTinTaiChinh = FinancialInfo(
-                            giaThue = (document.get("thongTinTaiChinh") as? Map<*, *>)?.get("giaThue") as? Double ?: 0.0,
-                            tienCoc = (document.get("thongTinTaiChinh") as? Map<*, *>)?.get("tienCoc") as? Double ?: 0.0,
-                            soNguoio = (document.get("thongTinTaiChinh") as? Map<*, *>)?.get("soNguoiO") as? Int ?: 0,
+                            giaThue = (document.get("thongTinTaiChinh") as? Map<*, *>)?.get("giaThue") as? Double
+                                ?: 0.0,
+                            tienCoc = (document.get("thongTinTaiChinh") as? Map<*, *>)?.get("tienCoc") as? Double
+                                ?: 0.0,
+                            soNguoio = (document.get("thongTinTaiChinh") as? Map<*, *>)?.get("soNguoiO") as? Int
+                                ?: 0,
                             phiDichVu = (document.get("thongTinTaiChinh.phiDichVu") as? List<Map<*, *>>)?.map {
                                 UtilityFee(
                                     tenDichVu = it["tenDichVu"] as? String ?: "",
@@ -207,8 +208,10 @@ class ChiTietHopDong : AppCompatActivity() {
                         ),
 
                         // Tiện nghi và nội thất
-                        tienNghi = (document.get("tienNghi") as? List<*>)?.map { it.toString() } ?: listOf(),
-                        noiThat = (document.get("noiThat") as? List<*>)?.map { it.toString() } ?: listOf()
+                        tienNghi = (document.get("tienNghi") as? List<*>)?.map { it.toString() }
+                            ?: listOf(),
+                        noiThat = (document.get("noiThat") as? List<*>)?.map { it.toString() }
+                            ?: listOf()
 
                     )
 

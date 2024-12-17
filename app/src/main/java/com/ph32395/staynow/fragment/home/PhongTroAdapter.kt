@@ -1,7 +1,6 @@
 package com.ph32395.staynow.fragment.home
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,7 +13,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow.Activity.RoomDetailActivity
 import com.ph32395.staynow.Model.PhongTroModel
@@ -24,7 +22,7 @@ import java.util.Date
 
 class PhongTroAdapter(
     private var roomList: MutableList<Pair<String, PhongTroModel>>,
-    private val viewmodel:HomeViewModel
+    private val viewmodel: HomeViewModel
 ) : RecyclerView.Adapter<PhongTroAdapter.RoomViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
@@ -41,16 +39,15 @@ class PhongTroAdapter(
 
     override fun getItemCount(): Int = roomList.size
 
-//    Cap nhat danh sach phong tro
+    //    Cap nhat danh sach phong tro
     @SuppressLint("NotifyDataSetChanged")
     fun updateRoomList(newRoomList: List<Pair<String, PhongTroModel>>) {
         roomList.clear()
         roomList.addAll(newRoomList)
-        Log.d("PhongTroAdapter", "Room list updated: ${roomList.size}")  // Kiểm tra xem danh sách có thay đổi không
-        notifyItemRangeChanged(0, roomList.size)  // Thay vì notifyDataSetChanged()
+        notifyItemRangeChanged(0, roomList.size)
     }
 
-//    Lay thoi gian tao phong
+    //    Lay thoi gian tao phong
     fun getFormattedTimeCustom(thoiGianTaoPhong: Long?): String {
         if (thoiGianTaoPhong == null || thoiGianTaoPhong == 0L) return "Không có thời gian"
         val prettyTime = PrettyTimeHelper.createCustomPrettyTime()
@@ -86,7 +83,9 @@ class PhongTroAdapter(
             // Cập nhật giá thuê
             roomPrice.text = "${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
 
+//            Hien thi dien tich
             roomArea.text = "${room.Dien_tich} m²"
+
 
             // Cập nhật số lượt xem
             roomViews.text = "${room.So_luotxemphong}"
@@ -96,7 +95,7 @@ class PhongTroAdapter(
 
             roomTime.text = formattedTime
 
-            val userId = FirebaseAuth.getInstance().currentUser?.uid?: ""
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             if (userId.equals(room.Ma_nguoidung)) {
                 loaiTaiKhoan = "ManCT"
             } else {
@@ -106,6 +105,7 @@ class PhongTroAdapter(
 
 //            Xu ly su kien khi click item sang man chi tiet
             itemView.tap {
+                //Luu thong tin phong tro da xem
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@tap
                 saveRoomToHistory(userId, roomId)
 
@@ -118,8 +118,8 @@ class PhongTroAdapter(
             }
         }
 
-//        Lưu thong tin phong tro da xem
-        fun saveRoomToHistory(userId: String, roomId: String) {
+        //        Lưu thong tin phong tro da xem
+        private fun saveRoomToHistory(userId: String, roomId: String) {
             val historyRef = firestore.collection("PhongTroDaXem")
                 .whereEqualTo("Id_nguoidung", userId)
                 .whereEqualTo("Id_phongtro", roomId)
