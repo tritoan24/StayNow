@@ -6,6 +6,10 @@
         android:title="Hợp đồng đang chờ xác nhận"
         tools:ignore="HardcodedText" />
     <item
+        android:id="@+id/menu_processing_contracts"
+        android:title="Hợp đồng đang được xử lý"
+        tools:ignore="HardcodedText" />
+    <item
         android:id="@+id/menu_active_contracts"
         android:title="Hợp đồng đang hoạt động"
         tools:ignore="HardcodedText" />

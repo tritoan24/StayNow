@@ -134,10 +134,11 @@ data class Invoice(
 
 // Trạng thái hợp đồng
 enum class ContractStatus {
-    PENDING, // Chờ ký
+    PENDING,
+    PROCESSING,
     ACTIVE, // Đang hiệu lực
     EXPIRED, // Hết hạn
-    TERMINATED // Đã chấm dứt
+    TERMINATED,
 }
 
 data class UtilityFeeDetail(
@@ -153,6 +154,7 @@ data class UtilityFeeDetail(
 
 enum class InvoiceStatus {
     PENDING,
+    PROCESSING,
     PAID,
     ACTIVE,
     OVERDUE,

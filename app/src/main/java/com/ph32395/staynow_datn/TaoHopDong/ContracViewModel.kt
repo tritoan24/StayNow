@@ -49,6 +49,8 @@ class ContractViewModel : ViewModel() {
 
     private val _terminatedContracts = MutableLiveData<List<HopDong>>()
     val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
+    private val _processingContracts = MutableLiveData<List<HopDong>>()
+    val processingContracts: LiveData<List<HopDong>> get() = _processingContracts
 
     private val _allContracts = MutableLiveData<List<HopDong>>()
     val allContracts: LiveData<List<HopDong>> get() = _allContracts
@@ -67,10 +69,8 @@ class ContractViewModel : ViewModel() {
     val isWaterInputVisible: LiveData<Boolean> = _isWaterInputVisible
 
 
-
     val contractStatus = MutableLiveData<String>()
     val errorMessage = MutableLiveData<String>()
-
 
 
     // Phương thức để kiểm tra và cập nhật trạng thái hiển thị
@@ -199,8 +199,6 @@ class ContractViewModel : ViewModel() {
     }
 
 
-
-
     //lấy contract tenant theo userID và theo 1 hoặc nhiều trạng thái
 //    ----------------------------
 
@@ -244,6 +242,7 @@ class ContractViewModel : ViewModel() {
                 ContractStatus.PENDING -> _pendingContracts.postValue(filteredContracts)
                 ContractStatus.EXPIRED -> _expiredContracts.postValue(filteredContracts)
                 ContractStatus.TERMINATED -> _terminatedContracts.postValue(filteredContracts)
+                ContractStatus.PROCESSING -> _terminatedContracts.postValue(filteredContracts)
             }
         }
     }
@@ -405,7 +404,11 @@ class ContractViewModel : ViewModel() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.e("ContractViewModel", "Lỗi khi lấy số điện và nước cũ: ${exception.message}", exception)
+                Log.e(
+                    "ContractViewModel",
+                    "Lỗi khi lấy số điện và nước cũ: ${exception.message}",
+                    exception
+                )
             }
     }
 
@@ -440,17 +443,19 @@ class ContractViewModel : ViewModel() {
                     contractStatus.value = "Cập nhật số điện và nước cũ thành công"
                 }
                 .addOnFailureListener { exception ->
-                    Log.e("ContractViewModel", "Lỗi khi cập nhật số điện và nước cũ: ${exception.message}", exception)
-                    contractStatus.value = "Có lỗi khi cập nhật số điện và nước cũ: ${exception.message}"
+                    Log.e(
+                        "ContractViewModel",
+                        "Lỗi khi cập nhật số điện và nước cũ: ${exception.message}",
+                        exception
+                    )
+                    contractStatus.value =
+                        "Có lỗi khi cập nhật số điện và nước cũ: ${exception.message}"
                 }
         } catch (e: Exception) {
             Log.e("ContractViewModel", "Lỗi khi tạo document reference: ${e.message}", e)
             contractStatus.value = "Lỗi: ${e.message}"
         }
     }
-
-
-
 
 
     // LiveData để lưu trữ kết quả
