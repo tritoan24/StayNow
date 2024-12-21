@@ -54,7 +54,7 @@ data class RoomInfo(
     val tenPhong: String = "", // Tên phòng
     val diaChiPhong: String = "", // Địa chỉ chi tiết
     val dienTich: Double = 0.0, // Diện tích (m²)
-    val thongTinChiTiet: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
+    val thongTinChiTiet: List<RoomDetail?> = listOf() // Chi tiết thông tin phòng
 ) : Serializable
 
 // Chi tiết thông tin phòng

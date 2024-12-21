@@ -25,7 +25,6 @@ import com.ph32395.staynow_datn.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongAdapter
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongViewModel
-import com.ph32395.staynow_datn.Model.ChiTietThongTinModel
 import com.ph32395.staynow_datn.NoiThat.GioiTinhAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
@@ -135,8 +134,8 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 
 //        thongTinAdapter = ThongTinAdapter(this, listTT, this)
         //lấy dữ liệu từ viewModel
-        val updateRoomModel  = intent.getParcelableExtra<UpdateRoomModel>("updateRoomModel")
-        Log.d("UpdateRoomModel", "UpdateRoomModel: $updateRoomModel")
+//        val updateRoomModel  = intent.getParcelableExtra<UpdateRoomModel>("updateRoomModel")
+//        Log.d("UpdateRoomModel", "UpdateRoomModel: $updateRoomModel")
 
         // Populate basic room details
 
@@ -179,65 +178,65 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         loaiPhongViewModel = ViewModelProvider(this).get(LoaiPhongViewModel::class.java)
         gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
 
-        updateRoomModel?.let { model ->
-
-            Log.d("UpdateRoomModel", "UpdateRoomModel bảng chi tiéte thông tin: ${model.Chi_tietthongtin}")
-
-            // Set room name
-            binding.roomName.setText(model.Ten_phongtro)
-
-            // Set room price
-            binding.roomPrice.setText(model.Gia_phong.toString())
-
-            // Set description
-            binding.description.setText(model.Chi_tietthem)
-
-            // Set address
-            binding.roomAddress.setText(model.Dia_chi)
-
-            // Populate images
-            if (model.Url_image.isNotEmpty()) {
-                val uriList = model.Url_image.map { Uri.parse(it) }
-                displaySelectedImages(uriList)
-            }
-
-            val listThongtin = thongTinViewModel.getListThongTin().value ?: mutableListOf() // Xử lý null
-            val existingChiTietList = model.Chi_tietthongtin.map { detail ->
-                ChiTietThongTinModel(ten_thongtin = detail.ten_thongtin, so_luong_donvi = detail.so_luong_donvi)
-            }
-
-
-//            // Select room type
-//            loaiPhongAdapter.selectByName(model.Loai_phong)
+//        updateRoomModel?.let { model ->
 //
-//            // Select gender type
-//            gioitinhAdapter.selectByName(model.Gioi_tinh)
+//            Log.d("UpdateRoomModel", "UpdateRoomModel bảng chi tiéte thông tin: ${model.Chi_tietthongtin}")
 //
-//            // Populate Additional Information (Chi_tietthongtin)
-//            model.Chi_tietthongtin.forEach { detail ->
-////                Log.d("UpdateRoomModel", "Detail: ten_thongtin = ${detail.ten_thongtin}, so_luong_donvi = ${detail.so_luong_donvi}")
-////                thongTinAdapter.selectItemByName(detail.ten_thongtin, detail.so_luong_donvi)
+//            // Set room name
+//            binding.roomName.setText(model.Ten_phongtro)
 //
+//            // Set room price
+//            binding.roomPrice.setText(model.Gia_phong.toString())
 //
+//            // Set description
+//            binding.description.setText(model.Chi_tietthem)
 //
-//            }
-
+//            // Set address
+//            binding.roomAddress.setText(model.Dia_chi)
 //
-//            // Populate Services (Dich_vu)
-//            model.Dich_vu.forEach { service ->
-//                DichVuAdapter.selectItemByName(service.ten_dichvu, service.so_tien)
+//            // Populate images
+//            if (model.Url_image.isNotEmpty()) {
+//                val uriList = model.Url_image.map { Uri.parse(it) }
+//                displaySelectedImages(uriList)
 //            }
 //
-//            // Populate Furniture (Noi_that)
-//            model.Noi_that.forEach { furniture ->
-//                noiThatAdapter.selectItemByName(furniture.Ten_noithat)
-//            }
+//            val listThongtin = thongTinViewModel.getListThongTin().value ?: mutableListOf() // Xử lý null
+////            val existingChiTietList = model.Chi_tietthongtin.map { detail ->
+////                ChiTietThongTinModel(ten_thongtin = detail.ten_thongtin, so_luong_donvi = detail.so_luong_donvi)
+////            }
 //
-//            // Populate Amenities (Tien_nghi)
-//            model.Tien_nghi.forEach { amenity ->
-//                TienNghiAdapter.selectItemByName(amenity.Ten_tiennghi)
-//            }
-        }
+//
+////            // Select room type
+////            loaiPhongAdapter.selectByName(model.Loai_phong)
+////
+////            // Select gender type
+////            gioitinhAdapter.selectByName(model.Gioi_tinh)
+////
+////            // Populate Additional Information (Chi_tietthongtin)
+////            model.Chi_tietthongtin.forEach { detail ->
+//////                Log.d("UpdateRoomModel", "Detail: ten_thongtin = ${detail.ten_thongtin}, so_luong_donvi = ${detail.so_luong_donvi}")
+//////                thongTinAdapter.selectItemByName(detail.ten_thongtin, detail.so_luong_donvi)
+////
+////
+////
+////            }
+//
+////
+////            // Populate Services (Dich_vu)
+////            model.Dich_vu.forEach { service ->
+////                DichVuAdapter.selectItemByName(service.ten_dichvu, service.so_tien)
+////            }
+////
+////            // Populate Furniture (Noi_that)
+////            model.Noi_that.forEach { furniture ->
+////                noiThatAdapter.selectItemByName(furniture.Ten_noithat)
+////            }
+////
+////            // Populate Amenities (Tien_nghi)
+////            model.Tien_nghi.forEach { amenity ->
+////                TienNghiAdapter.selectItemByName(amenity.Ten_tiennghi)
+////            }
+//        }
 
 
         //lấy mã người dùng từ mAuth
@@ -427,16 +426,16 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 
     }
 
-    private fun observeViewModel() {
-//        Quan sat chi tiet phong tro chinh
-        viewModel.room.observe(this) { room ->
-            binding.roomName.setText(room.Ten_phongtro)
-            binding.roomPrice.setText(room.Gia_phong.toString())
-            binding.description.setText(room.Mota_chitiet)
-            binding.roomAddress.setText(room.Dia_chi)
-            gioitinhAdapter.selectById(room.Ma_gioiTinh)
-        }
-    }
+//    private fun observeViewModel() {
+////        Quan sat chi tiet phong tro chinh
+//        viewModel.room.observe(this) { room ->
+//            binding.roomName.setText(room.Ten_phongtro)
+//            binding.roomPrice.setText(room.Gia_phong.toString())
+//            binding.description.setText(room.Mota_chitiet)
+//            binding.roomAddress.setText(room.Dia_chi)
+//            gioitinhAdapter.selectById(room.Ma_gioiTinh)
+//        }
+//    }
 
     private fun saveRoomDataToFirestore(
         roomName: String,

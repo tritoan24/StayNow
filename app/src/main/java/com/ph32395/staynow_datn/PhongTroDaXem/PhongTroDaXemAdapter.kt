@@ -30,7 +30,7 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
 //    So sanh xem hai doi tuong c giong nhau khong
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<PhongTroModel>() {
-            override fun areItemsTheSame(oldItem: PhongTroModel, newItem: PhongTroModel) = oldItem.Ma_nguoidung == newItem.Ma_nguoidung
+            override fun areItemsTheSame(oldItem: PhongTroModel, newItem: PhongTroModel) = oldItem.maNguoiDung == newItem.maNguoiDung
             override fun areContentsTheSame(oldItem: PhongTroModel, newItem: PhongTroModel) = oldItem == newItem
         }
     }
@@ -56,9 +56,9 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
 
         fun bind(roomModel: PhongTroModel) {
 
-            roomName.text = roomModel.Ten_phongtro
-            roomAddress.text = roomModel.Dia_chi
-            roomPrice.text = "${roomModel.Gia_phong.let { String.format("%,.0f", it) }} VND"
+            roomName.text = roomModel.tenPhongTro
+            roomAddress.text = roomModel.diaChi
+            roomPrice.text = "${roomModel.giaPhong.let { String.format("%,.0f", it) }} VND"
 
 
             if (roomModel.imageUrls.isNotEmpty()) {
@@ -69,7 +69,7 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
             }
 
             // Hiển thị thời gian đã xem
-            roomModel.Thoi_gianxem?.let {
+            roomModel.thoiGianXem?.let {
                 val prettyTime = PrettyTimeHelper.createCustomPrettyTime()
                 val date = Date(it)
                 txtThoiGianDaXem.text = prettyTime.format(date)
@@ -79,8 +79,8 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
 
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, RoomDetailActivity::class.java)
-                intent.putExtra("maPhongTro", roomModel.Ma_phongtro)
-                Log.d("PhongTroDaXemAdapter", "Ma phong tro: ${roomModel.Ma_phongtro}")
+                intent.putExtra("maPhongTro", roomModel.maPhongTro)
+                Log.d("PhongTroDaXemAdapter", "Ma phong tro: ${roomModel.maPhongTro}")
                 itemView.context.startActivity(intent)
             }
 
@@ -113,8 +113,8 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
 
             // Xóa phòng trọ khỏi Firestore trong bảng "PhongTroDaXem" kiem tra id Phong va Id User
             firestore.collection("PhongTroDaXem")
-                .whereEqualTo("Id_phongtro", roomModel.Ma_phongtro)
-                .whereEqualTo("Id_nguoidung", currentUserId) //Kiem tra id nguoi dung
+                .whereEqualTo("idPhongTro", roomModel.maPhongTro)
+                .whereEqualTo("idNguoiDung", currentUserId) //Kiem tra id nguoi dung
                 .get()
                 .addOnSuccessListener { documents ->
                     for (document in documents) {

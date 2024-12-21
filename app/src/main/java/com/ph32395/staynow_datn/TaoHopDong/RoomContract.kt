@@ -158,12 +158,12 @@ class RoomContract {
         )
     }
 
-    private fun createRoomDetailsMap(details: List<RoomDetail>): List<HashMap<String, Any>> {
+    private fun createRoomDetailsMap(details: List<RoomDetail?>): List<HashMap<String, Any>> {
         return details.map { detail ->
             hashMapOf(
-                "ten" to detail.ten,
-                "giaTri" to detail.giaTri,
-                "donVi" to detail.donVi
+                "ten" to (detail?.ten ?: ""),
+                "giaTri" to (detail?.giaTri ?: ""),
+                "donVi" to (detail?.donVi ?: "")
             )
         }
     }

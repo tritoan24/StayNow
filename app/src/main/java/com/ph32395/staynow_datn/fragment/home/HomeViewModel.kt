@@ -66,7 +66,7 @@ class HomeViewModel : ViewModel() {
     fun loadRoomByStatus(maNguoiDung: String) {
         // Lắng nghe thay đổi trong bảng PhongTro
         firestore.collection("PhongTro")
-            .whereEqualTo("Ma_nguoidung", maNguoiDung) // Lọc theo mã người dùng
+            .whereEqualTo("maNguoiDung", maNguoiDung) // Lọc theo mã người dùng
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     Log.e("HomeViewModel", "Error listening to rooms: ", error)
@@ -84,8 +84,8 @@ class HomeViewModel : ViewModel() {
 
                     // Lắng nghe thay đổi trong bảng ChiTietThongTin
                     firestore.collection("ChiTietThongTin")
-                        .whereIn("ma_phongtro", roomIds)
-                        .whereEqualTo("ten_thongtin", "Diện tích")
+                        .whereIn("maPhongTro", roomIds)
+                        .whereEqualTo("tenThongTin", "Diện tích")
                         .addSnapshotListener { chiTietSnapshot, chiTietError ->
                             if (chiTietError != null) {
                                 Log.e("HomeViewModel", "Error listening to room details: ", chiTietError)
@@ -93,12 +93,12 @@ class HomeViewModel : ViewModel() {
                             }
 
                             val chiTietMap = chiTietSnapshot?.documents?.associate { doc ->
-                                doc.getString("ma_phongtro") to doc.getDouble("so_luong_donvi")
+                                doc.getString("maPhongTro") to doc.getDouble("soLuongDonVi")
                             } ?: emptyMap()
 
                             // Cập nhật thông tin diện tích cho từng phòng
                             val updatedRooms = allRooms.map { (id, room) ->
-                                room.Dien_tich = chiTietMap[id]?.toLong()
+                                room.dienTich = chiTietMap[id]?.toLong()
                                 Pair(id, room)
                             }
 
@@ -107,16 +107,16 @@ class HomeViewModel : ViewModel() {
 
                             _phongDaDang.value =
                                 updatedRooms.filter {
-                                    it.second.Trang_thaiduyet == "DaDuyet" && it.second.Trang_thaiphong == false
+                                    it.second.trangThaiDuyet == "DaDuyet" && it.second.trangThaiPhong == false
                                 }
                             _phongDangLuu.value =
-                                updatedRooms.filter { it.second.Trang_thailuu }
+                                updatedRooms.filter { it.second.trangThaiLuu }
                             _phongChoDuyet.value =
-                                updatedRooms.filter { it.second.Trang_thaiduyet == "ChoDuyet" }
+                                updatedRooms.filter { it.second.trangThaiDuyet == "ChoDuyet" }
                             _phongDaHuy.value =
-                                updatedRooms.filter { it.second.Trang_thaiduyet == "BiHuy" }
+                                updatedRooms.filter { it.second.trangThaiDuyet == "BiHuy" }
                             _phongDaChoThue.value =
-                                updatedRooms.filter { it.second.Trang_thaiphong }
+                                updatedRooms.filter { it.second.trangThaiPhong }
                         }
                 } else {
                     Log.d("HomeViewModel", "No rooms found for user: $maNguoiDung")
@@ -130,8 +130,8 @@ class HomeViewModel : ViewModel() {
         firestore.collection("PhongTro").document(roomId)
             .update(
                 mapOf(
-                    "Trang_thaiduyet" to trangThaiDuyet,
-                    "Trang_thailuu" to trangThaiLuu
+                    "trangThaiDuyet" to trangThaiDuyet,
+                    "trangThaiLuu" to trangThaiLuu
                 )
             )
             .addOnSuccessListener {
@@ -147,7 +147,7 @@ class HomeViewModel : ViewModel() {
         firestore.collection("PhongTro").document(roomId)
             .update(
                 mapOf(
-                    "Trang_thaiduyet" to trangThaiDuyet
+                    "trangThaiDuyet" to trangThaiDuyet
                 )
             )
             .addOnSuccessListener {
@@ -166,8 +166,8 @@ class HomeViewModel : ViewModel() {
                 val roomRef = firestore.collection("PhongTro").document(roomId)
                 firestore.runTransaction { transaction ->
                     val snapshot = transaction.get(roomRef)
-                    val currentViewCount = snapshot.getLong("So_luotxemphong") ?: 0
-                    transaction.update(roomRef, "So_luotxemphong", currentViewCount + 1)
+                    val currentViewCount = snapshot.getLong("soLuotXemPhong") ?: 0
+                    transaction.update(roomRef, "soLuotXemPhong", currentViewCount + 1)
                 }.await()
             } catch (e: Exception) {
                 Log.e("HomeViewModel", "Lỗi tăng số lượt xem: ${e.message}")
@@ -230,7 +230,7 @@ class HomeViewModel : ViewModel() {
         // Bọc logic trong coroutine với Dispatchers.IO
         viewModelScope.launch(Dispatchers.IO) {
             firestore.collection("LoaiPhong")
-                .whereEqualTo("Ma_loaiphong", maloaiPhongTro)
+                .whereEqualTo("maLoaiPhong", maloaiPhongTro)
                 .addSnapshotListener { loaiPhongSnapshot, exception ->
 
                     if (exception != null) {
@@ -244,16 +244,16 @@ class HomeViewModel : ViewModel() {
                         val roomsRef = firestore.collection("PhongTro")
                         val query = if (tenLoaiPhong == "Tất cả")
                             roomsRef.whereEqualTo(
-                                "Trang_thaiduyet",
+                                "trangThaiDuyet",
                                 "DaDuyet"
-                            ).whereEqualTo("Trang_thaiphong", false)
+                            ).whereEqualTo("trangThaiPhong", false)
                         else {
                             roomsRef.whereEqualTo(
-                                "Ma_loaiphong", maloaiPhongTro
+                                "maLoaiPhong", maloaiPhongTro
                             ).whereEqualTo(
-                                "Trang_thaiduyet",
+                                "trangThaiDuyet",
                                 "DaDuyet"
-                            ).whereEqualTo("Trang_thaiphong", false)
+                            ).whereEqualTo("trangThaiPhong", false)
                         }
                         query.addSnapshotListener { snapshot, exception ->
 
@@ -312,7 +312,7 @@ class HomeViewModel : ViewModel() {
                 val rooms = querySnapshot.documents.mapNotNull { doc ->
                     val roomModel = doc.toObject(PhongTroModel::class.java)
                     roomModel?.let {
-                        if (it.Ma_nguoidung != idUser && !it.Trang_thaiphong && it.Trang_thaiduyet == "DaDuyet") {
+                        if (it.maNguoiDung != idUser && !it.trangThaiPhong && it.trangThaiDuyet == "DaDuyet") {
                             Pair(doc.id, it)
                         } else {
                             null
@@ -349,8 +349,8 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             roomList.forEach { (roomId, room) ->
                 firestore.collection("ChiTietThongTin")
-                    .whereEqualTo("ma_phongtro", roomId)
-                    .whereEqualTo("ten_thongtin", "Diện tích")
+                    .whereEqualTo("maPhongTro", roomId)
+                    .whereEqualTo("tenThongTin", "Diện tích")
                     .addSnapshotListener { documents, exception ->
                         if (exception != null) {
                             Log.e(
@@ -365,7 +365,7 @@ class HomeViewModel : ViewModel() {
                         val chiTiet =
                             documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
                         chiTiet?.let {
-                            room.Dien_tich = it.so_luong_donvi
+                            room.dienTich = it.so_luong_donvi
                         }
 
                         // Cập nhật lại thông tin trong danh sách đã thay đổi
@@ -400,8 +400,8 @@ class HomeViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             roomList.forEach { (roomId, room) ->
                 firestore.collection("ChiTietThongTin")
-                    .whereEqualTo("ma_phongtro", roomId)
-                    .whereEqualTo("ten_thongtin", "Diện tích")
+                    .whereEqualTo("maPhongTro", roomId)
+                    .whereEqualTo("tenThongTin", "Diện tích")
                     .addSnapshotListener { documents, exception ->
                         if (exception != null) {
                             Log.e(
@@ -416,7 +416,7 @@ class HomeViewModel : ViewModel() {
                         val chiTiet =
                             documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
                         chiTiet?.let {
-                            room.Dien_tich = it.so_luong_donvi
+                            room.dienTich = it.so_luong_donvi
                         }
 
                         // Cập nhật lại thông tin trong danh sách đã thay đổi

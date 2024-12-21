@@ -215,10 +215,10 @@ class TaoHopDong : AppCompatActivity() {
 
 
             //set gia tri cho Phòng trọ
-            tvNameRoom.text = room.Ten_phongtro
-            tvAddress.text = room.Dia_chichitiet
-            tvPrice.text = "${String.format("%,.0f", room.Gia_phong)} VND"
-            giaPhong = room.Gia_phong
+            tvNameRoom.text = room.tenPhongTro
+            tvAddress.text = room.diaChiChiTiet
+            tvPrice.text = "${String.format("%,.0f", room.giaPhong)} VND"
+            giaPhong = room.giaPhong
             // Cập nhật ảnh phòng trọ
             Glide.with(this)
                 .load(room.imageUrls[0])
@@ -447,7 +447,7 @@ private fun observeViewModel() {
         chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
         findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
         if (chiTietList.size > 3) {
-            tvDienTich.text = "${chiTietList[3].so_luong_donvi} m²"
+            tvDienTich.text = "${chiTietList[3].soLuongDonVi} m²"
         } else {
             tvDienTich.text = "Không có dữ liệu"
         }
@@ -476,9 +476,9 @@ private fun observeViewModel() {
     private fun createAndSaveContract() {
         val utilityFees = viewModel.phiDichVuList.value?.map { phiDichVu ->
             UtilityFee(
-                tenDichVu = phiDichVu.ten_dichvu,
-                giaTien = phiDichVu.so_tien,
-                donVi = phiDichVu.don_vi,
+                tenDichVu = phiDichVu.tenDichVu,
+                giaTien = phiDichVu.soTien,
+                donVi = phiDichVu.donVi,
                 batBuoc = true // Có thể thêm trường này vào model PhiDichVu nếu cần
             )
         } ?: emptyList()
@@ -495,11 +495,15 @@ private fun observeViewModel() {
             nt.tenNoiThat // Chỉ cần lấy tên nội thất vì model HopDong.furniture là List<String>
         } ?: emptyList()
         val roomDetail = viewModel.chiTietList.value?.map { tt ->
-            RoomDetail(
-                ten = tt.ten_thongtin,
-                giaTri = tt.so_luong_donvi,
-                donVi = tt.don_vi,
-            )
+            tt.tenThongTin?.let {
+                tt.donVi?.let { it1 ->
+                    RoomDetail(
+                        ten = it,
+                        giaTri = tt.soLuongDonVi.toLong(),
+                        donVi = it1,
+                    )
+                }
+            }
         } ?: emptyList()
 
 

@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ph32395.staynow_datn.Model.NoiThatModel
+import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.R
 
 class NoiThatAdapter(
-    private val noiThatlist: List<NoiThatModel>
+    private val noiThatlist: List<NoiThat>
 ) : RecyclerView.Adapter<NoiThatAdapter.NoiThatViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -32,7 +32,7 @@ class NoiThatAdapter(
         private val iconNoiThat: ImageView = itemView.findViewById(R.id.iconNoiThat)
         private val tenNoiThat: TextView = itemView.findViewById(R.id.txtTenNoiThat)
 
-        fun bind(noiThat: NoiThatModel) {
+        fun bind(noiThat: NoiThat) {
             Glide.with(itemView.context).load(noiThat.iconNoiThat).into(iconNoiThat)
             tenNoiThat.text = noiThat.tenNoiThat
         }

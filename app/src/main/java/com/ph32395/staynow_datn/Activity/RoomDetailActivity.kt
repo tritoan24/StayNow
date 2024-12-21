@@ -38,7 +38,6 @@ import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
-import com.ph32395.staynow_datn.QuanLyPhongTro.UpdateRoom.UpdateRoomModel
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow_datn.fragment.RoomManagementFragment
@@ -70,7 +69,7 @@ class RoomDetailActivity : AppCompatActivity() {
     //khai báo loading animation
     private lateinit var loadingUtil: LoadingUtil
 
-    private var maPhongTro = ""
+    private var maPhongTro = "68dNr0UV4fMRtq9Fhgrt"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,7 +80,8 @@ class RoomDetailActivity : AppCompatActivity() {
             finish()
         }
 
-        roomId = intent.getStringExtra("maPhongTro") ?: ""
+//        roomId = intent.getStringExtra("maPhongTro") ?: ""
+        roomId = "68dNr0UV4fMRtq9Fhgrt"
         favoriteIcon = findViewById(R.id.iconFavorite)
 
 //        fetch trang thai yeu thich tu Firestore
@@ -101,7 +101,7 @@ class RoomDetailActivity : AppCompatActivity() {
         viewmodelHome = ViewModelProvider(this)[HomeViewModel::class.java]
 
 //        Nhan du lieu tu Intent
-        maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+//        maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         ManHome = intent.getStringExtra("ManHome") ?: ""
 
 
@@ -254,9 +254,9 @@ class RoomDetailActivity : AppCompatActivity() {
             } else {
 //                Neu phong tro chua co trong danh sach phong yeu thich thi them vao
                 val favoriteData = hashMapOf(
-                    "Id_nguoidung" to userId,
-                    "Id_phongtro" to roomId,
-                    "Thoigian_yeuthich" to System.currentTimeMillis()
+                    "idNguoiDung" to userId,
+                    "idPhongTro" to roomId,
+                    "thoiGianYeuThich" to System.currentTimeMillis()
                 )
 
                 firestore.collection("PhongTroYeuThich")
@@ -389,15 +389,15 @@ class RoomDetailActivity : AppCompatActivity() {
 //        Quan sat chi tiet phong tro chinh
         viewModel.room.observe(this) { room ->
 //            Cap nhat giao dien thong tin phong tro
-            findViewById<TextView>(R.id.txtTenPhongTro).text = room.Ten_phongtro
-            findViewById<TextView>(R.id.txtDiaChi).text = room.Dia_chi
+            findViewById<TextView>(R.id.txtTenPhongTro).text = room.tenPhongTro
+            findViewById<TextView>(R.id.txtDiaChi).text = room.diaChi
             findViewById<TextView>(R.id.txtGiaThue).text =
-                "${String.format("%,.0f", room.Gia_phong)} VND"
-            findViewById<TextView>(R.id.txtChiTietThem).text = room.Mota_chitiet
+                "${String.format("%,.0f", room.giaPhong)} VND"
+            findViewById<TextView>(R.id.txtChiTietThem).text = room.moTaChiTiet
 
-            val trangThaiDuyet = room.Trang_thaiduyet
-            val trangThaiLuu = room.Trang_thailuu
-            val trangThaiPhong = room.Trang_thaiphong
+            val trangThaiDuyet = room.trangThaiDuyet
+            val trangThaiLuu = room.trangThaiLuu
+            val trangThaiPhong = room.trangThaiPhong
 
             Log.d("RoomDetailActivity", "Trang thai duyet: $trangThaiDuyet")
             Log.d("RoomDetailActivity", "Trang thai luu: $trangThaiLuu")
@@ -436,45 +436,45 @@ class RoomDetailActivity : AppCompatActivity() {
 //            Chuc nang Cap nhat thong tin phong
             findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
 //                lay thong tin tu ViewModel chuyen doi sang UpdateRoomViewModel
-                val updateRoomModel = UpdateRoomModel(
-                    Ten_phongtro = viewModel.room.value?.Ten_phongtro ?: "",
-                    Dia_chi = viewModel.room.value?.Dia_chi ?: "",
-                    Loai_phong = viewModel.roomType.value ?: "",
-                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
-                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
-                    Gia_phong = viewModel.room.value?.Gia_phong ?: 0.0,
-                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
-                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
-                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
-                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
-                    Chi_tietthem = viewModel.room.value?.Mota_chitiet ?: ""
-                )
+//                val updateRoomModel = UpdateRoomModel(
+//                    Ten_phongtro = viewModel.room.value?.tenPhongTro ?: "",
+//                    Dia_chi = viewModel.room.value?.diaChi ?: "",
+//                    Loai_phong = viewModel.roomType.value ?: "",
+//                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
+//                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
+//                    Gia_phong = viewModel.room.value?.giaPhong ?: 0.0,
+//                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
+//                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
+//                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
+//                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
+//                    Chi_tietthem = viewModel.room.value?.moTaChiTiet ?: ""
+//                )
                 //                    Truyen du lieu qua Intent
-                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
-                intent.putExtra("updateRoomModel", updateRoomModel)
-                startActivity(intent)
+//                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
+//                intent.putExtra("updateRoomModel", updateRoomModel)
+//                startActivity(intent)
             }
             findViewById<LinearLayout>(R.id.btnSuaPhongLuu).setOnClickListener{
 //                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
 //                intent.putExtra("id_PhongTro", maPhongTro)
 //                startActivity(intent)
-                val updateRoomModel = UpdateRoomModel(
-                    Ten_phongtro = viewModel.room.value?.Ten_phongtro ?: "",
-                    Dia_chi = viewModel.room.value?.Dia_chi ?: "",
-                    Loai_phong = viewModel.roomType.value ?: "",
-                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
-                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
-                    Gia_phong = viewModel.room.value?.Gia_phong ?: 0.0,
-                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
-                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
-                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
-                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
-                    Chi_tietthem = viewModel.room.value?.Mota_chitiet ?: ""
-                )
+//                val updateRoomModel = UpdateRoomModel(
+//                    Ten_phongtro = viewModel.room.value?.tenPhongTro ?: "",
+//                    Dia_chi = viewModel.room.value?.diaChi ?: "",
+//                    Loai_phong = viewModel.roomType.value ?: "",
+//                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
+//                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
+//                    Gia_phong = viewModel.room.value?.giaPhong ?: 0.0,
+//                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
+//                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
+//                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
+//                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
+//                    Chi_tietthem = viewModel.room.value?.moTaChiTiet ?: ""
+//                )
                 //                    Truyen du lieu qua Intent
-                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
-                intent.putExtra("updateRoomModel", updateRoomModel)
-                startActivity(intent)
+//                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
+//                intent.putExtra("updateRoomModel", updateRoomModel)
+//                startActivity(intent)
             }
 
 //            Chuc ang go phong chuyen sang man dang luu
@@ -537,8 +537,8 @@ class RoomDetailActivity : AppCompatActivity() {
                             val PhongTro = firestore.collection("PhongTro").document(maPhongTro!!)
 
                             PhongTro.update(mapOf(
-                                "Trang_thailuu" to false,
-                                "Trang_thaiduyet" to "ChoDuyet"
+                                "trangThaiLuu" to false,
+                                "trangThaiDuyet" to "ChoDuyet"
                             )).addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
                                     Log.d("Firestore", "Cập nhật thành công")

@@ -1,6 +1,6 @@
 package com.ph32395.staynow_datn.TaoPhongTro
 
-class ChiTietThongTin (
+data class ChiTietThongTin (
     var maPhiThongTin: String? = null,
     var maPhongTro: String? = null,
     var tenThongTin: String? = null,

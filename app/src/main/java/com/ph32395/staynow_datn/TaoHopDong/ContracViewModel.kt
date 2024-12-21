@@ -11,7 +11,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.Model.NguoiDungModel
-import com.ph32395.staynow_datn.Model.PhiDichVuModel
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -74,16 +73,16 @@ class ContractViewModel : ViewModel() {
 
 
     // Phương thức để kiểm tra và cập nhật trạng thái hiển thị
-    fun updateUtilityInputVisibility(utilityFees: List<PhiDichVuModel>) {
+    fun updateUtilityInputVisibility(utilityFees: List<PhiDichVu>) {
         // Kiểm tra phí điện
         val electricityFee = utilityFees.find {
-            it.ten_dichvu == "Điện" && it.don_vi == "Số"
+            it.tenDichVu == "Điện" && it.donVi == "Số"
         }
         _isElectricityInputVisible.value = electricityFee != null
 
         // Kiểm tra phí nước
         val waterFee = utilityFees.find {
-            it.ten_dichvu == "Nước" && it.don_vi == "Khối"
+            it.tenDichVu == "Nước" && it.donVi == "Khối"
         }
         _isWaterInputVisible.value = waterFee != null
     }
