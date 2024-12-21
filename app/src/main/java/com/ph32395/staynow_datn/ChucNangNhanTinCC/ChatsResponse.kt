@@ -1,15 +1,15 @@
 package com.ph32395.staynow_datn.ChucNangNhanTinCC
 data class Chat(
-    val chatId: String? = null,
-    val lastMessage: String? = null,
-    val lastMessageTime: Long? = null,
-    val unreadCount: Int = 0,
-    val otherUserId: String? = null
+    val maTinNhan: String? = null,
+    val tinNhanCuoi: String? = null,
+    val thoiGianTinNhanCuoi: Long? = null,
+    val soTinChuaDoc: Int = 0,
+    val maNguoiDungKhac: String? = null
 )
 
 data class Messenger(
-    val senderId: String? = null,
-    val message: String? = null,
+    val maNguoiGui: String? = null,
+    val tinNhan: String? = null,
     val timestamp: Long? = null
 )
 

@@ -146,8 +146,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             Log.d(TAG, "onCreate: LvHistory id $id")
             val item = parent.adapter.getItem(position)
             if (item is SearchDataModel) {
-                Log.d(TAG, "Item text: ${item.tu_khoa}")
-                binding.edtSearch.setText(item.tu_khoa.toString())
+                Log.d(TAG, "Item text: ${item.tuKhoa}")
+                binding.edtSearch.setText(item.tuKhoa.toString())
             } else {
                 Log.d(TAG, "Item at position $position is not a String")
             }
@@ -334,7 +334,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                                 newData.let {
                                     listKeySearch.add(it)
-                                    Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
+                                    Log.d(TAG, "onChildAdded: it let ${it.tuKhoa}")
                                 }
 
                                 if (listKeySearch.size >= 3) {
@@ -401,9 +401,9 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         val searchId =
             searchHistoryRef.document(userId!!).collection("HistoryKeyWord").document().id
         val searchData = SearchDataModel(
-            ma_timkiem = searchId,
-            tu_khoa = searchQuery,
-            thoi_giantimkiem = formattedTime,
+            maTimKiem = searchId,
+            tuKhoa = searchQuery,
+            thoiGianTimKiem = formattedTime,
             timestamps = timeStamp.toString()
         )
         Log.d(TAG, "saveKeyWordSearch: timeStamp $timeStamp")
