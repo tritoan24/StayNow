@@ -110,7 +110,7 @@ class TextingMessengeActivity : AppCompatActivity() {
     // Lấy danh sách tin nhắn
     private fun fetchChatMessages(chatId: String, onResult: (List<Messenger>) -> Unit) {
         val database = Firebase.database.reference
-        database.child("Chats").child(chatId).child("messages")
+        database.child("TroChuyen").child(chatId).child("messages")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val messages = mutableListOf<Messenger>()
@@ -144,26 +144,26 @@ class TextingMessengeActivity : AppCompatActivity() {
 
         // Tạo tin nhắn
         val message = Messenger(senderId, messageText, timestamp)
-        val messageId = database.child("Chats").child(chatId).child("messages").push().key!!
+        val messageId = database.child("TroChuyen").child(chatId).child("messages").push().key!!
 
         // Lưu tin nhắn
-        database.child("Chats").child(chatId).child("messages").child(messageId).setValue(message)
+        database.child("TroChuyen").child(chatId).child("messages").child(messageId).setValue(message)
 
 
         // Lấy số tin nhắn chưa đọc hiện tại của người nhận
-        database.child("ChatList").child(receiverId).child(chatId).get()
+        database.child("DanhSachTroChuyen").child(receiverId).child(chatId).get()
             .addOnSuccessListener { snapshot ->
                 val currentUnreadCount =
-                    snapshot.child("unreadCount").getValue(Int::class.java) ?: 0
+                    snapshot.child("soTinChuaDoc").getValue(Int::class.java) ?: 0
 
                 // Cập nhật ChatList cho receiver (tăng unreadCount)
                 val receiverChat =
                     Chat(chatId, messageText, timestamp, currentUnreadCount + 1, senderId)
-                database.child("ChatList").child(receiverId).child(chatId).setValue(receiverChat)
+                database.child("DanhSachTroChuyen").child(receiverId).child(chatId).setValue(receiverChat)
 
                 // Cập nhật ChatList cho sender (không tăng unreadCount)
                 val senderChat = Chat(chatId, messageText, timestamp, 0, receiverId)
-                database.child("ChatList").child(senderId).child(chatId).setValue(senderChat)
+                database.child("DanhSachTroChuyen").child(senderId).child(chatId).setValue(senderChat)
             }
 
         //push notification
@@ -188,7 +188,7 @@ class TextingMessengeActivity : AppCompatActivity() {
         val database = Firebase.database.reference
 
         // Đặt unreadCount về 0 trong ChatList của người dùng
-        database.child("ChatList").child(userId).child(chatId).child("unreadCount").setValue(0)
+        database.child("DanhSachTroChuyen").child(userId).child(chatId).child("soTinChuaDoc").setValue(0)
     }
 
 

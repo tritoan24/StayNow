@@ -64,7 +64,7 @@ class AdapterThanhVien(
                         theme = ProgressDialog.THEME_DARK
                     }
                     progressDialog.show()
-                    deleteThanhVien(dataTv.maTv,idHopDong,holder.itemView.context,progressDialog)
+                    deleteThanhVien(dataTv.maThanhVien,idHopDong,holder.itemView.context,progressDialog)
 
                 }
                 .setNegativeButton("No") { d, w ->
@@ -84,11 +84,11 @@ class AdapterThanhVien(
         val ngayVao = itemView.tvNgayVao
         val image = itemView.ivAvatarUser
         fun bin(thanhVien: ThanhVien) {
-            name.text = thanhVien.name
-            sdt.text = thanhVien.sdt
+            name.text = thanhVien.tenThanhVien
+            sdt.text = thanhVien.soDienThoai
             ngayVao.text = thanhVien.ngayVao
             Glide.with(itemView.context)
-                .load(thanhVien.image)
+                .load(thanhVien.hinhAnh)
                 .circleCrop()
                 .into(image)
         }
@@ -107,10 +107,10 @@ class AdapterThanhVien(
                     val nguoiThue = document.toObject(NguoiThueModel::class.java)
                     if (nguoiThue != null) {
                         // Lấy danh sách thành viên
-                        val updatedList = nguoiThue.thanhVienList.toMutableList()
+                        val updatedList = nguoiThue.danhSachThanhVien.toMutableList()
 
                         // Tìm và xóa thành viên theo ID
-                        val thanhVienToDelete = updatedList.find { it.maTv == thanhVienId }
+                        val thanhVienToDelete = updatedList.find { it.maThanhVien == thanhVienId }
                         if (thanhVienToDelete != null) {
                             updatedList.remove(thanhVienToDelete)
 

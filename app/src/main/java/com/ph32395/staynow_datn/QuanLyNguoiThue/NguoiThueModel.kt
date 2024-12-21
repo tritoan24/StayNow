@@ -7,19 +7,19 @@ data class NguoiThueModel(
     val tenPhong: String = "",
     val ngayBatDau: String = "",
     val soNguoiGioHanO:Int = 0,
-    val thanhVienList: List<ThanhVien> = listOf()
+    val danhSachThanhVien: List<ThanhVien> = listOf()
 ) {
 
 
 }
 
 data class ThanhVien(
-    val maTv:String = "",
-    val name: String = "",
-    val image: String = "",
+    val maThanhVien:String = "",
+    val tenThanhVien: String = "",
+    val hinhAnh: String = "",
     val email: String = "",
     val ngayVao: String = "",
-    val sdt: String = ""
+    val soDienThoai: String = ""
 ) {
 
 }

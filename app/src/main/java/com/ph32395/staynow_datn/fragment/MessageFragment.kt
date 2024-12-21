@@ -70,8 +70,8 @@ class MessageFragment : Fragment() {
                     adapterMessage = MessageAdapter(it) {
                         Log.d(TAG, "onCreate: it.time $it")
                         val intent = Intent(context, TextingMessengeActivity::class.java)
-                        intent.putExtra("chatId", it.chatId)
-                        intent.putExtra("userChat", it.otherUserId)
+                        intent.putExtra("chatId", it.maTinNhan)
+                        intent.putExtra("userChat", it.maNguoiDungKhac)
                         startActivity(intent)
                     }
                     binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
@@ -106,7 +106,7 @@ class MessageFragment : Fragment() {
 
     fun fetchChatList(userId: String, onResult: (List<Chat>) -> Unit) {
         val database = Firebase.database.reference
-        database.child("ChatList").child(userId).orderByChild("lastMessageTime")
+        database.child("DanhSachTroChuyen").child(userId).orderByChild("thoiGianTinNhanCuoi")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val chatList = mutableListOf<Chat>()

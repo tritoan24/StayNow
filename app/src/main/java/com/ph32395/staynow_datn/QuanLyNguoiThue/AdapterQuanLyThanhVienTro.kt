@@ -71,7 +71,7 @@ class AdapterQuanLyThanhVienTro(
                     tenPhong = item.tenPhong,
                     ngayBatDau = item.ngayBatDau,
                     soNguoiGioHanO = item.soNguoiGioHanO,
-                    thanhVienList = listTv
+                    danhSachThanhVien = listTv
                 )
 
                 Log.e(TAG, "onDataChange:listTv $listTv")
@@ -125,17 +125,17 @@ class AdapterQuanLyThanhVienTro(
             if (snapshot != null && snapshot.exists()) {
                 val nguoiThue = snapshot.toObject(NguoiThueModel::class.java)
                 if (nguoiThue != null) {
-                    Log.d(TAG, "Dữ liệu người thuê đã thay đổi: ${nguoiThue.thanhVienList}")
-                    Log.d(TAG, "fetchListTv: ${nguoiThue.thanhVienList.size}")
-                    tvCountThanhVien.text = nguoiThue.thanhVienList.size.toString()
-                    if (nguoiThue.thanhVienList.size > soNguoiGioHanO) {
+                    Log.d(TAG, "Dữ liệu người thuê đã thay đổi: ${nguoiThue.danhSachThanhVien}")
+                    Log.d(TAG, "fetchListTv: ${nguoiThue.danhSachThanhVien.size}")
+                    tvCountThanhVien.text = nguoiThue.danhSachThanhVien.size.toString()
+                    if (nguoiThue.danhSachThanhVien.size > soNguoiGioHanO) {
                         tvBaseThanhVien.setTextColor(Color.RED)
                         tvCountThanhVien.setTextColor(Color.RED)
                     } else {
                         tvBaseThanhVien.setTextColor(Color.BLACK)
                         tvCountThanhVien.setTextColor(Color.BLACK)
                     }
-                    val adapterThanhVien = AdapterThanhVien(nguoiThue.thanhVienList,idHopDong)
+                    val adapterThanhVien = AdapterThanhVien(nguoiThue.danhSachThanhVien,idHopDong)
                     listThanhVien.layoutManager =
                         LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     listThanhVien.adapter = adapterThanhVien
@@ -175,7 +175,7 @@ class AdapterQuanLyThanhVienTro(
                     val nguoiThue = document.toObject(NguoiThueModel::class.java)
                     if (nguoiThue != null) {
                         // Thêm thành viên mới vào danh sách
-                        val updatedList = nguoiThue.thanhVienList.toMutableList()
+                        val updatedList = nguoiThue.danhSachThanhVien.toMutableList()
                         updatedList.add(thanhVienMoi)
 
                         // Cập nhật danh sách trong Firestore

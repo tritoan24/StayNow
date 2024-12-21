@@ -37,7 +37,7 @@ class TextingAdapter(private val messages: List<Messenger>, private val currentU
 
     override fun getItemViewType(position: Int): Int {
         Log.d(TAG, "getItemViewType: $position")
-        return if (messages[position].senderId == currentUserId) VIEW_TYPE_SEND else VIEW_TYPE_RECEIVE
+        return if (messages[position].maNguoiGui == currentUserId) VIEW_TYPE_SEND else VIEW_TYPE_RECEIVE
     }
 
     override fun getItemCount(): Int {
@@ -63,7 +63,7 @@ class TextingAdapter(private val messages: List<Messenger>, private val currentU
         private val tvTimeRight = itemView.tvTimeRight
         fun bind(message: Messenger) {
             val time = convertTimestampToTime(message.timestamp!!.toLong())
-            textMessageSend.text = message.message
+            textMessageSend.text = message.tinNhan
             tvTimeRight.text = time
 
         }
@@ -86,7 +86,7 @@ class TextingAdapter(private val messages: List<Messenger>, private val currentU
         private val tvTimeLeft = itemView.tvTimeLeft
         fun bind(message: Messenger) {
             val time = convertTimestampToTime(message.timestamp!!.toLong())
-            textMessageReceive.text = message.message
+            textMessageReceive.text = message.tinNhan
             tvTimeLeft.text = time
         }
 
