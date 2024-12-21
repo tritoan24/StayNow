@@ -255,7 +255,7 @@ class ContractViewModel : ViewModel() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val user = snapshot.getValue(NguoiDungModel::class.java)
                 if (user != null) {
-                    _userRoleLiveData.value = user.loai_taikhoan // Cập nhật giá trị vào LiveData
+                    _userRoleLiveData.value = user.loaiTaiKhoan // Cập nhật giá trị vào LiveData
                 }
             }
 

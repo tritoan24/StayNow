@@ -157,15 +157,15 @@ class ChoosePaymentActivity : AppCompatActivity() {
             val message =
                 if (bill != null) "Thanh toán thành công cho hóa đơn ${bill.idHoaDon}" else "Thanh toán thành công cho hợp đồng ${contract?.maHopDong}"
             NotificationModel(
-                title = "Thanh toán hóa đơn hàng tháng",
-                message = message,
-                date = Calendar.getInstance().time.toString(),
-                time = "0",
+                tieuDe = "Thanh toán hóa đơn hàng tháng",
+                tinNhan = message,
+                ngayGuiThongBao = Calendar.getInstance().time.toString(),
+                thoiGian = "0",
                 mapLink = null,
-                isRead = false,
-                isPushed = true,
+                daDoc = false,
+                daGui = true,
                 idModel = it,
-                typeNotification = if (bill != null) Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE else Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+                loaiThongBao = if (bill != null) Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE else Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
             )
         }
 

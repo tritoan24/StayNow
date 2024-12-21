@@ -50,16 +50,16 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
 
     override fun initView() {
         notificationWithDateAdapter = NotificationWithDateAdapter { notification ->
-            if (!notification.isRead) {
-                viewModel.updateNotification(notification.copy(isRead = true)) {
+            if (!notification.daDoc) {
+                viewModel.updateNotification(notification.copy(daDoc = true)) {
                     lifecycleScope.launch {
                         toast("Đã xem!")
                     }
                 }
             }
-            when (notification.typeNotification) {
+            when (notification.loaiThongBao) {
                 TYPE_SCHEDULE_ROOM_TENANT -> {
-                    when (notification.title) {
+                    when (notification.tieuDe) {
                         TITLE_CONFIRMED -> {
                             notification.mapLink?.let { openMap(it) }
                         }
@@ -71,7 +71,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 }
 
                 TYPE_SCHEDULE_ROOM_RENTER -> {
-                    when (notification.title) {
+                    when (notification.tieuDe) {
                         TITLE_CONFIRMED -> {
                             notification.mapLink?.let { openMap(it) }
                         }
@@ -129,7 +129,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     if (listNotification.isNotEmpty()) {
                         launch(Dispatchers.IO) {
                             val listNotificationWithDate = listNotification.groupBy {
-                                SystemUtils.currentDateFormattedFromMillis(it.timestamp)
+                                SystemUtils.currentDateFormattedFromMillis(it.thoiGianGuiThongBao)
                             }.map { (date, histories) ->
                                 NotificationWithDateModel().apply {
                                     this.date = date

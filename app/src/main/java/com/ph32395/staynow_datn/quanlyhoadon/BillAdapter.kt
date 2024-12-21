@@ -127,15 +127,15 @@ class BillAdapter(
 private fun handlePaymentSuccess(context: Context, bill: InvoiceMonthlyModel) {
 
     val notification = NotificationModel(
-        title = "Thanh toán hóa đơn dịch vụ",
-        message = "Hóa đơn dịch vụ với mã hóa đơn ${bill.idHoaDon} đã bị hủy",
-        date = Calendar.getInstance().time.toString(),
-        time = "0",
+        tieuDe = "Thanh toán hóa đơn dịch vụ",
+        tinNhan = "Hóa đơn dịch vụ với mã hóa đơn ${bill.idHoaDon} đã bị hủy",
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
         mapLink = null,
-        isRead = false,
-        isPushed = true,
+        daDoc = false,
+        daGui = true,
         idModel = bill.idHoaDon,
-        typeNotification = "hoadonhangthang"
+        loaiThongBao = "hoadonhangthang"
     )
 
     val factory = ViewModelFactory(context)

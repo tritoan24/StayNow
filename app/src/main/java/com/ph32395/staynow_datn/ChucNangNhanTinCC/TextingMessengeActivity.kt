@@ -168,14 +168,14 @@ class TextingMessengeActivity : AppCompatActivity() {
 
         //push notification
         val notificationMes = NotificationModel(
-            title = "Bạn có 1 tin nhắn mới",
-            message = messageText,
-            date = Calendar.getInstance().time.toString(),
-            time = "0",
+            tieuDe = "Bạn có 1 tin nhắn mới",
+            tinNhan = messageText,
+            ngayGuiThongBao = Calendar.getInstance().time.toString(),
+            thoiGian = "0",
             mapLink = null,
-            isRead = false,
-            isPushed = true,
-            typeNotification = "send_massage",
+            daDoc = false,
+            daGui = true,
+            loaiThongBao = "send_massage",
             idModel = senderId
         )
         Log.e(TAG, "sendMessage:notificationMes $notificationMes")
