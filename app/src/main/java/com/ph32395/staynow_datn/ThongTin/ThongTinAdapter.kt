@@ -27,7 +27,7 @@ class ThongTinAdapter(
         Log.d("ThongTinAdapter", "Danh sách thông tin khi khởi tạo: $thongtinList")
 
         existingChiTietList?.forEachIndexed { index, chiTiet ->
-            val matchingIndex = thongtinList.indexOfFirst { it.Ten_thongtin == chiTiet.ten_thongtin }
+            val matchingIndex = thongtinList.indexOfFirst { it.tenThongTin == chiTiet.ten_thongtin }
             if (matchingIndex != -1) {
                 pricesMap[matchingIndex] = chiTiet.so_luong_donvi
             }
@@ -49,10 +49,10 @@ class ThongTinAdapter(
 
     inner class ThongTinViewHolder(private val binding: ItemThongtinBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(thongTin: ThongTin, position: Int) {
-            binding.thongtinName.text = thongTin.Ten_thongtin
-            binding.donviThongTin.text = thongTin.Don_vi.takeIf { it.isNotEmpty() }?.let { "/$it" } ?: ""
+            binding.thongtinName.text = thongTin.tenThongTin
+            binding.donviThongTin.text = thongTin.donVi.takeIf { it.isNotEmpty() }?.let { "/$it" } ?: ""
             Glide.with(context)
-                .load(thongTin.Icon_thongtin)
+                .load(thongTin.iconThongTin)
                 .into(binding.thongtinImage)
 
             // Kiểm tra và hiển thị giá nếu có
@@ -88,7 +88,7 @@ class ThongTinAdapter(
         editText.setText(pricesMap[position]?.toString() ?: "")
 
         SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-            .setTitleText("Nhập giá trị cho ${thongTin.Ten_thongtin}")
+            .setTitleText("Nhập giá trị cho ${thongTin.tenThongTin}")
             .setConfirmText("Xác nhận")
             .setCustomView(editText) // Thêm EditText vào dialog
             .setConfirmClickListener { sDialog ->

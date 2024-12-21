@@ -16,17 +16,17 @@ class LoaiPhongViewModel : ViewModel() {
                 val loaiPhongList = mutableListOf<LoaiPhong>()
                 for (document in result){
                     // Lấy các giá trị từ Firestore
-                    val maLoaiPhong = document.getString("Ma_loaiphong") ?: ""
-                    val tenLoaiPhong = document.getString("Ten_loaiphong") ?: ""
-                    val status = document.getBoolean("Status") ?: false
+                    val maLoaiPhong = document.getString("maLoaiPhong") ?: ""
+                    val tenLoaiPhong = document.getString("tenLoaiPhong") ?: ""
+                    val status = document.getBoolean("trangThai") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
                     if (status) {
                         loaiPhongList.add(
                             LoaiPhong(
-                                Ma_loaiphong = maLoaiPhong,
-                                Ten_loaiphong = tenLoaiPhong,
-                                Status = status
+                                maLoaiPhong = maLoaiPhong,
+                                tenLoaiPhong = tenLoaiPhong,
+                                trangThai = status
                             )
                         )
                     }

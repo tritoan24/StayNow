@@ -343,7 +343,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
             } else {
                 // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có dữ liệu Nội Thất", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -354,7 +354,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 binding.RcTienNghi.adapter = TienNghiAdapter
             } else {
                 // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có dữ liệu Tiện Nghi", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -369,7 +369,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     binding.listViewDichVu.adapter = DichVuAdapter
                 }
             } else {
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có dữ liệu Dịch Vụ ", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -381,7 +381,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 loadingUtil.hide()
             } else {
                 // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có dữ liệu Thông Tin", Toast.LENGTH_SHORT).show()
             }
         })
 
@@ -392,7 +392,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 binding.recyclerViewLoaiPhong.adapter = loaiPhongAdapter
             } else {
                 // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có dữ liệu Loại Phòng", Toast.LENGTH_SHORT).show()
             }
         })
         gioitinhViewModel.getListGioiTinh().observe(this, Observer { gioiTinhList ->
@@ -402,7 +402,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 binding.listViewGioiTinh.adapter = gioitinhAdapter
             } else {
                 // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Không có dữ liệu Giới Tính", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -417,7 +417,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
         prices.forEach { (thongtin, price) ->
             // Lưu thông tin dịch vụ và giá vào pricesMap
-            pricesMapThongTin[thongtin.Ma_thongtin.toString()] = Pair(thongtin, price)
+            pricesMapThongTin[thongtin.maThongTin.toString()] = Pair(thongtin, price)
         }
 
     }
@@ -445,7 +445,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         loaiPhong: com.ph32395.staynow_datn.LoaiPhong.LoaiPhong,
         isSelected: Boolean
     ) {
-        Ma_loaiphong = loaiPhong.Ma_loaiphong.toString()
+        Ma_loaiphong = loaiPhong.maLoaiPhong.toString()
     }
 
     override fun onGioiTinhSelected(
@@ -615,25 +615,25 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
                 // Chuẩn bị dữ liệu để lưu vào Firestore
                 val roomData = hashMapOf(
-                    "Ten_phongtro" to roomName,
-                    "Gia_phong" to roomPrice,
-                    "Mota_chitiet" to description,
-                    "Ma_nguoidung" to userId,
-                    "Dia_chi" to fullAddressct,
-                    "Dia_chichitiet" to fullAddressDeltail,
-                    "Trang_thaidc" to false,
-                    "Dc_quanhuyen" to dc_quanhuyen,
-                    "Dc_tinhtp" to dc_tinhtp,
-                    "Ma_loaiphong" to Ma_loaiphong,
-                    "Ma_gioiTinh" to Ma_gioiTinh,
-                    "Trang_thailuu" to Trang_thailuu,
-                    "Trang_thaiduyet" to Trang_thaiduyet,
-                    "ThoiGian_taophong" to ThoiGian_taophong,
-                    "Ngay_capnhat" to Ngay_capnhat,
-                    "So_luotxemphong" to So_luotxemphong,
+                    "tenPhongTro" to roomName,
+                    "giaPhong" to roomPrice,
+                    "moTaChiTiet" to description,
+                    "maNguoiDung" to userId,
+                    "diaChi" to fullAddressct,
+                    "diaChiChiTiet" to fullAddressDeltail,
+                    "trangThaiDC" to false,
+                    "dcQuanHuyen" to dc_quanhuyen,
+                    "dcTinhTP" to dc_tinhtp,
+                    "maLoaiNhaTro" to Ma_loaiphong,
+                    "maGioiTinh" to Ma_gioiTinh,
+                    "trangThaiLuu" to Trang_thailuu,
+                    "trangThaiDuyet" to Trang_thaiduyet,
+                    "thoiGianTaoPhong" to ThoiGian_taophong,
+                    "ngayCapNhat" to Ngay_capnhat,
+                    "soLuotXemPhong" to So_luotxemphong,
                     "imageUrls" to imageUrls,
-                    "Trang_thaiphong" to trangThaiPhong,
-                    "Trang_thaidc" to true
+                    "trangThaiPhong" to trangThaiPhong,
+                    "trangThaiDC" to true
                 )
 
 
@@ -692,13 +692,12 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     ) {
         for (tienNghi in selectedTienNghi) {
             val phongTroTienNghi = PhongTroTienNghi(
-                Ma_phongtro = maPhongTro,
-                Ma_tiennghi = tienNghi.Ma_tiennghi.toString()
+                maPhongTro = maPhongTro,
+                maTienNghi = tienNghi.maTienNghi.toString()
             )
 
             firestore.collection("PhongTroTienNghi").add(phongTroTienNghi)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${tienNghi.Ten_tiennghi} thành công!")
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
@@ -712,13 +711,13 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     ) {
         for (noithat in selectedNoiThat) {
             val phongTroNoiThat = PhongTroNoiThat(
-                Ma_phongtro = maPhongTro,
-                Ma_noithat = noithat.Ma_noithat.toString()
+                maPhongTro = maPhongTro,
+                maNoiThat = noithat.maNoiThat.toString()
             )
 
             firestore.collection("PhongTroNoiThat").add(phongTroNoiThat)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${noithat.Ten_noithat} thành công!")
+                    Log.d("Firestore", "Lưu tiện nghi ${noithat.tenNoiThat} thành công!")
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
@@ -730,7 +729,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         // Sử dụng listPhiDichVu đã lưu
         listPhiDichVu.forEach { phiDichVu ->
             // Tạo một bản copy với mã phòng trọ mới
-            val newPhiDichVu = phiDichVu.copy(Ma_phongtro = maPhongTro)
+            val newPhiDichVu = phiDichVu.copy(maPhongTro = maPhongTro)
 
             firestore.collection("PhiDichVu")
                 .add(newPhiDichVu)
@@ -750,16 +749,16 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             val thongtin = pair.first
             val price = pair.second
 
-            val phiThongTin = PhiThongTin(
-                So_luong_donvi = price,
-                Ma_phongtro = maPhongTro,
-                Ten_thongtin = thongtin.Ten_thongtin,
-                Icon_thongtin = thongtin.Icon_thongtin,
-                Don_vi = thongtin.Don_vi
+            val chiTietThongTin = ChiTietThongTin(
+                soLuongDonVi = price,
+                maPhongTro = maPhongTro,
+                tenThongTin = thongtin.tenThongTin,
+                iconThongTin = thongtin.iconThongTin,
+                donVi = thongtin.donVi
             )
 
             firestore.collection("ChiTietThongTin")
-                .add(phiThongTin)
+                .add(chiTietThongTin)
                 .addOnSuccessListener {
 
                 }

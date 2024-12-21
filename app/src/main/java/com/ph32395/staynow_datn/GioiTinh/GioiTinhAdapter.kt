@@ -32,7 +32,6 @@ class GioiTinhAdapter(
     fun selectById(maGioiTinh: String) {
         val selectedPosition = gioitinhList.indexOfFirst { it.maGioiTinh == maGioiTinh }
         gioitinhList.forEach {
-            Log.d("GioiTinhAdapter", "ID: ${it.maGioiTinh}, Name: ${it.tenGioiTinh}")
         }
 
         if (selectedPosition != -1) {
@@ -69,7 +68,7 @@ class GioiTinhAdapter(
         fun bind(gioitinh: GioiTinh, isSelected: Boolean) {
             binding.tenGioiTinh.text = gioitinh.tenGioiTinh
             Glide.with(context)
-                .load(gioitinh.anhGioiTinh)
+                .load(gioitinh.imgUrlGioiTinh)
                 .into(binding.iconGioiTinh)
             binding.root.isSelected = isSelected
         }
