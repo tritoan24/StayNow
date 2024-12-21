@@ -153,9 +153,9 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
         }
     }
 
-    private fun openMap(roomAddress: String) {
+    private fun openMap(diaChiPhong: String) {
         // Tạo URI từ địa chỉ đã mã hóa
-        val geoUri = "geo:0,0?q=${Uri.encode(roomAddress)}"
+        val geoUri = "geo:0,0?q=${Uri.encode(diaChiPhong)}"
 
         // Tạo một Intent để mở Google Maps
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
@@ -167,7 +167,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
         } else {
             // Nếu không có ứng dụng Google Maps, bạn có thể chuyển hướng đến trình duyệt web
             val webUri =
-                Uri.parse("https://www.google.com/maps/search/?q=${Uri.encode(roomAddress)}")
+                Uri.parse("https://www.google.com/maps/search/?q=${Uri.encode(diaChiPhong)}")
             val webIntent = Intent(Intent.ACTION_VIEW, webUri)
             startActivity(webIntent)
         }

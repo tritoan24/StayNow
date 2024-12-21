@@ -104,19 +104,19 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             tvConfirm.tap {
                 showLoading()
                 val scheduleRoomModel = ScheduleRoomModel().apply {
-                    roomId = roomIdInDetail
-                    roomName = roomModel.Ten_phongtro
-                    renterId = roomModel.Ma_nguoidung
-                    roomAddress = roomModel.Dia_chichitiet
-                    renterName = renterNameByGetInfo
-                    renterPhoneNumber = renterPhoneNumberByGetInfo
-                    tenantId = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                    tenantName = tenantNameByGetInfo
-                    tenantPhoneNumber = tenantPhoneNumberByGetInfo
-                    date = dateSelected
-                    time = "${hours}:${minutes}"
-                    notes = edtNote.getTextEx()
-                    status = 0
+                    maPhongTro = roomIdInDetail
+                    tenPhong = roomModel.Ten_phongtro
+                    maChuTro = roomModel.Ma_nguoidung
+                    diaChiPhong = roomModel.Dia_chichitiet
+                    tenChuTro = renterNameByGetInfo
+                    sdtChuTro = renterPhoneNumberByGetInfo
+                    maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                    tenNguoiThue = tenantNameByGetInfo
+                    sdtNguoiThue = tenantPhoneNumberByGetInfo
+                    ngayDatPhong = dateSelected
+                    thoiGianDatPhong = "${hours}:${minutes}"
+                    ghiChu = edtNote.getTextEx()
+                    trangThaiDatPhong = 0
                 }
                 addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion ->
                     lifecycleScope.launch(Dispatchers.Main) {
@@ -155,7 +155,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val documentRef = FirebaseFirestore.getInstance().collection(DAT_PHONG).document()
-                val scheduleWithId = schedule.copy(roomScheduleId = documentRef.id)
+                val scheduleWithId = schedule.copy(maDatPhong = documentRef.id)
                 documentRef.set(scheduleWithId).addOnSuccessListener {
                     onCompletion.invoke(true)
                 }.addOnFailureListener { e ->
@@ -174,9 +174,9 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             val mapLink = null
             val notificationData = hashMapOf(
                 TITLE to TITLE_SCHEDULE_ROOM_SUCCESSFULLY,
-                MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
-                DATE to data.date,
-                TIME to data.time,
+                MESSAGE to "Phòng: ${data.tenPhong}, Địa chỉ: ${data.diaChiPhong}",
+                DATE to data.ngayDatPhong,
+                TIME to data.thoiGianDatPhong,
                 MAP_LINK to mapLink,
                 TIME_STAMP to System.currentTimeMillis(),
                 TYPE_NOTIFICATION to TYPE_SCHEDULE_ROOM_RENTER
@@ -185,7 +185,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             val database = FirebaseDatabase.getInstance()
             val thongBaoRef = database.getReference(THONG_BAO)
             // neu ChuTro push noti thi luu id NguoiThue va nguoc lai
-            val userId = data.renterId
+            val userId = data.maChuTro
             val userThongBaoRef = thongBaoRef.child(userId)
 
             val newThongBaoId = userThongBaoRef.push().key

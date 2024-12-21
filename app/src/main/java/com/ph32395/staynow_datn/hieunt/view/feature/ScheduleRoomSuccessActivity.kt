@@ -26,10 +26,10 @@ class ScheduleRoomSuccessActivity : BaseActivity<ActivityScheduleRoomSuccessBind
                 launchActivity(MainActivity::class.java)
                 finishAffinity()
             }
-            tvNameRoom.text = scheduleRoomModel?.roomName ?: "Không có tên"
-            tvNameTenant.text = scheduleRoomModel?.tenantName ?: "Không có tên"
-            tvPhoneNumberTenant.text = scheduleRoomModel?.tenantPhoneNumber ?: "Không có SDT"
-            scheduleRoomModel?.let { tvTime.text = "${it.time}, ${it.date}" } ?: "Không có thời gian"
+            tvNameRoom.text = scheduleRoomModel?.tenPhong ?: "Không có tên"
+            tvNameTenant.text = scheduleRoomModel?.tenNguoiThue ?: "Không có tên"
+            tvPhoneNumberTenant.text = scheduleRoomModel?.sdtNguoiThue ?: "Không có SDT"
+            scheduleRoomModel?.let { tvTime.text = "${it.thoiGianDatPhong}, ${it.ngayDatPhong}" } ?: "Không có thời gian"
         }
     }
 

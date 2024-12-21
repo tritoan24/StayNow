@@ -46,10 +46,10 @@ class TenantManageScheduleRoomActivity :
 
         manageScheduleRoomAdapter = TenantManageScheduleRoomAdapter(
             onClickWatched = {
-                updateStatusRoom(it.roomScheduleId, WATCHED)
+                updateStatusRoom(it.maDatPhong, WATCHED)
             },
             onClickCancelSchedule = {
-                updateStatusRoom(it.roomScheduleId, CANCELED)
+                updateStatusRoom(it.maDatPhong, CANCELED)
                 viewModel.pushNotification(TITLE_CANCELED_BY_TENANT, it, false) { isCompletion ->
                     toastNotification(isCompletion)
                 }
@@ -58,7 +58,7 @@ class TenantManageScheduleRoomActivity :
                 UpdateRoomScheduleDialog(it, onClickConfirm = { newTime, newDate ->
                     showLoading()
                     viewModel.updateScheduleRoom(
-                        it.roomScheduleId,
+                        it.maDatPhong,
                         newTime,
                         newDate
                     ) { updateSuccess ->
@@ -68,7 +68,7 @@ class TenantManageScheduleRoomActivity :
                             }
                             viewModel.pushNotification(
                                 TITLE_LEAVED_BY_TENANT,
-                                it.copy(time = newTime, date = newDate)
+                                it.copy(thoiGianDatPhong = newTime, ngayDatPhong = newDate)
                                 ,false
                             ) { isCompletion ->
                                 toastNotification(isCompletion)
@@ -82,7 +82,7 @@ class TenantManageScheduleRoomActivity :
                 }).show(supportFragmentManager, "UpdateRoomScheduleDialog")
             },
             onClickConfirm = {
-                updateStatusRoom(it.roomScheduleId, CONFIRMED)
+                updateStatusRoom(it.maDatPhong, CONFIRMED)
                 viewModel.pushNotification(TITLE_CONFIRMED, it, false) { isCompletion ->
                     toastNotification(isCompletion)
                 }
@@ -121,7 +121,7 @@ class TenantManageScheduleRoomActivity :
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
                             listScheduleState.map { scheduleState ->
-                                val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
+                                val count = allRoomStates.filter { room -> room.trangThaiDatPhong == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
@@ -132,9 +132,9 @@ class TenantManageScheduleRoomActivity :
         }
     }
 
-    private fun updateStatusRoom(roomScheduleId: String, status: Int) {
+    private fun updateStatusRoom(maDatPhong: String, status: Int) {
         showLoading()
-        viewModel.updateScheduleRoomStatus(roomScheduleId, status) { updateSuccess ->
+        viewModel.updateScheduleRoomStatus(maDatPhong, status) { updateSuccess ->
             if (updateSuccess) {
                 viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
