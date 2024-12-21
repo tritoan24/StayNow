@@ -33,8 +33,8 @@ class TienNghiAdapter (
         private val tenTienNghi: TextView = itemView.findViewById(R.id.txtTenTienNghi)
 
         fun bind(tienNghi: TienNghiModel) {
-            Glide.with(itemView.context).load(tienNghi.Icon_tiennghi).into(iconTienNghi)
-            tenTienNghi.text = tienNghi.Ten_tiennghi
+            Glide.with(itemView.context).load(tienNghi.iconTienNghi).into(iconTienNghi)
+            tenTienNghi.text = tienNghi.tenTienNghi
         }
     }
 }

@@ -5,8 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class NoiThatModel(
-    val Icon_noithat: String = "",
-    val Ten_noithat: String = "",
-    val Status: Boolean = true
+    val iconNoiThat: String = "",
+    val tenNoiThat: String = "",
+    val status: Boolean = true
 ) : Parcelable {
 }

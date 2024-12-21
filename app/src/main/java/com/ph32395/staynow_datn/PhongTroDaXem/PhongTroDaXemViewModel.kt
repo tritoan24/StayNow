@@ -43,8 +43,8 @@ class PhongTroDaXemViewModel : ViewModel() {
                             // Chuyển đổi dữ liệu Firestore thành danh sách PhongTroDaXemModel
                             val roomHistoryList = snapshot.documents.map { doc ->
                                 PhongTroDaXemModel(
-                                    Id_phongtro = doc.getString("Id_phongtro") ?: "",
-                                    Thoi_gianxem = doc.getLong("Thoi_gianxem") ?: 0L
+                                    idPhongTro = doc.getString("Id_phongtro") ?: "",
+                                    thoiGianXem = doc.getLong("Thoi_gianxem") ?: 0L
                                 )
                             }
 
@@ -76,7 +76,7 @@ class PhongTroDaXemViewModel : ViewModel() {
                 val tasks = roomHistory.map { room ->
                     async(Dispatchers.IO) {
                         val doc = firestore.collection("PhongTro")
-                            .document(room.Id_phongtro)
+                            .document(room.idPhongTro)
                             .get()
                             .await()
 
@@ -88,7 +88,7 @@ class PhongTroDaXemViewModel : ViewModel() {
                             Dien_tich = null,
                             imageUrls = (doc.get("imageUrls") as? ArrayList<String>) ?: ArrayList(),
                             Trang_thai = false,
-                            Thoi_gianxem = room.Thoi_gianxem
+                            Thoi_gianxem = room.thoiGianXem
                         )
                     }
                 }

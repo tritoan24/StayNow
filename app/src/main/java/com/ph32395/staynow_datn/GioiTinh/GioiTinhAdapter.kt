@@ -30,9 +30,9 @@ class GioiTinhAdapter(
     override fun getItemCount(): Int = gioitinhList.size
 
     fun selectById(maGioiTinh: String) {
-        val selectedPosition = gioitinhList.indexOfFirst { it.Ma_gioitinh == maGioiTinh }
+        val selectedPosition = gioitinhList.indexOfFirst { it.maGioiTinh == maGioiTinh }
         gioitinhList.forEach {
-            Log.d("GioiTinhAdapter", "ID: ${it.Ma_gioitinh}, Name: ${it.Ten_gioitinh}")
+            Log.d("GioiTinhAdapter", "ID: ${it.maGioiTinh}, Name: ${it.tenGioiTinh}")
         }
 
         if (selectedPosition != -1) {
@@ -67,9 +67,9 @@ class GioiTinhAdapter(
         }
 
         fun bind(gioitinh: GioiTinh, isSelected: Boolean) {
-            binding.tenGioiTinh.text = gioitinh.Ten_gioitinh
+            binding.tenGioiTinh.text = gioitinh.tenGioiTinh
             Glide.with(context)
-                .load(gioitinh.ImgUrl_gioitinh)
+                .load(gioitinh.anhGioiTinh)
                 .into(binding.iconGioiTinh)
             binding.root.isSelected = isSelected
         }

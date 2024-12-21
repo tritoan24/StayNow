@@ -26,10 +26,10 @@ class GioiTinhViewModel : ViewModel() {
                     if (status) {
                         listgioiTinh.add(
                             GioiTinh (
-                                Ma_gioitinh = maLoaiPhong,
-                                Ten_gioitinh = tenLoaiPhong,
-                                ImgUrl_gioitinh = imgUrl,
-                                Status = status
+                                maGioiTinh = maLoaiPhong,
+                                tenGioiTinh = tenLoaiPhong,
+                                anhGioiTinh = imgUrl,
+                                status = status
                             )
                         )
                     }

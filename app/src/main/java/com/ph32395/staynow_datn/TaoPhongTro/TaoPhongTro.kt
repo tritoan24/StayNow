@@ -452,7 +452,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         gioiTinh: com.ph32395.staynow_datn.GioiTinh.GioiTinh,
         isSelected: Boolean
     ) {
-        Ma_gioiTinh = gioiTinh.Ma_gioitinh.toString()
+        Ma_gioiTinh = gioiTinh.maGioiTinh.toString()
     }
 
 

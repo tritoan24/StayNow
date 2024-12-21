@@ -33,8 +33,8 @@ class NoiThatAdapter(
         private val tenNoiThat: TextView = itemView.findViewById(R.id.txtTenNoiThat)
 
         fun bind(noiThat: NoiThatModel) {
-            Glide.with(itemView.context).load(noiThat.Icon_noithat).into(iconNoiThat)
-            tenNoiThat.text = noiThat.Ten_noithat
+            Glide.with(itemView.context).load(noiThat.iconNoiThat).into(iconNoiThat)
+            tenNoiThat.text = noiThat.tenNoiThat
         }
     }
 }

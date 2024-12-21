@@ -487,12 +487,12 @@ private fun observeViewModel() {
 
         // Lấy danh sách tên tiện nghi
         val listAmenities = viewModel.tienNghiList.value?.map { tn ->
-            tn.Ten_tiennghi // Chỉ cần lấy tên tiện nghi vì model HopDong.amenities là List<String>
+            tn.tenTienNghi // Chỉ cần lấy tên tiện nghi vì model HopDong.amenities là List<String>
         } ?: emptyList()
 
         // Lấy danh sách tên nội thất
         val listFurniture = viewModel.noiThatList.value?.map { nt ->
-            nt.Ten_noithat // Chỉ cần lấy tên nội thất vì model HopDong.furniture là List<String>
+            nt.tenNoiThat // Chỉ cần lấy tên nội thất vì model HopDong.furniture là List<String>
         } ?: emptyList()
         val roomDetail = viewModel.chiTietList.value?.map { tt ->
             RoomDetail(
