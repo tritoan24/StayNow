@@ -4,7 +4,7 @@
     android:maxWidth="160dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <com.ph32395.staynow.hieunt.custom_view.MovableTextView
+    <com.ph32395.staynow_datn.hieunt.custom_view.MovableTextView
         android:id="@+id/tv_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

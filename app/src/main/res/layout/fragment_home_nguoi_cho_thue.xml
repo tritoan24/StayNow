@@ -87,7 +87,7 @@
                 app:cardCornerRadius="18dp">
 
                 <view
-                    class="com.ph32395.staynow.view.ItemTaoChuTro"
+                    class="com.ph32395.staynow_datn.view.ItemTaoChuTro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
 
@@ -116,7 +116,7 @@
                     android:layout_marginLeft="20dp"/>
 
                 <view
-                    class="com.ph32395.staynow.view.ItemQuanLyView"
+                    class="com.ph32395.staynow_datn.view.ItemQuanLyView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="35dp"

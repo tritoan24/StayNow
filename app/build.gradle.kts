@@ -11,12 +11,12 @@ plugins {
 
 
 android {
-    namespace = "com.ph32395.staynow"
+    namespace = "com.ph32395.staynow_datn"
     compileSdk = 34
 
 
     defaultConfig {
-        applicationId = "com.ph32395.staynow"
+        applicationId = "com.ph32395.staynow_datn"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -133,26 +133,18 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Để tự động chuyển JSON thành object
     // Socket
     implementation ("io.socket:socket.io-client:2.0.0")
-    // zalo sdk
     implementation("androidx.room:room-runtime:2.4.3")
     kapt("androidx.room:room-compiler:2.4.3")
     implementation("androidx.room:room-ktx:2.4.3")
 
-    implementation(
-        fileTree(
-            mapOf(
-                "dir" to "C:\\Staynow_DuAnTotNghiep\\StayNow",
-                "include" to listOf("*.aar", "*.jar"),
-                "exclude" to listOf<String>()
-            )
-        )
-    )
+    // zalo sdk
+
+    implementation(files("libs/zpdk-release-v3.1.aar"))
+
     implementation ("androidx.appcompat:appcompat:1.7.0")
 
     //generate qr
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
-
-
 
     //progressdialog
     implementation("com.github.techinessoverloaded:progress-dialog:1.5.1")

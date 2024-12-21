@@ -44,15 +44,6 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tvTenantId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
-
-            <TextView
                 android:id="@+id/tvTenantName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -71,15 +62,6 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tvTenantBd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chủ Trọ:"
@@ -88,14 +70,6 @@
                 android:textStyle="bold"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/tvLandlordId"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
             <TextView
                 android:id="@+id/tvLandlordName"
                 android:layout_width="wrap_content"
@@ -107,15 +81,6 @@
 
             <TextView
                 android:id="@+id/tvLandlordAddress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/tvLandlordBd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
@@ -165,22 +130,6 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:id="@+id/tvStartDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:id="@+id/tvEndDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
-
-            <TextView
                 android:id="@+id/tvTerm"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -188,14 +137,7 @@
                 android:textSize="14sp"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/tvClause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Điều khoản"
-                android:textColor="#000000"
-                android:textSize="14sp"
-                tools:ignore="HardcodedText" />
+
 
             <TextView
                 android:id="@+id/tvDate"

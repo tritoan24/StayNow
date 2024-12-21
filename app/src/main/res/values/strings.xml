@@ -11,15 +11,6 @@
     <string name="select_location" translatable="false">Select location</string>
     <string name="previous" translatable="false">Previous</string>
 
-    <string name="Home" translatable="false">Nhà</string>
-
-    <!-- Bottom Navigation -->
-    <string name="Search" translatable="false">Tìm kiếm</string>
-    <string name="Calender" translatable="false">Lịch</string>
-    <string name="Message" translatable="false">Tin nhắn</string>
-    <string name="Profile" translatable="false">Cá nhân</string>
-
-
     <!-- Các phần khác trong strings.xml -->
     <string-array name="gender_options">
         <item>Nam</item>
@@ -27,7 +18,13 @@
         <item>Giới tính thứ 3</item>
     </string-array>
 
+    <string name="Home" translatable="false">Nhà</string>
 
+    <!-- Bottom Navigation -->
+    <string name="Search" translatable="false">Tìm kiếm</string>
+    <string name="Calender" translatable="false">Lịch</string>
+    <string name="Message" translatable="false">Tin nhắn</string>
+    <string name="Profile" translatable="false">Cá nhân</string>
 
     <!-- Bill Contract -->
     <string name="Thank_you_for_trusting_us" translatable="false">Cảm ơn bạn đã tin tưởng chúng tôi</string>
@@ -85,7 +82,7 @@
 
     <!-- Chosse payment-->
     <string name="Payment_Options" translatable="false">Lựa chọn thanh toán</string>
-    <string name="You_can_ask_someone_else_to_scan_for_you" translatable="false">Bạn có thể nhờ người khác quét hộ</string>
+    <string name="You_can_ask_someone_else_to_scan_for_you" translatable="false">Bạn có thể dùng thiết bị khác để quét</string>
     <string name="QR_code_scanning_time_for_payment" translatable="false">Thời gian quét mã QR để thanh toán</string>
     <string name="event" translatable="false">còn</string>
     <string name="Pay_with" translatable="false">Thanh toán với</string>
@@ -200,6 +197,7 @@
     <string name="Please_wait_for_the_host" translatable="false">Vui lòng đợi chủ nhà xác nhận lịch hẹn của bạn nhé. Sau khi chủ nhà xác nhận lịch hẹn của bạn bạn sẽ có đầy đủ thông tin về địa chỉ và người chủ trọ.</string>
 
     <!-- Welcom-->
+    <string name="Welcome_to_StayNow" translatable="false">Chào mừng bạn đến với StayNow</string>
 
     <!-- Succes_payment-->
     <string name="Invoice_code" translatable="false">Mã hóa đơn: #1234567</string>
@@ -226,13 +224,15 @@
     <!-- tao phòng trọ -->
     <string name="Add_a_room" translatable="false">Thêm phòng trọ</string>
     <string name="Room_information" translatable="false">Thông tin phòng</string>
-    <string name="Name_house_number" translatable="false">Tên phòng*</string>
+    <string name="Enter_Address" translatable="false">Nhập địa chỉ</string>
+    <string name="Name_house_number" translatable="false">Tên/ số nhà *</string>
     <string name="Room_Rate" translatable="false">Giá phòng *</string>
-    <string name="Description" translatable="false">Nhập mô tả của bạn</string>
+    <string name="Description" translatable="false">Mô tả</string>
     <string name="Service_Information" translatable="false">Thông tin dịch vụ</string>
     <string name="Furniture_List" translatable="false">Danh sách nội thất</string>
     <string name="List_of_Amenities" translatable="false">Danh sách tiện nghi</string>
-
+    <string name="Stay_Room" translatable="false">Lưu phòng trọ</string>
+    <string name="Posting_a_room" translatable="false">Đăng phòng trọ</string>
 
     <!-- manage_schedule_room -->
     <string name="Waiting_for_confirmation" translatable="false">Chờ xác nhận</string>
@@ -398,6 +398,7 @@
     <string name="nguoi_thue_3" translatable="false">Các vấn đề về hợp đồng sẽ được StayNow bảo hộ 100% trong thời hạn hợp đồng theo đúng quy định.</string>
     <string name="chu_tro_1" translatable="false">Khi ký người chủ trọ kí kết hợp đồng bên ứng dụng StayNow sẽ được bảo vệ về pháp lý khi người thuê trọ vi phạm hợp đồng.</string>
     <string name="chu_tro_2" translatable="false">Nếu người thuê trọ phá vỡ hợp đồng, bỏ trốn, không chịu đóng tiền phòng, tiền dịch vụ, ăn cắp, phá hoại tài sản khi này StayNow sẽ nhờ pháp luật can thiệp để đòi lại quyền lợi cho người chủ trọ</string>
+    <string name="nguoi_thue_4" translatable="false">Khi người dùng không tuân thủ theo các điều khoản của StayNow, nếu có bất kỳ điều gì xảy ra người dùng hoàn toàn phải chịu trách nhiệm.</string>
 
 
     <!-- key Goong map api  -->
