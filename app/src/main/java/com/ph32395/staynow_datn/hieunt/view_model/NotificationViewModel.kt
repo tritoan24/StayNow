@@ -61,7 +61,7 @@ class NotificationViewModel(private val dao: NotificationDao) : ViewModel() {
                     "thoiGianGuiThongBao" to notification.thoiGianGuiThongBao,
                     "tieuDe" to notification.tieuDe,
                     "idModel" to notification.idModel,
-                    "typeNotification" to notification.loaiThongBao
+                    "loaiThongBao" to notification.loaiThongBao
                 )
 
                 // Lưu thông báo vào Firebase dưới ID người nhận
