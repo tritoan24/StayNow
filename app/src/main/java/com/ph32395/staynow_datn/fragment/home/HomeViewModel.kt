@@ -66,7 +66,7 @@ class HomeViewModel : ViewModel() {
     fun loadRoomByStatus(maNguoiDung: String) {
         //Test
         firestore.collection("PhongTro")
-            .whereEqualTo("Ma_nguoidung", maNguoiDung) // Lọc theo mã người dùng
+            .whereEqualTo("maNguoiDung", maNguoiDung) // Lọc theo mã người dùng
             .get()
             .addOnSuccessListener { snapshot ->
                 val allRooms = snapshot.documents.mapNotNull { doc ->
@@ -306,7 +306,7 @@ class HomeViewModel : ViewModel() {
                 val rooms = querySnapshot.documents.mapNotNull { doc ->
                     val roomModel = doc.toObject(PhongTroModel::class.java)
                     roomModel?.let {
-                        if (it.Ma_nguoidung != idUser && !it.Trang_thaiphong && it.Trang_thaiduyet == "DaDuyet") {
+                        if (it.maNguoiDung != idUser && !it.Trang_thaiphong && it.Trang_thaiduyet == "DaDuyet") {
                             Pair(doc.id, it)
                         } else {
                             null

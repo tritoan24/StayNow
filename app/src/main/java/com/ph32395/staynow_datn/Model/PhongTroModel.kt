@@ -3,7 +3,7 @@ package com.ph32395.staynow_datn.Model
 import java.io.Serializable
 
 data class PhongTroModel(
-    val Ma_nguoidung: String = "", // ma chu tro
+    val maNguoiDung: String = "", // ma chu tro
     val Ma_phongtro: String = "",
     val Ten_phongtro: String = "",
     val Dia_chi: String = "",

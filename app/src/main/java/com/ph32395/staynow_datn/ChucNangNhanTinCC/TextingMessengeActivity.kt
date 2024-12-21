@@ -84,9 +84,9 @@ class TextingMessengeActivity : AppCompatActivity() {
         userId?.let {
             databaseRef.child(it).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val userName = snapshot.child("ho_ten").value.toString()
-                    val anhDaiDien = snapshot.child("anh_daidien").value.toString()
-                    val status = snapshot.child("status").value.toString()
+                    val userName = snapshot.child("hoTen").value.toString()
+                    val anhDaiDien = snapshot.child("anhDaiDien").value.toString()
+                    val status = snapshot.child("trangThai").value.toString()
                     val statusDrawable = binding.vTrangThaiUser.background as GradientDrawable
                     statusDrawable.setColor(if (status == "online") Color.GREEN else Color.GRAY)
                     if (!this@TextingMessengeActivity.isDestroyed && !this@TextingMessengeActivity.isFinishing) {

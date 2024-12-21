@@ -106,7 +106,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                 val scheduleRoomModel = ScheduleRoomModel().apply {
                     maPhongTro = roomIdInDetail
                     tenPhong = roomModel.Ten_phongtro
-                    maChuTro = roomModel.Ma_nguoidung
+                    maChuTro = roomModel.maNguoiDung
                     diaChiPhong = roomModel.Dia_chichitiet
                     tenChuTro = renterNameByGetInfo
                     sdtChuTro = renterPhoneNumberByGetInfo
@@ -207,7 +207,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             val jobCallInfoRenter = async {
                 try {
                     FirebaseDatabase.getInstance().reference.child(NGUOI_DUNG)
-                        .child(roomModel.Ma_nguoidung).get()
+                        .child(roomModel.maNguoiDung).get()
                         .addOnSuccessListener { data ->
                             data?.let {
                                 renterNameByGetInfo = it.child(HO_TEN).value as? String ?: ""

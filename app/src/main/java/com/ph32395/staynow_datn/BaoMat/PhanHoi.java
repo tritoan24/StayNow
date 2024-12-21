@@ -89,13 +89,13 @@ public class PhanHoi extends AppCompatActivity {
         });
     }
 
-    // Lấy ma_nguoidung từ Firebase Realtime Database
+    // Lấy maNguoiDung từ Firebase Realtime Database
     private void getMaNguoiDung(String userId) {
         mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    maNguoiDung = snapshot.child("ma_nguoidung").getValue(String.class);
+                    maNguoiDung = snapshot.child("maNguoiDung").getValue(String.class);
                 } else {
                     Log.e("PhanHoi", "Người dùng không tồn tại");
                 }
@@ -103,7 +103,7 @@ public class PhanHoi extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) {
-                Log.e("PhanHoi", "Lỗi khi lấy ma_nguoidung: " + error.getMessage());
+                Log.e("PhanHoi", "Lỗi khi lấy maNguoiDung: " + error.getMessage());
             }
         });
     }
@@ -126,7 +126,7 @@ public class PhanHoi extends AppCompatActivity {
                     feedbackData.put("noi_dung", feedback);
                     feedbackData.put("thoi_giangui", formattedDateTime); // Gán thời gian hiện tại
                     feedbackData.put("img", imageUrl);
-                    feedbackData.put("ma_nguoidung", maNguoiDung);
+                    feedbackData.put("maNguoiDung", maNguoiDung);
                     feedbackData.put("createdAt", currentTimeMillis); // Lưu timestamp nếu cần
 
                     db.collection("PhanHoi")

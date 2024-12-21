@@ -30,7 +30,7 @@ class PhongTroDaXemAdapter : ListAdapter<PhongTroModel,
 //    So sanh xem hai doi tuong c giong nhau khong
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<PhongTroModel>() {
-            override fun areItemsTheSame(oldItem: PhongTroModel, newItem: PhongTroModel) = oldItem.Ma_nguoidung == newItem.Ma_nguoidung
+            override fun areItemsTheSame(oldItem: PhongTroModel, newItem: PhongTroModel) = oldItem.maNguoiDung == newItem.maNguoiDung
             override fun areContentsTheSame(oldItem: PhongTroModel, newItem: PhongTroModel) = oldItem == newItem
         }
     }

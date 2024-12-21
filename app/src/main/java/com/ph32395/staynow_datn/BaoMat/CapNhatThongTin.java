@@ -72,11 +72,11 @@ public class CapNhatThongTin extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
                     if (snapshot.exists()) {
-                        String name = snapshot.child("ho_ten").getValue(String.class);
+                        String name = snapshot.child("hoTen").getValue(String.class);
                         String phone = snapshot.child("sdt").getValue(String.class);
-                        String img = snapshot.child("anh_daidien").getValue(String.class);
+                        String img = snapshot.child("anhDaiDien").getValue(String.class);
                         String email = snapshot.child("email").getValue(String.class);
-                        String gender = snapshot.child("gioi_tinh").getValue(String.class);
+                        String gender = snapshot.child("gioiTinh").getValue(String.class);
 
                         // Hiển thị dữ liệu vào EditText
                         update_ten.setText(name);
@@ -176,10 +176,10 @@ public class CapNhatThongTin extends AppCompatActivity {
         // Tiến hành cập nhật dữ liệu sau khi kiểm tra hợp lệ
         String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
         if (userId != null) {
-            mDatabase.child("NguoiDung").child(userId).child("ho_ten").setValue(name);
+            mDatabase.child("NguoiDung").child(userId).child("hoTen").setValue(name);
             mDatabase.child("NguoiDung").child(userId).child("sdt").setValue(phone);
             mDatabase.child("NguoiDung").child(userId).child("email").setValue(email);
-            mDatabase.child("NguoiDung").child(userId).child("gioi_tinh").setValue(gender)
+            mDatabase.child("NguoiDung").child(userId).child("gioiTinh").setValue(gender)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(CapNhatThongTin.this, "Cập nhật thông tin thành công!", Toast.LENGTH_SHORT).show();
@@ -196,7 +196,7 @@ public class CapNhatThongTin extends AppCompatActivity {
                     @Override
                     public void onSuccess(String imageUrl) {
                         // Lưu thông tin người dùng với URL ảnh
-                        mDatabase.child("NguoiDung").child(userId).child("anh_daidien").setValue(imageUrl)
+                        mDatabase.child("NguoiDung").child(userId).child("anhDaiDien").setValue(imageUrl)
                                 .addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(CapNhatThongTin.this, "Cập nhật ảnh đại diện thành công!", Toast.LENGTH_SHORT).show();

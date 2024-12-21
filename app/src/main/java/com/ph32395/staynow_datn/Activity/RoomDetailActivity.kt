@@ -155,8 +155,8 @@ class RoomDetailActivity : AppCompatActivity() {
             val database = FirebaseDatabase.getInstance().reference
             val userRef = database.child("NguoiDung").child(userId)
             userRef.get().addOnSuccessListener { snapshot ->
-                val statusCCCD = snapshot.child("statusCCCD").value as? Boolean ?: false
-                val statusPTTT = snapshot.child("statusPttt").value as? Boolean ?: false
+                val statusCCCD = snapshot.child("trangThaiCCCD").value as? Boolean ?: false
+                val statusPTTT = snapshot.child("trangThaiPTTT").value as? Boolean ?: false
                 Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
                 Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
 
@@ -197,15 +197,15 @@ class RoomDetailActivity : AppCompatActivity() {
         }
         findViewById<MaterialButton>(R.id.viewInfor).setOnClickListener{
             val intent = Intent(this@RoomDetailActivity, ThongTinNguoiDung::class.java)
-            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
-                intent.putExtra("idUser",ma_NguoiDung)
+            viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
+                intent.putExtra("idUser",maNguoiDung)
             }
             startActivity(intent)
         }
 
         findViewById<ImageView>(R.id.shareRoom).setOnClickListener{
-            viewModel.userId.observe(this) { (ma_NguoiDung, hoTen) ->
-                intent.putExtra("idUser", ma_NguoiDung)
+            viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
+                intent.putExtra("idUser", maNguoiDung)
 
                 // Tạo dynamic link
                 val roomDetailLink = "https://staynowshare.page.link/roomDetail?roomType=${maPhongTro}"

@@ -90,7 +90,7 @@ class RoomNguoiChoThueAdapter(
             areaTextView.text = "${roomModel.Dien_tich} m²"
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid?: ""
-            if (userId.equals(roomModel.Ma_nguoidung)) {
+            if (userId.equals(roomModel.maNguoiDung)) {
                 loaiTaiKhoan = "ManCT"
             } else {
                 loaiTaiKhoan = "ManND"

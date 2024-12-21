@@ -84,7 +84,7 @@ class MessageFragment : Fragment() {
         fetchStatusMessage {
             val adapter = UserStatusOnOfAdapter(it) {
                 val intent = Intent(context, TextingMessengeActivity::class.java)
-                intent.putExtra("userId", it.ma_nguoidung)
+                intent.putExtra("userId", it.maNguoiDung)
                 startActivity(intent)
             }
             val linearLayoutManager =
@@ -126,7 +126,7 @@ class MessageFragment : Fragment() {
     }
 
     data class UserStatus(
-        val ma_nguoidung: String = "",
+        val maNguoiDung: String = "",
         val ho_ten: String = "",
         val anh_daidien: String = "",
         val status: String = ""
@@ -163,17 +163,17 @@ class MessageFragment : Fragment() {
                 database.child("NguoiDung").child(userId)
                     .addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            val maNguoiDung = snapshot.child("ma_nguoidung").value.toString()
-                            val ho_ten = snapshot.child("ho_ten").value.toString()
-                            val anhDaiDien = snapshot.child("anh_daidien").value.toString()
+                            val maNguoiDung = snapshot.child("maNguoiDung").value.toString()
+                            val hoTen = snapshot.child("hoTen").value.toString()
+                            val anhDaiDien = snapshot.child("anhDaiDien").value.toString()
                             val status = snapshot.child("status").value.toString()
 
                             // Tìm user đã tồn tại và cập nhật trạng thái mới
-                            val existingUserIndex = listUser.indexOfFirst { it.ma_nguoidung == maNguoiDung }
+                            val existingUserIndex = listUser.indexOfFirst { it.maNguoiDung == maNguoiDung }
                             if (existingUserIndex != -1) {
-                                listUser[existingUserIndex] = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
+                                listUser[existingUserIndex] = UserStatus(maNguoiDung, hoTen, anhDaiDien, status)
                             } else {
-                                listUser.add(UserStatus(maNguoiDung, ho_ten, anhDaiDien, status))
+                                listUser.add(UserStatus(maNguoiDung, hoTen, anhDaiDien, status))
                             }
 
                             // Gọi hàm onResult mỗi khi dữ liệu thay đổi

@@ -105,9 +105,9 @@ class ProfileFragment : Fragment() {
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
-                            val name = snapshot.child("ho_ten").value.toString()
+                            val name = snapshot.child("hoTen").value.toString()
                             val phone = snapshot.child("sdt").value.toString()
-                            val img = snapshot.child("anh_daidien").value.toString()
+                            val img = snapshot.child("anhDaiDien").value.toString()
 
                             // gắn cho tôi vào textview
                             userNameTextView.text = name
@@ -130,7 +130,7 @@ class ProfileFragment : Fragment() {
                             Log.d("ProfileFragment", "Người dùng không tồn tại")
                         }
                         val accountType =
-                            snapshot.child("loai_taikhoan").getValue(String::class.java)
+                            snapshot.child("loaiTaiKhoan").getValue(String::class.java)
                                 ?: "NguoiThue" // Mặc định là "NguoiThue"
                         val registerLayout =
                             view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
@@ -220,14 +220,14 @@ class ProfileFragment : Fragment() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid
         if (uid != null) {
             val userRef = FirebaseDatabase.getInstance().getReference("NguoiDung").child(uid)
-            userRef.child("status").setValue("offline").addOnCompleteListener { task ->
+            userRef.child("trangThai").setValue("offline").addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d("MainActivity", "User status set to offline")
                 } else {
                     Log.e("MainActivity", "Failed to set user status to offline: ${task.exception}")
                 }
             }
-            userRef.child("lastActiveTime").setValue(ServerValue.TIMESTAMP)
+            userRef.child("thoiGianKichHoatCuoiCung").setValue(ServerValue.TIMESTAMP)
         }
     }
 

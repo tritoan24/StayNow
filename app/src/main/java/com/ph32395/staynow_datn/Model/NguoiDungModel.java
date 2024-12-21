@@ -7,7 +7,7 @@ public class NguoiDungModel {
     private String email;
     private String anhDaiDien;
     private String gioiTinh;
-    private Integer soLuotDaThich;
+    private Integer soLuotDatLich;
     private String loaiTaiKhoan;
     private String trangThaiTaiKhoan;
     private boolean daXacThuc;
@@ -20,7 +20,7 @@ public class NguoiDungModel {
         this.sdt = sdt;
         this.email = email;
         this.anhDaiDien = anh_daidien;
-        this.soLuotDaThich = so_luotdatlich;
+        this.soLuotDatLich = so_luotdatlich;
         this.loaiTaiKhoan = loai_taikhoan;
         this.trangThaiTaiKhoan = trang_thaitaikhoan;
         this.daXacThuc= daXacThuc;

@@ -185,16 +185,16 @@ class RoomDetailViewModel : ViewModel() {
                 }
         }
 
-//        Truy van thong tin nguoi dung tu Ma_nguoidung
-        room.Ma_nguoidung.let { maChuTro ->
+//        Truy van thong tin nguoi dung tu maNguoiDung
+        room.maNguoiDung.let { maChuTro ->
             realtimeDb.child("NguoiDung").child(maChuTro)
                 .get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot?.let {
-                        val anhDaiDien = it.child("anh_daidien").value as? String ?: ""
-                        val hoTen = it.child("ho_ten").value as? String ?: ""
-                        val ma_NguoiDung = room.Ma_nguoidung
-                        _userId.value = Pair(ma_NguoiDung,hoTen)
+                        val anhDaiDien = it.child("anhDaiDien").value as? String ?: ""
+                        val hoTen = it.child("hoTen").value as? String ?: ""
+                        val maNguoiDung = room.maNguoiDung
+                        _userId.value = Pair(maNguoiDung,hoTen)
                         _userInfo.value = Pair(anhDaiDien, hoTen)
                     }
                 }

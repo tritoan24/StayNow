@@ -96,7 +96,7 @@ class PhongTroAdapter(
             roomTime.text = formattedTime
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-            if (userId.equals(room.Ma_nguoidung)) {
+            if (userId.equals(room.maNguoiDung)) {
                 loaiTaiKhoan = "ManCT"
             } else {
                 loaiTaiKhoan = "ManND"
