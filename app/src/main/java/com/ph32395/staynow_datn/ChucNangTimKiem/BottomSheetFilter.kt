@@ -152,10 +152,10 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         Log.d(TAG, "displayChipsTypeRom: listTienNghi $selectedTienNghi")
         for (type in types) {
             val chip = Chip(context)
-            chip.text = type.Ten_tiennghi
+            chip.text = type.tenTienNghi
             chip.textSize = 11f
             chip.isCheckable = true
-            chip.isChecked = selectedTienNghi.contains(type.Ten_tiennghi)
+            chip.isChecked = selectedTienNghi.contains(type.tenTienNghi)
             chip.elevation = 8f
             chip.setChipBackgroundColorResource(R.color.white)
             chip.setChipStrokeColorResource(if (chip.isChecked) R.color.color_text else R.color.transparent)
@@ -181,11 +181,11 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         Log.d(TAG, "displayChipsTypeRom: listNoiThat $selectedNoiThat")
         for (type in types) {
             val chip = Chip(context)
-            chip.text = type.Ten_noithat
-            Log.d(TAG, "displayChipsNoiThat: ${selectedNoiThat.contains(type.Ten_noithat)}")
+            chip.text = type.tenNoiThat
+            Log.d(TAG, "displayChipsNoiThat: ${selectedNoiThat.contains(type.tenNoiThat)}")
             chip.textSize = 11f
             chip.isCheckable = true
-            chip.isChecked = selectedNoiThat.contains(type.Ten_noithat)
+            chip.isChecked = selectedNoiThat.contains(type.tenNoiThat)
             chip.elevation = 8f
             chip.setChipStrokeColorResource(
                 if (chip.isChecked) R.color.color_text else R.color.transparent

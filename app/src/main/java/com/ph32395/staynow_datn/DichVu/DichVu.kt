@@ -1,9 +1,9 @@
 package com.ph32395.staynow_datn.DichVu
 
 data class DichVu (
-    val Ma_dichvu: String? = null,
-    val Ten_dichvu: String,
-    val Icon_dichvu: String,
-    val Don_vi: List<String>,
-    val Status: Boolean,
+    val maDichVu: String? = null,
+    val tenDichVu: String,
+    val iconDichVu: String,
+    val donVi: List<String>,
+    val trangThai: Boolean,
 )

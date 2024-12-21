@@ -99,11 +99,11 @@ object DichVuAddServiceUtil {
 
                 // Tạo dịch vụ mới
                 val newDichVu = DichVu(
-                    Ma_dichvu = "", // Để trống vì chưa có ID từ Firestore
-                    Ten_dichvu = tenDichVu,
-                    Icon_dichvu = selectedIcon.toString(), // Convert icon resource ID sang string
-                    Don_vi = listOf(unit),
-                    Status = true
+                    maDichVu = "", // Để trống vì chưa có ID từ Firestore
+                    tenDichVu = tenDichVu,
+                    iconDichVu = selectedIcon.toString(), // Convert icon resource ID sang string
+                    donVi = listOf(unit),
+                    trangThai = true
                 )
 
                 // Gọi callback để thêm dịch vụ

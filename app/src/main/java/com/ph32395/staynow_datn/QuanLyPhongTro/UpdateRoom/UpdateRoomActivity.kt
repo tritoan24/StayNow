@@ -32,9 +32,9 @@ import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import com.ph32395.staynow_datn.TaoPhongTro.ChoiceImageAdapter
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
-import com.ph32395.staynow_datn.TaoPhongTro.PhiThongTin
 import com.ph32395.staynow_datn.TaoPhongTro.PhongTroNoiThat
 import com.ph32395.staynow_datn.TaoPhongTro.PhongTroTienNghi
 import com.ph32395.staynow_datn.ThongTin.ThongTin
@@ -371,7 +371,7 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
         prices.forEach { (thongtin, price) ->
             // Lưu thông tin dịch vụ và giá vào pricesMap
-            pricesMapThongTin[thongtin.Ma_thongtin.toString()] = Pair(thongtin, price)
+            pricesMapThongTin[thongtin.maThongTin.toString()] = Pair(thongtin, price)
         }
 
     }
@@ -399,14 +399,14 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         loaiPhong: com.ph32395.staynow_datn.LoaiPhong.LoaiPhong,
         isSelected: Boolean
     ) {
-        Ma_loaiphong = loaiPhong.Ma_loaiphong.toString()
+        Ma_loaiphong = loaiPhong.maLoaiPhong.toString()
     }
 
     override fun onGioiTinhSelected(
         gioiTinh: com.ph32395.staynow_datn.GioiTinh.GioiTinh,
         isSelected: Boolean
     ) {
-        Ma_gioiTinh = gioiTinh.Ma_gioitinh.toString()
+        Ma_gioiTinh = gioiTinh.maGioiTinh.toString()
     }
 
 
@@ -532,13 +532,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     ) {
         for (tienNghi in selectedTienNghi) {
             val phongTroTienNghi = PhongTroTienNghi(
-                Ma_phongtro = maPhongTro,
-                Ma_tiennghi = tienNghi.Ma_tiennghi.toString()
+                maPhongTro = maPhongTro,
+                maTienNghi = tienNghi.maTienNghi.toString()
             )
 
             firestore.collection("PhongTroTienNghi").add(phongTroTienNghi)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${tienNghi.Ten_tiennghi} thành công!")
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
@@ -552,13 +551,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     ) {
         for (noithat in selectedNoiThat) {
             val phongTroNoiThat = PhongTroNoiThat(
-                Ma_phongtro = maPhongTro,
-                Ma_noithat = noithat.Ma_noithat.toString()
+                maPhongTro = maPhongTro,
+                maNoiThat = noithat.maNoiThat.toString()
             )
 
             firestore.collection("PhongTroNoiThat").add(phongTroNoiThat)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${noithat.Ten_noithat} thành công!")
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
@@ -570,7 +568,7 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         // Sử dụng listPhiDichVu đã lưu
         listPhiDichVu.forEach { phiDichVu ->
             // Tạo một bản copy với mã phòng trọ mới
-            val newPhiDichVu = phiDichVu.copy(Ma_phongtro = maPhongTro)
+            val newPhiDichVu = phiDichVu.copy(maPhongTro = maPhongTro)
 
             firestore.collection("PhiDichVu")
                 .add(newPhiDichVu)
@@ -590,12 +588,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
             val thongtin = pair.first
             val price = pair.second
 
-            val phiThongTin = PhiThongTin(
-                So_luong_donvi = price,
-                Ma_phongtro = maPhongTro,
-                Ten_thongtin = thongtin.Ten_thongtin,
-                Icon_thongtin = thongtin.Icon_thongtin,
-                Don_vi = thongtin.Don_vi
+            val phiThongTin = ChiTietThongTin(
+                soLuongDonVi = price,
+                maPhongTro = maPhongTro,
+                tenThongTin = thongtin.tenThongTin,
+                iconThongTin = thongtin.iconThongTin,
+                donVi = thongtin.donVi
             )
 
             firestore.collection("ChiTietThongTin")

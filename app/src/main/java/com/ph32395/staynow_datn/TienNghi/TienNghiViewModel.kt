@@ -18,19 +18,19 @@ class TienNghiViewModel : ViewModel() {
                 val tienNghiList = mutableListOf<TienNghi>()
                 for (document in result) {
                     // Lấy các giá trị từ Firestore
-                    val maTienNghi = document.getString("Ma_tiennghi") ?: ""
-                    val tenTienNghi = document.getString("Ten_tiennghi") ?: ""
-                    val iconTienNghi = document.getString("Icon_tiennghi") ?: ""
-                    val status = document.getBoolean("Status") ?: false
+                    val maTienNghi = document.getString("maTienNghi") ?: ""
+                    val tenTienNghi = document.getString("tenTienNghi") ?: ""
+                    val iconTienNghi = document.getString("iconTienNghi") ?: ""
+                    val status = document.getBoolean("trangThai") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
                     if (status) {
                         tienNghiList.add(
                             TienNghi(
-                                Ma_tiennghi = maTienNghi,
-                                Ten_tiennghi = tenTienNghi,
-                                Icon_tiennghi = iconTienNghi,
-                                Status = status
+                                maTienNghi = maTienNghi,
+                                tenTienNghi = tenTienNghi,
+                                iconTienNghi = iconTienNghi,
+                                trangThai = status
                             )
                         )
                     }

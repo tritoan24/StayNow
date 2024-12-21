@@ -23,7 +23,7 @@ class DichVuAdapter(
     private val listener: AdapterTaoPhongTroEnteredListenner
 ) : RecyclerView.Adapter<DichVuAdapter.DichVuViewHolder>() {
 
-    private val pricesMap = mutableMapOf<Int, Pair<Int, String>>()
+    private val pricesMap = mutableMapOf<Int, Pair<Double, String>>()
     // Thêm phương thức để cập nhật danh sách
     fun updateList(newList: List<DichVu>) {
         dichVuList = newList
@@ -44,10 +44,10 @@ class DichVuAdapter(
 
     inner class DichVuViewHolder(private val binding: ItemDichvuBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(dichvu: DichVu, position: Int) {
-            binding.dichvuName.text = dichvu.Ten_dichvu
+            binding.dichvuName.text = dichvu.tenDichVu
             val priceInfo = pricesMap[position]
             if (priceInfo != null) {
-                val formattedPrice = String.format("%,d", priceInfo.first)
+                val formattedPrice = String.format("%,.0f", priceInfo.first)
                 binding.giaDichvu.text = "$formattedPrice đ / ${priceInfo.second}"
                 Log.d("DichVuAdapter", "bind: $formattedPrice")
                 Log.d("DichVuAdapter", "bind: $formattedPrice đ / ${priceInfo.second}")
@@ -57,7 +57,7 @@ class DichVuAdapter(
             }
 
             Glide.with(context)
-                .load(dichvu.Icon_dichvu)
+                .load(dichvu.iconDichVu)
                 .into(binding.dichvuImage)
 
             binding.itemDichvu.setOnClickListener {
@@ -95,11 +95,11 @@ class DichVuAdapter(
         val priceList = updatedList.mapIndexed { index, dichVu ->
             val priceInfo = pricesMap[index]
             PhiDichVu(
-                Ma_phongtro = "",
-                Ten_dichvu = dichVu.Ten_dichvu,
-                Don_vi = priceInfo?.second ?: "",
-                Icon_dichvu = dichVu.Icon_dichvu,
-                So_tien = priceInfo?.first ?: 0
+                maPhongTro = "",
+                tenDichVu = dichVu.tenDichVu,
+                donVi = priceInfo?.second ?: "",
+                iconDichVu = dichVu.iconDichVu,
+                soTien = priceInfo?.first ?: 0.0
             )
         }
         listener.onAllPricesEntered(priceList)
@@ -116,7 +116,7 @@ class DichVuAdapter(
             editText.setText(existingPriceInfo.first.toString())
 
             // Set đơn vị đã chọn trước đó
-            val unitList = dichvu.Don_vi
+            val unitList = dichvu.donVi
             val adapter = ArrayAdapter(context, com.airbnb.lottie.R.layout.support_simple_spinner_dropdown_item, unitList)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
@@ -128,18 +128,18 @@ class DichVuAdapter(
             }
         } else {
             // Trường hợp chưa có giá trị
-            val unitList = dichvu.Don_vi
+            val unitList = dichvu.donVi
             val adapter = ArrayAdapter(context, com.airbnb.lottie.R.layout.support_simple_spinner_dropdown_item, unitList)
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
         }
 
         SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
-            .setTitleText("Nhập giá tiền cho ${dichvu.Ten_dichvu}")
+            .setTitleText("Nhập giá tiền cho ${dichvu.tenDichVu}")
             .setCustomView(dialogView)
             .setConfirmText("Xác nhận")
             .setConfirmClickListener { sDialog ->
-                val inputText = CurrencyFormatTextWatcher.getUnformattedValue(editText).toInt()
+                val inputText = CurrencyFormatTextWatcher.getUnformattedValue(editText).toDouble()
                 val selectedUnit = spinner.selectedItem.toString()
 
                 if (inputText > 0 && selectedUnit.isNotEmpty()) {
@@ -151,11 +151,11 @@ class DichVuAdapter(
                     if (pricesMap.size == dichVuList.size) {
                         val priceList = dichVuList.mapIndexed { index, dichVu ->
                             PhiDichVu(
-                                Ma_phongtro = "",
-                                Ten_dichvu = dichVu.Ten_dichvu,
-                                Don_vi = pricesMap[index]?.second ?: "",
-                                Icon_dichvu = dichVu.Icon_dichvu,
-                                So_tien = pricesMap[index]?.first ?: 0
+                                maPhongTro = "",
+                                tenDichVu = dichVu.tenDichVu,
+                                donVi = pricesMap[index]?.second ?: "",
+                                iconDichVu = dichVu.iconDichVu,
+                                soTien = pricesMap[index]?.first ?: 0.0
                             )
                         }
                         listener.onAllPricesEntered(priceList)
@@ -183,7 +183,7 @@ class DichVuAdapter(
 
         // Check the exact type of your pricesMap and adjust accordingly
         // This is a placeholder - you may need to adjust based on your exact implementation
-        pricesMap[updatedList.size - 1] = Pair(0, "")
+        pricesMap[updatedList.size - 1] = Pair(0.0, "")
 
         // Thông báo cho listener
         updatePriceList(updatedList)
