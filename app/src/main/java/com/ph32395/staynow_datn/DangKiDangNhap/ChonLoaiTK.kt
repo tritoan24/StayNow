@@ -26,7 +26,7 @@ class ChonLoaiTK : AppCompatActivity() {
 
         // Xử lý khi nhấn nút "Chủ nhà trọ"
         binding.nguoichothueButton.setOnClickListener {
-            userRef.child("loai_taikhoan").setValue("NguoiChoThue").addOnCompleteListener { task ->
+            userRef.child("loaiTaiKhoankhoan").setValue("NguoiChoThue").addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("Đã cập nhật loại tài khoản: Chủ nhà trọ")
                         // Chuyển sang màn home
@@ -40,7 +40,7 @@ class ChonLoaiTK : AppCompatActivity() {
 
         // Xử lý khi nhấn nút "Người thuê trọ"
         binding.nguoithueButton.setOnClickListener {
-            userRef.child("loai_taikhoan").setValue("NguoiThue").addOnCompleteListener { task ->
+            userRef.child("loaiTaiKhoankhoan").setValue("NguoiThue").addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("Đã cập nhật loại tài khoản: Người thuê trọ")
                     val intent = Intent(this, MainActivity::class.java)

@@ -140,7 +140,7 @@ public class DangNhap extends AppCompatActivity {
                                                 String status = dataSnapshot.child("trang_thaitaikhoan").getValue(String.class);
                                                 Boolean daXacThucValue = dataSnapshot.child("daXacThuc").getValue(Boolean.class);
                                                 boolean daXacthuc = daXacThucValue != null && daXacThucValue;
-                                                String loaiTaiKhoan = dataSnapshot.child("loai_taikhoan").getValue(String.class);
+                                                String loaiTaiKhoan = dataSnapshot.child("loaiTaiKhoankhoan").getValue(String.class);
 
                                                 if ("HoatDong".equals(status)) {
                                                     if (daXacthuc) {
@@ -300,7 +300,7 @@ public class DangNhap extends AppCompatActivity {
                                             Boolean daXacThucValue = snapshot.child("daXacThuc").getValue(Boolean.class);
                                             // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
                                             boolean daXacThuc = daXacThucValue != null && daXacThucValue;
-                                            String loaiTaiKhoan = snapshot.child("loai_taikhoan").getValue(String.class);
+                                            String loaiTaiKhoan = snapshot.child("loaiTaiKhoankhoan").getValue(String.class);
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
                                                 if (daXacThuc) {
