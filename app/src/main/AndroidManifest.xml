@@ -43,7 +43,7 @@
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
             android:exported="false" />
