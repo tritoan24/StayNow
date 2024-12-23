@@ -123,10 +123,10 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         Log.d(TAG, "displayChipsTypeRom: listType $selectedTypes")
         for (type in types) {
             val chip = Chip(context)
-            chip.text = type.Ten_loaiphong
+            chip.text = type.tenLoaiPhong
             chip.textSize = 11f
             chip.isCheckable = true
-            chip.isChecked = selectedTypes.contains(type.Ten_loaiphong)
+            chip.isChecked = selectedTypes.contains(type.tenLoaiPhong)
             chip.elevation = 8f
             chip.setChipStrokeColorResource(if (chip.isChecked) R.color.color_text else R.color.transparent)
             chip.setChipBackgroundColorResource(R.color.white)

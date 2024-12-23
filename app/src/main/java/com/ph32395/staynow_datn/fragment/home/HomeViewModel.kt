@@ -239,17 +239,17 @@ class HomeViewModel : ViewModel() {
                     }
 
                     val tenLoaiPhong =
-                        loaiPhongSnapshot?.documents?.firstOrNull()?.getString("Ten_loaiphong")
+                        loaiPhongSnapshot?.documents?.firstOrNull()?.getString("tenLoaiPhong")
                     if (tenLoaiPhong != null) {
                         val roomsRef = firestore.collection("PhongTro")
-                        val query = if (tenLoaiPhong == "Tất cả")
+                        val query = if (tenLoaiPhong == "Tất Cả")
                             roomsRef.whereEqualTo(
                                 "trangThaiDuyet",
                                 "DaDuyet"
                             ).whereEqualTo("trangThaiPhong", false)
                         else {
                             roomsRef.whereEqualTo(
-                                "maLoaiPhong", maloaiPhongTro
+                                "maLoaiNhaTro", maloaiPhongTro
                             ).whereEqualTo(
                                 "trangThaiDuyet",
                                 "DaDuyet"
@@ -365,7 +365,7 @@ class HomeViewModel : ViewModel() {
                         val chiTiet =
                             documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
                         chiTiet?.let {
-                            room.dienTich = it.so_luong_donvi
+                            room.dienTich = it.soLuongDonVi
                         }
 
                         // Cập nhật lại thông tin trong danh sách đã thay đổi
@@ -416,7 +416,7 @@ class HomeViewModel : ViewModel() {
                         val chiTiet =
                             documents?.firstOrNull()?.toObject(ChiTietThongTin::class.java)
                         chiTiet?.let {
-                            room.dienTich = it.so_luong_donvi
+                            room.dienTich = it.soLuongDonVi
                         }
 
                         // Cập nhật lại thông tin trong danh sách đã thay đổi

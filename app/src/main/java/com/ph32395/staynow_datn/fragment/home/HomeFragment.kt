@@ -160,7 +160,7 @@ class HomeFragment : Fragment() {
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             if (position < loaiPhongTroList.size) {
-                tab.text = loaiPhongTroList[position].Ten_loaiphong
+                tab.text = loaiPhongTroList[position].tenLoaiPhong
             }
         }.attach()
 
@@ -169,7 +169,7 @@ class HomeFragment : Fragment() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 if (position < loaiPhongTroList.size) {
-                    val selectedLoaiPhongTro = loaiPhongTroList[position].Ma_loaiphong
+                    val selectedLoaiPhongTro = loaiPhongTroList[position].maLoaiPhong
                     homeViewModel.selectLoaiPhongTro(selectedLoaiPhongTro)
                 }
             }
