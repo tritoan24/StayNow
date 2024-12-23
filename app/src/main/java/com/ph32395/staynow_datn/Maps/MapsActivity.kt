@@ -162,9 +162,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
             override fun afterTextChanged(s: android.text.Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                fetchSuggestions(s.toString())
 //                suggestionsRoom(s.toString().trim(), listRoom)
-//                suggestionQuan(s.toString().trim(), listQuan)
+                suggestionQuan(s.toString().trim(), listQuan)
 
             }
         })
@@ -305,7 +304,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     mMap.uiSettings.isZoomGesturesEnabled = true
                     mMap.uiSettings.isRotateGesturesEnabled = true
                     mMap.uiSettings.isTiltGesturesEnabled = true
-                    mMap.setPadding(0, 300, 0, 0)
+                    mMap.setPadding(0, 400, 0, 0)
 
                     mMap.setOnMyLocationButtonClickListener {
                         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
@@ -682,68 +681,68 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
     }
 
-   private fun fetchSuggestions(query: String) {
-            if (query.length < 2) return
+    private fun fetchSuggestions(query: String) {
+        if (query.length < 2) return
 
-            val apiKey = getCurrentApiKey()
-            RetrofitInstance.api.getPlace(apiKey, query)
-                .enqueue(object : Callback<SuggestionResponse> {
-                    override fun onResponse(
-                        call: Call<SuggestionResponse>,
-                        response: Response<SuggestionResponse>
-                    ) {
-                        val currentKey = getCurrentApiKey()
+        val apiKey = getCurrentApiKey()
+        RetrofitInstance.api.getPlace(apiKey, query)
+            .enqueue(object : Callback<SuggestionResponse> {
+                override fun onResponse(
+                    call: Call<SuggestionResponse>,
+                    response: Response<SuggestionResponse>
+                ) {
+                    val currentKey = getCurrentApiKey()
 
-                        // Kiểm tra giới hạn trong header
-                        val remainingRequests =
-                            response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
-                        if (remainingRequests != null) {
-                            usageMap[currentKey] = 998 - remainingRequests
-                            Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
-                        }
-
-                        // Nếu vượt quá giới hạn, chuyển sang key mới
-                        if (remainingRequests != null && remainingRequests <= 0) {
-                            rotateApiKey()
-                            fetchSuggestions(query) // Gọi lại với key mới
-                            return
-                        }
-                        Log.d(TAG, "onResponse: response $response")
-                        if (response.isSuccessful && response.body()?.status == "OK") {
-                            val suggestions = response.body()?.predictions ?: emptyList()
-                            Log.d(TAG, "onResponse: suggestions $suggestions ")
-                            val list = suggestions.map { it.description }
-                            Log.d(TAG, "onResponse: list $list")
-                            val adapter = ArrayAdapter(
-                                this@MapsActivity,
-                                android.R.layout.simple_list_item_1,
-                                list
-                            )
-                            binding.autoComplete.setAdapter(adapter)
-                            adapter.notifyDataSetChanged()
-                        } else {
-                            Log.e("Retrofit", "Response error: ${response.errorBody()?.string()}")
-                        }
-                        // Logic xử lý response như cũ
-                        if (response.isSuccessful && response.body()?.status == "OK") {
-                            val suggestions = response.body()?.predictions ?: emptyList()
-                            val list = suggestions.map { it.description }
-
-                            // Tạo adapter và set cho AutoCompleteTextView
-                            val adapter = ArrayAdapter(
-                                this@MapsActivity,
-                                android.R.layout.simple_list_item_1,
-                                list
-                            )
-                            binding.autoComplete.setAdapter(adapter)
-                            adapter.notifyDataSetChanged()
-                        }
+                    // Kiểm tra giới hạn trong header
+                    val remainingRequests =
+                        response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
+                    if (remainingRequests != null) {
+                        usageMap[currentKey] = 998 - remainingRequests
+                        Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
                     }
 
-                    override fun onFailure(call: Call<SuggestionResponse>, t: Throwable) {
-                        Log.e("Retrofit", "API call failed: ${t.message}")
+                    // Nếu vượt quá giới hạn, chuyển sang key mới
+                    if (remainingRequests != null && remainingRequests <= 0) {
+                        rotateApiKey()
+                        fetchSuggestions(query) // Gọi lại với key mới
+                        return
                     }
-                })
+                    Log.d(TAG, "onResponse: response $response")
+                    if (response.isSuccessful && response.body()?.status == "OK") {
+                        val suggestions = response.body()?.predictions ?: emptyList()
+                        Log.d(TAG, "onResponse: suggestions $suggestions ")
+                        val list = suggestions.map { it.description }
+                        Log.d(TAG, "onResponse: list $list")
+                        val adapter = ArrayAdapter(
+                            this@MapsActivity,
+                            android.R.layout.simple_list_item_1,
+                            list
+                        )
+                        binding.autoComplete.setAdapter(adapter)
+                        adapter.notifyDataSetChanged()
+                    } else {
+                        Log.e("Retrofit", "Response error: ${response.errorBody()?.string()}")
+                    }
+                    // Logic xử lý response như cũ
+                    if (response.isSuccessful && response.body()?.status == "OK") {
+                        val suggestions = response.body()?.predictions ?: emptyList()
+                        val list = suggestions.map { it.description }
+
+                        // Tạo adapter và set cho AutoCompleteTextView
+                        val adapter = ArrayAdapter(
+                            this@MapsActivity,
+                            android.R.layout.simple_list_item_1,
+                            list
+                        )
+                        binding.autoComplete.setAdapter(adapter)
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+
+                override fun onFailure(call: Call<SuggestionResponse>, t: Throwable) {
+                    Log.e("Retrofit", "API call failed: ${t.message}")
+                }
+            })
     }
 
 
@@ -852,12 +851,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
                 // Truy vấn chi tiết thông tin diện tích
                 val task = firestore.collection("ChiTietThongTin")
-                    .whereEqualTo("ma_phongtro", id) // Truy vấn theo mã phòng trọ
-                    .whereEqualTo("ten_thongtin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .whereEqualTo("maPhongTro", id) // Truy vấn theo mã phòng trọ
+                    .whereEqualTo("tenThongTin", "Diện tích") // Lọc theo thông tin "Diện tích"
                     .get()
                     .addOnSuccessListener { chiTietSnapshot ->
                         val chiTiet = chiTietSnapshot.documents.firstOrNull()
-                        val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                        val dienTich = chiTiet?.getDouble("soLuongDonVi") // Lấy giá trị diện tích
                         Log.d(TAG, "searchRoomByNameOrDescription: chi tiet $chiTiet")
                         Log.d(TAG, "searchRoomByNameOrDescription: dien tich $dienTich")
                         roomData?.dienTich = dienTich?.toLong()
@@ -928,10 +927,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("TAGzzz", "onMapReady: roomData $roomData")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.tenPhongTro}")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.diaChi}")
-                val trangThaiDiaChi = document.getBoolean("Trang_thaidc")
-                val trangThaiDuyet = document.getString("Trang_thaiduyet")
-                val trangThaiLuu = document.getBoolean("Trang_thailuu")
-                val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                val trangThaiDiaChi = document.getBoolean("trangThaiDc")
+                val trangThaiDuyet = document.getString("trangThaiDuyet")
+                val trangThaiLuu = document.getBoolean("trangThaiLuu")
+                val trangThaiPhong = document.getBoolean("trangThaiPhong")
                 Log.d(
                     TAG,
                     "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
@@ -993,18 +992,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
                     // Thêm truy vấn phụ vào danh sách
                     val task = firestore.collection("ChiTietThongTin")
-                        .whereEqualTo("ma_phongtro", id)
-                        .whereEqualTo("ten_thongtin", "Diện tích")
+                        .whereEqualTo("maPhongTro", id)
+                        .whereEqualTo("tenThongTin", "Diện tích")
                         .get()
                         .addOnSuccessListener { detailSnapshot ->
                             val chiTiet = detailSnapshot.documents.firstOrNull()
-                            val dienTich = chiTiet?.getDouble("so_luong_donvi")
+                            val dienTich = chiTiet?.getDouble("soLuongDonVi")
                             roomData.dienTich = dienTich?.toLong()
                             // Thêm dữ liệu vào danh sách
-                            val trangThaiDiaChi = document.getBoolean("Trang_thaidc")
-                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
-                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
-                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                            val trangThaiDiaChi = document.getBoolean("trangThaiDc")
+                            val trangThaiDuyet = document.getString("trangThaiDuyet")
+                            val trangThaiLuu = document.getBoolean("trangThaiLuu")
+                            val trangThaiPhong = document.getBoolean("trangThaiPhong")
                             Log.d(
                                 TAG,
                                 "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
@@ -1084,7 +1083,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         var loaiPhongTask: Task<QuerySnapshot>? = null
         loaiPhongTask = if (selectedTypes.isNotEmpty()) {
             firestore.collection("LoaiPhong")
-                .whereIn("Ten_loaiphong", selectedTypes)
+                .whereIn("tenLoaiPhong", selectedTypes)
                 .get()
         } else {
             firestore.collection("LoaiPhong").get() // Lấy tất cả nếu không có chọn
@@ -1094,7 +1093,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         var tienNghiTask: Task<QuerySnapshot>? = null
         tienNghiTask = if (selectedTienNghi.isNotEmpty()) {
             firestore.collection("TienNghi")
-                .whereIn("Ten_tiennghi", selectedTienNghi)
+                .whereIn("tenTienNghi", selectedTienNghi)
                 .get()
         } else {
             firestore.collection("TienNghi").get() // Lấy tất cả nếu không có chọn
@@ -1104,7 +1103,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         var noiThatTask: Task<QuerySnapshot>? = null
         noiThatTask = if (selectedNoiThat.isNotEmpty()) {
             firestore.collection("NoiThat")
-                .whereIn("Ten_noithat", selectedNoiThat)
+                .whereIn("tenNoiThat", selectedNoiThat)
                 .get()
         } else {
             firestore.collection("NoiThat").get() // Lấy tất cả nếu không có chọn
@@ -1135,7 +1134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     addresses2.clear()
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
-                        .whereIn("Ma_loaiphong", maLoaiPhongList)
+                        .whereIn("maLoaiPhong", maLoaiPhongList)
                         .get()
                         .addOnSuccessListener { phongTroSnapshot ->
                             val phongTroIds = phongTroSnapshot.documents.map { it.id }
@@ -1143,11 +1142,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
                             // Lọc các phòng trọ có nội thất
                             firestore.collection("PhongTroNoiThat")
-                                .whereIn("ma_noithat", maNoiThatList)
+                                .whereIn("maNoiThat", maNoiThatList)
                                 .get()
                                 .addOnSuccessListener { phongTroNoiThatSnapshot ->
                                     val phongTroWithNoiThatIds =
-                                        phongTroNoiThatSnapshot.documents.map { it.getString("ma_phongtro") }
+                                        phongTroNoiThatSnapshot.documents.map { it.getString("maPhongTro") }
                                     Log.d(
                                         TAG,
                                         "Danh sách phòng trọ có nội thất: $phongTroWithNoiThatIds"
@@ -1155,12 +1154,12 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
 
                                     // Lọc các phòng trọ có tiện nghi
                                     firestore.collection("PhongTroTienNghi")
-                                        .whereIn("ma_tiennghi", maTienNghiList)
+                                        .whereIn("maTienNghi", maTienNghiList)
                                         .get()
                                         .addOnSuccessListener { phongTroTienNghiSnapshot ->
                                             val phongTroWithTienNghiIds =
                                                 phongTroTienNghiSnapshot.documents.map {
-                                                    it.getString("ma_phongtro")
+                                                    it.getString("maPhongTro")
                                                 }
                                             Log.d(
                                                 TAG,
@@ -1203,11 +1202,11 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                                             val tasksDone =
                                                                 firestore.collection("ChiTietThongTin")
                                                                     .whereEqualTo(
-                                                                        "ma_phongtro",
+                                                                        "maPhongTro",
                                                                         id
                                                                     ) // Truy vấn theo mã phòng trọ
                                                                     .whereEqualTo(
-                                                                        "ten_thongtin",
+                                                                        "tenThongTin",
                                                                         "Diện tích"
                                                                     ) // Lọc theo thông tin "Diện tích"
                                                                     .get()
@@ -1215,17 +1214,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                                                         val chiTiet =
                                                                             chiTietSnapshot.documents.firstOrNull()
                                                                         val dienTich =
-                                                                            chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                                                                            chiTiet?.getDouble("soLuongDonVi") // Lấy giá trị diện tích
 
                                                                         // Cập nhật diện tích vào đối tượng phòng
                                                                         roomData.dienTich =
                                                                             dienTich?.toLong()
                                                                         val trangThaiDuyet =
-                                                                            document.getString("Trang_thaiduyet")
+                                                                            document.getString("trangThaiDuyet")
                                                                         val trangThaiLuu =
-                                                                            document.getBoolean("Trang_thailuu")
+                                                                            document.getBoolean("trangThaiLuu")
                                                                         val trangThaiPhong =
-                                                                            document.getBoolean("Trang_thaiphong")
+                                                                            document.getBoolean("trangThaiPhong")
                                                                         Log.d(
                                                                             TAG,
                                                                             "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"

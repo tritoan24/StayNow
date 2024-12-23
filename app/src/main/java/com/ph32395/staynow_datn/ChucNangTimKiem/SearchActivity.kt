@@ -177,12 +177,12 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                 // Truy vấn chi tiết thông tin diện tích
                 val task = firestore.collection("ChiTietThongTin")
-                    .whereEqualTo("ma_phongtro", id) // Truy vấn theo mã phòng trọ
-                    .whereEqualTo("ten_thongtin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .whereEqualTo("maPhongTro", id) // Truy vấn theo mã phòng trọ
+                    .whereEqualTo("tenThongTin", "Diện tích") // Lọc theo thông tin "Diện tích"
                     .get()
                     .addOnSuccessListener { chiTietSnapshot ->
                         val chiTiet = chiTietSnapshot.documents.firstOrNull()
-                        val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                        val dienTich = chiTiet?.getDouble("soLuongDonVi") // Lấy giá trị diện tích
                         Log.d(TAG, "searchRoomByNameOrDescription: chi tiet $chiTiet")
                         Log.d(TAG, "searchRoomByNameOrDescription: dien tich $dienTich")
                         roomData?.dienTich = dienTich?.toLong()
@@ -205,9 +205,9 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                         // Thêm phòng trọ vào danh sách nếu một trong hai điều kiện đúng
                         if (queryInDescriptionOrName || allWordsMatch) {
-                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
-                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
-                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                            val trangThaiDuyet = document.getString("trangThaiDuyet")
+                            val trangThaiLuu = document.getBoolean("trangThaiLuu")
+                            val trangThaiPhong = document.getBoolean("trangThaiPhong")
                             Log.d(
                                 TAG,
                                 "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
@@ -265,19 +265,19 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 Log.d(TAG, "readListRoom: document.id.toString() $id")
                 val roomList = document.toObject(PhongTroModel::class.java)
                 firestore.collection("ChiTietThongTin")
-                    .whereEqualTo("ma_phongtro", id) // Truy vấn theo mã phòng trọ
-                    .whereEqualTo("ten_thongtin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .whereEqualTo("maPhongTro", id) // Truy vấn theo mã phòng trọ
+                    .whereEqualTo("tenThongTin", "Diện tích") // Lọc theo thông tin "Diện tích"
                     .get()
                     .addOnSuccessListener { chiTietSnapshot ->
                         val chiTiet = chiTietSnapshot.documents.firstOrNull()
-                        val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                        val dienTich = chiTiet?.getDouble("soLuongDonVi") // Lấy giá trị diện tích
 
                         // Cập nhật diện tích vào đối tượng phòng
                         roomList.dienTich = dienTich?.toLong()
 
-                        val trangThaiDuyet = document.getString("Trang_thaiduyet")
-                        val trangThaiLuu = document.getBoolean("Trang_thailuu")
-                        val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                        val trangThaiDuyet = document.getString("trangThaiDuyet")
+                        val trangThaiLuu = document.getBoolean("trangThaiLuu")
+                        val trangThaiPhong = document.getBoolean("trangThaiPhong")
                         Log.d(
                             TAG,
                             "readListRoom: trangThaiDuyet $trangThaiDuyet trangThaiLuu $trangThaiLuu trangThaiPhong $trangThaiPhong"
@@ -472,72 +472,13 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
     override fun onPriceRangeSelected(minPrice: Int, maxPrice: Int) {
         Log.d(TAG, "onPriceRangeSelected: Min: $minPrice max: $maxPrice search")
         Log.d(TAG, "onPriceRangeSelected: list full room $listFullRoom")
-//        filterRoomsByPrice(minPrice.toFloat(), maxPrice.toFloat())
-//        listFullRoom = listFullRoom.filter {
-//            it.second.Gia_phong in minPrice.toDouble()..maxPrice.toDouble()
-//        }.toMutableList()
-//        Log.d(TAG, "onPriceRangeSelected: $listFullRoom")
-//        if (listFullRoom.isEmpty()) {
-//            binding.rvListRoom.visibility = View.GONE
-//            binding.layoutNullMsg.visibility = View.VISIBLE
-//            readListRoom()
-//        } else {
-//            binding.rvListRoom.visibility = View.VISIBLE
-//            binding.layoutNullMsg.visibility = View.GONE
-//            updateUI(listFullRoom, homeViewModel)
-//            Log.d(TAG, "onPriceRangeSelected: list full $listFullRoom")
-//            adapter.notifyDataSetChanged()
-//        }
 
         val listFilterPrice = mutableListOf<Pair<String, PhongTroModel>>()
-
-//        dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
-//            .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
-//            .get()
-//            .addOnSuccessListener {
-//
-//                for (document in it) {
-//                    val id = document.id
-//                    val roomData = document.toObject(PhongTroModel::class.java)
-//
-//                    firestore.collection("ChiTietThongTin")
-//                        .whereEqualTo("ma_phongtro", id)
-//                        .whereEqualTo("ten_thongtin", "Diện tích").get().addOnSuccessListener {
-//                            val chiTiet = it.documents.firstOrNull()
-//                            val dienTich = chiTiet?.getDouble("so_luong_donvi")
-//
-//                            roomData.Dien_tich = dienTich?.toLong()
-//
-//                            Log.d(TAG, "onPriceRangeSelected: cos dien tich $roomData")
-//                            listFilterPrice.add(Pair(id, roomData))
-//                            if (listFullRoom.isEmpty()) {
-//                                binding.rvListRoom.visibility = View.GONE
-//                                binding.layoutNullMsg.visibility = View.VISIBLE
-//                            } else {
-//                                binding.rvListRoom.visibility = View.VISIBLE
-//                                binding.layoutNullMsg.visibility = View.GONE
-//                                listFullRoom = listFilterPrice
-//                                updateUI(listFullRoom, homeViewModel)
-//                                Log.d(TAG, "onPriceRangeSelected: list full $listFullRoom")
-//                                adapter.notifyDataSetChanged()
-//                            }
-//
-//
-//                        }.addOnFailureListener {
-//                            Log.d(TAG, "onPriceRangeSelected: it.msg ${it.message.toString()}")
-//                        }
-//
-//                }
-//
-//            }
-//            .addOnFailureListener {
-//                Log.d(TAG, "onPriceRangeSelected: it.msg ${it.message.toString()}")
-//            }
         binding.layoutLoading.visibility = View.VISIBLE
         binding.rvListRoom.visibility = View.GONE
         binding.layoutNullMsg.visibility = View.GONE
-        dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
-            .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
+        dataRoom.whereGreaterThanOrEqualTo("giaPhong", minPrice.toDouble())
+            .whereLessThanOrEqualTo("giaPhong", maxPrice.toDouble())
             .get()
             .addOnSuccessListener { querySnapshot ->
                 val tasks =
@@ -549,16 +490,16 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                     // Thêm truy vấn phụ vào danh sách
                     val task = firestore.collection("ChiTietThongTin")
-                        .whereEqualTo("ma_phongtro", id)
-                        .whereEqualTo("ten_thongtin", "Diện tích")
+                        .whereEqualTo("maPhongTro", id)
+                        .whereEqualTo("tenThongTin", "Diện tích")
                         .get()
                         .addOnSuccessListener { detailSnapshot ->
                             val chiTiet = detailSnapshot.documents.firstOrNull()
-                            val dienTich = chiTiet?.getDouble("so_luong_donvi")
+                            val dienTich = chiTiet?.getDouble("soLuongDonVi")
                             roomData.dienTich = dienTich?.toLong()
-                            val trangThaiDuyet = document.getString("Trang_thaiduyet")
-                            val trangThaiLuu = document.getBoolean("Trang_thailuu")
-                            val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                            val trangThaiDuyet = document.getString("trangThaiDuyet")
+                            val trangThaiLuu = document.getBoolean("trangThaiLuu")
+                            val trangThaiPhong = document.getBoolean("trangThaiPhong")
                             Log.d(
                                 TAG,
                                 "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
@@ -625,7 +566,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         var loaiPhongTask: Task<QuerySnapshot>? = null
         loaiPhongTask = if (selectedTypes.isNotEmpty()) {
             firestore.collection("LoaiPhong")
-                .whereIn("Ten_loaiphong", selectedTypes)
+                .whereIn("tenLoaiPhong", selectedTypes)
                 .get()
         } else {
             firestore.collection("LoaiPhong").get() // Lấy tất cả nếu không có chọn
@@ -635,7 +576,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         var tienNghiTask: Task<QuerySnapshot>? = null
         tienNghiTask = if (selectedTienNghi.isNotEmpty()) {
             firestore.collection("TienNghi")
-                .whereIn("Ten_tiennghi", selectedTienNghi)
+                .whereIn("tenTienNghi", selectedTienNghi)
                 .get()
         } else {
             firestore.collection("TienNghi").get() // Lấy tất cả nếu không có chọn
@@ -645,7 +586,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         var noiThatTask: Task<QuerySnapshot>? = null
         noiThatTask = if (selectedNoiThat.isNotEmpty()) {
             firestore.collection("NoiThat")
-                .whereIn("Ten_noithat", selectedNoiThat)
+                .whereIn("tenNoiThat", selectedNoiThat)
                 .get()
         } else {
             firestore.collection("NoiThat").get() // Lấy tất cả nếu không có chọn
@@ -676,7 +617,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     listFullRoom.clear()
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
-                        .whereIn("Ma_loaiphong", maLoaiPhongList)
+                        .whereIn("maLoaiPhong", maLoaiPhongList)
                         .get()
                         .addOnSuccessListener { phongTroSnapshot ->
                             val phongTroIds = phongTroSnapshot.documents.map { it.id }
@@ -684,11 +625,11 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                             // Lọc các phòng trọ có nội thất
                             firestore.collection("PhongTroNoiThat")
-                                .whereIn("ma_noithat", maNoiThatList)
+                                .whereIn("maNoiThat", maNoiThatList)
                                 .get()
                                 .addOnSuccessListener { phongTroNoiThatSnapshot ->
                                     val phongTroWithNoiThatIds =
-                                        phongTroNoiThatSnapshot.documents.map { it.getString("ma_phongtro") }
+                                        phongTroNoiThatSnapshot.documents.map { it.getString("maPhongTro") }
                                     Log.d(
                                         TAG,
                                         "Danh sách phòng trọ có nội thất: $phongTroWithNoiThatIds"
@@ -696,12 +637,12 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                                     // Lọc các phòng trọ có tiện nghi
                                     firestore.collection("PhongTroTienNghi")
-                                        .whereIn("ma_tiennghi", maTienNghiList)
+                                        .whereIn("maTienNghi", maTienNghiList)
                                         .get()
                                         .addOnSuccessListener { phongTroTienNghiSnapshot ->
                                             val phongTroWithTienNghiIds =
                                                 phongTroTienNghiSnapshot.documents.map {
-                                                    it.getString("ma_phongtro")
+                                                    it.getString("maPhongTro")
                                                 }
                                             Log.d(
                                                 TAG,
@@ -737,11 +678,11 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                             )
                                                             firestore.collection("ChiTietThongTin")
                                                                 .whereEqualTo(
-                                                                    "ma_phongtro",
+                                                                    "maPhongTro",
                                                                     id
                                                                 ) // Truy vấn theo mã phòng trọ
                                                                 .whereEqualTo(
-                                                                    "ten_thongtin",
+                                                                    "tenThongTin",
                                                                     "Diện tích"
                                                                 ) // Lọc theo thông tin "Diện tích"
                                                                 .get()
@@ -749,17 +690,17 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                     val chiTiet =
                                                                         chiTietSnapshot.documents.firstOrNull()
                                                                     val dienTich =
-                                                                        chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
+                                                                        chiTiet?.getDouble("soLuongDonVi") // Lấy giá trị diện tích
 
                                                                     // Cập nhật diện tích vào đối tượng phòng
                                                                     roomData.dienTich =
                                                                         dienTich?.toLong()
                                                                     val trangThaiDuyet =
-                                                                        document.getString("Trang_thaiduyet")
+                                                                        document.getString("trangThaiDuyet")
                                                                     val trangThaiLuu =
-                                                                        document.getBoolean("Trang_thailuu")
+                                                                        document.getBoolean("trangThaiLuu")
                                                                     val trangThaiPhong =
-                                                                        document.getBoolean("Trang_thaiphong")
+                                                                        document.getBoolean("trangThaiPhong")
                                                                     Log.d(
                                                                         TAG,
                                                                         "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
