@@ -359,10 +359,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("TAGzzz", "onMapReady: roomData $roomData")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.tenPhongTro}")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.diaChi}")
-                val trangThaiDiaChi = document.getBoolean("Trang_thaidc")
-                val trangThaiDuyet = document.getString("Trang_thaiduyet")
-                val trangThaiLuu = document.getBoolean("Trang_thailuu")
-                val trangThaiPhong = document.getBoolean("Trang_thaiphong")
+                val trangThaiDiaChi = document.getBoolean("trangThaiDC")
+                val trangThaiDuyet = document.getString("trangThaiDuyet")
+                val trangThaiLuu = document.getBoolean("trangThaiLuu")
+                val trangThaiPhong = document.getBoolean("trangThaiPhong")
                 Log.d(
                     TAG,
                     "TrangThaiDuyet: $trangThaiDuyet, TrangThaiLuu: $trangThaiLuu, TrangThaiPhong: $trangThaiPhong"
@@ -927,7 +927,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                 Log.d("TAGzzz", "onMapReady: roomData $roomData")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.tenPhongTro}")
                 Log.d("TAGzzz", "onMapReady: roomData.tenPhong ${roomData?.diaChi}")
-                val trangThaiDiaChi = document.getBoolean("trangThaiDc")
+                val trangThaiDiaChi = document.getBoolean("trangThaiDC")
                 val trangThaiDuyet = document.getString("trangThaiDuyet")
                 val trangThaiLuu = document.getBoolean("trangThaiLuu")
                 val trangThaiPhong = document.getBoolean("trangThaiPhong")
@@ -1000,7 +1000,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                             val dienTich = chiTiet?.getDouble("soLuongDonVi")
                             roomData.dienTich = dienTich?.toLong()
                             // Thêm dữ liệu vào danh sách
-                            val trangThaiDiaChi = document.getBoolean("trangThaiDc")
+                            val trangThaiDiaChi = document.getBoolean("trangThaiDC")
                             val trangThaiDuyet = document.getString("trangThaiDuyet")
                             val trangThaiLuu = document.getBoolean("trangThaiLuu")
                             val trangThaiPhong = document.getBoolean("trangThaiPhong")

@@ -4,4 +4,6 @@ class LoaiPhong (
     val maLoaiPhong: String? = null,
     val tenLoaiPhong: String,
     val trangThai: Boolean,
-)
+){
+    constructor():this("","",false)
+}

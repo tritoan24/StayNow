@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow_datn.LoaiPhong.LoaiPhong
 import com.ph32395.staynow_datn.Model.LoaiPhongTro
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.R
@@ -64,7 +65,7 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         binding = BottomSheetFilterSearchBinding.inflate(inflater, container, false)
 
         typeRoomRef.get().addOnSuccessListener { documents ->
-            val typeRooms = documents.map { it.toObject(LoaiPhongTro::class.java) }
+            val typeRooms = documents.map { it.toObject(LoaiPhong::class.java) }
             // Hiển thị từng loại phòng lên giao diện
             displayChipsTypeRom(typeRooms.toMutableList(), binding.chipGroupTypeRoom)
 
@@ -118,7 +119,7 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
     }
 
 
-    private fun displayChipsTypeRom(types: MutableList<LoaiPhongTro>, chipGroup: ChipGroup) {
+    private fun displayChipsTypeRom(types: MutableList<LoaiPhong>, chipGroup: ChipGroup) {
 //        chipGroup.removeAllViews() // Xóa chip cũ
         Log.d(TAG, "displayChipsTypeRom: listType $selectedTypes")
         for (type in types) {
