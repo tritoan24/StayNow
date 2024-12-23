@@ -42,7 +42,7 @@ class OrderProcessorService(private val context: Context) {
                 val currentTime = System.currentTimeMillis()
 
                 // Truy vấn Firestore
-                val querySnapshot = db.collection("PaymentTransactionService")
+                val querySnapshot = db.collection("ThanhToanDichVu")
                     .whereEqualTo("billId", billId)
                     .whereEqualTo("status", "PENDING")
                     .get()
@@ -50,17 +50,17 @@ class OrderProcessorService(private val context: Context) {
 
                 val validOrder = querySnapshot.documents.firstOrNull { doc ->
                     val expireTime =
-                        doc.getLong("app_time")!! + doc.getLong("expire_duration_seconds")!! * 1000
+                        doc.getLong("appTime")!! + doc.getLong("expireDurationSeconds")!! * 1000
                     expireTime > currentTime
                 }
 
                 if (validOrder != null) {
-                    val token = validOrder.getString("zp_trans_token")
-                    val orderUrl = validOrder.getString("order_url")
+                    val token = validOrder.getString("zpTransToken")
+                    val orderUrl = validOrder.getString("orderUrl")
 
                     // Tính toán thời gian còn lại (remainTime)
                     val expireTime =
-                        validOrder.getLong("app_time")!! + validOrder.getLong("expire_duration_seconds")!! * 1000
+                        validOrder.getLong("appTime")!! + validOrder.getLong("expireDurationSeconds")!! * 1000
                     val remainTime =
                         expireTime - currentTime // Thời gian còn lại
                     Log.d("remainTimeOrderProcessor", remainTime.toString())
@@ -112,12 +112,12 @@ class OrderProcessorService(private val context: Context) {
         })
     }
 
-    fun startPayment(zpToken: String?, billId: InvoiceMonthlyModel) {
+    fun startPayment(zpToken: String?, bill: InvoiceMonthlyModel) {
         zpToken?.let {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
-                        handlePayment(context, billId, "success")
+                        handlePayment(context, bill, "success")
                     }
 
                     override fun onPaymentCanceled(s: String?, s1: String?) {
@@ -129,7 +129,7 @@ class OrderProcessorService(private val context: Context) {
                         s: String?,
                         s1: String?
                     ) {
-                        handlePayment(context, billId, "error")
+                        handlePayment(context, bill, "error")
                     }
                 })
         }
