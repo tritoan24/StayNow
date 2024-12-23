@@ -197,7 +197,6 @@
     <string name="Please_wait_for_the_host" translatable="false">Vui lòng đợi chủ nhà xác nhận lịch hẹn của bạn nhé. Sau khi chủ nhà xác nhận lịch hẹn của bạn bạn sẽ có đầy đủ thông tin về địa chỉ và người chủ trọ.</string>
 
     <!-- Welcom-->
-    <string name="Welcome_to_StayNow" translatable="false">Chào mừng bạn đến với StayNow</string>
 
     <!-- Succes_payment-->
     <string name="Invoice_code" translatable="false">Mã hóa đơn: #1234567</string>

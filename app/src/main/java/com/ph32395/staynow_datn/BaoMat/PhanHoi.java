@@ -123,9 +123,9 @@ public class PhanHoi extends AppCompatActivity {
                             .format(new java.util.Date(currentTimeMillis));
 
                     Map<String, Object> feedbackData = new HashMap<>();
-                    feedbackData.put("noi_dung", feedback);
-                    feedbackData.put("thoi_giangui", formattedDateTime); // Gán thời gian hiện tại
-                    feedbackData.put("img", imageUrl);
+                    feedbackData.put("noiDung", feedback);
+                    feedbackData.put("thoiGianGui", formattedDateTime); // Gán thời gian hiện tại
+                    feedbackData.put("imgPhanHoi", imageUrl);
                     feedbackData.put("ma_nguoidung", maNguoiDung);
                     feedbackData.put("createdAt", currentTimeMillis); // Lưu timestamp nếu cần
 
