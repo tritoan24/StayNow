@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
-import com.ph32395.staynow_datn.Model.ChiTietThongTinModel
+import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import com.ph32395.staynow_datn.databinding.ItemThongtinBinding
 import java.text.DecimalFormat
 
@@ -19,7 +19,7 @@ class ThongTinAdapter(
     private val context: Context,
     private var thongtinList: List<ThongTin>,
     private val listener: AdapterTaoPhongTroEnteredListenner,
-    private val existingChiTietList: List<ChiTietThongTinModel>? = null
+    private val existingChiTietList: List<ChiTietThongTin>? = null
 ) : RecyclerView.Adapter<ThongTinAdapter.ThongTinViewHolder>() {
 
     private val pricesMap = mutableMapOf<Int, Long>()
@@ -27,9 +27,9 @@ class ThongTinAdapter(
         Log.d("ThongTinAdapter", "Danh sách thông tin khi khởi tạo: $thongtinList")
 
         existingChiTietList?.forEachIndexed { index, chiTiet ->
-            val matchingIndex = thongtinList.indexOfFirst { it.tenThongTin == chiTiet.ten_thongtin }
+            val matchingIndex = thongtinList.indexOfFirst { it.tenThongTin == chiTiet.tenThongTin }
             if (matchingIndex != -1) {
-                pricesMap[matchingIndex] = chiTiet.so_luong_donvi
+                pricesMap[matchingIndex] = chiTiet.soLuongDonVi.toLong()
             }
 
         }

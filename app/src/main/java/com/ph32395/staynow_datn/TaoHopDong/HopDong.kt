@@ -54,7 +54,7 @@ data class RoomInfo(
     val tenPhong: String = "", // Tên phòng
     val diaChiPhong: String = "", // Địa chỉ chi tiết
     val dienTich: Double = 0.0, // Diện tích (m²)
-    val thongTinChiTiet: List<RoomDetail> = listOf() // Chi tiết thông tin phòng
+    val thongTinChiTiet: List<RoomDetail?> = listOf() // Chi tiết thông tin phòng
 ) : Serializable
 
 // Chi tiết thông tin phòng
@@ -134,10 +134,11 @@ data class Invoice(
 
 // Trạng thái hợp đồng
 enum class ContractStatus {
-    PENDING, // Chờ ký
+    PENDING,
+    PROCESSING,
     ACTIVE, // Đang hiệu lực
     EXPIRED, // Hết hạn
-    TERMINATED // Đã chấm dứt
+    TERMINATED,
 }
 
 data class UtilityFeeDetail(
@@ -153,6 +154,7 @@ data class UtilityFeeDetail(
 
 enum class InvoiceStatus {
     PENDING,
+    PROCESSING,
     PAID,
     ACTIVE,
     OVERDUE,

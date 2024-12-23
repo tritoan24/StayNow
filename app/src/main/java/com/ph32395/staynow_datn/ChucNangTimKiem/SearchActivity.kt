@@ -106,13 +106,13 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         binding.btnCity.setOnClickListener {
             if (isAscending) {
                 Log.d(TAG, "onCreate: tang")
-                listFullRoom = listFullRoom.sortedBy { it.second.Gia_phong }.toMutableList()
+                listFullRoom = listFullRoom.sortedBy { it.second.giaPhong }.toMutableList()
                 Log.d(TAG, "onCreate:  listSortBy $listFullRoom.")
                 updateUI(listFullRoom, homeViewModel)
             } else {
                 Log.d(TAG, "onCreate: giam")
                 listFullRoom =
-                    listFullRoom.sortedByDescending { it.second.Gia_phong }.toMutableList()
+                    listFullRoom.sortedByDescending { it.second.giaPhong }.toMutableList()
                 updateUI(listFullRoom, homeViewModel)
 
                 Log.d(TAG, "onCreate:  listSortBy $listFullRoom")
@@ -146,8 +146,8 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
             Log.d(TAG, "onCreate: LvHistory id $id")
             val item = parent.adapter.getItem(position)
             if (item is SearchDataModel) {
-                Log.d(TAG, "Item text: ${item.tu_khoa}")
-                binding.edtSearch.setText(item.tu_khoa.toString())
+                Log.d(TAG, "Item text: ${item.tuKhoa}")
+                binding.edtSearch.setText(item.tuKhoa.toString())
             } else {
                 Log.d(TAG, "Item at position $position is not a String")
             }
@@ -185,10 +185,10 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                         val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
                         Log.d(TAG, "searchRoomByNameOrDescription: chi tiet $chiTiet")
                         Log.d(TAG, "searchRoomByNameOrDescription: dien tich $dienTich")
-                        roomData?.Dien_tich = dienTich?.toLong()
+                        roomData?.dienTich = dienTich?.toLong()
 
-                        val roomName = roomData?.Ten_phongtro ?: ""
-                        val roomDescription = roomData?.Mota_chitiet ?: ""
+                        val roomName = roomData?.tenPhongTro ?: ""
+                        val roomDescription = roomData?.moTaChiTiet ?: ""
 
                         // Kiểm tra nếu toàn bộ chuỗi `query` xuất hiện trong tên hoặc mô tả
                         val queryInDescriptionOrName =
@@ -273,7 +273,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                         val dienTich = chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
 
                         // Cập nhật diện tích vào đối tượng phòng
-                        roomList.Dien_tich = dienTich?.toLong()
+                        roomList.dienTich = dienTich?.toLong()
 
                         val trangThaiDuyet = document.getString("Trang_thaiduyet")
                         val trangThaiLuu = document.getBoolean("Trang_thailuu")
@@ -283,7 +283,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                             "readListRoom: trangThaiDuyet $trangThaiDuyet trangThaiLuu $trangThaiLuu trangThaiPhong $trangThaiPhong"
                         )
                         if (trangThaiDuyet == "DaDuyet" && trangThaiLuu == false && trangThaiPhong == false) {
-                            Log.d(TAG, "readListRoom: if ${roomList.Ten_phongtro}")
+                            Log.d(TAG, "readListRoom: if ${roomList.tenPhongTro}")
                             // Thêm vào danh sách hiển thị
                             listFullRoom.add(Pair(id, roomList))
                             Log.d(TAG, "Room added: $roomList")
@@ -334,7 +334,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
 
                                 newData.let {
                                     listKeySearch.add(it)
-                                    Log.d(TAG, "onChildAdded: it let ${it.tu_khoa}")
+                                    Log.d(TAG, "onChildAdded: it let ${it.tuKhoa}")
                                 }
 
                                 if (listKeySearch.size >= 3) {
@@ -401,9 +401,9 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
         val searchId =
             searchHistoryRef.document(userId!!).collection("HistoryKeyWord").document().id
         val searchData = SearchDataModel(
-            ma_timkiem = searchId,
-            tu_khoa = searchQuery,
-            thoi_giantimkiem = formattedTime,
+            maTimKiem = searchId,
+            tuKhoa = searchQuery,
+            thoiGianTimKiem = formattedTime,
             timestamps = timeStamp.toString()
         )
         Log.d(TAG, "saveKeyWordSearch: timeStamp $timeStamp")
@@ -555,7 +555,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                         .addOnSuccessListener { detailSnapshot ->
                             val chiTiet = detailSnapshot.documents.firstOrNull()
                             val dienTich = chiTiet?.getDouble("so_luong_donvi")
-                            roomData.Dien_tich = dienTich?.toLong()
+                            roomData.dienTich = dienTich?.toLong()
                             val trangThaiDuyet = document.getString("Trang_thaiduyet")
                             val trangThaiLuu = document.getBoolean("Trang_thailuu")
                             val trangThaiPhong = document.getBoolean("Trang_thaiphong")
@@ -752,7 +752,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                         chiTiet?.getDouble("so_luong_donvi") // Lấy giá trị diện tích
 
                                                                     // Cập nhật diện tích vào đối tượng phòng
-                                                                    roomData.Dien_tich =
+                                                                    roomData.dienTich =
                                                                         dienTich?.toLong()
                                                                     val trangThaiDuyet =
                                                                         document.getString("Trang_thaiduyet")

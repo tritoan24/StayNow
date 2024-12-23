@@ -50,14 +50,14 @@ class BottomSheetCreateAndUpdateThanhVien(
         Log.d(TAG, "onCreateView: idHopDong $idHopDong")
         if (dataTv != null) {
             binding.tvTitleBottomSheet.text = "Sửa thành viên"
-            binding.edTenThanhVien.setText(dataTv.name)
-            binding.edSdt.setText(dataTv.sdt)
+            binding.edTenThanhVien.setText(dataTv.tenThanhVien)
+            binding.edSdt.setText(dataTv.soDienThoai)
             binding.edtEmail.setText(dataTv.email)
             binding.tvNgayVao.text = dataTv.ngayVao
             binding.tvNgayVao.setTextColor(Color.BLACK)
             binding.iconAddAvata.visibility = View.GONE
             Glide.with(requireContext())
-                .load(dataTv.image)
+                .load(dataTv.hinhAnh)
                 .circleCrop()
                 .into(binding.ivAvatar)
         } else {
@@ -149,28 +149,28 @@ class BottomSheetCreateAndUpdateThanhVien(
         if (avatarUri == null) {
 
             val thanhVien = ThanhVien(
-                maTv = itemTv?.maTv!!,
-                name = name,
+                maThanhVien = itemTv?.maThanhVien!!,
+                tenThanhVien = name,
                 email = email,
-                sdt = phone,
+                soDienThoai = phone,
                 ngayVao = ngayVao,
-                image = itemTv.image.toString()
+                hinhAnh = itemTv.hinhAnh.toString()
             )
-            updateThanhVien(idHopDong!!, thanhVien, itemTv.maTv,progressDialog)
+            updateThanhVien(idHopDong!!, thanhVien, itemTv.maThanhVien, progressDialog)
             Toast.makeText(context, "update thanh cong", Toast.LENGTH_SHORT).show()
             dismiss()
         } else {
-            uploadImage(avatarUri!!, itemTv?.maTv!!, object : UploadCallback {
+            uploadImage(avatarUri!!, itemTv?.maThanhVien!!, object : UploadCallback {
                 override fun onSuccess(imageUrl: String?) {
                     val thanhVien = ThanhVien(
-                        maTv = itemTv.maTv,
-                        name = name,
+                        maThanhVien = itemTv.maThanhVien,
+                        tenThanhVien = name,
                         email = email,
-                        sdt = phone,
-                        image = imageUrl.toString(),
+                        soDienThoai = phone,
+                        hinhAnh = imageUrl.toString(),
                         ngayVao = ngayVao
                     )
-                    updateThanhVien(idHopDong!!, thanhVien, itemTv.maTv, progressDialog)
+                    updateThanhVien(idHopDong!!, thanhVien, itemTv.maThanhVien, progressDialog)
                     Toast.makeText(context, "update thanh cong", Toast.LENGTH_SHORT).show()
                     dismiss()
                 }
@@ -226,11 +226,11 @@ class BottomSheetCreateAndUpdateThanhVien(
         uploadImage(avatarUri!!, userId, object : UploadCallback {
             override fun onSuccess(imageUrl: String?) {
                 val thanhVien = ThanhVien(
-                    maTv = userId,
-                    name = name,
+                    maThanhVien = userId,
+                    tenThanhVien = name,
                     email = email,
-                    sdt = phone,
-                    image = imageUrl.toString(),
+                    soDienThoai = phone,
+                    hinhAnh = imageUrl.toString(),
                     ngayVao = ngayVao
                 )
                 addThanhVienMoi(thanhVien, idHopDong, progressDialog)
@@ -295,7 +295,7 @@ class BottomSheetCreateAndUpdateThanhVien(
                     val nguoiThue = document.toObject(NguoiThueModel::class.java)
                     if (nguoiThue != null) {
                         // Thêm thành viên mới vào danh sách
-                        val updatedList = nguoiThue.thanhVienList.toMutableList()
+                        val updatedList = nguoiThue.danhSachThanhVien.toMutableList()
                         updatedList.add(thanhVienMoi)
 
                         // Cập nhật danh sách trong Firestore
@@ -331,10 +331,10 @@ class BottomSheetCreateAndUpdateThanhVien(
                     val nguoiThue = document.toObject(NguoiThueModel::class.java)
                     if (nguoiThue != null) {
                         // Lấy danh sách thành viên hiện tại
-                        val updatedList = nguoiThue.thanhVienList.toMutableList()
+                        val updatedList = nguoiThue.danhSachThanhVien.toMutableList()
 
                         // Tìm thành viên cần cập nhật
-                        val index = updatedList.indexOfFirst { it.maTv == idThanhVien }
+                        val index = updatedList.indexOfFirst { it.maThanhVien == idThanhVien }
                         if (index != -1) {
                             // Cập nhật thông tin của thành viên
                             updatedList[index] = updatedThanhVien

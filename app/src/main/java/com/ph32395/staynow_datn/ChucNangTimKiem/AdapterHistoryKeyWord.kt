@@ -34,7 +34,7 @@ class AdapterHistoryKeyWord(
 
         val searchData = item[position]
 
-        binding.tvKeyWordSearch.text = item[position].tu_khoa
+        binding.tvKeyWordSearch.text = item[position].tuKhoa
         binding.ivDelete.setOnClickListener {
             removeSearchData(searchData)
         }
@@ -72,7 +72,7 @@ class AdapterHistoryKeyWord(
 //            .addOnFailureListener { exception ->
 //                Log.e("SearchHistory", "Lỗi khi xóa mục tìm kiếm: ${exception.message}")
 //            }
-        searchHistoryRef.document(useID).collection("HistoryKeyWord").document(searchData.ma_timkiem!!)
+        searchHistoryRef.document(useID).collection("HistoryKeyWord").document(searchData.maTimKiem!!)
             .delete().addOnSuccessListener {
                 Log.d(TAG, "deleteSearchFromFirebase: Xoa thanh cong")
             }.addOnFailureListener {

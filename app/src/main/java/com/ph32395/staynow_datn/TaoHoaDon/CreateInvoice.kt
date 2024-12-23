@@ -24,12 +24,14 @@ import com.ph32395.staynow_datn.TaoHopDong.Invoice
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow_datn.databinding.ActivityCreateMontlyInvoiceAutoBinding
+import com.ph32395.staynow_datn.hieunt.helper.Default
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.random.Random
 
 class CreateInvoice : AppCompatActivity() {
     private lateinit var binding: ActivityCreateMontlyInvoiceAutoBinding
@@ -416,8 +418,8 @@ class CreateInvoice : AppCompatActivity() {
                 mapLink = null,
                 isRead = false,
                 isPushed = true,
-                typeNotification = "invoiceRemind",
-                idModel = idHopDong,
+                typeNotification = Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND,
+                idModel = invoice.idHoaDon,
                 timestamp = System.currentTimeMillis(),
             )
 

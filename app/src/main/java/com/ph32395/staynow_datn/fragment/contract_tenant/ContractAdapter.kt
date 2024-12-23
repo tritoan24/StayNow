@@ -144,6 +144,12 @@ class ContractAdapter(
                 ContractStatus.TERMINATED -> {
                     tvRemainingTime.text = "Hợp đồng đã bị hủy"
                 }
+
+                ContractStatus.PROCESSING -> {
+                    tvRemainingTime.text = "Hợp đồng đang được xử lý"
+                    llBtn.visibility =
+                        if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PROCESSING) View.VISIBLE else View.GONE
+                }
             }
 
             // sự kiện ấn vào item

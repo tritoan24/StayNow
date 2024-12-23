@@ -58,7 +58,7 @@ class PhongTroYeuThichFragment : Fragment() {
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
         FirebaseFirestore.getInstance().collection("PhongTroYeuThich")
-            .whereEqualTo("Id_nguoidung", userId)
+            .whereEqualTo("idNguoiDung", userId)
             .addSnapshotListener { snapshot, error ->
                 progressBar.visibility = View.GONE // Ẩn ProgressBar khi tải dữ liệu thành công
                 if (error != null) {
@@ -71,8 +71,8 @@ class PhongTroYeuThichFragment : Fragment() {
                 if (snapshot != null && !snapshot.isEmpty) {
                     favoriteList.clear()
                     for (doc in snapshot.documents) {
-                        val roomId = doc.getString("Id_phongtro") ?: continue
-                        val favoriteTime = doc.getLong("Thoigian_yeuthich") ?: 0L
+                        val roomId = doc.getString("idPhongTro") ?: continue
+                        val favoriteTime = doc.getLong("thoiGianYeuThich") ?: 0L
                         fetchRoomDetail(roomId, favoriteTime)
                     }
                     recyclerView.visibility = View.VISIBLE // Hiển thị danh sách phòng
@@ -88,7 +88,7 @@ class PhongTroYeuThichFragment : Fragment() {
             .get()
             .addOnSuccessListener { doc ->
                 val room = doc.toObject(PhongTroModel::class.java) ?: return@addOnSuccessListener
-                room.Thoigian_yeuthich = favoriteTime
+                room.thoiGianYeuThich = favoriteTime
                 val existingRoomIndex = favoriteList.indexOfFirst { it.first == maPhongTro }
 
                 if (existingRoomIndex >= 0) {
