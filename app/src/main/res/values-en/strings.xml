@@ -4,7 +4,7 @@
 
     <!-- Bottom Navigation -->
     <string name="Search" translatable="false">Search</string>
-    <string name="Calender" translatable="false">Calander</string>
+    <string name="Calender" translatable="false">Calender</string>
     <string name="Message" translatable="false">Message</string>
     <string name="Profile" translatable="false">Profile</string>
 
@@ -171,6 +171,7 @@
     <string name="Stay_in_the_room" translatable="false">Stay in the Room</string>
     <string name="Cancellation_Confirmation" translatable="false">Cancellation Confirmation</string>
 
+
     <!-- Lịch phòng-->
     <string name="t_ph_ng" translatable="false">Room Booking</string>
     <string name="Select_dates" translatable="false">Select Dates:</string>
@@ -178,9 +179,6 @@
     <string name="Notes" translatable="false">Notes</string>
     <string name="Notes_if_applicable" translatable="false">Notes (if applicable)</string>
     <string name="Please_wait_for_the_host" translatable="false">Please wait for the host to confirm your appointment. After the host confirms, you will have all the information about the address and the landlord.</string>
-
-    <!-- Welcom-->
-    <string name="Welcome_to_StayNow" translatable="false">Welcome to StayNow</string>
 
     <!-- Succes_payment-->
     <string name="Invoice_code" translatable="false">Invoice Code: #1234567</string>
@@ -207,15 +205,13 @@
     <!-- tao phòng trọ -->
     <string name="Add_a_room" translatable="false">Add a Room</string>
     <string name="Room_information" translatable="false">Room Information</string>
-    <string name="Enter_Address" translatable="false">Enter Address</string>
     <string name="Name_house_number" translatable="false">House Name/Number *</string>
     <string name="Room_Rate" translatable="false">Room Rate *</string>
     <string name="Description" translatable="false">Description</string>
     <string name="Service_Information" translatable="false">Service Information</string>
     <string name="Furniture_List" translatable="false">Furniture List</string>
     <string name="List_of_Amenities" translatable="false">List of Amenities</string>
-    <string name="Stay_Room" translatable="false">Stay Room</string>
-    <string name="Posting_a_room" translatable="false">Post a Room</string>
+
 
     <!-- manage_schedule_room -->
     <string name="Waiting_for_confirmation" translatable="false">Waiting for Confirmation</string>
@@ -319,4 +315,14 @@
 
     <string name="Full_name" translatable="false">Full name</string>
     <string name="Phone" translatable="false">Phone</string>
+
+    <string name="Add_Stay_Room" translatable="false">Stay room</string>
+    <string name="Post_a_room" translatable="false">Post a room</string>
+    <string name="Room_address" translatable="false">Room Address:</string>
+    <string name="Address_not_selected" translatable="false">Address not selected</string>
+    <string name="Provide_images" translatable="false">Provide images</string>
+    <string name="Preferred_gender" translatable="false">Preferred gender</string>
+
+    <string name="Welcome_to_StayNow" translatable="false">Welcom to Staynow new</string>
+
 </resources>
