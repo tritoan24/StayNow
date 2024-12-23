@@ -54,8 +54,8 @@ class AdapterQuanLyThanhVienTro(
 
         database.child(item.idDaiDienThue).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val name = snapshot.child("ho_ten").value.toString()
-                val image = snapshot.child("anh_daidien").value.toString()
+                val name = snapshot.child("hoTen").value.toString()
+                val image = snapshot.child("anhDaiDien").value.toString()
                 val email = snapshot.child("email").value.toString()
                 val sdt = snapshot.child("sdt").value.toString()
 

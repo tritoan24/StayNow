@@ -2,7 +2,7 @@ package com.ph32395.staynow_datn.Model;
 
 public class PhanHoiModel {
     private String Ma_phanhoi;       // Mã phản hồi
-    private String Ma_nguoidung;    // Mã người dùng gửi phản hồi
+    private String maNguoiDung;    // Mã người dùng gửi phản hồi
     private String Noi_dung;        // Nội dung phản hồi
     private String Img;             // Đường dẫn hoặc URL ảnh
     private String Thoi_giangui;    // Thời gian gửi phản hồi (dạng chuỗi)
@@ -12,9 +12,9 @@ public class PhanHoiModel {
     }
 
     // Constructor đầy đủ tham số
-    public PhanHoiModel(String ma_phanhoi, String ma_nguoidung, String noi_dung, String img, String thoi_giangui) {
+    public PhanHoiModel(String ma_phanhoi, String maNguoiDung, String noi_dung, String img, String thoi_giangui) {
         Ma_phanhoi = ma_phanhoi;
-        Ma_nguoidung = ma_nguoidung;
+        maNguoiDung = maNguoiDung;
         Noi_dung = noi_dung;
         Img = img;
         Thoi_giangui = thoi_giangui;
@@ -29,12 +29,12 @@ public class PhanHoiModel {
         Ma_phanhoi = ma_phanhoi;
     }
 
-    public String getMa_nguoidung() {
-        return Ma_nguoidung;
+    public String getMaNguoiDung() {
+        return maNguoiDung;
     }
 
-    public void setMa_nguoidung(String ma_nguoidung) {
-        Ma_nguoidung = ma_nguoidung;
+    public void setMaNguoiDung(String maNguoiDung) {
+        this.maNguoiDung = maNguoiDung;
     }
 
     public String getNoi_dung() {

@@ -26,7 +26,7 @@ class NotificationAdapter(
         override fun bindData(data: NotificationModel) {
             super.bindData(data)
             binding.apply {
-                when(data.title){
+                when(data.tieuDe){
                     TITLE_CONFIRMED -> {
                         tvTitle.setTextColor(Color.parseColor("#00FF00"))
                     }
@@ -37,10 +37,10 @@ class NotificationAdapter(
                         tvTitle.setTextColor(Color.parseColor("#FFCC00"))
                     }
                 }
-                tvTitle.text = data.title
-                tvMessage.text = data.message
-                tvDateTime.text = "${data.date} at ${data.time}"
-                vSeen.visibility = if (data.isRead) GONE else VISIBLE
+                tvTitle.text = data.tieuDe
+                tvMessage.text = data.tinNhan
+                tvDateTime.text = "${data.ngayGuiThongBao} at ${data.thoiGian}"
+                vSeen.visibility = if (data.daDoc) GONE else VISIBLE
 
             }
         }

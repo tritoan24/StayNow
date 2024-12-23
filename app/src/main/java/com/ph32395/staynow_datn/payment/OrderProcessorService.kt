@@ -149,15 +149,15 @@ private fun handlePayment(
         "Thanh toán không thành công cho hóa đơn $bill"
 
     val notification = NotificationModel(
-        title = "Thanh toán hóa đơn hàng tháng",
-        message = if (status == "success") messageSuccess else messageError,
-        date = Calendar.getInstance().time.toString(),
-        time = "0",
+        tieuDe = "Thanh toán hóa đơn hàng tháng",
+        tinNhan = if (status == "success") messageSuccess else messageError,
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
         mapLink = null,
-        isRead = false,
-        isPushed = true,
+        daDoc = false,
+        daGui = true,
         idModel = bill.idHoaDon,
-        typeNotification = Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+        loaiThongBao = Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
     )
 
     val factory = ViewModelFactory(context)

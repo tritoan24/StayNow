@@ -64,7 +64,7 @@ class HomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 notificationViewModel.notificationsState.collect {
                     val countNotificationNotSeen =
-                        async { it.filter { notificationModel -> !notificationModel.isRead }.size }.await()
+                        async { it.filter { notificationModel -> !notificationModel.daDoc }.size }.await()
                     withContext(Dispatchers.Main) {
                         if (countNotificationNotSeen > 0) {
                             binding.notificationBadge.visible()

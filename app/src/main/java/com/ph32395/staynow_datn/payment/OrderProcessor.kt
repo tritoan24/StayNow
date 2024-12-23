@@ -146,15 +146,15 @@ private fun handlePayment(context: Context, contract: HopDong, status: String) {
         "Thanh toán không thành công cho hợp đồng ${contract.maHopDong}\nMã hóa đơn ${contract.hoaDonHopDong.idHoaDon}"
 
     val notification = NotificationModel(
-        title = "Thanh toán hóa đơn hợp đồng",
-        message = if (status == "success") messageSuccess else messageError,
-        date = Calendar.getInstance().time.toString(),
-        time = "0",
+        tieuDe = "Thanh toán hóa đơn hợp đồng",
+        tinNhan = if (status == "success") messageSuccess else messageError,
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
         mapLink = null,
-        isRead = false,
-        isPushed = true,
+        daDoc = false,
+        daGui = true,
         idModel = contract.maHopDong,
-        typeNotification = Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+        loaiThongBao = Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
     )
 
     val factory = ViewModelFactory(context)

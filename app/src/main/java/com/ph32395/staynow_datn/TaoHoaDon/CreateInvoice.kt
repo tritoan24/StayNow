@@ -410,17 +410,16 @@ class CreateInvoice : AppCompatActivity() {
             }
             // Ví dụ: gửi thông báo
             val notification = NotificationModel(
-                title = "Thanh toán hóa đơn",
-                message = message,
+                tieuDe = "Thanh toán hóa đơn",
+                tinNhan = message,
                 //lấy ngày hôm nay
-                date = Calendar.getInstance().time.toString(),
-                time = "0",
+                ngayGuiThongBao = Calendar.getInstance().time.toString(),
+                thoiGian = "0",
                 mapLink = null,
-                isRead = false,
-                isPushed = true,
-                typeNotification = Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND,
-                idModel = invoice.idHoaDon,
-                timestamp = System.currentTimeMillis(),
+                daDoc = false,
+                daGui = true,
+                loaiThongBao = "invoiceRemind",
+                idModel = idHopDong
             )
 
             val recipientId = idNguoiNhan

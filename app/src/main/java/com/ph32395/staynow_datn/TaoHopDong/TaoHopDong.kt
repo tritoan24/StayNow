@@ -604,13 +604,13 @@ private fun observeViewModel() {
                         viewModelHopDong.resetNavigation()
                         // Gửi thông báo
                         val notificationModel = NotificationModel(
-                            title = "Hợp đồng mới",
-                            message = "Bạn có một hợp đồng mới",
-                            date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
-                            time = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
-                            typeNotification = "HopDongMoi",
+                            tieuDe = "Hợp đồng mới",
+                            tinNhan = "Bạn có một hợp đồng mới",
+                            ngayGuiThongBao = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date()),
+                            thoiGian = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
+                            loaiThongBao = "HopDongMoi",
                             mapLink = null,
-                            timestamp = System.currentTimeMillis(),
+                            thoiGianGuiThongBao = System.currentTimeMillis(),
                             idModel = it,
 
 

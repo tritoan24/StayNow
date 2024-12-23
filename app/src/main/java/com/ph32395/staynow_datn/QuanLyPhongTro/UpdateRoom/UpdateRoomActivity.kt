@@ -458,7 +458,7 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
                     "Ten_phongtro" to roomName,
                     "Gia_phong" to roomPrice,
                     "Mota_chitiet" to description,
-                    "Ma_nguoidung" to userId,
+                    "maNguoiDung" to userId,
                     "Dia_chi" to fullAddressct,
                     "Dia_chichitiet" to fullAddressDeltail,
                     "Trang_thaidc" to false,

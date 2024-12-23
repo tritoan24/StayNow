@@ -46,8 +46,8 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
                 override fun onDataChange(snapshot: DataSnapshot) {
                     Log.d(TAG, "onDataChange: snapshot $snapshot")
                     // Lấy dữ liệu từ Firebase, nếu thiếu thì dùng giá trị mặc định
-                    val name = snapshot.child("ho_ten").value?.toString() ?: "Tên người dùng không có"
-                    val avatar = snapshot.child("anh_daidien").value?.toString() ?: ""
+                    val name = snapshot.child("hoTen").value?.toString() ?: "Tên người dùng không có"
+                    val avatar = snapshot.child("anhDaiDien").value?.toString() ?: ""
                     val status = snapshot.child("status").value?.toString()
                     Log.d(TAG, "onDataChange:status $status")
 
