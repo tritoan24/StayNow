@@ -180,16 +180,16 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Loading Indicator ở giữa -->
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/loadingIndicator"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:lottie_autoPlay="false"
-        app:lottie_fileName="loading.json"
-        app:lottie_loop="true" />
+        <!-- Loading Indicator ở giữa -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/loadingIndicator"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="loading.json"
+            app:lottie_loop="true" />
 
     </FrameLayout>
 
