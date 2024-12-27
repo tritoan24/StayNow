@@ -166,7 +166,7 @@ private fun handlePayment(
         factory
     )[NotificationViewModel::class.java]
 
-    val recipientId = bill.idNguoiGui
+    val recipientId = bill.idNguoiNhan
 
     notificationViewModel.sendNotification(notification, recipientId)
 

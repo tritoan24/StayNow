@@ -116,6 +116,7 @@ public class DangKy extends AppCompatActivity {
 
         // Đăng ký sự kiện cho nút "Đăng ký"
         registerButton.setOnClickListener(view -> {
+            loadingUtil = new LoadingUtil(this);
             loadingUtil.show();
             String ten = tenEditText.getText().toString().trim();
             String sdt = sdtEditText.getText().toString().trim();

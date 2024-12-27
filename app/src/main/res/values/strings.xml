@@ -148,7 +148,7 @@
     <!-- OTP-->
     <string name="Verify" translatable="false">Xác minh</string>
     <string name="Enter_the_code_sent_to" translatable="false">Nhập mã được gửi đến</string>
-    <string name="If_you_haven_received_the_code_yet_click_Resend" translatable="false">Nếu chưa nhận được mã, hãy ấn gửi lại</string>
+    <string name="If_you_haven_received_the_code_yet_click_Resend" translatable="false">Ấn gửi lại nếu chưa nhận được mã</string>
     <string name="Confirm" translatable="false">Xác nhận</string>
     <string name="Resend_the_following_code" translatable="false">Gửi lại mã sau</string>
 

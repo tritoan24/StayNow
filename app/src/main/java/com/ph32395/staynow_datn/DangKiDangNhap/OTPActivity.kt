@@ -15,6 +15,8 @@ import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.databinding.ActivityOtpactivityBinding
 import com.ph32395.staynow_datn.utils.Constants
+import `in`.aabhasjindal.otptextview.OTPListener
+import `in`.aabhasjindal.otptextview.OtpTextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,19 +30,13 @@ class OTPActivity : AppCompatActivity() {
     private var countDownTimer: CountDownTimer? = null
     private lateinit var loadingUtil: LoadingUtil
 
+    private var otpTextView: OtpTextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadingUtil = LoadingUtil(this)
-
         binding = ActivityOtpactivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setOtpTextWatcher(binding.edtOtp1, binding.edtOtp2, null)
-        setOtpTextWatcher(binding.edtOtp2, binding.edtOtp3, binding.edtOtp1)
-        setOtpTextWatcher(binding.edtOtp3, binding.edtOtp4, binding.edtOtp2)
-        setOtpTextWatcher(binding.edtOtp4, binding.edtOtp5, binding.edtOtp3)
-        setOtpTextWatcher(binding.edtOtp5, binding.edtOtp6, binding.edtOtp4)
-        setOtpTextWatcher(binding.edtOtp6, null, binding.edtOtp5)
 
         binding.btnResendOtp.isClickable = false
         binding.btnResendOtp.isEnabled = false
@@ -48,37 +44,50 @@ class OTPActivity : AppCompatActivity() {
 
         val uid = intent.getStringExtra("uid") ?: ""
         val email = intent.getStringExtra("email") ?: ""
-        val pass = intent.getStringExtra("pass") ?: ""
+
         binding.tvEmail.text = email
 
-        binding.btnVerifyOtp.setOnClickListener {
-            loadingUtil.show()
-            val otp = getOtpFromInputs()
-            if (otp.length == 6) {
+        binding.btnReset.setOnClickListener {
+           otpTextView?.setOTP("")
+        }
+
+        otpTextView = binding.otpView
+        otpTextView?.requestFocusOTP()
+        otpTextView?.otpListener = object : OTPListener {
+            override fun onInteractionListener() {
+
+            }
+
+            override fun onOTPComplete(otp: String) {
+                loadingUtil = LoadingUtil(this@OTPActivity)
+                loadingUtil.show()
 
                 OtpService.sendOtpToServer(
-                    this,
+                    this@OTPActivity,
                     uid,
                     otp,
                     baseUrl,
                     endpointVerifyOtp,
                     object : OtpService.OtpCallback {
                         override fun onSuccess() {
-                            loadingUtil.hide()
+                            otpTextView?.showSuccess()
+                            runOnUiThread {
+                                loadingUtil.hide()
+                            }
                             checkAccountTypeInRealtimeDatabase(uid) // Xử lý logic thành công
                         }
 
                         override fun onFailure(errorMessage: String) {
-                            loadingUtil.hide()
+                            runOnUiThread {
+                                loadingUtil.hide()
+                            }
                             Log.d("OTP", "Lỗi gửi OTP: $errorMessage")
                         }
 
                     })
-
-            } else {
-                Toast.makeText(this, "Vui lòng nhập đầy đủ mã OTP", Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.btnResendOtp.setOnClickListener {
             loadingUtil.show()
             binding.btnResendOtp.isClickable = false  // Vô hiệu hóa nút "Resend OTP" ngay khi bấm
@@ -124,40 +133,6 @@ class OTPActivity : AppCompatActivity() {
             }
         }
         countDownTimer?.start()  // Bắt đầu bộ đếm ngược
-    }
-
-    private fun setOtpTextWatcher(
-        currentEditText: EditText,
-        nextEditText: EditText?,
-        previousEditText: EditText?
-    ) {
-        currentEditText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // Khi nhập ký tự, focus sang ô tiếp theo
-                if (s?.length == 1 && nextEditText != null) {
-                    nextEditText.requestFocus()
-                } else if (s.isNullOrEmpty()) {
-                    previousEditText?.requestFocus()
-                }
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
-    }
-
-
-    // Lấy OTP từ các EditText
-    private fun getOtpFromInputs(): String {
-        return binding.edtOtp1.text.toString() +
-                binding.edtOtp2.text.toString() +
-                binding.edtOtp3.text.toString() +
-                binding.edtOtp4.text.toString() +
-                binding.edtOtp5.text.toString() +
-                binding.edtOtp6.text.toString()
     }
 
     private fun checkAccountTypeInRealtimeDatabase(uid: String) {
