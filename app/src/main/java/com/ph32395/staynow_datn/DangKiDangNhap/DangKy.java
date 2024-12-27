@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ph32395.staynow_datn.BaoMat.CapNhatThongTin;
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil;
 import com.ph32395.staynow_datn.MainActivity;
 import com.ph32395.staynow_datn.Model.NguoiDungModel;
@@ -62,6 +63,8 @@ public class DangKy extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dang_ky);
+
+
 
 
         loadingUtil = new LoadingUtil(this);
@@ -103,6 +106,8 @@ public class DangKy extends AppCompatActivity {
                         .start()
         );
 
+
+
         // sự kiện khi ấn vào nút đăng nhập
         txtdangnhap.setOnClickListener(view -> {
             Intent intent = new Intent(DangKy.this, DangNhap.class);
@@ -123,51 +128,63 @@ public class DangKy extends AppCompatActivity {
             if (ten.isEmpty()) {
                 tenEditText.setError("Vui lòng nhập Họ Tên");
                 isValid = false;
+                loadingUtil.hide();
             }
 
             if (sdt.isEmpty()) {
                 sdtEditText.setError("Vui lòng nhập số điện thoại");
                 isValid = false;
+                loadingUtil.hide();
             }
 
             if (email.isEmpty()) {
                 emailEditText.setError("Vui lòng nhập email");
                 isValid = false;
+                loadingUtil.hide();
             }
 
             if (password.isEmpty()) {
                 passwordEditText.setError("Vui lòng nhập mật khẩu");
                 isValid = false;
+                loadingUtil.hide();
             }
             if (rppassword.isEmpty()) {
                 rppass.setError("Vui lòng lại nhập mật khẩu");
                 isValid = false;
+                loadingUtil.hide();
             }
 
             if (isValid) {
                 if (sdt.length() < 10) {
                     sdtEditText.setError("Số điện thoại phải có ít nhất 10 số");
+                    loadingUtil.hide();
+
                 } else if (!sdt.startsWith("0") || sdt.length() > 11) {
                     sdtEditText.setError("Số điện thoại không hợp lệ");
+                    loadingUtil.hide();
                 } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     emailEditText.setError("Email không hợp lệ");
+                    loadingUtil.hide();
                 } else if (password.length() < 6) {
                     passwordEditText.setError("Mật khẩu phải có ít nhất 6 ký tự");
+                    loadingUtil.hide();
                 } else if (!password.matches("^(?=.*[A-Z])(?=.*[0-9]).{6,}$")) {
                     passwordEditText.setError("Mật khẩu phải có ít nhất 1 chữ hoa và 1 chữ số");
+                    loadingUtil.hide();
                 } else if (!password.equals(rppassword)) {
                     rppass.setError("Mật khẩu không trùng khớp");
                 } else if (avatarUri == null) {
                     Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
+                    loadingUtil.hide();
                 } else {
                     signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, loaiTaiKhoan, Trang_thaitaikhoan, loaiTaiKhoan , daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
+                    loadingUtil.hide();
                 }
             }
         });
 
         // Đăng ký sự kiện cho nút "Đăng ký bằng Google"
         registerButtonWithGoogle.setOnClickListener(view -> {
-            loadingUtil.show();
             //đánh thức server mỗi lần run
             Intent signInIntent = registerWithGoogle.getGoogleSignInClient().getSignInIntent();
             startActivityForResult(signInIntent, RC_SIGN_IN_REGISTER);
@@ -187,7 +204,6 @@ public class DangKy extends AppCompatActivity {
                             public void onSuccess(String imageUrl) {
                                 // Lưu thông tin người dùng với URL ảnh
                                 saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, 0, Trang_thaitaikhoan, loaiTaiKhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
-                                loadingUtil.hide();
                             }
 
                             @Override
@@ -197,7 +213,6 @@ public class DangKy extends AppCompatActivity {
                         });
                         //lấy token request lên server
                         proceedToOtpActivity(user);
-                        loadingUtil.hide();
 
                     } else {
                         loadingUtil.hide();
@@ -268,10 +283,11 @@ public class DangKy extends AppCompatActivity {
             }
         });
     }
-
+    //    xu ly dang nhap bang Google
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        loadingUtil = new LoadingUtil(this);
 
         if (requestCode == RC_SIGN_IN_REGISTER) {
             loadingUtil.show();
@@ -292,7 +308,7 @@ public class DangKy extends AppCompatActivity {
                                     if (dataSnapshot.exists()) {
                                         // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            String trangThaiTaiKhoan = snapshot.child("trangThaiTaiKhoan").getValue(String.class);
+                                            String trangThaiTaiKhoan = snapshot.child(" ").getValue(String.class);
                                             Boolean daXacThucValue = snapshot.child("daXacThuc").getValue(Boolean.class);
                                             // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
                                             boolean daXacThuc = daXacThucValue != null && daXacThucValue;
@@ -342,10 +358,10 @@ public class DangKy extends AppCompatActivity {
                                     } else {
                                         // Tài khoản chưa tồn tại, tạo mới
                                         if (user.getPhoneNumber() == null) {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon" ,false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon", false, System.currentTimeMillis(), System.currentTimeMillis());
                                             proceedToOtpActivity(user);
                                         } else {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong","ChuaChon",false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon",false, System.currentTimeMillis(), System.currentTimeMillis());
                                             Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                                             proceedToOtpActivity(user);
                                         }
@@ -355,7 +371,6 @@ public class DangKy extends AppCompatActivity {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     showFailureAnimation("Lỗi khi kiểm tra tài khoản");
-                                    // Loại bỏ lớp phủ nếu nó tồn tại
                                     // Loại bỏ lớp phủ nếu nó tồn tại
                                     if (loadingUtil.blockingView != null) {
                                         ViewGroup rootView = findViewById(android.R.id.content);
@@ -385,6 +400,7 @@ public class DangKy extends AppCompatActivity {
             img_avatar.setImageURI(avatarUri);
         }
     }
+
     // Phương thức để hiển thị animation thất bại
     private void showFailureAnimation(String errorMessage) {
         // Tạo một dialog mới

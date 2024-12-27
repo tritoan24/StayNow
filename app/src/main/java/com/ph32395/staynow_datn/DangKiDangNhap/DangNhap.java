@@ -166,9 +166,11 @@ public class DangNhap extends AppCompatActivity {
                                                         proceedToOtpActivity(currentUser);
                                                     }
                                                 } else {
+                                                    loadingUtil.hide();
                                                     showFailureAnimation("Tài khoản của bạn đã bị khóa");
                                                 }
                                             } else {
+                                                loadingUtil.hide();
                                                 showFailureAnimation("Không tìm thấy thông tin người dùng");
                                             }
                                         }
@@ -359,7 +361,6 @@ public class DangNhap extends AppCompatActivity {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     showFailureAnimation("Lỗi khi kiểm tra tài khoản");
-                                    // Loại bỏ lớp phủ nếu nó tồn tại
                                     // Loại bỏ lớp phủ nếu nó tồn tại
                                     if (loadingUtil.blockingView != null) {
                                         ViewGroup rootView = findViewById(android.R.id.content);
