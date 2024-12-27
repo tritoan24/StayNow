@@ -167,7 +167,7 @@ class OTPActivity : AppCompatActivity() {
             try {
                 val snapshot = databaseReference.get().await()
                 if (snapshot.exists()) {
-                    val accountType = snapshot.child("loaiTaiKhoankhoan").value.toString()
+                    val accountType = snapshot.child("loaiTaiKhoan").value.toString()
                     CoroutineScope(Dispatchers.Main).launch {
                         navigateBasedOnAccountType(accountType)
                     }

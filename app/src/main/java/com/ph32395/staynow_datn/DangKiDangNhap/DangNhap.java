@@ -137,10 +137,10 @@ public class DangNhap extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.exists()) {
-                                                String status = dataSnapshot.child("trang_thaitaikhoan").getValue(String.class);
+                                                String status = dataSnapshot.child("trangThaiTaiKhoan").getValue(String.class);
                                                 Boolean daXacThucValue = dataSnapshot.child("daXacThuc").getValue(Boolean.class);
                                                 boolean daXacthuc = daXacThucValue != null && daXacThucValue;
-                                                String loaiTaiKhoan = dataSnapshot.child("loaiTaiKhoankhoan").getValue(String.class);
+                                                String loaiTaiKhoan = dataSnapshot.child("loaiTaiKhoan").getValue(String.class);
 
                                                 if ("HoatDong".equals(status)) {
                                                     if (daXacthuc) {
@@ -222,9 +222,9 @@ public class DangNhap extends AppCompatActivity {
     }
 
     // Hàm lưu thông tin người dùng vào Realtime Database
-    private void saveUserInfo(String maNguoiDung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
+    private void saveUserInfo(String maNguoiDung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich,String trangThaiTaiKhoan, String Loai_taikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-        NguoiDungModel nguoiDung = new NguoiDungModel(maNguoiDung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
+        NguoiDungModel nguoiDung = new NguoiDungModel(maNguoiDung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich,trangThaiTaiKhoan, Loai_taikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(maNguoiDung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
@@ -346,10 +346,10 @@ public class DangNhap extends AppCompatActivity {
                                     } else {
                                         // Tài khoản chưa tồn tại, tạo mới
                                         if (user.getPhoneNumber() == null) {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon", false, System.currentTimeMillis(), System.currentTimeMillis());
                                             proceedToOtpActivity(user);
                                         } else {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon",false, System.currentTimeMillis(), System.currentTimeMillis());
                                             Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                                             proceedToOtpActivity(user);
                                         }

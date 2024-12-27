@@ -86,7 +86,7 @@ public class DangKy extends AppCompatActivity {
         String Ngay_taotaikhoan = String.valueOf(System.currentTimeMillis());
         String Ngay_capnhat = String.valueOf(System.currentTimeMillis());
         Integer So_luotdatlich = 0;
-        String Loai_taikhoan = "ChuaChon";
+        String loaiTaiKhoan = "ChuaChon";
         String Trang_thaitaikhoan = "HoatDong";
         boolean daXacThuc = false;
 
@@ -160,7 +160,7 @@ public class DangKy extends AppCompatActivity {
                 } else if (avatarUri == null) {
                     Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
                 } else {
-                    signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
+                    signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, loaiTaiKhoan, Trang_thaitaikhoan, loaiTaiKhoan , daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
                 }
             }
         });
@@ -174,7 +174,7 @@ public class DangKy extends AppCompatActivity {
         });
     }
 
-    private void signUpWithEmailPassword(String Ho_ten, String Sdt, String Email, String password, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean daXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
+    private void signUpWithEmailPassword(String Ho_ten, String Sdt, String Email, String password, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, String loaiTaiKhoan, boolean daXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
         mAuth.createUserWithEmailAndPassword(Email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
@@ -186,7 +186,7 @@ public class DangKy extends AppCompatActivity {
                             @Override
                             public void onSuccess(String imageUrl) {
                                 // Lưu thông tin người dùng với URL ảnh
-                                saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
+                                saveUserInfo(user.getUid(), Ho_ten, Sdt, Email, imageUrl, 0, Trang_thaitaikhoan, loaiTaiKhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
                                 loadingUtil.hide();
                             }
 
@@ -217,9 +217,9 @@ public class DangKy extends AppCompatActivity {
     }
 
     // Hàm lưu thông tin người dùng vào Realtime Database
-    private void saveUserInfo(String maNguoiDung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
+    private void saveUserInfo(String maNguoiDung, String Ho_ten, String Sdt, String Email, String anhDaiDien, Integer soLuotDatLich, String trangThaiTaiKhoan, String loaiTaiKhoan, boolean daXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-        NguoiDungModel nguoiDung = new NguoiDungModel(maNguoiDung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
+        NguoiDungModel nguoiDung = new NguoiDungModel(maNguoiDung, Ho_ten, Sdt, Email, anhDaiDien ,soLuotDatLich, trangThaiTaiKhoan, loaiTaiKhoan, daXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
         mDatabase.child("NguoiDung").child(maNguoiDung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
@@ -292,11 +292,11 @@ public class DangKy extends AppCompatActivity {
                                     if (dataSnapshot.exists()) {
                                         // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            String trangThaiTaiKhoan = snapshot.child("trang_thaitaikhoan").getValue(String.class);
+                                            String trangThaiTaiKhoan = snapshot.child("trangThaiTaiKhoan").getValue(String.class);
                                             Boolean daXacThucValue = snapshot.child("daXacThuc").getValue(Boolean.class);
                                             // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
                                             boolean daXacThuc = daXacThucValue != null && daXacThucValue;
-                                            String loaiTaiKhoan = snapshot.child("loaiTaiKhoankhoan").getValue(String.class);
+                                            String loaiTaiKhoan = snapshot.child("loaiTaiKhoan").getValue(String.class);
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
                                                 if (daXacThuc) {
@@ -342,10 +342,10 @@ public class DangKy extends AppCompatActivity {
                                     } else {
                                         // Tài khoản chưa tồn tại, tạo mới
                                         if (user.getPhoneNumber() == null) {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon" ,false, System.currentTimeMillis(), System.currentTimeMillis());
                                             proceedToOtpActivity(user);
                                         } else {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong","ChuaChon",false, System.currentTimeMillis(), System.currentTimeMillis());
                                             Toast.makeText(DangKy.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                                             proceedToOtpActivity(user);
                                         }
