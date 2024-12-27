@@ -43,7 +43,7 @@ class QuanLyNhaTroActivity : AppCompatActivity() {
 
     }
 
-//    private fun fetchNhaTro(idUser: String?) {
+    //    private fun fetchNhaTro(idUser: String?) {
 //        val list = mutableListOf<NhaTroModel>()
 //        if (idUser != null) {
 //            nhaTroRef.document(idUser).collection("DanhSachNhaTro")
@@ -83,54 +83,56 @@ class QuanLyNhaTroActivity : AppCompatActivity() {
 //
 //
 //    }
-private fun fetchNhaTro(idUser: String?) {
-    val list = mutableListOf<NhaTroModel>()
-    if (idUser != null) {
-        nhaTroRef.document(idUser).collection("DanhSachNhaTro")
-            .addSnapshotListener { value, error ->
-                if (error != null) {
-                    Log.w(TAG, "Listen failed.", error)
-                    return@addSnapshotListener
-                }
+    private fun fetchNhaTro(idUser: String?) {
+        val list = mutableListOf<NhaTroModel>()
+        if (idUser != null) {
+            nhaTroRef.document(idUser).collection("DanhSachNhaTro")
+                .addSnapshotListener { value, error ->
+                    if (error != null) {
+                        Log.w(TAG, "Listen failed.", error)
+                        return@addSnapshotListener
+                    }
 
-                for (docChange in value!!.documentChanges) {
-                    when (docChange.type) {
-                        DocumentChange.Type.ADDED -> {
-                            val nhaTro = docChange.document.toObject(NhaTroModel::class.java)
-                            list.add(nhaTro)
-                            Log.d(TAG, "fetchNhaTro:nhaTro $nhaTro")
+                    for (docChange in value!!.documentChanges) {
+                        when (docChange.type) {
+                            DocumentChange.Type.ADDED -> {
+                                val nhaTro = docChange.document.toObject(NhaTroModel::class.java)
+                                list.add(nhaTro)
+                                Log.d(TAG, "fetchNhaTro:nhaTro $nhaTro")
 
-                        }
+                            }
 
-                        DocumentChange.Type.MODIFIED -> {
-                            val modifiedNhaTro = docChange.document.toObject(NhaTroModel::class.java)
-                            // Find the index of the modified item and update it
-                            val index = list.indexOfFirst { it.maNhaTro == modifiedNhaTro.maNhaTro }
-                            if (index != -1) {
-                                list[index] = modifiedNhaTro
-                                Log.d(TAG, "Updated contract: ${docChange.document.data}")
+                            DocumentChange.Type.MODIFIED -> {
+                                val modifiedNhaTro =
+                                    docChange.document.toObject(NhaTroModel::class.java)
+                                // Find the index of the modified item and update it
+                                val index =
+                                    list.indexOfFirst { it.maNhaTro == modifiedNhaTro.maNhaTro }
+                                if (index != -1) {
+                                    list[index] = modifiedNhaTro
+                                    Log.d(TAG, "Updated contract: ${docChange.document.data}")
+                                }
+                            }
+
+                            DocumentChange.Type.REMOVED -> {
+                                val removedNhaTroId = docChange.document.id
+                                // Remove the item from the list
+                                list.removeAll { it.maNhaTro == removedNhaTroId }
+                                Log.d(TAG, "Removed contract: ${docChange.document.data}")
                             }
                         }
-
-                        DocumentChange.Type.REMOVED -> {
-                            val removedNhaTroId = docChange.document.id
-                            // Remove the item from the list
-                            list.removeAll { it.maNhaTro == removedNhaTroId }
-                            Log.d(TAG, "Removed contract: ${docChange.document.data}")
-                        }
                     }
-                }
 
-                // Notify the adapter that the data has changed
-                val adapter = NhaTroAdapter(list)
-                binding.rvQuanLyNhaTro.layoutManager = LinearLayoutManager(
-                    applicationContext,
-                    LinearLayoutManager.VERTICAL,
-                    false
-                )
-                binding.rvQuanLyNhaTro.adapter = adapter
-            }
+                    // Notify the adapter that the data has changed
+                    val adapter = NhaTroAdapter(list)
+                    binding.rvQuanLyNhaTro.layoutManager = LinearLayoutManager(
+                        applicationContext,
+                        LinearLayoutManager.VERTICAL,
+                        false
+                    )
+                    binding.rvQuanLyNhaTro.adapter = adapter
+                }
+        }
     }
-}
 
 }

@@ -1,10 +1,16 @@
 package com.ph32395.staynow_datn.QuanLyNhaTro
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.databinding.ItemNhaTroNhaBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -15,6 +21,9 @@ class NhaTroAdapter(
 ) : RecyclerView.Adapter<NhaTroAdapter.NhaTroAdapterViewHolder>() {
 
     private lateinit var binding: ItemNhaTroNhaBinding
+    private val firestore = FirebaseFirestore.getInstance()
+    private val nhaTroRef = firestore.collection("NhaTro")
+    private val TAG = "ZZNhaTroAdapterZZ"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NhaTroAdapterViewHolder {
 
@@ -31,6 +40,7 @@ class NhaTroAdapter(
         val item = listNhaTro[position]
 
         holder.bin(item, binding)
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         holder.itemView.setOnClickListener {
             val bottomSheetCreateAndUpdateNhaTro = BottomSheetCreateAndUpdateNhaTro(item)
@@ -43,6 +53,18 @@ class NhaTroAdapter(
             }
 
         }
+        holder.itemView.setOnLongClickListener {
+            val dialog = AlertDialog.Builder(holder.itemView.context)
+            dialog.setTitle("Thông báo !!!")
+                .setMessage("Bạn có chắc chắn xóa không ???")
+                .setCancelable(true)
+                .setPositiveButton("Yes") { v, i ->
+                    deleteNhaTro(userId, holder.itemView.context, item)
+                }
+                .setNegativeButton("No") {v,i->}
+                .show()
+            true
+        }
 
     }
 
@@ -50,19 +72,33 @@ class NhaTroAdapter(
         RecyclerView.ViewHolder(itemView.root) {
         @SuppressLint("SetTextI18n")
         fun bin(item: NhaTroModel, itemView: ItemNhaTroNhaBinding) {
-            itemView.tvTenNhaTro.text = "Tên nhà: ${item.tenNhaTro}"
-            itemView.tvDiaChi.text = "Địa chỉ: ${item.diaChiChiTiet}"
-            itemView.tvTenLoaiNhaTro.text = "Loại nhà: ${item.tenLoaiNhaTro}"
-            itemView.tvNgayTao.text = "Ngày tạo: ${convertTimestampToDate(item.ngayTao)}"
+            itemView.tvTenNhaTro.text = item.tenNhaTro
+            itemView.tvDiaChi.text = item.diaChiChiTiet
+            itemView.tvTenLoaiNhaTro.text = item.tenLoaiNhaTro
+            itemView.tvNgayTao.text = convertTimestampToDate(item.ngayTao)
         }
 
         fun convertTimestampToDate(timestamp: Long): String {
             // Chọn định dạng ngày bạn muốn
-            val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             // Chuyển đổi timestamp thành đối tượng Date
             val date = Date(timestamp)
             // Định dạng đối tượng Date thành chuỗi
             return dateFormat.format(date)
+        }
+
+    }
+
+    private fun deleteNhaTro(userId: String?, context: Context, item: NhaTroModel) {
+        if (userId != null) {
+            nhaTroRef.document(userId).collection("DanhSachNhaTro").document(item.maNhaTro)
+                .delete().addOnSuccessListener {
+                    Toast.makeText(context, "Delete thành công", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Log.e(TAG, "DELETE thất bại ${it.message.toString()}")
+                }.addOnCompleteListener {
+                    Log.d(TAG, "DELETE nhà trọ hoàn thành")
+                }
         }
 
     }

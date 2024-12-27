@@ -30,6 +30,7 @@ import com.ph32395.staynow_datn.Maps.RetrofitInstance
 import com.ph32395.staynow_datn.Maps.SuggestionResponse
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.BottomSheetCreateAndUpdateNhaTroBinding
+import com.techiness.progressdialoglibrary.ProgressDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -134,11 +135,15 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
 
 
         binding.btnApply.setOnClickListener {
+            val progressDialog = ProgressDialog(requireContext())
+            with(progressDialog) {
+                theme = ProgressDialog.THEME_DARK
+            }
             if (item == null) {
-                createRoom(idUser)
+                createRoom(idUser,progressDialog)
 
             } else {
-                updateRoom(idUser, item)
+                updateRoom(idUser, item,progressDialog)
             }
 
         }
@@ -202,8 +207,8 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         return binding.root
     }
 
-    private fun updateRoom(idUser: String?, item: NhaTroModel?) {
-
+    private fun updateRoom(idUser: String?, item: NhaTroModel?, progressDialog: ProgressDialog) {
+        progressDialog.show()
         if (idUser == null) return
         if (item == null) return
 
@@ -211,6 +216,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         val tenNhaTro = binding.edTenNhaTro.text.toString().trim()
         if (tenNhaTro.isEmpty()) {
             Toast.makeText(context, "Tên nhà trọ không được để trống", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
             return
         }
 
@@ -218,6 +224,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         val checkedChipId = binding.chipGroupTypeRoom.checkedChipId
         if (checkedChipId == View.NO_ID) {
             Toast.makeText(context, "Vui lòng chọn loại nhà trọ", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
             return
         }
 
@@ -230,20 +237,11 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         val address = binding.autoComplete.text.toString().trim()
         if (address.isEmpty()) {
             Toast.makeText(context, "Địa chỉ không được để trống", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
             return
         }
 
         // Cập nhật mô hình nhà trọ
-//        val updatedNhaTro = mapOf(
-//            "tenNhaTro" to tenNhaTro,
-//            "maLoaiNhaTro" to maLoaiNhaTro,
-//            "tenLoaiNhaTro" to loaiNhaTro,
-//            "dcQuanHuyen" to Dc_quanhuyen.ifEmpty { item.dcQuanHuyen },
-//            "dcTinhTP" to Dc_tinhtp.ifEmpty { item.dcTinhTP },
-//            "diaChi" to fullAddressct.ifEmpty { item.diaChi },
-//            "diaChiChiTiet" to fullAddressDeltail.ifEmpty { item.diaChiChiTiet },
-//            "ngayTao" to System.currentTimeMillis()
-//        )
         val updatedNhaTro = NhaTroModel(
             maNhaTro = item.maNhaTro,
             maLoaiNhaTro = maLoaiNhaTro,
@@ -261,20 +259,25 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         nhaTroRef.document(idUser).collection("DanhSachNhaTro").document(item.maNhaTro)
             .set(updatedNhaTro, SetOptions.merge()).addOnSuccessListener {
                 Toast.makeText(context, "Cập nhật thành công", Toast.LENGTH_SHORT).show()
+                progressDialog.dismiss()
                 dismiss()
             }.addOnFailureListener {
                 Log.e(TAG, "updateRoom: Cập nhật thất bại ${it.message.toString()}")
+                progressDialog.dismiss()
             }.addOnCompleteListener {
                 Log.d(TAG, "updateRoom: cập nhật nhà trọ hoàn thành")
+                progressDialog.dismiss()
             }
     }
 
 
-    private fun createRoom(idUser: String?) {
+    private fun createRoom(idUser: String?, progressDialog: ProgressDialog) {
         // Kiểm tra xem idUser có rỗng không
+        progressDialog.show()
         if (idUser.isNullOrEmpty()) {
             Toast.makeText(context, "Vui lòng đăng nhập trước khi tạo nhà trọ", Toast.LENGTH_SHORT)
                 .show()
+            progressDialog.dismiss()
             return
         }
 
@@ -282,6 +285,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         val tenNhaTro = binding.edTenNhaTro.text.toString().trim()
         if (tenNhaTro.isEmpty()) {
             Toast.makeText(context, "Tên nhà trọ không được để trống", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
             return
         }
 
@@ -289,6 +293,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         val checkedChipId = binding.chipGroupTypeRoom.checkedChipId
         if (checkedChipId == View.NO_ID) {
             Toast.makeText(context, "Vui lòng chọn loại nhà trọ", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
             return
         }
 
@@ -300,6 +305,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         // Kiểm tra xem địa chỉ có hợp lệ không (có thể tùy chỉnh thêm)
         if (fullAddressct.isEmpty()) {
             Toast.makeText(context, "Địa chỉ không được để trống", Toast.LENGTH_SHORT).show()
+            progressDialog.dismiss()
             return
         }
 
@@ -339,11 +345,14 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
         nhaTroRef.document(idUser).collection("DanhSachNhaTro").document(maNhaTro).set(nhaTro)
             .addOnSuccessListener {
                 Toast.makeText(context, "Thêm thành công", Toast.LENGTH_SHORT).show()
+                progressDialog.dismiss()
                 dismiss()
             }.addOnFailureListener {
                 Log.e(TAG, "createRoom: Thêm thất bại ${it.message.toString()}")
+                progressDialog.dismiss()
             }.addOnCompleteListener {
                 Log.d(TAG, "createRoom: thêm nhà trọ hoàn thành")
+                progressDialog.dismiss()
             }
     }
 
