@@ -68,21 +68,22 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/hintMissOtp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="@string/If_you_haven_received_the_code_yet_click_Resend"
-                android:textColor="#F44336"
+                android:text="Nếu nhập sai quá 5 lần bạn sẽ phải chờ 4h nữa để tiếp tục xác thực"
+                android:textColor="#3F51B5"
                 android:textSize="12sp"
-                android:textStyle="italic" />
+                tools:ignore="HardcodedText" />
 
 
             <in.aabhasjindal.otptextview.OtpTextView
                 android:id="@+id/otp_View"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:textColor="@color/black"
                 app:bar_active_color="@color/light_blue_900"
                 app:bar_enabled="true"
@@ -100,7 +101,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:length="6"
-                app:otp=""
                 app:otp_text_size="20dp"
                 app:width="40dp" />
 
@@ -110,9 +110,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:gravity="center"
-                android:text="Bạn đã nhập sai 5 lần"
                 android:textColor="#F44336"
                 android:textSize="12sp"
+                android:visibility="gone"
                 tools:ignore="HardcodedText" />
 
 
@@ -140,10 +140,21 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/btnResendOtp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="10dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:enabled="false"
+                    android:text="Bạn chưa nhận được mã?"
+                    android:textSize="14sp"
+                    android:textStyle=""
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/btnResendOtp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="3dp"
                     android:background="?attr/selectableItemBackground"
                     android:enabled="false"
                     android:text="@string/Resend_the_following_code"
@@ -155,22 +166,12 @@
                     android:id="@+id/timeOtp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
                     android:text="00:50"
                     android:textColor="#FF0000"
                     android:textSize="14sp"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/hintMissOtp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:gravity="center"
-                android:text="Nếu nhập sai quá 5 lần bạn sẽ phải chờ 4 tiếng nữa để xác thực tiếp"
-                android:textSize="12sp"
-                android:textStyle="italic"
-                tools:ignore="HardcodedText" />
 
         </LinearLayout>
         <!-- Loading Indicator ở giữa -->

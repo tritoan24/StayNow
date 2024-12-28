@@ -4,15 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.widget.EditText
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.MainActivity
+import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.ActivityOtpactivityBinding
 import com.ph32395.staynow_datn.utils.Constants
 import `in`.aabhasjindal.otptextview.OTPListener
@@ -48,7 +48,7 @@ class OTPActivity : AppCompatActivity() {
         binding.tvEmail.text = email
 
         binding.btnReset.setOnClickListener {
-           otpTextView?.setOTP("")
+            otpTextView?.setOTP("")
         }
 
         otpTextView = binding.otpView
@@ -69,19 +69,24 @@ class OTPActivity : AppCompatActivity() {
                     baseUrl,
                     endpointVerifyOtp,
                     object : OtpService.OtpCallback {
+                        @SuppressLint("SetTextI18n")
                         override fun onSuccess() {
                             otpTextView?.showSuccess()
                             runOnUiThread {
                                 loadingUtil.hide()
+                                binding.countMissOtp.text = "Xác thực thành công"
+                                binding.countMissOtp.setTextColor(ContextCompat.getColor(this@OTPActivity, R.color.green))
                             }
-                            checkAccountTypeInRealtimeDatabase(uid) // Xử lý logic thành công
+                            checkAccountTypeInRealtimeDatabase(uid)
                         }
 
+                        @SuppressLint("SetTextI18n")
                         override fun onFailure(errorMessage: String) {
                             runOnUiThread {
                                 loadingUtil.hide()
                             }
-                            Log.d("OTP", "Lỗi gửi OTP: $errorMessage")
+                            binding.countMissOtp.visibility = View.VISIBLE
+                            binding.countMissOtp.text = errorMessage
                         }
 
                     })
@@ -107,7 +112,9 @@ class OTPActivity : AppCompatActivity() {
 
                     override fun onFailure(errorMessage: String) {
                         loadingUtil.hide()
-                        Log.d("OTP", "Lỗi gửi lại OTP: $errorMessage")
+                        Log.d("OTP", errorMessage)
+                        binding.countMissOtp.visibility = View.VISIBLE
+                        binding.countMissOtp.text = errorMessage
                     }
                 })
             startTimer()
