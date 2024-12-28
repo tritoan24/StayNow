@@ -26,7 +26,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-
+        <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
+        <activity
+            android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
+            android:exported="true"/>
         <activity
             android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
             android:exported="false" />
