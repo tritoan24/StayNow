@@ -1,9 +1,13 @@
 package com.ph32395.staynow_datn.QuanLyNhaTro
 
 import android.Manifest
+import android.app.Activity.RESULT_OK
+import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Typeface
 import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,8 +19,18 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.LocationSettingsResponse
+import com.google.android.gms.location.LocationSettingsStatusCodes
+import com.google.android.gms.location.SettingsClient
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -26,6 +40,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhong
+import com.ph32395.staynow_datn.Maps.GeocodeResponse
+import com.ph32395.staynow_datn.Maps.GeocodeResult
 import com.ph32395.staynow_datn.Maps.RetrofitInstance
 import com.ph32395.staynow_datn.Maps.SuggestionResponse
 import com.ph32395.staynow_datn.R
@@ -140,10 +156,10 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
                 theme = ProgressDialog.THEME_DARK
             }
             if (item == null) {
-                createRoom(idUser,progressDialog)
+                createRoom(idUser, progressDialog)
 
             } else {
-                updateRoom(idUser, item,progressDialog)
+                updateRoom(idUser, item, progressDialog)
             }
 
         }
@@ -183,14 +199,13 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
                 )
             } != PackageManager.PERMISSION_GRANTED) {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        } else {
-            getCurrentLocation()
         }
 
 
-        //tạo sự kiện khi ấn vào nút update_button
+        //getLocation
         binding.btngetIndex.setOnClickListener {
-            doiToaDoRaViTriCuThe(it)
+            getCurrentLocation()
+            Log.e(TAG, "onCreateView: btngetLocation")
         }
 
         //cài lại
@@ -411,70 +426,95 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
             // Nếu chưa có quyền truy cập, yêu cầu quyền
             return
         }
+        Log.d(TAG, "getCurrentLocation: vao ")
 
-        fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location ->
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
-                latitude = location.latitude
-                longitude = location.longitude
-                Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
+                Log.d(TAG, "getCurrentLocation:location $location")
+                val userLocation =
+                    LatLng(location.latitude, location.longitude)
+                Log.d(TAG, "getCurrentLocation:userLocation $userLocation")
+                convertLocation(location) {
+                    Log.e(TAG, "getCurrentLocation: ${it}")
+                    Log.e(TAG, "getCurrentLocation:it.formatted_address ${it.formatted_address}")
+                    Log.e(TAG, "getCurrentLocation:it.address ${it.address}")
+                    Log.e(TAG, "getCurrentLocation:it.compound.district ${it.compound.district}")
+                    Log.e(TAG, "getCurrentLocation:it.compound.province ${it.compound.province}")
+                    Log.e(TAG, "getCurrentLocation:it.compound.commune ${it.compound.commune}")
+                    Log.e(TAG, "getCurrentLocation:getRelativeAddress ${getRelativeAddress(it.formatted_address)}")
 
 
-            } else {
-                Log.e("Location", "Không lấy được vị trí")
-            }
-        }
-    }
-
-    fun doiToaDoRaViTriCuThe(view: View) {
-
-
-        try {
-            val geocoder = context?.let { Geocoder(it, Locale.getDefault()) }
-            val addresses = geocoder?.getFromLocation(latitude, longitude, 1)
-
-            if (!addresses.isNullOrEmpty()) {
-                val address = addresses[0]
-
-                // Lấy các thành phần của địa chỉ
-                val streetName = address.thoroughfare ?: ""       // Tên đường hoặc ngõ
-                val subLocality = address.subLocality ?: ""       // Khu vực nhỏ hơn trong thành phố
-                val locality = address.locality ?: ""             // Thành phố hoặc thị xã
-                val adminArea = address.adminArea ?: ""           // Tỉnh/thành phố
-                val countryName = address.countryName ?: ""       // Tên quốc gia
-                Dc_tinhtp = address.adminArea ?: ""          // Tỉnh/Thành phố
-                Dc_quanhuyen = address.subAdminArea ?: ""
-
-                //log quan huyen
-                Log.d(TAG, "Quan huyen: $Dc_quanhuyen")
-                Log.d(TAG, "TinhTP: ${Dc_tinhtp}")
-
-                // Tạo địa chỉ cụ thể kết hợp các thành phần
-                val detailedAddress = listOf(
-                    streetName,
-                    subLocality,
-                    locality,
-                    adminArea,
-                    countryName
-                ).filter { it.isNotEmpty() }                  // Lọc bỏ các thành phần trống
-                    .joinToString(", ")                          // Ghép lại thành chuỗi, cách nhau bằng dấu phẩy
-
-                val diachict = address.getAddressLine(0);
-                // Kiểm tra nếu địa chỉ cụ thể không trống thì cập nhật Firestore
-                if (detailedAddress.isNotEmpty() && diachict.isNotEmpty()) {
-
-                    fullAddressct = detailedAddress
-                    fullAddressDeltail = diachict
-                    binding.autoComplete.setText(fullAddressDeltail)
-
-                    Log.d("Location", "Địa chỉ cụ thể: $detailedAddress")
-                    Log.d("Location", "Địa chỉ cụ thể chi tiets: $diachict")
+                    binding.roomAddress.text = it.formatted_address
+                    binding.autoComplete.setHint(it.formatted_address)
+                    Dc_tinhtp = it.compound.province
+                    Dc_quanhuyen = it.compound.district
+                    fullAddressct = getRelativeAddress(it.formatted_address)
+                    fullAddressDeltail = it.formatted_address
 
                 }
             }
-        } catch (e: IOException) {
-            Log.e("Geocoder", "Lỗi khi lấy địa chỉ: ${e.message}")
         }
     }
+
+    private fun convertLocation(location: Location, onResult: (GeocodeResult) -> Unit) {
+
+        val apiKey = getCurrentApiKey()
+        RetrofitInstance.api.getGeocodeLang(apiKey, "${location.latitude},${location.longitude}")
+            .enqueue(object : Callback<GeocodeResponse> {
+                override fun onResponse(
+                    call: Call<GeocodeResponse>,
+                    response: Response<GeocodeResponse>
+                ) {
+                    val currentKey = getCurrentApiKey()
+
+                    // Kiểm tra giới hạn trong header
+                    val remainingRequests =
+                        response.headers()["X-RateLimit-Remaining"]?.toIntOrNull()
+                    if (remainingRequests != null) {
+                        usageMap[currentKey] = 998 - remainingRequests
+                        Log.d("RateLimit", "Key $currentKey còn $remainingRequests requests")
+                    }
+
+                    // Nếu vượt quá giới hạn, chuyển sang key mới
+                    if (remainingRequests != null && remainingRequests <= 0) {
+                        rotateApiKey()
+                        convertLocation(location, onResult) // Gọi lại với key mới
+                        return
+                    }
+                    Log.d(TAG, "onResponse:getCoordinatesUsingNominatim $response")
+                    if (response.isSuccessful || response.body()?.status == "OK") {
+
+                        val data = response.body()?.results
+                        val firstResult = data?.first()
+                        Log.d(TAG, "onResponse getCoordinatesUsingNominatim: address $location")
+                        Log.d(TAG, "onResponse getCoordinatesUsingNominatim: data $data")
+                        onResult(
+                            (firstResult!!)
+                        )
+
+
+                    } else {
+                        Log.e(TAG, "onResponse: Error Retrofit")
+                    }
+
+                }
+
+                override fun onFailure(call: Call<GeocodeResponse>, t: Throwable) {
+                    Log.e(TAG, "onFailure: Error ${t.message.toString()}")
+                }
+            })
+
+    }
+
+    fun getRelativeAddress(fullAddress: String): String {
+        // Regex tìm kiếm từ "Ng." hoặc "Ngõ" và toàn bộ phần sau nó
+        val regex = Regex("(Ng\\.\\s\\d+|Ngõ\\s\\d+).*")
+        val matchResult = regex.find(fullAddress)
+
+        // Nếu tìm thấy, trả về phần từ "Ng." hoặc "Ngõ" trở đi, bao gồm cả phần sau
+        return matchResult?.value?.trim() ?: fullAddress
+    }
+
 
     private fun fetchSuggestions(query: String) {
         if (query.length < 2) return

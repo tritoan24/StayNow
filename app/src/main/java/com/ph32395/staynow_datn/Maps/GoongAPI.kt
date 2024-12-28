@@ -17,6 +17,11 @@ interface GoongAPI {
         @Query("api_key") apiKey: String,
         @Query("address") address: String
     ):Call<GeocodeResponse>
+    @GET("Geocode")
+    fun getGeocodeLang(
+        @Query("api_key") apiKey: String,
+        @Query("latlng") latlng: String
+    ):Call<GeocodeResponse>
 
 
 

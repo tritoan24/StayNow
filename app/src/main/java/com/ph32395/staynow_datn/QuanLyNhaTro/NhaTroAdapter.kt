@@ -43,6 +43,14 @@ class NhaTroAdapter(
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         holder.itemView.setOnClickListener {
+            //Update navigation quản ly nha tro
+            Toast.makeText(
+                holder.itemView.context,
+                "navigation quản ly nha tro",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        holder.btnEdit.setOnClickListener {
             val bottomSheetCreateAndUpdateNhaTro = BottomSheetCreateAndUpdateNhaTro(item)
             val context = holder.itemView.context
             if (context is FragmentActivity) {
@@ -51,7 +59,6 @@ class NhaTroAdapter(
                     bottomSheetCreateAndUpdateNhaTro.tag
                 )
             }
-
         }
         holder.itemView.setOnLongClickListener {
             val dialog = AlertDialog.Builder(holder.itemView.context)
@@ -61,7 +68,7 @@ class NhaTroAdapter(
                 .setPositiveButton("Yes") { v, i ->
                     deleteNhaTro(userId, holder.itemView.context, item)
                 }
-                .setNegativeButton("No") {v,i->}
+                .setNegativeButton("No") { v, i -> }
                 .show()
             true
         }
@@ -70,6 +77,8 @@ class NhaTroAdapter(
 
     class NhaTroAdapterViewHolder(itemView: ItemNhaTroNhaBinding) :
         RecyclerView.ViewHolder(itemView.root) {
+        val btnEdit = itemView.btnEdit
+
         @SuppressLint("SetTextI18n")
         fun bin(item: NhaTroModel, itemView: ItemNhaTroNhaBinding) {
             itemView.tvTenNhaTro.text = item.tenNhaTro
