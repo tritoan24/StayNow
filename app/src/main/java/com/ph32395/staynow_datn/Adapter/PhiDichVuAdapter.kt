@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ph32395.staynow_datn.Model.PhiDichVuModel
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
 
 class PhiDichVuAdapter(
-    private val phiDichVuList: List<PhiDichVuModel>
+    private val phiDichVuList: List<PhiDichVu>
 ) : RecyclerView.Adapter<PhiDichVuAdapter.PhiViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -35,11 +35,11 @@ class PhiDichVuAdapter(
         private val soTien: TextView = itemView.findViewById(R.id.txtSoTien)
         private val donViPhiDichVu: TextView = itemView.findViewById(R.id.txtDonViDichVu)
 
-        fun bind(phiDichVu: PhiDichVuModel) {
-            Glide.with(itemView.context).load(phiDichVu.icon_dichvu).into(iconDichVu)
-            tenDichVu.text = phiDichVu.ten_dichvu
-            soTien.text = "${String.format("%,.0f", phiDichVu.so_tien)}đ"
-            donViPhiDichVu.text = phiDichVu.don_vi
+        fun bind(phiDichVu: PhiDichVu) {
+            Glide.with(itemView.context).load(phiDichVu.iconDichVu).into(iconDichVu)
+            tenDichVu.text = phiDichVu.tenDichVu
+            soTien.text = "${String.format("%,.0f", phiDichVu.soTien)}đ"
+            donViPhiDichVu.text = phiDichVu.donVi
         }
     }
 }

@@ -1,32 +1,32 @@
 package com.ph32395.staynow_datn.Model;
 
 public class PhanHoiModel {
-    private String maPhanHoi;       // Mã phản hồi
+    private String Ma_phanhoi;       // Mã phản hồi
     private String maNguoiDung;    // Mã người dùng gửi phản hồi
-    private String noiDung;        // Nội dung phản hồi
-    private String imgPhanHoi;             // Đường dẫn hoặc URL ảnh
-    private String thoiGianGui;    // Thời gian gửi phản hồi (dạng chuỗi)
+    private String Noi_dung;        // Nội dung phản hồi
+    private String Img;             // Đường dẫn hoặc URL ảnh
+    private String Thoi_giangui;    // Thời gian gửi phản hồi (dạng chuỗi)
 
     // Constructor không tham số (cần thiết cho Firebase)
     public PhanHoiModel() {
     }
 
     // Constructor đầy đủ tham số
-
-    public PhanHoiModel(String maPhanHoi, String maNguoiDung, String noiDung, String imgPhanHoi, String thoiGianGui) {
-        this.maPhanHoi = maPhanHoi;
-        this.maNguoiDung = maNguoiDung;
-        this.noiDung = noiDung;
-        this.imgPhanHoi = imgPhanHoi;
-        this.thoiGianGui = thoiGianGui;
+    public PhanHoiModel(String ma_phanhoi, String maNguoiDung, String noi_dung, String img, String thoi_giangui) {
+        Ma_phanhoi = ma_phanhoi;
+        maNguoiDung = maNguoiDung;
+        Noi_dung = noi_dung;
+        Img = img;
+        Thoi_giangui = thoi_giangui;
     }
 
-    public String getMaPhanHoi() {
-        return maPhanHoi;
+    // Getter và Setter cho từng thuộc tính
+    public String getMa_phanhoi() {
+        return Ma_phanhoi;
     }
 
-    public void setMaPhanHoi(String maPhanHoi) {
-        this.maPhanHoi = maPhanHoi;
+    public void setMa_phanhoi(String ma_phanhoi) {
+        Ma_phanhoi = ma_phanhoi;
     }
 
     public String getMaNguoiDung() {
@@ -37,27 +37,27 @@ public class PhanHoiModel {
         this.maNguoiDung = maNguoiDung;
     }
 
-    public String getNoiDung() {
-        return noiDung;
+    public String getNoi_dung() {
+        return Noi_dung;
     }
 
-    public void setNoiDung(String noiDung) {
-        this.noiDung = noiDung;
+    public void setNoi_dung(String noi_dung) {
+        Noi_dung = noi_dung;
     }
 
-    public String getImgPhanHoi() {
-        return imgPhanHoi;
+    public String getImg() {
+        return Img;
     }
 
-    public void setImgPhanHoi(String imgPhanHoi) {
-        this.imgPhanHoi = imgPhanHoi;
+    public void setImg(String img) {
+        Img = img;
     }
 
-    public String getThoiGianGui() {
-        return thoiGianGui;
+    public String getThoi_giangui() {
+        return Thoi_giangui;
     }
 
-    public void setThoiGianGui(String thoiGianGui) {
-        this.thoiGianGui = thoiGianGui;
+    public void setThoi_giangui(String thoi_giangui) {
+        Thoi_giangui = thoi_giangui;
     }
 }

@@ -19,18 +19,18 @@ class NoiThatViewModel : ViewModel() {
                 for (document in result) {
                     // Lấy các giá trị từ Firestore
                     val maNoiThat = document.id
-                    val tenNoiThat = document.getString("Ten_noithat") ?: ""
-                    val iconNoiThat = document.getString("Icon_noithat") ?: ""
-                    val status = document.getBoolean("Status") ?: false
+                    val tenNoiThat = document.getString("tenNoiThat") ?: ""
+                    val iconNoiThat = document.getString("iconNoiThat") ?: ""
+                    val status = document.getBoolean("trangThai") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
                     if (status) {
                         noiThatList.add(
                             NoiThat(
-                                Ma_noithat = maNoiThat,
-                                Ten_noithat = tenNoiThat,
-                                Icon_noithat = iconNoiThat,
-                                Status = status
+                                maNoiThat = maNoiThat,
+                                tenNoiThat = tenNoiThat,
+                                iconNoiThat = iconNoiThat,
+                                trangThai = status
                             )
                         )
                     }

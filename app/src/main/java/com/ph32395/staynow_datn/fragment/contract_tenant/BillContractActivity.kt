@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.gson.Gson
@@ -44,6 +45,7 @@ class BillContractActivity : AppCompatActivity() {
         binding = ActivityBillContractBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadingIndicator = binding.loadingIndicator
+        contractViewModel = ViewModelProvider(this)[ContractViewModel::class.java]
 
         initZaloPay()
 
@@ -54,6 +56,8 @@ class BillContractActivity : AppCompatActivity() {
         val contractId = intent.getStringExtra("contractId")
 
         val detail = intent.getStringExtra("detail")
+        val notify = intent.getStringExtra("notify")
+
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
@@ -75,6 +79,9 @@ class BillContractActivity : AppCompatActivity() {
         }
 
         if (contract?.hoaDonHopDong?.trangThai == InvoiceStatus.PAID) {
+            binding.btnThanhtoan.visibility = View.GONE
+        }
+        if (notify != null) {
             binding.btnThanhtoan.visibility = View.GONE
         }
         if (detail != null) {

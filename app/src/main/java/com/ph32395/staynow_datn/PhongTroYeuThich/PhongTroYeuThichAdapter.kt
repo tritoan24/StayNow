@@ -34,13 +34,13 @@ class PhongTroYeuThichAdapter(
         private var maPhongTro = ""
 
         fun bind(room: PhongTroModel, roomId: String) {
-            roomName.text = room.Ten_phongtro
-            roomPrice.text = "${String.format("%,.0f", room.Gia_phong)} VND"
-            roomAddress.text = room.Dia_chi
+            roomName.text = room.tenPhongTro
+            roomPrice.text = "${String.format("%,.0f", room.giaPhong)} VND"
+            roomAddress.text = room.diaChi
 
-            Log.d("PhongTroYeuThichAdapter", "Ten phong tro: ${room.Ten_phongtro}")
-            Log.d("PhongTroYeuThichAdapter", "Gia phong tro: ${room.Gia_phong}")
-            Log.d("PhongTroYeuThichAdapter", "Dia chi: ${room.Dia_chi}")
+            Log.d("PhongTroYeuThichAdapter", "Ten phong tro: ${room.tenPhongTro}")
+            Log.d("PhongTroYeuThichAdapter", "Gia phong tro: ${room.giaPhong}")
+            Log.d("PhongTroYeuThichAdapter", "Dia chi: ${room.diaChi}")
 
             // Hiển thị ảnh
             if (room.imageUrls.isNotEmpty()) {
@@ -51,11 +51,11 @@ class PhongTroYeuThichAdapter(
             }
 
             // Hiển thị thời gian yêu thích
-            room.Thoigian_yeuthich?.let {
+            room.thoiGianYeuThich?.let {
                 val prettyTime = PrettyTimeHelper.createCustomPrettyTime()
                 favoriteTime.text = prettyTime.format(Date(it))
             }
-            maPhongTro = room.Ma_phongtro
+            maPhongTro = room.maPhongTro
             Log.d("PhongTroYeuThichAdapter", "Ma phong tro: $maPhongTro")
 
             //            Xu ly su kien khi click item sang man chi tiet

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 
 class ManageScheduleRoomVM : ViewModel() {
     private val _allScheduleRoomState = MutableStateFlow<List<ScheduleRoomModel>>(emptyList())
@@ -42,18 +43,18 @@ class ManageScheduleRoomVM : ViewModel() {
 
     fun filerScheduleRoomState(status: Int, onCompletion: () -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
-            _scheduleRoomState.value = _allScheduleRoomState.value.filter { it.status == status }
+            _scheduleRoomState.value = _allScheduleRoomState.value.filter { it.trangThaiDatPhong == status }
             withContext(Dispatchers.Main) {
                 onCompletion.invoke()
             }
         }
     }
 
-    fun fetchAllScheduleByTenant(tenantId: String, onCompletion: (Boolean) -> Unit = {}) {
+    fun fetchAllScheduleByTenant(maNguoiThue: String, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestore.collection(DAT_PHONG)
-                    .whereEqualTo(TENANT_ID, tenantId)
+                    .whereEqualTo(TENANT_ID, maNguoiThue)
                     .addSnapshotListener { querySnapshot, exception ->
                         if (exception != null) {
                             Log.d("ManageScheduleRoomVM", "Error: ${exception.message}")
@@ -76,11 +77,11 @@ class ManageScheduleRoomVM : ViewModel() {
         }
     }
 
-    fun fetchAllScheduleByRenter(renterId: String, onCompletion: (Boolean) -> Unit = {}) {
+    fun fetchAllScheduleByRenter(maChuTro: String, onCompletion: (Boolean) -> Unit = {}) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 firestore.collection(DAT_PHONG)
-                    .whereEqualTo(RENTER_ID, renterId)
+                    .whereEqualTo(RENTER_ID, maChuTro)
                     .addSnapshotListener { querySnapshot, exception ->
                         if (exception != null) {
                             Log.d("ManageScheduleRoomVM", "Error: ${exception.message}")
@@ -104,14 +105,14 @@ class ManageScheduleRoomVM : ViewModel() {
     }
 
     fun updateScheduleRoomStatus(
-        roomScheduleId: String,
+        maDatPhong: String,
         status: Int,
         onCompletion: (Boolean) -> Unit = {}
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val documentRef =
-                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
+                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, maDatPhong)
                 val querySnapshot = documentRef.get().await()
                 if (querySnapshot.isEmpty) {
                     onCompletion.invoke(false)
@@ -122,8 +123,8 @@ class ManageScheduleRoomVM : ViewModel() {
                     .update(STATUS, status)
                     .addOnSuccessListener {
                         _allScheduleRoomState.value = _allScheduleRoomState.value.map {
-                            if (it.roomScheduleId == roomScheduleId) {
-                                it.copy(status = status)
+                            if (it.maDatPhong == maDatPhong) {
+                                it.copy(trangThaiDatPhong = status)
                             } else {
                                 it
                             }
@@ -141,16 +142,16 @@ class ManageScheduleRoomVM : ViewModel() {
     }
 
     fun updateScheduleRoom(
-        roomScheduleId: String,
+        maDatPhong: String,
         newTime: String,
         newDate: String,
-        isChangedScheduleByRenter: Boolean = false,
+        thayDoiBoiChuTro: Boolean = false,
         onCompletion: (Boolean) -> Unit = {}
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val documentRef =
-                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, roomScheduleId)
+                    firestore.collection(DAT_PHONG).whereEqualTo(ROOM_SCHEDULE_ID, maDatPhong)
                 val querySnapshot = documentRef.get().await()
                 if (querySnapshot.isEmpty) {
                     onCompletion.invoke(false)
@@ -160,18 +161,18 @@ class ManageScheduleRoomVM : ViewModel() {
                 firestore.collection(DAT_PHONG).document(documentId)
                     .update(
                         TIME, newTime,
-                        CHANGED_SCHEDULE_BY_RENTER, isChangedScheduleByRenter,
+                        CHANGED_SCHEDULE_BY_RENTER, thayDoiBoiChuTro,
                         DATE, newDate,
                         STATUS, 0
                     )
                     .addOnSuccessListener {
                         _allScheduleRoomState.value = _allScheduleRoomState.value.map {
-                            if (it.roomScheduleId == roomScheduleId) {
+                            if (it.maDatPhong == maDatPhong) {
                                 it.copy(
-                                    time = newTime,
-                                    date = newDate,
-                                    status = 0,
-                                    changedScheduleByRenter = isChangedScheduleByRenter
+                                    thoiGianDatPhong = newTime,
+                                    ngayDatPhong = newDate,
+                                    trangThaiDatPhong = 0,
+                                    thayDoiBoiChuTro = thayDoiBoiChuTro
                                 )
                             } else {
                                 it
@@ -199,12 +200,12 @@ class ManageScheduleRoomVM : ViewModel() {
             val mapLink =
                 if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT)
                     null
-                else data.roomAddress
+                else data.diaChiPhong
             val notificationData = hashMapOf(
                 TITLE to titleNotification,
-                MESSAGE to "Phòng: ${data.roomName}, Địa chỉ: ${data.roomAddress}",
-                DATE to data.date,
-                TIME to data.time,
+                MESSAGE to "Phòng: ${data.tenPhong}, Địa chỉ: ${data.diaChiPhong}",
+                DATE to data.ngayDatPhong,
+                TIME to data.thoiGianDatPhong,
                 MAP_LINK to mapLink,
                 TIME_STAMP to System.currentTimeMillis(),
                 TYPE_NOTIFICATION to if (isRenterPushNotification) TYPE_SCHEDULE_ROOM_TENANT else TYPE_SCHEDULE_ROOM_RENTER
@@ -213,7 +214,7 @@ class ManageScheduleRoomVM : ViewModel() {
             val database = FirebaseDatabase.getInstance()
             val thongBaoRef = database.getReference(THONG_BAO)
             // neu ChuTro push noti thi luu id NguoiThue va nguoc lai
-            val userId = if (isRenterPushNotification) data.tenantId else data.renterId
+            val userId = if (isRenterPushNotification) data.maNguoiThue else data.maChuTro
             val userThongBaoRef = thongBaoRef.child(userId)
 
             val newThongBaoId = userThongBaoRef.push().key

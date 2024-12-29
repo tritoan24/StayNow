@@ -144,6 +144,12 @@ class ContractAdapter(
                 ContractStatus.TERMINATED -> {
                     tvRemainingTime.text = "Hợp đồng đã bị hủy"
                 }
+
+                ContractStatus.PROCESSING -> {
+                    tvRemainingTime.text = "Hợp đồng đang được xử lý"
+                    llBtn.visibility =
+                        if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PROCESSING) View.VISIBLE else View.GONE
+                }
             }
 
             // sự kiện ấn vào item
@@ -184,15 +190,15 @@ class ContractAdapter(
 private fun handlePaymentSuccess(context: Context, contract: HopDong) {
 
     val notification = NotificationModel(
-        title = "Thanh toán hóa đơn hợp đồng",
-        message = "Hóa đơn hợp đồng với mã hóa đơn ${contract.hoaDonHopDong.idHoaDon} đã bị hủy",
-        date = Calendar.getInstance().time.toString(),
-        time = "0",
+        tieuDe = "Thanh toán hóa đơn hợp đồng",
+        tinNhan = "Hóa đơn hợp đồng với mã hóa đơn ${contract.hoaDonHopDong.idHoaDon} đã bị hủy",
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
         mapLink = null,
-        isRead = false,
-        isPushed = true,
+        daDoc = false,
+        daGui = true,
         idModel = contract.maHopDong,
-        typeNotification = "hoadonhopdong"
+        loaiThongBao = "hoadonhopdong"
     )
 
     val factory = ViewModelFactory(context)

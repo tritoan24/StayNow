@@ -1,10 +1,10 @@
 package com.ph32395.staynow_datn.TienNghi
 
 data class TienNghi(
-    val Ma_tiennghi: String? = null,
-    val Ten_tiennghi: String,
-    val Icon_tiennghi: String,
-    val Status: Boolean,
+    val maTienNghi: String? = null,
+    val tenTienNghi: String,
+    val iconTienNghi: String,
+    val trangThai: Boolean,
 ) {
     constructor() : this("", "", "", false)
 }

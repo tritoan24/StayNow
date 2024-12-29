@@ -26,9 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".Activity.DetailNotiPaymentActivity"
-            android:exported="false" />
+
         <activity
             android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
             android:exported="false" />
@@ -45,7 +43,7 @@
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
             android:exported="false" />
@@ -101,6 +99,9 @@
 
         <activity
             android:name=".Maps.MapsActivity"
+            android:exported="true" />
+        <activity
+            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
             android:exported="true" />
         <activity
             android:name=".BaoMat.CapNhatThongTin"
@@ -188,9 +189,6 @@
             tools:ignore="Instantiatable" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
-        <activity
-            android:name=".QuanLyNguoiThue.QuanLyNguoiThueActivity"
             android:exported="false" />
         <activity
             android:name=".DangKiDangNhap.ChonLoaiTK"

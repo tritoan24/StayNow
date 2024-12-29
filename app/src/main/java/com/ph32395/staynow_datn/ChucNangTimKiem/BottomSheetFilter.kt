@@ -14,6 +14,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow_datn.LoaiPhong.LoaiPhong
 import com.ph32395.staynow_datn.Model.LoaiPhongTro
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.R
@@ -64,7 +65,7 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         binding = BottomSheetFilterSearchBinding.inflate(inflater, container, false)
 
         typeRoomRef.get().addOnSuccessListener { documents ->
-            val typeRooms = documents.map { it.toObject(LoaiPhongTro::class.java) }
+            val typeRooms = documents.map { it.toObject(LoaiPhong::class.java) }
             // Hiển thị từng loại phòng lên giao diện
             displayChipsTypeRom(typeRooms.toMutableList(), binding.chipGroupTypeRoom)
 
@@ -118,7 +119,7 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
     }
 
 
-    private fun displayChipsTypeRom(types: MutableList<LoaiPhongTro>, chipGroup: ChipGroup) {
+    private fun displayChipsTypeRom(types: MutableList<LoaiPhong>, chipGroup: ChipGroup) {
 //        chipGroup.removeAllViews() // Xóa chip cũ
         Log.d(TAG, "displayChipsTypeRom: listType $selectedTypes")
         for (type in types) {
@@ -152,10 +153,10 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         Log.d(TAG, "displayChipsTypeRom: listTienNghi $selectedTienNghi")
         for (type in types) {
             val chip = Chip(context)
-            chip.text = type.Ten_tiennghi
+            chip.text = type.tenTienNghi
             chip.textSize = 11f
             chip.isCheckable = true
-            chip.isChecked = selectedTienNghi.contains(type.Ten_tiennghi)
+            chip.isChecked = selectedTienNghi.contains(type.tenTienNghi)
             chip.elevation = 8f
             chip.setChipBackgroundColorResource(R.color.white)
             chip.setChipStrokeColorResource(if (chip.isChecked) R.color.color_text else R.color.transparent)
@@ -181,11 +182,11 @@ class BottomSheetFilter : BottomSheetDialogFragment() {
         Log.d(TAG, "displayChipsTypeRom: listNoiThat $selectedNoiThat")
         for (type in types) {
             val chip = Chip(context)
-            chip.text = type.Ten_noithat
-            Log.d(TAG, "displayChipsNoiThat: ${selectedNoiThat.contains(type.Ten_noithat)}")
+            chip.text = type.tenNoiThat
+            Log.d(TAG, "displayChipsNoiThat: ${selectedNoiThat.contains(type.tenNoiThat)}")
             chip.textSize = 11f
             chip.isCheckable = true
-            chip.isChecked = selectedNoiThat.contains(type.Ten_noithat)
+            chip.isChecked = selectedNoiThat.contains(type.tenNoiThat)
             chip.elevation = 8f
             chip.setChipStrokeColorResource(
                 if (chip.isChecked) R.color.color_text else R.color.transparent

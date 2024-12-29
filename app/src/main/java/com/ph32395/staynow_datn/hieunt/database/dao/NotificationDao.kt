@@ -22,9 +22,9 @@ interface NotificationDao {
     @Query("DELETE FROM NotificationModel")
     fun deleteAllNotification()
 
-    @Query("SELECT COUNT(*) FROM NotificationModel WHERE timestamp = :timestamp")
-    fun isNotificationExists(timestamp: Long): Int
+    @Query("SELECT COUNT(*) FROM NotificationModel WHERE thoiGianGuiThongBao = :thoiGianGuiThongBao")
+    fun isNotificationExists(thoiGianGuiThongBao: Long): Int
 
-    @Query("SELECT COUNT(*) FROM NotificationModel WHERE isRead = 0")
+    @Query("SELECT COUNT(*) FROM NotificationModel WHERE daDoc = 0")
     fun countNotificationNotSeen(): Int
 }

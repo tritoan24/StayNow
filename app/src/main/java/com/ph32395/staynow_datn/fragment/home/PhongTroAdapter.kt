@@ -75,28 +75,28 @@ class PhongTroAdapter(
                 .into(roomImage)
 
             // Cập nhật tên phòng trọ
-            roomName.text = room.Ten_phongtro
+            roomName.text = room.tenPhongTro
 
             // Cập nhật địa chỉ phòng trọ
-            roomAddress.text = room.Dia_chi
+            roomAddress.text = room.diaChi
 
             // Cập nhật giá thuê
-            roomPrice.text = "${room.Gia_phong.let { String.format("%,.0f", it) }} VND"
+            roomPrice.text = "${room.giaPhong.let { String.format("%,.0f", it) }} VND"
 
 //            Hien thi dien tich
-            roomArea.text = "${room.Dien_tich} m²"
+            roomArea.text = "${room.dienTich} m²"
 
 
             // Cập nhật số lượt xem
-            roomViews.text = "${room.So_luotxemphong}"
+            roomViews.text = "${room.soLuotXemPhong}"
 
 //            Hien thi thoi gian
-            val formattedTime = getFormattedTimeCustom(room.ThoiGian_taophong)
+            val formattedTime = getFormattedTimeCustom(room.thoiGianTaoPhong)
 
             roomTime.text = formattedTime
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-            if (userId.equals(room.Ma_nguoidung)) {
+            if (userId.equals(room.maNguoiDung)) {
                 loaiTaiKhoan = "ManCT"
             } else {
                 loaiTaiKhoan = "ManND"
@@ -121,21 +121,21 @@ class PhongTroAdapter(
         //        Lưu thong tin phong tro da xem
         private fun saveRoomToHistory(userId: String, roomId: String) {
             val historyRef = firestore.collection("PhongTroDaXem")
-                .whereEqualTo("Id_nguoidung", userId)
-                .whereEqualTo("Id_phongtro", roomId)
+                .whereEqualTo("idNguoiDung", userId)
+                .whereEqualTo("idPhongTro", roomId)
 
             historyRef.get().addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     // Phòng trọ đã tồn tại -> Cập nhật thời gian xem
                     val documentId = documents.documents[0].id
                     firestore.collection("PhongTroDaXem").document(documentId)
-                        .update("Thoi_gianxem", System.currentTimeMillis())
+                        .update("thoiGianXem", System.currentTimeMillis())
                 } else {
                     // Phòng trọ chưa tồn tại -> Thêm mới
                     val newHistory = mapOf(
-                        "Id_nguoidung" to userId,
-                        "Id_phongtro" to roomId,
-                        "Thoi_gianxem" to System.currentTimeMillis()
+                        "idNguoiDung" to userId,
+                        "idPhongTro" to roomId,
+                        "thoiGianXem" to System.currentTimeMillis()
                     )
                     firestore.collection("PhongTroDaXem").add(newHistory)
                 }

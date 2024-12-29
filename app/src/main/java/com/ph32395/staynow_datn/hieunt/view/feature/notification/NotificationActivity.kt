@@ -3,6 +3,7 @@ package com.ph32395.staynow_datn.hieunt.view.feature.notification
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -12,7 +13,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.ph32395.staynow_datn.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
+import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
+import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
@@ -20,9 +23,13 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CA
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_TENANT
+import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.SystemUtils
@@ -50,16 +57,16 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
 
     override fun initView() {
         notificationWithDateAdapter = NotificationWithDateAdapter { notification ->
-            if (!notification.isRead) {
-                viewModel.updateNotification(notification.copy(isRead = true)) {
+            if (!notification.daDoc) {
+                viewModel.updateNotification(notification.copy(daDoc = true)) {
                     lifecycleScope.launch {
                         toast("Đã xem!")
                     }
                 }
             }
-            when (notification.typeNotification) {
+            when (notification.loaiThongBao) {
                 TYPE_SCHEDULE_ROOM_TENANT -> {
-                    when (notification.title) {
+                    when (notification.tieuDe) {
                         TITLE_CONFIRMED -> {
                             notification.mapLink?.let { openMap(it) }
                         }
@@ -71,13 +78,18 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 }
 
                 TYPE_SCHEDULE_ROOM_RENTER -> {
-                    when (notification.title) {
+                    when (notification.tieuDe) {
                         TITLE_CONFIRMED -> {
                             notification.mapLink?.let { openMap(it) }
                         }
 
-                        TITLE_CANCELED_BY_TENANT, TITLE_LEAVED_BY_TENANT -> {
-                            startActivity(Intent(this, MainActivity::class.java).apply { putExtra(OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION, true) })
+                        TITLE_CANCELED_BY_TENANT, TITLE_LEAVED_BY_TENANT, TITLE_SCHEDULE_ROOM_SUCCESSFULLY -> {
+                            startActivity(Intent(this, MainActivity::class.java).apply {
+                                putExtra(
+                                    OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION,
+                                    true
+                                )
+                            })
                         }
                     }
                 }
@@ -97,10 +109,36 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     }
                     startActivity(intent)
                 }
-                TYPE_NOTI_BILL_MONTHLY_REMIND ->{
+
+                TYPE_NOTI_BILL_MONTHLY_REMIND -> {
                     // Navigate to invoice creation
                     val intent = Intent(this, DetailBillActivity::class.java).apply {
                         putExtra("invoiceId", notification.idModel)
+                        putExtra("notify","notify")
+                    }
+                    startActivity(intent)
+                }
+
+                TYPE_NOTI_PAYMENT_INVOICE -> {
+                    // Navigate to invoice creation
+                    val intent = Intent(this, DetailBillActivity::class.java).apply {
+                        putExtra("invoiceId", notification.idModel)
+                        putExtra("notify", "notify")
+                    }
+                    startActivity(intent)
+                }
+                TYPE_NOTI_CONTRACT -> {
+                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+
+                TYPE_NOTI_PAYMENT_CONTRACT -> {
+                    // Navigate to invoice creation
+                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                        putExtra("contractId", notification.idModel)
+                        putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }
@@ -129,7 +167,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     if (listNotification.isNotEmpty()) {
                         launch(Dispatchers.IO) {
                             val listNotificationWithDate = listNotification.groupBy {
-                                SystemUtils.currentDateFormattedFromMillis(it.timestamp)
+                                SystemUtils.currentDateFormattedFromMillis(it.thoiGianGuiThongBao)
                             }.map { (date, histories) ->
                                 NotificationWithDateModel().apply {
                                     this.date = date
@@ -153,9 +191,9 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
         }
     }
 
-    private fun openMap(roomAddress: String) {
+    private fun openMap(diaChiPhong: String) {
         // Tạo URI từ địa chỉ đã mã hóa
-        val geoUri = "geo:0,0?q=${Uri.encode(roomAddress)}"
+        val geoUri = "geo:0,0?q=${Uri.encode(diaChiPhong)}"
 
         // Tạo một Intent để mở Google Maps
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
@@ -167,7 +205,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
         } else {
             // Nếu không có ứng dụng Google Maps, bạn có thể chuyển hướng đến trình duyệt web
             val webUri =
-                Uri.parse("https://www.google.com/maps/search/?q=${Uri.encode(roomAddress)}")
+                Uri.parse("https://www.google.com/maps/search/?q=${Uri.encode(diaChiPhong)}")
             val webIntent = Intent(Intent.ACTION_VIEW, webUri)
             startActivity(webIntent)
         }

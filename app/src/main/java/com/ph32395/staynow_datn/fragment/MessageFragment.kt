@@ -37,7 +37,7 @@ class MessageFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_message, container, false)
         binding.btnAdminSuport.setOnClickListener {
-            val adminId = "MrKVY9AwTDh497zwaDb2xwfDMlI3" // ID của admin bạn muốn truyền
+            val adminId = "oNzHlt3U8gNirb9DmT7sf72HXb92" // ID của admin bạn muốn truyền
             val userId =
                 FirebaseAuth.getInstance().currentUser?.uid  // Lấy ID của người dùng hiện tại
             Log.d(TAG, "onCreate: userId $userId")
@@ -70,8 +70,8 @@ class MessageFragment : Fragment() {
                     adapterMessage = MessageAdapter(it) {
                         Log.d(TAG, "onCreate: it.time $it")
                         val intent = Intent(context, TextingMessengeActivity::class.java)
-                        intent.putExtra("chatId", it.chatId)
-                        intent.putExtra("userChat", it.otherUserId)
+                        intent.putExtra("chatId", it.maTinNhan)
+                        intent.putExtra("userChat", it.maNguoiDungKhac)
                         startActivity(intent)
                     }
                     binding.rcvListTinNhan.layoutManager = LinearLayoutManager(context)
@@ -84,7 +84,7 @@ class MessageFragment : Fragment() {
         fetchStatusMessage {
             val adapter = UserStatusOnOfAdapter(it) {
                 val intent = Intent(context, TextingMessengeActivity::class.java)
-                intent.putExtra("userId", it.ma_nguoidung)
+                intent.putExtra("userId", it.maNguoiDung)
                 startActivity(intent)
             }
             val linearLayoutManager =
@@ -106,7 +106,7 @@ class MessageFragment : Fragment() {
 
     fun fetchChatList(userId: String, onResult: (List<Chat>) -> Unit) {
         val database = Firebase.database.reference
-        database.child("ChatList").child(userId).orderByChild("lastMessageTime")
+        database.child("DanhSachTroChuyen").child(userId).orderByChild("thoiGianTinNhanCuoi")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val chatList = mutableListOf<Chat>()
@@ -126,7 +126,7 @@ class MessageFragment : Fragment() {
     }
 
     data class UserStatus(
-        val ma_nguoidung: String = "",
+        val maNguoiDung: String = "",
         val ho_ten: String = "",
         val anh_daidien: String = "",
         val status: String = ""
@@ -163,17 +163,17 @@ class MessageFragment : Fragment() {
                 database.child("NguoiDung").child(userId)
                     .addValueEventListener(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            val maNguoiDung = snapshot.child("ma_nguoidung").value.toString()
-                            val ho_ten = snapshot.child("ho_ten").value.toString()
-                            val anhDaiDien = snapshot.child("anh_daidien").value.toString()
+                            val maNguoiDung = snapshot.child("maNguoiDung").value.toString()
+                            val hoTen = snapshot.child("hoTen").value.toString()
+                            val anhDaiDien = snapshot.child("anhDaiDien").value.toString()
                             val status = snapshot.child("status").value.toString()
 
                             // Tìm user đã tồn tại và cập nhật trạng thái mới
-                            val existingUserIndex = listUser.indexOfFirst { it.ma_nguoidung == maNguoiDung }
+                            val existingUserIndex = listUser.indexOfFirst { it.maNguoiDung == maNguoiDung }
                             if (existingUserIndex != -1) {
-                                listUser[existingUserIndex] = UserStatus(maNguoiDung, ho_ten, anhDaiDien, status)
+                                listUser[existingUserIndex] = UserStatus(maNguoiDung, hoTen, anhDaiDien, status)
                             } else {
-                                listUser.add(UserStatus(maNguoiDung, ho_ten, anhDaiDien, status))
+                                listUser.add(UserStatus(maNguoiDung, hoTen, anhDaiDien, status))
                             }
 
                             // Gọi hàm onResult mỗi khi dữ liệu thay đổi

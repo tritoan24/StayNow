@@ -95,8 +95,8 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="12dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
@@ -105,7 +105,6 @@
                     android:id="@+id/con"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:text="@string/event"
                     android:textSize="16sp"
                     tools:ignore="HardcodedText" />
@@ -114,8 +113,7 @@
                     android:id="@+id/remainTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="14:28"
+                    android:text=" trong vòng 15 phút"
                     android:textColor="#0D89C1"
                     android:textSize="16sp"
                     tools:ignore="HardcodedText" />

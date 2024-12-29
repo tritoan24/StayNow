@@ -44,7 +44,7 @@ class RoomNguoiChoThueAdapter(
         viewModel.roomList.observe(holder.itemView.context as LifecycleOwner) { rooms ->
             val updateRoom = rooms.find { it.first == room.first }
             updateRoom?.let {
-                holder.updateArea(it.second.Dien_tich)
+                holder.updateArea(it.second.dienTich)
             }
         }
     }
@@ -78,19 +78,19 @@ class RoomNguoiChoThueAdapter(
                     .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(16)))
                     .into(imageView)
             }
-            view.findViewById<TextView>(R.id.txtTenPhongTro).text = roomModel.Ten_phongtro
-            view.findViewById<TextView>(R.id.tvGiaThue).text = "${roomModel.Gia_phong.let { String.format("%,.0f", it) }} VND"
-            view.findViewById<TextView>(R.id.txtDiaChiHome).text = roomModel.Dia_chi
-            view.findViewById<TextView>(R.id.txtSoLuotXem).text = roomModel.So_luotxemphong.toString()
+            view.findViewById<TextView>(R.id.txtTenPhongTro).text = roomModel.tenPhongTro
+            view.findViewById<TextView>(R.id.tvGiaThue).text = "${roomModel.giaPhong.let { String.format("%,.0f", it) }} VND"
+            view.findViewById<TextView>(R.id.txtDiaChiHome).text = roomModel.diaChi
+            view.findViewById<TextView>(R.id.txtSoLuotXem).text = roomModel.soLuotXemPhong.toString()
 
 //            cap nhat thoi gian
-            val formattedTime = getFormattedTimeCustom(roomModel.ThoiGian_taophong)
+            val formattedTime = getFormattedTimeCustom(roomModel.thoiGianTaoPhong)
             txtThoiGianTao.text = formattedTime
             // Cập nhật diện tích (m²)
-            areaTextView.text = "${roomModel.Dien_tich} m²"
+            areaTextView.text = "${roomModel.dienTich} m²"
 
             val userId = FirebaseAuth.getInstance().currentUser?.uid?: ""
-            if (userId.equals(roomModel.Ma_nguoidung)) {
+            if (userId.equals(roomModel.maNguoiDung)) {
                 loaiTaiKhoan = "ManCT"
             } else {
                 loaiTaiKhoan = "ManND"
@@ -103,7 +103,7 @@ class RoomNguoiChoThueAdapter(
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
-                intent.putExtra("ManHome", loaiTaiKhoan)
+                intent.putExtra("ManHome", "sdk")
                 context.startActivity(intent)
 
 //                goi view model de tang so luot xem
@@ -114,21 +114,21 @@ class RoomNguoiChoThueAdapter(
         //        Lưu thong tin phong tro da xem
         fun saveRoomToHistory(userId: String, roomId: String) {
             val historyRef = firestore.collection("PhongTroDaXem")
-                .whereEqualTo("Id_nguoidung", userId)
-                .whereEqualTo("Id_phongtro", roomId)
+                .whereEqualTo("idNguoiDung", userId)
+                .whereEqualTo("idPhongTro", roomId)
 
             historyRef.get().addOnSuccessListener { documents ->
                 if (!documents.isEmpty) {
                     // Phòng trọ đã tồn tại -> Cập nhật thời gian xem
                     val documentId = documents.documents[0].id
                     firestore.collection("PhongTroDaXem").document(documentId)
-                        .update("Thoi_gianxem", System.currentTimeMillis())
+                        .update("thoiGianXem", System.currentTimeMillis())
                 } else {
                     // Phòng trọ chưa tồn tại -> Thêm mới
                     val newHistory = mapOf(
-                        "Id_nguoidung" to userId,
-                        "Id_phongtro" to roomId,
-                        "Thoi_gianxem" to System.currentTimeMillis()
+                        "idNguoiDung" to userId,
+                        "idPhongTro" to roomId,
+                        "thoiGianXem" to System.currentTimeMillis()
                     )
                     firestore.collection("PhongTroDaXem").add(newHistory)
                 }

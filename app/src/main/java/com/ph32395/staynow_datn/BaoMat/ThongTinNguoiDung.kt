@@ -62,9 +62,9 @@ class ThongTinNguoiDung : AppCompatActivity() {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                   if(snapshot.exists()) {
-                      val name = snapshot.child("ho_ten").value.toString().trim();
+                      val name = snapshot.child("hoTen").value.toString().trim();
                       val phone = snapshot.child("sdt").value.toString().trim();
-                      val img = snapshot.child("anh_daidien").value.toString().trim();
+                      val img = snapshot.child("anhDaiDien").value.toString().trim();
                       val email = snapshot.child("email").value.toString().trim();
 
                       val maskedPhone = maskPhone(phone)

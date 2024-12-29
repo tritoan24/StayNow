@@ -17,19 +17,19 @@ class GioiTinhViewModel : ViewModel() {
                 val listgioiTinh = mutableListOf<GioiTinh>()
                 for (document in result){
                     // Lấy các giá trị từ Firestore
-                    val maLoaiPhong = document.getString("Ma_gioitinh") ?: ""
-                    val tenLoaiPhong = document.getString("Ten_gioitinh") ?: ""
-                    val imgUrl = document.getString("ImgUrl_gioitinh") ?: ""
-                    val status = document.getBoolean("Status") ?: false
+                    val maLoaiPhong = document.getString("maGioiTinh") ?: ""
+                    val tenLoaiPhong = document.getString("tenGioiTinh") ?: ""
+                    val imgUrl = document.getString("imgUrlGioiTinh") ?: ""
+                    val status = document.getBoolean("trangThai") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
                     if (status) {
                         listgioiTinh.add(
                             GioiTinh (
-                                Ma_gioitinh = maLoaiPhong,
-                                Ten_gioitinh = tenLoaiPhong,
-                                ImgUrl_gioitinh = imgUrl,
-                                Status = status
+                                maGioiTinh = maLoaiPhong,
+                                tenGioiTinh = tenLoaiPhong,
+                                imgUrlGioiTinh = imgUrl,
+                                trangThai = status
                             )
                         )
                     }

@@ -22,7 +22,7 @@ class CheckRoleActivity : AppCompatActivity() {
         if (userId != null) {
             val database = FirebaseDatabase.getInstance().getReference("NguoiDung").child(userId)
             database.get().addOnSuccessListener { snapshot ->
-                val role = snapshot.child("loai_taikhoan").getValue(String::class.java)
+                val role = snapshot.child("loaiTaiKhoankhoan").getValue(String::class.java)
                 Log.d("MainActivity", "Vai tro nguoi dung tu Firebase: $role")
                 if (role != null) {
 //                    Kiem tra loai tai khoan de hien thi

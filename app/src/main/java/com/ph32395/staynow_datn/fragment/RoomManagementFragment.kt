@@ -58,10 +58,10 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
 
         manageScheduleRoomAdapter = RenterManageScheduleRoomAdapter(
             onClickWatched = {
-                updateStatusRoom(it.roomScheduleId, WATCHED)
+                updateStatusRoom(it.maDatPhong, WATCHED)
             },
             onClickConfirm = { data ->
-                updateStatusRoom(data.roomScheduleId, CONFIRMED)
+                updateStatusRoom(data.maDatPhong, CONFIRMED)
                 viewModel.pushNotification(TITLE_CONFIRMED, data) { isCompletion ->
                     toastNotification(isCompletion)
                 }
@@ -70,10 +70,10 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 UpdateRoomScheduleDialog(it, onClickConfirm = { newTime, newDate ->
                     showLoadingIfNotBaseActivity()
                     viewModel.updateScheduleRoom(
-                        it.roomScheduleId,
+                        it.maDatPhong,
                         newTime,
                         newDate,
-                        isChangedScheduleByRenter = true
+                        thayDoiBoiChuTro = true
                     ) { updateSuccess ->
                         if (updateSuccess) {
                             viewModel.filerScheduleRoomState(0) {
@@ -81,7 +81,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                             }
                             viewModel.pushNotification(
                                 TITLE_LEAVED_BY_RENTER,
-                                it.copy(time = newTime, date = newDate)
+                                it.copy(thoiGianDatPhong = newTime, ngayDatPhong = newDate)
                             ) { isCompletion ->
                                 toastNotification(isCompletion)
                             }
@@ -94,17 +94,17 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                 }).show(childFragmentManager, "UpdateRoomScheduleDialog")
             },
             onClickCancelSchedule = {
-                updateStatusRoom(it.roomScheduleId, CANCELED)
+                updateStatusRoom(it.maDatPhong, CANCELED)
                 viewModel.pushNotification(TITLE_CANCELED_BY_RENTER, it) { isCompletion ->
                     toastNotification(isCompletion)
                 }
             },
             onClickCreateContract = {
                 if (SharePrefUtils(requireContext()).isReadRenterInterest){
-                    createContract(it.roomId, it.tenantId, it.roomScheduleId)
+                    createContract(it.maPhongTro, it.maNguoiThue, it.maDatPhong)
                 } else {
                     RenterInterestDialog{
-                        createContract(it.roomId, it.tenantId, it.roomScheduleId)
+                        createContract(it.maPhongTro, it.maNguoiThue, it.maDatPhong)
                     }.show(childFragmentManager,javaClass.name)
                 }
             }
@@ -142,7 +142,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
                         val newList = async(Dispatchers.IO) {
                             listScheduleState.map { scheduleState ->
-                                val count = allRoomStates.filter { room -> room.status == scheduleState.status }.size
+                                val count = allRoomStates.filter { room -> room.trangThaiDatPhong == scheduleState.status }.size
                                 scheduleState.copy(count = count)
                             }
                         }.await()
@@ -153,9 +153,9 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         }
     }
 
-    private fun updateStatusRoom(roomScheduleId: String, status: Int) {
+    private fun updateStatusRoom(maDatPhong: String, status: Int) {
         showLoadingIfNotBaseActivity()
-        viewModel.updateScheduleRoomStatus(roomScheduleId, status) { updateSuccess ->
+        viewModel.updateScheduleRoomStatus(maDatPhong, status) { updateSuccess ->
             if (updateSuccess) {
                 viewModel.filerScheduleRoomState(status) {
                     scheduleStateAdapter?.setSelectedState(status)
@@ -198,8 +198,8 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
         val database = FirebaseDatabase.getInstance().reference
         val userRef = database.child("NguoiDung").child(userId)
         userRef.get().addOnSuccessListener { snapshot ->
-            val statusCCCD = snapshot.child("StatusCCCD").value as? Boolean ?: false
-            val statusPTTT = snapshot.child("StatusPttt").value as? Boolean ?: false
+            val statusCCCD = snapshot.child("trangThaiCCCD").value as? Boolean ?: false
+            val statusPTTT = snapshot.child("trangThaiPTTT").value as? Boolean ?: false
             val sdt = snapshot.child("sdt").value as? String ?: ""
 
             Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")

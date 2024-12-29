@@ -51,17 +51,17 @@ class NotificationViewModel(private val dao: NotificationDao) : ViewModel() {
                 val notificationId = notificationRef.key ?: ""
 
                 // Cập nhật timestamp cho thông báo
-                notification.timestamp = System.currentTimeMillis()
+                notification.thoiGianGuiThongBao = System.currentTimeMillis()
 
                 // Tạo dữ liệu thông báo theo cấu trúc bạn yêu cầu
                 val notificationData = mapOf(
-                    "date" to notification.date,
-                    "message" to notification.message,
-                    "time" to notification.time,
-                    "timestamp" to notification.timestamp,
-                    "title" to notification.title,
+                    "ngayGuiThongBao" to notification.ngayGuiThongBao,
+                    "tinNhan" to notification.tinNhan,
+                    "thoiGian" to notification.thoiGian,
+                    "thoiGianGuiThongBao" to notification.thoiGianGuiThongBao,
+                    "tieuDe" to notification.tieuDe,
                     "idModel" to notification.idModel,
-                    "typeNotification" to notification.typeNotification
+                    "loaiThongBao" to notification.loaiThongBao
                 )
 
                 // Lưu thông báo vào Firebase dưới ID người nhận

@@ -32,6 +32,7 @@ class ContractFragment : Fragment() {
     private lateinit var pendingAdapter: ContractAdapter
     private lateinit var expireAdapter: ContractAdapter
     private lateinit var terminatedAdapter: ContractAdapter
+    private lateinit var processingAdapter: ContractAdapter
 
     private lateinit var mAuth: FirebaseAuth
 
@@ -77,25 +78,31 @@ class ContractFragment : Fragment() {
                 when (item.itemId) {
                     R.id.menu_pending_contracts -> {
                         setupRecyclerView(pendingAdapter, itemName)
-                        checkEmptyState(pendingAdapter)  // Kiểm tra trạng thái trống cho pendingAdapter
+                        checkEmptyState(pendingAdapter)
+                        true
+                    }
+
+                    R.id.menu_processing_contracts -> {
+                        setupRecyclerView(processingAdapter, itemName)
+                        checkEmptyState(processingAdapter)
                         true
                     }
 
                     R.id.menu_active_contracts -> {
                         setupRecyclerView(activeAdapter, itemName)
-                        checkEmptyState(activeAdapter)  // Kiểm tra trạng thái trống cho pendingAdapter
+                        checkEmptyState(activeAdapter)
                         true
                     }
 
                     R.id.menu_expired_contracts -> {
                         setupRecyclerView(expireAdapter, itemName)
-                        checkEmptyState(expireAdapter)  // Kiểm tra trạng thái trống cho pendingAdapter
+                        checkEmptyState(expireAdapter)
                         true
                     }
 
                     R.id.menu_terminated_contracts -> {
                         setupRecyclerView(terminatedAdapter, itemName)
-                        checkEmptyState(terminatedAdapter)  // Kiểm tra trạng thái trống cho pendingAdapter
+                        checkEmptyState(terminatedAdapter)
                         true
                     }
 
@@ -104,7 +111,6 @@ class ContractFragment : Fragment() {
             }
         }
 
-        // Trả về root view của binding
         return binding.root
     }
 
@@ -149,6 +155,14 @@ class ContractFragment : Fragment() {
             ) { contractId, newStatus ->
                 contractViewModel.updateContractStatus(contractId, newStatus)
             }
+        processingAdapter =
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.PROCESSING,
+                isLandlord
+            ) { contractId, newStatus ->
+                contractViewModel.updateContractStatus(contractId, newStatus)
+            }
 
     }
 
@@ -167,6 +181,9 @@ class ContractFragment : Fragment() {
         }
         contractViewModel.terminatedContracts.observe(viewLifecycleOwner) { contracts ->
             terminatedAdapter.updateContractList(contracts)
+        }
+        contractViewModel.processingContracts.observe(viewLifecycleOwner) { contracts ->
+            processingAdapter.updateContractList(contracts)
         }
     }
 
@@ -189,6 +206,10 @@ class ContractFragment : Fragment() {
                     userId,
                     setOf(ContractStatus.TERMINATED)
                 )
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
+                    setOf(ContractStatus.PROCESSING)
+                )
 
             }
         } else {
@@ -209,7 +230,10 @@ class ContractFragment : Fragment() {
                     userId,
                     setOf(ContractStatus.TERMINATED)
                 )
-
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
+                    setOf(ContractStatus.PROCESSING)
+                )
             }
         }
     }

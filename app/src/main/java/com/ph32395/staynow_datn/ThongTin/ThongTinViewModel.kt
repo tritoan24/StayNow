@@ -17,21 +17,21 @@ class ThongTinViewModel : ViewModel() {
                 val thongtinList = mutableListOf<ThongTin>()
                 for (document in result) {
                     // Lấy các giá trị từ Firestore
-                    val maThongTin = document.getString("Ma_thongtin") ?: ""
-                    val tenThongTin = document.getString("Ten_thongtin") ?: ""
-                    val iconThongTin = document.getString("Icon_thongtin") ?: ""
-                    val donVi = document.getString("Don_vi") ?: ""
-                    val status = document.getBoolean("Status") ?: false
+                    val maThongTin = document.getString("maThongTin") ?: ""
+                    val tenThongTin = document.getString("tenThongTin") ?: ""
+                    val iconThongTin = document.getString("iconThongTin") ?: ""
+                    val donVi = document.getString("donVi") ?: ""
+                    val status = document.getBoolean("trangThai") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
                     if (status) {
                        thongtinList.add(
                             ThongTin(
-                                Ma_thongtin = maThongTin,
-                                Ten_thongtin = tenThongTin,
-                                Icon_thongtin = iconThongTin,
-                                Don_vi = donVi,
-                                Status = status
+                                maThongTin = maThongTin,
+                                tenThongTin = tenThongTin,
+                                iconThongTin = iconThongTin,
+                                donVi = donVi,
+                                trangThai = status
                             )
                        )
                     }

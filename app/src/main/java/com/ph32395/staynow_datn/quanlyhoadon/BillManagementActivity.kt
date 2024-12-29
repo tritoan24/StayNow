@@ -127,13 +127,13 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
             val invoiceJob = async {
                 if (isLandlord) {
                     invoiceViewModel.fetchInvoicesForUser(
-                        "idNguoigui",
+                        "idNguoiGui",
                         userId,
                         InvoiceStatus.PENDING
                     )
                 } else {
                     invoiceViewModel.fetchInvoicesForUser(
-                        "idNguoinhan",
+                        "idNguoiNhan",
                         userId,
                         InvoiceStatus.PENDING
                     )

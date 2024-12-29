@@ -25,16 +25,15 @@ import com.ph32395.staynow_datn.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongAdapter
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongViewModel
-import com.ph32395.staynow_datn.Model.ChiTietThongTinModel
 import com.ph32395.staynow_datn.NoiThat.GioiTinhAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import com.ph32395.staynow_datn.TaoPhongTro.ChoiceImageAdapter
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
-import com.ph32395.staynow_datn.TaoPhongTro.PhiThongTin
 import com.ph32395.staynow_datn.TaoPhongTro.PhongTroNoiThat
 import com.ph32395.staynow_datn.TaoPhongTro.PhongTroTienNghi
 import com.ph32395.staynow_datn.ThongTin.ThongTin
@@ -135,8 +134,8 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 
 //        thongTinAdapter = ThongTinAdapter(this, listTT, this)
         //lấy dữ liệu từ viewModel
-        val updateRoomModel  = intent.getParcelableExtra<UpdateRoomModel>("updateRoomModel")
-        Log.d("UpdateRoomModel", "UpdateRoomModel: $updateRoomModel")
+//        val updateRoomModel  = intent.getParcelableExtra<UpdateRoomModel>("updateRoomModel")
+//        Log.d("UpdateRoomModel", "UpdateRoomModel: $updateRoomModel")
 
         // Populate basic room details
 
@@ -179,65 +178,65 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         loaiPhongViewModel = ViewModelProvider(this).get(LoaiPhongViewModel::class.java)
         gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
 
-        updateRoomModel?.let { model ->
-
-            Log.d("UpdateRoomModel", "UpdateRoomModel bảng chi tiéte thông tin: ${model.Chi_tietthongtin}")
-
-            // Set room name
-            binding.roomName.setText(model.Ten_phongtro)
-
-            // Set room price
-            binding.roomPrice.setText(model.Gia_phong.toString())
-
-            // Set description
-            binding.description.setText(model.Chi_tietthem)
-
-            // Set address
-            binding.roomAddress.setText(model.Dia_chi)
-
-            // Populate images
-            if (model.Url_image.isNotEmpty()) {
-                val uriList = model.Url_image.map { Uri.parse(it) }
-                displaySelectedImages(uriList)
-            }
-
-            val listThongtin = thongTinViewModel.getListThongTin().value ?: mutableListOf() // Xử lý null
-            val existingChiTietList = model.Chi_tietthongtin.map { detail ->
-                ChiTietThongTinModel(ten_thongtin = detail.ten_thongtin, so_luong_donvi = detail.so_luong_donvi)
-            }
-
-
-//            // Select room type
-//            loaiPhongAdapter.selectByName(model.Loai_phong)
+//        updateRoomModel?.let { model ->
 //
-//            // Select gender type
-//            gioitinhAdapter.selectByName(model.Gioi_tinh)
+//            Log.d("UpdateRoomModel", "UpdateRoomModel bảng chi tiéte thông tin: ${model.Chi_tietthongtin}")
 //
-//            // Populate Additional Information (Chi_tietthongtin)
-//            model.Chi_tietthongtin.forEach { detail ->
-////                Log.d("UpdateRoomModel", "Detail: ten_thongtin = ${detail.ten_thongtin}, so_luong_donvi = ${detail.so_luong_donvi}")
-////                thongTinAdapter.selectItemByName(detail.ten_thongtin, detail.so_luong_donvi)
+//            // Set room name
+//            binding.roomName.setText(model.Ten_phongtro)
 //
+//            // Set room price
+//            binding.roomPrice.setText(model.Gia_phong.toString())
 //
+//            // Set description
+//            binding.description.setText(model.Chi_tietthem)
 //
-//            }
-
+//            // Set address
+//            binding.roomAddress.setText(model.Dia_chi)
 //
-//            // Populate Services (Dich_vu)
-//            model.Dich_vu.forEach { service ->
-//                DichVuAdapter.selectItemByName(service.ten_dichvu, service.so_tien)
+//            // Populate images
+//            if (model.Url_image.isNotEmpty()) {
+//                val uriList = model.Url_image.map { Uri.parse(it) }
+//                displaySelectedImages(uriList)
 //            }
 //
-//            // Populate Furniture (Noi_that)
-//            model.Noi_that.forEach { furniture ->
-//                noiThatAdapter.selectItemByName(furniture.Ten_noithat)
-//            }
+//            val listThongtin = thongTinViewModel.getListThongTin().value ?: mutableListOf() // Xử lý null
+////            val existingChiTietList = model.Chi_tietthongtin.map { detail ->
+////                ChiTietThongTinModel(ten_thongtin = detail.ten_thongtin, so_luong_donvi = detail.so_luong_donvi)
+////            }
 //
-//            // Populate Amenities (Tien_nghi)
-//            model.Tien_nghi.forEach { amenity ->
-//                TienNghiAdapter.selectItemByName(amenity.Ten_tiennghi)
-//            }
-        }
+//
+////            // Select room type
+////            loaiPhongAdapter.selectByName(model.Loai_phong)
+////
+////            // Select gender type
+////            gioitinhAdapter.selectByName(model.Gioi_tinh)
+////
+////            // Populate Additional Information (Chi_tietthongtin)
+////            model.Chi_tietthongtin.forEach { detail ->
+//////                Log.d("UpdateRoomModel", "Detail: ten_thongtin = ${detail.ten_thongtin}, so_luong_donvi = ${detail.so_luong_donvi}")
+//////                thongTinAdapter.selectItemByName(detail.ten_thongtin, detail.so_luong_donvi)
+////
+////
+////
+////            }
+//
+////
+////            // Populate Services (Dich_vu)
+////            model.Dich_vu.forEach { service ->
+////                DichVuAdapter.selectItemByName(service.ten_dichvu, service.so_tien)
+////            }
+////
+////            // Populate Furniture (Noi_that)
+////            model.Noi_that.forEach { furniture ->
+////                noiThatAdapter.selectItemByName(furniture.Ten_noithat)
+////            }
+////
+////            // Populate Amenities (Tien_nghi)
+////            model.Tien_nghi.forEach { amenity ->
+////                TienNghiAdapter.selectItemByName(amenity.Ten_tiennghi)
+////            }
+//        }
 
 
         //lấy mã người dùng từ mAuth
@@ -371,7 +370,7 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
         prices.forEach { (thongtin, price) ->
             // Lưu thông tin dịch vụ và giá vào pricesMap
-            pricesMapThongTin[thongtin.Ma_thongtin.toString()] = Pair(thongtin, price)
+            pricesMapThongTin[thongtin.maThongTin.toString()] = Pair(thongtin, price)
         }
 
     }
@@ -399,14 +398,14 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         loaiPhong: com.ph32395.staynow_datn.LoaiPhong.LoaiPhong,
         isSelected: Boolean
     ) {
-        Ma_loaiphong = loaiPhong.Ma_loaiphong.toString()
+        Ma_loaiphong = loaiPhong.maLoaiPhong.toString()
     }
 
     override fun onGioiTinhSelected(
         gioiTinh: com.ph32395.staynow_datn.GioiTinh.GioiTinh,
         isSelected: Boolean
     ) {
-        Ma_gioiTinh = gioiTinh.Ma_gioitinh.toString()
+        Ma_gioiTinh = gioiTinh.maGioiTinh.toString()
     }
 
 
@@ -427,16 +426,16 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 
     }
 
-    private fun observeViewModel() {
-//        Quan sat chi tiet phong tro chinh
-        viewModel.room.observe(this) { room ->
-            binding.roomName.setText(room.Ten_phongtro)
-            binding.roomPrice.setText(room.Gia_phong.toString())
-            binding.description.setText(room.Mota_chitiet)
-            binding.roomAddress.setText(room.Dia_chi)
-            gioitinhAdapter.selectById(room.Ma_gioiTinh)
-        }
-    }
+//    private fun observeViewModel() {
+////        Quan sat chi tiet phong tro chinh
+//        viewModel.room.observe(this) { room ->
+//            binding.roomName.setText(room.Ten_phongtro)
+//            binding.roomPrice.setText(room.Gia_phong.toString())
+//            binding.description.setText(room.Mota_chitiet)
+//            binding.roomAddress.setText(room.Dia_chi)
+//            gioitinhAdapter.selectById(room.Ma_gioiTinh)
+//        }
+//    }
 
     private fun saveRoomDataToFirestore(
         roomName: String,
@@ -459,7 +458,7 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
                     "Ten_phongtro" to roomName,
                     "Gia_phong" to roomPrice,
                     "Mota_chitiet" to description,
-                    "Ma_nguoidung" to userId,
+                    "maNguoiDung" to userId,
                     "Dia_chi" to fullAddressct,
                     "Dia_chichitiet" to fullAddressDeltail,
                     "Trang_thaidc" to false,
@@ -532,13 +531,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     ) {
         for (tienNghi in selectedTienNghi) {
             val phongTroTienNghi = PhongTroTienNghi(
-                Ma_phongtro = maPhongTro,
-                Ma_tiennghi = tienNghi.Ma_tiennghi.toString()
+                maPhongTro = maPhongTro,
+                maTienNghi = tienNghi.maTienNghi.toString()
             )
 
             firestore.collection("PhongTroTienNghi").add(phongTroTienNghi)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${tienNghi.Ten_tiennghi} thành công!")
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
@@ -552,13 +550,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     ) {
         for (noithat in selectedNoiThat) {
             val phongTroNoiThat = PhongTroNoiThat(
-                Ma_phongtro = maPhongTro,
-                Ma_noithat = noithat.Ma_noithat.toString()
+                maPhongTro = maPhongTro,
+                maNoiThat = noithat.maNoiThat.toString()
             )
 
             firestore.collection("PhongTroNoiThat").add(phongTroNoiThat)
                 .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${noithat.Ten_noithat} thành công!")
                 }
                 .addOnFailureListener { e ->
                     Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
@@ -570,7 +567,7 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         // Sử dụng listPhiDichVu đã lưu
         listPhiDichVu.forEach { phiDichVu ->
             // Tạo một bản copy với mã phòng trọ mới
-            val newPhiDichVu = phiDichVu.copy(Ma_phongtro = maPhongTro)
+            val newPhiDichVu = phiDichVu.copy(maPhongTro = maPhongTro)
 
             firestore.collection("PhiDichVu")
                 .add(newPhiDichVu)
@@ -590,12 +587,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
             val thongtin = pair.first
             val price = pair.second
 
-            val phiThongTin = PhiThongTin(
-                So_luong_donvi = price,
-                Ma_phongtro = maPhongTro,
-                Ten_thongtin = thongtin.Ten_thongtin,
-                Icon_thongtin = thongtin.Icon_thongtin,
-                Don_vi = thongtin.Don_vi
+            val phiThongTin = ChiTietThongTin(
+                soLuongDonVi = price,
+                maPhongTro = maPhongTro,
+                tenThongTin = thongtin.tenThongTin,
+                iconThongTin = thongtin.iconThongTin,
+                donVi = thongtin.donVi
             )
 
             firestore.collection("ChiTietThongTin")

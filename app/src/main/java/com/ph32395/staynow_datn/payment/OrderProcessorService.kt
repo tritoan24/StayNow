@@ -18,6 +18,7 @@ import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,69 +41,49 @@ class OrderProcessorService(private val context: Context) {
             try {
                 val currentTime = System.currentTimeMillis()
 
-                // Lắng nghe thay đổi từ Firestore
-                db.collection("PaymentTransactionService")
+                // Truy vấn Firestore
+                val querySnapshot = db.collection("ThanhToanDichVu")
                     .whereEqualTo("billId", billId)
                     .whereEqualTo("status", "PENDING")
-                    .addSnapshotListener { querySnapshot, error ->
-                        if (error != null) {
-                            Log.e("FirestoreListener", "Listen failed.", error)
-                            CoroutineScope(Dispatchers.Main).launch {
-                                callback(null, null, null)
-                            }
-                            return@addSnapshotListener
-                        }
+                    .get()
+                    .await()
 
-                        if (querySnapshot == null || querySnapshot.isEmpty) {
-                            // Không có dữ liệu phù hợp -> Tạo đơn mới
-                            createOrder(amount, billId, items, typeBill) { token, orderUrl ->
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    callback(token, orderUrl, 900)
-                                }
-                            }
-                            return@addSnapshotListener
-                        }
+                val validOrder = querySnapshot.documents.firstOrNull { doc ->
+                    val expireTime =
+                        doc.getLong("appTime")!! + doc.getLong("expireDurationSeconds")!! * 1000
+                    expireTime > currentTime
+                }
 
-                        val validOrder = querySnapshot.documents.firstOrNull { doc ->
-                            val appTime = doc.getLong("app_time")
-                            val expireDurationSeconds = doc.getLong("expire_duration_seconds")
-                            if (appTime != null && expireDurationSeconds != null) {
-                                val expireTime = appTime + expireDurationSeconds * 1000
-                                expireTime > currentTime
-                            } else {
-                                false // Bỏ qua tài liệu nếu thiếu dữ liệu
-                            }
-                        }
+                if (validOrder != null) {
+                    val token = validOrder.getString("zpTransToken")
+                    val orderUrl = validOrder.getString("orderUrl")
 
-                        if (validOrder != null) {
-                            val token = validOrder.getString("zp_trans_token")
-                            val orderUrl = validOrder.getString("order_url")
-
-                            // Tính toán thời gian còn lại (remainTime)
-                            val expireTime =
-                                validOrder.getLong("app_time")!! + validOrder.getLong("expire_duration_seconds")!! * 1000
-                            val remainTime = expireTime - currentTime
-
-                            Log.d("remainTimeOrderProcessor", remainTime.toString())
-                            CoroutineScope(Dispatchers.Main).launch {
-                                callback(token, orderUrl, remainTime)
-                            }
-                        } else {
-                            // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
-                            createOrder(amount, billId, items, typeBill) { token, orderUrl ->
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    callback(token, orderUrl, 900)
-                                }
-                            }
+                    // Tính toán thời gian còn lại (remainTime)
+                    val expireTime =
+                        validOrder.getLong("appTime")!! + validOrder.getLong("expireDurationSeconds")!! * 1000
+                    val remainTime =
+                        expireTime - currentTime // Thời gian còn lại
+                    Log.d("remainTimeOrderProcessor", remainTime.toString())
+                    CoroutineScope(Dispatchers.Main).launch {
+                        callback(token, orderUrl, remainTime)
+                    }
+                } else {
+                    // Không tìm thấy hoặc hết hạn -> Tạo đơn mới
+                    createOrder(amount, billId, items, typeBill) { token, orderUrl ->
+                        CoroutineScope(Dispatchers.Main).launch {
+                            callback(token, orderUrl, 900)
                         }
                     }
+                }
             } catch (e: Exception) {
                 CoroutineScope(Dispatchers.Main).launch {
                     callback(null, null, null)
                 }
             }
         }
+
     }
+
 
     private fun createOrder(
         amount: Double,
@@ -131,12 +112,12 @@ class OrderProcessorService(private val context: Context) {
         })
     }
 
-    fun startPayment(zpToken: String?, billId: InvoiceMonthlyModel) {
+    fun startPayment(zpToken: String?, bill: InvoiceMonthlyModel) {
         zpToken?.let {
             ZaloPaySDK.getInstance()
                 .payOrder(context as Activity, it, "demozpdk://app", object : PayOrderListener {
                     override fun onPaymentSucceeded(s: String?, s1: String?, s2: String?) {
-                        handlePayment(context, billId, "success")
+                        handlePayment(context, bill, "success")
                     }
 
                     override fun onPaymentCanceled(s: String?, s1: String?) {
@@ -148,7 +129,7 @@ class OrderProcessorService(private val context: Context) {
                         s: String?,
                         s1: String?
                     ) {
-                        handlePayment(context, billId, "error")
+                        handlePayment(context, bill, "error")
                     }
                 })
         }
@@ -168,15 +149,15 @@ private fun handlePayment(
         "Thanh toán không thành công cho hóa đơn $bill"
 
     val notification = NotificationModel(
-        title = "Thanh toán hóa đơn hàng tháng",
-        message = if (status == "success") messageSuccess else messageError,
-        date = Calendar.getInstance().time.toString(),
-        time = "0",
+        tieuDe = "Thanh toán hóa đơn hàng tháng",
+        tinNhan = if (status == "success") messageSuccess else messageError,
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
         mapLink = null,
-        isRead = false,
-        isPushed = true,
+        daDoc = false,
+        daGui = true,
         idModel = bill.idHoaDon,
-        typeNotification = Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+        loaiThongBao = Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
     )
 
     val factory = ViewModelFactory(context)
@@ -185,7 +166,7 @@ private fun handlePayment(
         factory
     )[NotificationViewModel::class.java]
 
-    val recipientId = bill.idNguoiNhan
+    val recipientId = bill.idNguoiGui
 
     notificationViewModel.sendNotification(notification, recipientId)
 
@@ -202,7 +183,7 @@ private fun handlePayment(
 
     if (status == "success") {
         val intent = Intent(context, SuccessPaymentActivity::class.java)
-        intent.putExtra("invoiceId", bill)
+        intent.putExtra("bill", bill)
         context.startActivity(intent)
     }
 

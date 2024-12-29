@@ -3,8 +3,6 @@ package com.ph32395.staynow_datn.Activity
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -70,7 +68,7 @@ class ChoosePaymentActivity : AppCompatActivity() {
                     val intent = Intent(this, SuccessPaymentActivity::class.java)
                     intent.putExtra("bill", bill)
                     startActivity(intent)
-
+                    sendNotify(bill, contract)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
@@ -78,7 +76,6 @@ class ChoosePaymentActivity : AppCompatActivity() {
         }
 
         showQRCode(orderUrl!!)
-        startTimer(remainTime)
 
         binding.ivBack.tap {
             onBackPressed()
@@ -110,36 +107,6 @@ class ChoosePaymentActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun startTimer(remainTime: Long) {
-        if (remainTime <= 0) {
-            binding.con.visibility = View.GONE
-            binding.remainTime.text = "Đơn hàng đã hết hạn\nHãy quay lại và tạo đơn mới!"
-            binding.btnThanhtoan.isEnabled = false
-            return
-        }
-
-        val timer = object : CountDownTimer(remainTime, 1000) {
-            @SuppressLint("SetTextI18n")
-            override fun onTick(millisUntilFinished: Long) {
-                val minutes = millisUntilFinished / 60000
-                val seconds = (millisUntilFinished % 60000) / 1000
-                // Cập nhật UI để hiển thị thời gian còn lại
-                binding.con.visibility = View.VISIBLE
-                binding.remainTime.text = "$minutes:$seconds"
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onFinish() {
-                binding.con.visibility = View.GONE
-                binding.remainTime.text = "Đơn hàng đã hết hạn\nHãy quay lại và tạo đơn mới!"
-                binding.btnThanhtoan.isEnabled = false
-            }
-        }
-
-        timer.start()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         socketManager.disconnect()
@@ -157,15 +124,15 @@ class ChoosePaymentActivity : AppCompatActivity() {
             val message =
                 if (bill != null) "Thanh toán thành công cho hóa đơn ${bill.idHoaDon}" else "Thanh toán thành công cho hợp đồng ${contract?.maHopDong}"
             NotificationModel(
-                title = "Thanh toán hóa đơn hàng tháng",
-                message = message,
-                date = Calendar.getInstance().time.toString(),
-                time = "0",
+                tieuDe = "Thanh toán hóa đơn hàng tháng",
+                tinNhan = message,
+                ngayGuiThongBao = Calendar.getInstance().time.toString(),
+                thoiGian = "0",
                 mapLink = null,
-                isRead = false,
-                isPushed = true,
+                daDoc = false,
+                daGui = true,
                 idModel = it,
-                typeNotification = if (bill != null) Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE else Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
+                loaiThongBao = if (bill != null) Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE else Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
             )
         }
 
@@ -175,10 +142,14 @@ class ChoosePaymentActivity : AppCompatActivity() {
             factory
         )[NotificationViewModel::class.java]
 
-        // Gửi thông báo đến cả hai người
-        bill?.let { listOf(it.idNguoiGui, bill.idNguoiNhan) }?.forEach { recipientId ->
-            notification?.let { notificationViewModel.sendNotification(it, recipientId) }
+        val recipientIds = bill?.idNguoiGui
+
+        if (notification != null) {
+            if (recipientIds != null) {
+                notificationViewModel.sendNotification(notification, recipientIds)
+            }
         }
+
         // Giám sát trạng thái gửi thông báo
         notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->
             if (isSuccess) {

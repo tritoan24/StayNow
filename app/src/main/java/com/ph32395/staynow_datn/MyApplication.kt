@@ -24,7 +24,7 @@ class MyApplication : Application() {
     private fun setOnlineStatusListener() {
         Log.e("StatusUpdate", "da goi den ham set onnnn")
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val userStatusRef = Firebase.database.reference.child("NguoiDung").child(userId).child("status")
+        val userStatusRef = Firebase.database.reference.child("NguoiDung").child(userId).child("trangThai")
 
         // Lắng nghe trạng thái kết nối với Firebase
         val connectedRef = Firebase.database.reference.child(".info/connected")
@@ -51,7 +51,7 @@ class MyApplication : Application() {
 
     fun setOnlineStatus(isOnline: Boolean) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
-        val userStatusRef = Firebase.database.reference.child("NguoiDung").child(userId).child("status")
+        val userStatusRef = Firebase.database.reference.child("NguoiDung").child(userId).child("trangThai")
         if (isOnline) {
             userStatusRef.setValue("online")
                 .addOnFailureListener { Log.e("StatusUpdate", "Failed to update status") }

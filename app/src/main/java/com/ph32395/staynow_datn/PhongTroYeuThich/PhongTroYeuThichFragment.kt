@@ -88,7 +88,7 @@ class PhongTroYeuThichFragment : Fragment() {
             .get()
             .addOnSuccessListener { doc ->
                 val room = doc.toObject(PhongTroModel::class.java) ?: return@addOnSuccessListener
-                room.Thoigian_yeuthich = favoriteTime
+                room.thoiGianYeuThich = favoriteTime
                 val existingRoomIndex = favoriteList.indexOfFirst { it.first == maPhongTro }
 
                 if (existingRoomIndex >= 0) {

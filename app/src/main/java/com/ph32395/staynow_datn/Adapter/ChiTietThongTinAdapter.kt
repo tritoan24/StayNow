@@ -7,13 +7,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ph32395.staynow_datn.Model.ChiTietThongTinModel
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import java.text.NumberFormat
 import java.util.Locale
 
 class ChiTietThongTinAdapter(
-    private val chiTietList: List<ChiTietThongTinModel>
+    private val chiTietList: List<ChiTietThongTin>
 ) : RecyclerView.Adapter<ChiTietThongTinAdapter.ChiTietViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChiTietViewHolder {
@@ -35,10 +35,10 @@ class ChiTietThongTinAdapter(
         private val soLuongDonVi: TextView = itemView.findViewById(R.id.txtSoLuongDonVi)
         private val donVi: TextView = itemView.findViewById(R.id.txtDonVi)
 
-        fun bind(chiTiet: ChiTietThongTinModel) {
-            Glide.with(itemView.context).load(chiTiet.icon_thongtin).into(iconThongTin)
-            tenThongTin.text = chiTiet.ten_thongtin
-            val soLuong= chiTiet.so_luong_donvi.toString()
+        fun bind(chiTiet: ChiTietThongTin) {
+            Glide.with(itemView.context).load(chiTiet.iconThongTin).into(iconThongTin)
+            tenThongTin.text = chiTiet.tenThongTin
+            val soLuong= chiTiet.soLuongDonVi.toString()
 
             if (soLuong.length >= 5) {
 //                Format thanh VND
@@ -47,11 +47,11 @@ class ChiTietThongTinAdapter(
                 }.format(soLuong.toLong())
                 soLuongDonVi.text = formattedAmount
             } else {
-                if (chiTiet.ten_thongtin == "Số Người") {
-                    donVi.text = "/${chiTiet.don_vi}"
+                if (chiTiet.tenThongTin == "Số Người") {
+                    donVi.text = "/${chiTiet.donVi}"
                     soLuongDonVi.text = "$soLuong người"
                 } else {
-                    donVi.text = chiTiet.don_vi
+                    donVi.text = chiTiet.donVi
                     soLuongDonVi.text = soLuong
                 }
             }

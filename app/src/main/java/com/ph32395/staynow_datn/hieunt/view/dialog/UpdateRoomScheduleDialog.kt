@@ -37,7 +37,7 @@ class UpdateRoomScheduleDialog(
 
     override fun initClickListener() {
         binding.tvConfirm.tap {
-            if (scheduleRoomModel.date == dateSelected && scheduleRoomModel.time == "${hours}:${minutes}"){
+            if (scheduleRoomModel.ngayDatPhong == dateSelected && scheduleRoomModel.thoiGianDatPhong == "${hours}:${minutes}"){
                 toast("Ngày và giờ không có sự thay đổi")
             } else {
                 onClickConfirm.invoke("${hours}:${minutes}", dateSelected)

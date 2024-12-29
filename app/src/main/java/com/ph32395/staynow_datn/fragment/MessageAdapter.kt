@@ -40,14 +40,14 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
         Log.d(TAG, "onBindViewHolder: item $item")
 
         // Kiểm tra xem `item.otherUserId` có null hay không trước khi truy cập
-        val otherUserId = item.otherUserId ?: ""
+        val otherUserId = item.maNguoiDungKhac ?: ""
         if (otherUserId.isNotEmpty()) {
             dataUserRef.child(otherUserId).addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     Log.d(TAG, "onDataChange: snapshot $snapshot")
                     // Lấy dữ liệu từ Firebase, nếu thiếu thì dùng giá trị mặc định
-                    val name = snapshot.child("ho_ten").value?.toString() ?: "Tên người dùng không có"
-                    val avatar = snapshot.child("anh_daidien").value?.toString() ?: ""
+                    val name = snapshot.child("hoTen").value?.toString() ?: "Tên người dùng không có"
+                    val avatar = snapshot.child("anhDaiDien").value?.toString() ?: ""
                     val status = snapshot.child("status").value?.toString()
                     Log.d(TAG, "onDataChange:status $status")
 
@@ -81,7 +81,7 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
         }
 
         // Kiểm tra `unreadCount` để thay đổi kiểu chữ nếu có tin nhắn chưa đọc
-        if (item.unreadCount == 0) {
+        if (item.soTinChuaDoc == 0) {
             holder.nameUser.setTypeface(Typeface.SERIF, Typeface.NORMAL)
             holder.texting.setTypeface(Typeface.SERIF, Typeface.NORMAL)
             holder.timeGuiTin.setTypeface(Typeface.SERIF, Typeface.NORMAL)
@@ -92,11 +92,11 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
         }
 
         // Chuyển đổi thời gian và hiển thị tin nhắn
-        val time = convertTimestampToTime(item.lastMessageTime ?: 0L)
+        val time = convertTimestampToTime(item.thoiGianTinNhanCuoi ?: 0L)
         Log.d(TAG, "onBindViewHolder: time $time")
-        holder.texting.text = item.lastMessage
+        holder.texting.text = item.tinNhanCuoi
         holder.timeGuiTin.text = time
-        holder.tvNumberTexting.text = if (item.unreadCount != 0) item.unreadCount.toString() else " "
+        holder.tvNumberTexting.text = if (item.soTinChuaDoc != 0) item.soTinChuaDoc.toString() else " "
 
         // Xử lý sự kiện click item
         holder.itemView.setOnClickListener {

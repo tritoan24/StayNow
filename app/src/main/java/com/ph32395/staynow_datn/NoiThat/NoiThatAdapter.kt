@@ -44,9 +44,9 @@ class NoiThatAdapter(
         }
 
         fun bind(noiThat: NoiThat) {
-            binding.furnitureName.text = noiThat.Ten_noithat
+            binding.furnitureName.text = noiThat.tenNoiThat
             Glide.with(context)
-                .load(noiThat.Icon_noithat)
+                .load(noiThat.iconNoiThat)
                 .into(binding.furnitureImage)
 
             // Set trạng thái selected

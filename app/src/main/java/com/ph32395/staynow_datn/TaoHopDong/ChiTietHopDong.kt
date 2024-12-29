@@ -122,7 +122,7 @@ class ChiTietHopDong : AppCompatActivity() {
 
 
             btnBack.setOnClickListener {
-                finish()
+                onBackPressed()
             }
 
         }

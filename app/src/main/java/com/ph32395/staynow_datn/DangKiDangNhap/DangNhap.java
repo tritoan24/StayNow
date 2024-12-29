@@ -137,10 +137,10 @@ public class DangNhap extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.exists()) {
-                                                String status = dataSnapshot.child("trang_thaitaikhoan").getValue(String.class);
+                                                String status = dataSnapshot.child("trangThaiTaiKhoan").getValue(String.class);
                                                 Boolean daXacThucValue = dataSnapshot.child("daXacThuc").getValue(Boolean.class);
                                                 boolean daXacthuc = daXacThucValue != null && daXacThucValue;
-                                                String loaiTaiKhoan = dataSnapshot.child("loai_taikhoan").getValue(String.class);
+                                                String loaiTaiKhoan = dataSnapshot.child("loaiTaiKhoan").getValue(String.class);
 
                                                 if ("HoatDong".equals(status)) {
                                                     if (daXacthuc) {
@@ -166,9 +166,11 @@ public class DangNhap extends AppCompatActivity {
                                                         proceedToOtpActivity(currentUser);
                                                     }
                                                 } else {
+                                                    loadingUtil.hide();
                                                     showFailureAnimation("Tài khoản của bạn đã bị khóa");
                                                 }
                                             } else {
+                                                loadingUtil.hide();
                                                 showFailureAnimation("Không tìm thấy thông tin người dùng");
                                             }
                                         }
@@ -222,11 +224,11 @@ public class DangNhap extends AppCompatActivity {
     }
 
     // Hàm lưu thông tin người dùng vào Realtime Database
-    private void saveUserInfo(String Ma_nguoidung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich, String Loai_taikhoan, String Trang_thaitaikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
+    private void saveUserInfo(String maNguoiDung, String Ho_ten, String Sdt, String Email, String Anh_daidien, Integer So_luotdatlich,String trangThaiTaiKhoan, String Loai_taikhoan, boolean isXacThuc, Long Ngay_taotaikhoan, Long Ngay_capnhat) {
 
-        NguoiDungModel nguoiDung = new NguoiDungModel(Ma_nguoidung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich, Loai_taikhoan, Trang_thaitaikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
+        NguoiDungModel nguoiDung = new NguoiDungModel(maNguoiDung, Ho_ten, Sdt, Email, Anh_daidien, So_luotdatlich,trangThaiTaiKhoan, Loai_taikhoan, isXacThuc, Ngay_taotaikhoan, Ngay_capnhat);
 
-        mDatabase.child("NguoiDung").child(Ma_nguoidung).setValue(nguoiDung)
+        mDatabase.child("NguoiDung").child(maNguoiDung).setValue(nguoiDung)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(this, "Lưu thông tin thành công", Toast.LENGTH_SHORT).show();
@@ -296,11 +298,11 @@ public class DangNhap extends AppCompatActivity {
                                     if (dataSnapshot.exists()) {
                                         // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            String trangThaiTaiKhoan = snapshot.child("trang_thaitaikhoan").getValue(String.class);
+                                            String trangThaiTaiKhoan = snapshot.child(" ").getValue(String.class);
                                             Boolean daXacThucValue = snapshot.child("daXacThuc").getValue(Boolean.class);
                                             // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
                                             boolean daXacThuc = daXacThucValue != null && daXacThucValue;
-                                            String loaiTaiKhoan = snapshot.child("loai_taikhoan").getValue(String.class);
+                                            String loaiTaiKhoan = snapshot.child("loaiTaiKhoan").getValue(String.class);
                                             // Kiểm tra nếu trạng thái tài khoản là "HoatDong"
                                             if ("HoatDong".equals(trangThaiTaiKhoan)) {
                                                 if (daXacThuc) {
@@ -346,10 +348,10 @@ public class DangNhap extends AppCompatActivity {
                                     } else {
                                         // Tài khoản chưa tồn tại, tạo mới
                                         if (user.getPhoneNumber() == null) {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), "ChuaCo", user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon", false, System.currentTimeMillis(), System.currentTimeMillis());
                                             proceedToOtpActivity(user);
                                         } else {
-                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "ChuaChon", "HoatDong", false, System.currentTimeMillis(), System.currentTimeMillis());
+                                            saveUserInfo(user.getUid(), user.getDisplayName(), user.getPhoneNumber(), user.getEmail(), String.valueOf(user.getPhotoUrl()), 0, "HoatDong", "ChuaChon",false, System.currentTimeMillis(), System.currentTimeMillis());
                                             Toast.makeText(DangNhap.this, "Đăng nhập với Google thành công", Toast.LENGTH_SHORT).show();
                                             proceedToOtpActivity(user);
                                         }
@@ -359,7 +361,6 @@ public class DangNhap extends AppCompatActivity {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
                                     showFailureAnimation("Lỗi khi kiểm tra tài khoản");
-                                    // Loại bỏ lớp phủ nếu nó tồn tại
                                     // Loại bỏ lớp phủ nếu nó tồn tại
                                     if (loadingUtil.blockingView != null) {
                                         ViewGroup rootView = findViewById(android.R.id.content);
@@ -374,7 +375,7 @@ public class DangNhap extends AppCompatActivity {
                 public void onSignInFailed(Exception e) {
                     showFailureAnimation("Hủy chọn tài khoản");
                     loadingUtil.hide();
-                        }
+                }
             });
         }
     }

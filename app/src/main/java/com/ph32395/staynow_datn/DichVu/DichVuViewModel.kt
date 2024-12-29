@@ -18,22 +18,22 @@ class DichVuViewModel : ViewModel() {
                 for (document in result) {
                     // Lấy các giá trị từ Firestore
                     val maDichvu = document.id
-                    val tenDichvu = document.getString("Ten_dichvu") ?: ""
-                    val iconDichvu = document.getString("Icon_dichvu") ?: ""
+                    val tenDichvu = document.getString("tenDichVu") ?: ""
+                    val iconDichvu = document.getString("iconDichVu") ?: ""
 
                     // Lấy Don_vi dưới dạng mảng
-                    val donViList = document.get("Don_vi") as? List<String> ?: emptyList()
-                    val status = document.getBoolean("Status") ?: false
+                    val donViList = document.get("donVi") as? List<String> ?: emptyList()
+                    val status = document.getBoolean("trangThai") ?: false
 
                     // Kiểm tra nếu Status là true thì mới thêm vào danh sách
                     if (status) {
                         dichvuList.add(
                             DichVu(
-                                Ma_dichvu = maDichvu,
-                                Ten_dichvu = tenDichvu,
-                                Icon_dichvu = iconDichvu,
-                                Don_vi = donViList,  // Lưu mảng Don_vi vào đối tượng DichVu
-                                Status = status
+                                maDichVu = maDichvu,
+                                tenDichVu = tenDichvu,
+                                iconDichVu = iconDichvu,
+                                donVi = donViList,  // Lưu mảng Don_vi vào đối tượng DichVu
+                                trangThai = status
                             )
                         )
                     }

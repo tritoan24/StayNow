@@ -40,9 +40,9 @@ class TienNghiAdapter(
         }
 
         fun bind(tiennghi: TienNghi) {
-            binding.tiennghiName.text = tiennghi.Ten_tiennghi
+            binding.tiennghiName.text = tiennghi.tenTienNghi
             Glide.with(context)
-                .load(tiennghi.Icon_tiennghi)
+                .load(tiennghi.iconTienNghi)
                 .into(binding.tiennghiImage)
             // Set trạng thái selected
             binding.root.isSelected = false

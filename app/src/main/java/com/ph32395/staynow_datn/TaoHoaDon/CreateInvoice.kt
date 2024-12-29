@@ -1,6 +1,7 @@
 package com.ph32395.staynow_datn.TaoHoaDon
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
@@ -17,17 +18,20 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.list.listItems
 import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
+import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHopDong.Adapter.FixedFeeAdapter
 import com.ph32395.staynow_datn.TaoHopDong.Invoice
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow_datn.databinding.ActivityCreateMontlyInvoiceAutoBinding
+import com.ph32395.staynow_datn.hieunt.helper.Default
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.random.Random
 
 class CreateInvoice : AppCompatActivity() {
     private lateinit var binding: ActivityCreateMontlyInvoiceAutoBinding
@@ -53,6 +57,8 @@ class CreateInvoice : AppCompatActivity() {
     private var tenKhachHang: String = ""
     private var tenPhong: String = ""
     private var tienCoc: Double = 0.0
+    private var soDienCu = 0
+    private var soNuocCu = 0
     private val phiCoDinhList = mutableListOf<UtilityFeeDetail>()
 
     private lateinit var loadingUtil: LoadingUtil
@@ -83,6 +89,8 @@ class CreateInvoice : AppCompatActivity() {
         viewModelHopDong.previousUtilities.observe(this) { utilities ->
             binding.editTextSoDienCu.setText(utilities.first?.toString() ?: "0")
             binding.editTextSoNuocCu.setText(utilities.second?.toString() ?: "0")
+            soNuocCu = utilities.second ?: 0
+            soDienCu = utilities.first ?: 0
         }
         binding.btnCancel.setOnClickListener {
             finish()
@@ -358,12 +366,31 @@ class CreateInvoice : AppCompatActivity() {
             val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
             Toast.makeText(this, "Tạo hóa đơn thành công", Toast.LENGTH_SHORT).show()
             loadingUtil.hide()
-            //gọi hàm update số điện số nc
-            viewModelHopDong.updatePreviousUtilities(
-                idHopDong,
-                binding.editTextSoDienMoi.text.toString().toInt(),
-                binding.editTextSoNuocMoi.text.toString().toInt()
-            )
+
+            if(soDienCu==0){
+                //gọi hàm update số điện số nc
+                viewModelHopDong.updatePreviousUtilities(
+                    idHopDong,
+                    0,
+                    binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
+                )
+            }else if (soNuocCu ==0){
+                viewModelHopDong.updatePreviousUtilities(
+                    idHopDong,
+                    binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
+                    0
+                )
+            }else {
+                viewModelHopDong.updatePreviousUtilities(
+                    idHopDong,
+                    binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
+                    binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
+                )
+            }
+
+            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soDienCu)
+            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soNuocCu)
+
             Log.d("Invoice", "idHopDong: $idHopDong")
             // Giám sát trạng thái gửi thông báo
             notificationViewModel.notificationStatus.observe(this, Observer { isSuccess ->
@@ -376,8 +403,6 @@ class CreateInvoice : AppCompatActivity() {
                 }
             })
 
-            val soDienCu =   binding.editTextSoDienMoi.text.toString().toInt()
-            val soNuocCu =  binding.editTextSoNuocMoi.text.toString().toInt()
             val message = if (invoice.soDienCu != soDienCu || invoice.soNuocCu != soNuocCu) {
                 "Đến ngày cần thanh toán hóa đơn cho tháng ${hoaDonMon.hoaDonThang}. Lưu ý: Đã có sự thay đổi về số điện hoặc số nước!"
             } else {
@@ -385,20 +410,23 @@ class CreateInvoice : AppCompatActivity() {
             }
             // Ví dụ: gửi thông báo
             val notification = NotificationModel(
-                title = "Thanh toán hóa đơn",
-                message = message,
+                tieuDe = "Thanh toán hóa đơn",
+                tinNhan = message,
                 //lấy ngày hôm nay
-                date = Calendar.getInstance().time.toString(),
-                time = "0",
+                ngayGuiThongBao = Calendar.getInstance().time.toString(),
+                thoiGian = "0",
                 mapLink = null,
-                isRead = false,
-                isPushed = true,
-                typeNotification = "invoiceRemind",
+                daDoc = false,
+                daGui = true,
+                loaiThongBao = "invoiceRemind",
                 idModel = idHopDong
             )
 
             val recipientId = idNguoiNhan
             notificationViewModel.sendNotification(notification, recipientId)
+
+            //chuyển sang màn home khi tạo hóa đơn thành công
+            startActivity(Intent(this, MainActivity::class.java))
 
         }, {
             Toast.makeText(this, "Lỗi khi tạo hóa đơn", Toast.LENGTH_SHORT).show()

@@ -26,6 +26,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_CONTRACT_DONE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
@@ -62,8 +63,8 @@ class NotificationService : Service() {
             2004,
             getNotification(
                 NotificationModel(
-                    title = "Notification Manager",
-                    message = "Notification service is running..."
+                    tieuDe = "Notification Manager",
+                    tinNhan = "Notification service is running..."
                 )
             )
         )
@@ -83,7 +84,7 @@ class NotificationService : Service() {
 
     private fun getNotification(notificationModel: NotificationModel): Notification {
         Log.d("idHopDong", "idHopDongput: ${notificationModel.idModel}")
-        when (notificationModel.typeNotification) {
+        when (notificationModel.loaiThongBao) {
             TYPE_SCHEDULE_ROOM_TENANT -> {
                 Intent(this, NotificationActivity::class.java)
             }
@@ -103,24 +104,29 @@ class NotificationService : Service() {
                     putExtra("userId", notificationModel.idModel)
                 }
             }
-            TYPE_CONTRACT_DONE ->{
+
+            TYPE_CONTRACT_DONE -> {
                 Intent(this, BillContractActivity::class.java).apply {
-                    putExtra("contractId",notificationModel.idModel)
+                    putExtra("contractId", notificationModel.idModel)
                 }
             }
-            TYPE_NOTI_BILL_MONTHLY_REMIND ->{
+            TYPE_NOTI_CONTRACT -> {
+                Intent(this, NotificationActivity::class.java)
+            }
+
+            TYPE_NOTI_BILL_MONTHLY_REMIND -> {
                 Intent(this, BillManagementActivity::class.java).apply {
                 }
             }
 
             TYPE_NOTI_PAYMENT_CONTRACT -> {
-                Intent(this, BillContractActivity::class.java).apply {
+                Intent(this, NotificationActivity::class.java).apply {
                     putExtra("contractId", notificationModel.idModel)
                 }
             }
 
             TYPE_NOTI_PAYMENT_INVOICE -> {
-                Intent(this, DetailBillActivity::class.java).apply {
+                Intent(this, NotificationActivity::class.java).apply {
                     putExtra("invoiceId", notificationModel.idModel)
                 }
             }
@@ -131,8 +137,8 @@ class NotificationService : Service() {
         }?.let {
             return NotificationCompat.Builder(this, channelId)
                 .setSmallIcon(R.drawable.logoapp)
-                .setContentTitle(notificationModel.title)
-                .setContentText(notificationModel.message)
+                .setContentTitle(notificationModel.tieuDe)
+                .setContentText(notificationModel.tinNhan)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true)
                 .setContentIntent(
@@ -146,8 +152,8 @@ class NotificationService : Service() {
                 .build()
         } ?: return NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.logoapp)
-            .setContentTitle(notificationModel.title)
-            .setContentText(notificationModel.message)
+            .setContentTitle(notificationModel.tieuDe)
+            .setContentText(notificationModel.tinNhan)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOnlyAlertOnce(true)
             .build()
@@ -156,7 +162,7 @@ class NotificationService : Service() {
 
     private fun pushNotification(notificationModel: NotificationModel) {
         notificationManager.notify(
-            notificationModel.timestamp.toInt(),
+            notificationModel.thoiGianGuiThongBao.toInt(),
             getNotification(notificationModel)
         )
     }
@@ -173,7 +179,7 @@ class NotificationService : Service() {
                     for (data in snapshot.children) {
                         data.getValue(NotificationModel::class.java)?.let { notification ->
                             serviceScope.launch {
-                                if (dao.isNotificationExists(notification.timestamp) == 0 && !notification.isPushed) {
+                                if (dao.isNotificationExists(notification.thoiGianGuiThongBao) == 0 && !notification.daGui) {
                                     dao.insertNotification(notification)
                                     pushNotification(notification)
                                     updateNotificationIsPushed(notification) { isCompletion ->
@@ -224,7 +230,7 @@ class NotificationService : Service() {
                     for (dataSnapshot in snapshot.children) {
                         val existingNotification =
                             dataSnapshot.getValue(NotificationModel::class.java)
-                        if (existingNotification != null && existingNotification.timestamp == notification.timestamp) {
+                        if (existingNotification != null && existingNotification.thoiGianGuiThongBao == notification.thoiGianGuiThongBao) {
                             val notificationRef = dataSnapshot.ref
                             val updates = mapOf<String, Any>(
                                 IS_PUSHED to true

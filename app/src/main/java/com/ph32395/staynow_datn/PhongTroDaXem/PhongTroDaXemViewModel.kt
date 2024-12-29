@@ -30,8 +30,8 @@ class PhongTroDaXemViewModel : ViewModel() {
                 isLoading.postValue(true) //Bat dau tai du lieu
                 // Lắng nghe thay đổi dữ liệu Firestore theo thời gian thực
                 firestore.collection("PhongTroDaXem")
-                    .whereEqualTo("Id_nguoidung", userId)
-                    .orderBy("Thoi_gianxem", Query.Direction.DESCENDING)
+                    .whereEqualTo("idNguoiDung", userId)
+                    .orderBy("thoiGianXem", Query.Direction.DESCENDING)
                     .addSnapshotListener { snapshot, exception ->
                         if (exception != null) {
                             Log.e("Firestore", "Lỗi khi lắng nghe thay đổi", exception)
@@ -43,8 +43,8 @@ class PhongTroDaXemViewModel : ViewModel() {
                             // Chuyển đổi dữ liệu Firestore thành danh sách PhongTroDaXemModel
                             val roomHistoryList = snapshot.documents.map { doc ->
                                 PhongTroDaXemModel(
-                                    Id_phongtro = doc.getString("Id_phongtro") ?: "",
-                                    Thoi_gianxem = doc.getLong("Thoi_gianxem") ?: 0L
+                                    idPhongTro = doc.getString("idPhongTro") ?: "",
+                                    thoiGianXem = doc.getLong("thoiGianXem") ?: 0L
                                 )
                             }
 
@@ -76,19 +76,19 @@ class PhongTroDaXemViewModel : ViewModel() {
                 val tasks = roomHistory.map { room ->
                     async(Dispatchers.IO) {
                         val doc = firestore.collection("PhongTro")
-                            .document(room.Id_phongtro)
+                            .document(room.idPhongTro)
                             .get()
                             .await()
 
                         PhongTroModel(
-                            Ma_phongtro = doc.id,
-                            Ten_phongtro = doc.getString("Ten_phongtro") ?: "",
-                            Dia_chi = doc.getString("Dia_chi") ?: "",
-                            Gia_phong = doc.getDouble("Gia_phong") ?: 0.0,
-                            Dien_tich = null,
+                            maPhongTro = doc.id,
+                            tenPhongTro = doc.getString("tenPhongTro") ?: "",
+                            diaChi = doc.getString("diaChi") ?: "",
+                            giaPhong = doc.getDouble("giaPhong") ?: 0.0,
+                            dienTich = null,
                             imageUrls = (doc.get("imageUrls") as? ArrayList<String>) ?: ArrayList(),
-                            Trang_thai = false,
-                            Thoi_gianxem = room.Thoi_gianxem
+                            trangThai = false,
+                            thoiGianXem = room.thoiGianXem
                         )
                     }
                 }
