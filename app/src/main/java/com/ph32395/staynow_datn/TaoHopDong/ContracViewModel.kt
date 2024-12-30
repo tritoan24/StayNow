@@ -363,11 +363,11 @@ class ContractViewModel : ViewModel() {
 
     // Lưu thông tin nhắn tin vào bảng StatusMessages
     fun saveMessageStatus(tenantId: String, landlordId: String) {
-        val contractMessagesRef = FirebaseFirestore.getInstance().collection("StatusMessages")
+        val contractMessagesRef = FirebaseFirestore.getInstance().collection("DieuKienChat")
 
         val contractMessageStatusData = hashMapOf(
-            "tenantId" to tenantId,
-            "landlordId" to landlordId,
+            "maNguoiThue" to tenantId,
+            "maNguoiChoThue" to landlordId,
         )
 
         // Lưu thông tin vào bảng StatusMessages
