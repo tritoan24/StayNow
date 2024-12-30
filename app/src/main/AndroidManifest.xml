@@ -130,15 +130,33 @@
             tools:ignore="AppLinkUrlError">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
-                    android:host="staynowshare.page.link"
-                    android:pathPrefix="/roomDetail"
+                    android:host="Staynowapp.com"
+                    android:pathPrefix="/roomDetail/Product"
+                    android:scheme="http" />
+                <data
+                    android:host="Staynowapp.com"
+                    android:pathPrefix="/roomDetail/Product"
                     android:scheme="https" />
+
             </intent-filter>
+
+
+<!--            <intent-filter android:autoVerify="true">-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <data-->
+<!--                    android:host="staynow.page.link"-->
+<!--                    android:pathPrefix="/app"-->
+<!--                    android:scheme="http" />-->
+<!--                <data-->
+<!--                    android:host="staynow.page.link"-->
+<!--                    android:pathPrefix="/app"-->
+<!--                    android:scheme="https" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".ThongTinThanhToan.PaymentInfoActivity"
