@@ -26,10 +26,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
+            android:exported="false" />
         <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
         <activity
             android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
             android:exported="false" />
@@ -46,7 +49,7 @@
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
             android:exported="false" />
