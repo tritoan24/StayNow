@@ -149,4 +149,18 @@ dependencies {
     //progressdialog
     implementation("com.github.techinessoverloaded:progress-dialog:1.5.1")
 
+
+
+    implementation ("com.aallam.openai:openai-client:3.3.0")
+    implementation ("io.ktor:ktor-client-android:2.3.1")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+
+    implementation ("com.google.dagger:hilt-android:2.45")
+
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.9.0")
+
+    implementation("com.google.ai.client.generativeai:generativeai:0.4.0")
 }
