@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.ph32395.staynow_datn.QuanLyNhaTro.QuanLyNhaTroActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 
@@ -22,5 +23,13 @@ class QuanLyKhoPhongActivity : AppCompatActivity() {
         findViewById<CardView>(R.id.btnPhongDon).setOnClickListener {
             startActivity(Intent(this, QuanLyPhongTroActivity::class.java))
         }
+
+        //công add
+        findViewById<CardView>(R.id.btnToaNha).setOnClickListener {
+            startActivity(Intent(this, QuanLyNhaTroActivity::class.java))
+        }
+
+
+
     }
 }
