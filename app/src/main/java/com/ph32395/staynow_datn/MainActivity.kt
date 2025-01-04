@@ -9,11 +9,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.ph32395.staynow_datn.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow_datn.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTro
+import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTroNT
 import com.ph32395.staynow_datn.databinding.ActivityMainBinding
 import com.ph32395.staynow_datn.fragment.MessageFragment
 import com.ph32395.staynow_datn.fragment.ProfileFragment
@@ -36,9 +38,6 @@ class MainActivity : AppCompatActivity() {
     private val profileFragment = ProfileFragment()
     private val phongTroYeuThichFragment = PhongTroYeuThichFragment()
     private var activeFragment: Fragment = homeFragment
-
-    private val mDatabase = FirebaseDatabase.getInstance().reference
-    private val currentUser = FirebaseAuth.getInstance().currentUser
 
     private val PREFS_NAME: String = "MyAppPrefs"
     private var userRole: String = ""
@@ -87,36 +86,6 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
-//        FirebaseMessaging.getInstance().getToken()
-//            .addOnCompleteListener(
-//                object : OnCompleteListener<String?> {
-//                    override fun onComplete(task: Task<String?>) {
-//                        if (!task.isSuccessful) {
-//                            Log.w(
-//                                ContentValues.TAG,
-//                                "Fetching FCM registration token failed",
-//                                task.exception
-//                            )
-//                            return
-//                        }
-//
-//                        // Get new FCM registration token
-//                        val token = task.result
-//
-//                        //lưu token này vào database
-//                        if (currentUser != null) {
-//
-//                            Log.d("token", "tạo ra cái khỉ gió ở đây này ")
-//                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-//                                .setValue(token)
-//
-//
-//                        }
-//                        //nếu không có người dùng nào đăng nhập thì không lưu token
-//
-//                    }
-//                })
-
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)
@@ -196,8 +165,7 @@ class MainActivity : AppCompatActivity() {
 //                Cap nhat chuc nang FloatingActionButton
                 binding.fabSearch.setImageResource(R.drawable.add_room_2) //Thay doi Icon
                 binding.fabSearch.setOnClickListener {
-//                    chuyen sang man hinh them phong tro
-                    startActivity(Intent(this@MainActivity, TaoPhongTro::class.java))
+                    showRoomCreationDialog()
                 }
 
                 // Khởi tạo Fragment nếu chưa được thêm
@@ -282,5 +250,25 @@ class MainActivity : AppCompatActivity() {
             fabSearch.visibility = View.GONE // Ẩn FAB khi cần
         }
     }
-
+    private fun showRoomCreationDialog() {
+        val activityContext = this@MainActivity
+        SweetAlertDialog(this, SweetAlertDialog.NORMAL_TYPE)
+            .setTitleText("Chọn phương thức tạo phòng")
+            .setContentText("Bạn muốn tạo phòng đơn hay theo nhà trọ?")
+            .setConfirmText("Phòng Đơn")
+            .setCancelText("Theo Nhà Trọ")
+            .setConfirmClickListener { dialog ->
+                dialog.dismissWithAnimation()
+                // Chuyển đến màn hình tạo phòng đơn
+                val intent = Intent(activityContext, TaoPhongTro::class.java)
+                startActivity(intent)
+            }
+            .setCancelClickListener { dialog ->
+                dialog.dismissWithAnimation()
+                // Chuyển đến màn hình tạo phòng theo nhà trọ
+                val intent = Intent(activityContext, TaoPhongTroNT::class.java)
+                startActivity(intent)
+            }
+            .show()
+    }
 }
