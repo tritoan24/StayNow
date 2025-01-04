@@ -21,7 +21,8 @@ class QuanLyPhongTroActivity : AppCompatActivity() {
         setContentView(R.layout.activity_quan_ly_phong_tro)
 
         findViewById<ImageView>(R.id.imgBackQLPhong).setOnClickListener {
-            startActivity(Intent(this@QuanLyPhongTroActivity, MainActivity::class.java))
+//            startActivity(Intent(this@QuanLyPhongTroActivity, MainActivity::class.java))
+            finish()
         }
 
         val viewPagerQLPhong: ViewPager2 = findViewById(R.id.viewPagerQLPhong)

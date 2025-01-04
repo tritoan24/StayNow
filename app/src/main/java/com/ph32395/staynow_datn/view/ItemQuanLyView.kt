@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.ph32395.staynow_datn.QuanLyNguoiThue.QuanLyNguoiThueActivity
 import androidx.appcompat.app.AppCompatActivity
 import com.ph32395.staynow_datn.MainActivity
+import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.fragment.contract_tenant.ContractFragment
@@ -37,7 +38,7 @@ class ItemQuanLyView @JvmOverloads constructor(
     private fun onItemClicked(actionName: String) {
         when (actionName) {
             "QuanLyPhong" -> {
-                context.startActivity(Intent(context, QuanLyPhongTroActivity::class.java))
+                context.startActivity(Intent(context, QuanLyKhoPhongActivity::class.java))
             }
 
             "QuanLyHopDong" -> {

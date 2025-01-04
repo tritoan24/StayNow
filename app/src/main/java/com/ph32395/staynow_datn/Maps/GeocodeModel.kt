@@ -7,7 +7,15 @@ data class GeocodeResponse(
 
 data class GeocodeResult(
     val formatted_address: String,
-    val geometry: Geometry
+    val geometry: Geometry,
+    val compound:Compounds,
+    val address:String
+)
+
+data class Compounds(
+    val district:String,
+    val commune:String,
+    val province:String,
 )
 
 data class Geometry(
