@@ -30,6 +30,8 @@ import com.ph32395.staynow_datn.NoiThat.GioiTinhAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
+import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroAdapter
+import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ThongTin.ThongTin
@@ -39,6 +41,7 @@ import com.ph32395.staynow_datn.TienNghi.TienNghi
 import com.ph32395.staynow_datn.TienNghi.TienNghiAdapter
 import com.ph32395.staynow_datn.TienNghi.TienNghiViewModel
 import com.ph32395.staynow_datn.databinding.ActivityTaoPhongTroBinding
+import com.ph32395.staynow_datn.databinding.ActivityTaoPhongTroNtBinding
 import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +52,7 @@ import kotlinx.coroutines.withContext
 class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     private lateinit var firestore: FirebaseFirestore
-    private lateinit var binding: ActivityTaoPhongTroBinding
+    private lateinit var binding: ActivityTaoPhongTroNtBinding
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var noiThatViewModel: NoiThatViewModel
     private lateinit var TienNghiAdapter: TienNghiAdapter
@@ -60,10 +63,13 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     private lateinit var thongTinViewModel: ThongTinViewModel
     private lateinit var gioitinhViewModel: GioiTinhViewModel
     private lateinit var gioitinhAdapter: GioiTinhAdapter
-    private lateinit var nhatroAdapter:
+    private lateinit var nhatroViewModel: NhaTroViewModel
+    private lateinit var nhatroAdapter: SimpleHomeAdapter
 
 
     private var listPhiDichVu = mutableListOf<PhiDichVu>()
+
+
 
     // Khai bao bien luu tru du lieu thong tin
 
@@ -82,9 +88,7 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     private var mutableUriList: MutableList<Uri> = mutableListOf()
 
 
-    var fullAddressct = ""
-    var fullAddressDeltail = ""
-    var Ma_loaiphong = ""
+
     var Ma_gioiTinh = ""
     var TrangThaiPhong = false
 
@@ -96,6 +100,14 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     var Dc_quanhuyen = ""
     var Dc_tinhtp = ""
 
+    //mã nhà trọ
+    var maNhaTro = ""
+    var diaChi = ""
+    var diaChiChiTiet = ""
+    var maLoaiPhong = ""
+
+
+
 
     private lateinit var completionAnimation: LottieAnimationView
     private lateinit var loadingUtil: LoadingUtil
@@ -104,7 +116,7 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Khởi tạo ViewBinding
-        binding = ActivityTaoPhongTroBinding.inflate(layoutInflater)
+        binding = ActivityTaoPhongTroNtBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
@@ -131,27 +143,41 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         binding.listViewDichVu.layoutManager = GridLayoutManager(this, 3)
         binding.listViewThongTin.layoutManager = GridLayoutManager(this, 3)
         binding.imagegeContainer.layoutManager = GridLayoutManager(this, 4)
-        binding.recyclerViewLoaiPhong.layoutManager = GridLayoutManager(this, 4)
         binding.listViewGioiTinh.layoutManager = GridLayoutManager(this, 3)
+        binding.listViewNhaTro.layoutManager = GridLayoutManager(this, 3)
 
         // Khởi tạo ViewModel
         noiThatViewModel = ViewModelProvider(this).get(NoiThatViewModel::class.java)
         tienNghiViewModel = ViewModelProvider(this).get(TienNghiViewModel::class.java)
         dichVuViewModel = ViewModelProvider(this).get(DichVuViewModel::class.java)
         thongTinViewModel = ViewModelProvider(this).get(ThongTinViewModel::class.java)
-        loaiPhongViewModel = ViewModelProvider(this).get(LoaiPhongViewModel::class.java)
         gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
+        nhatroViewModel = ViewModelProvider(this).get(NhaTroViewModel::class.java)
 
-        //lấy mã người dùng từ mAuth
+        nhatroAdapter = SimpleHomeAdapter(this, emptyList(), this)
 
+        nhatroViewModel.getAllNhaTroByUserId(currentUser?.uid ?: "")
 
-        binding.addImage.setOnClickListener {
-            TedImagePicker.with(this)
-                .startMultiImage { uriList ->  // `uriList` là danh sách Uri của ảnh đã chọn
-                    displaySelectedImages(uriList)
-
-                }
+        // Observe the nhatro list
+        nhatroViewModel.listNhaTro.observe(this) { nhatroList ->
+            nhatroAdapter.updateList(nhatroList)
         }
+        nhatroViewModel.selectedNhaTroDetails.observe(this) { nhaTro ->
+            nhaTro?.let {
+                binding.apply {
+                    maNhaTro = nhaTro.maNhaTro
+                    diaChi = nhaTro.diaChi
+                    diaChiChiTiet = nhaTro.diaChiChiTiet
+                    Dc_quanhuyen = nhaTro.dcQuanHuyen
+                    Dc_tinhtp = nhaTro.dcTinhTP
+                    maLoaiPhong = nhaTro.maLoaiNhaTro
+
+
+            }
+
+                Log.d("NhaTro", "NhaTro: $nhaTro")
+        } }
+
 
         binding.btnBack.setOnClickListener {
             finish()
@@ -252,16 +278,18 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             }
         })
 
-        loaiPhongViewModel.getListLoaiPhong().observe(this, Observer { listLoaiPhong ->
-            if (listLoaiPhong != null && listLoaiPhong.isNotEmpty()) {
-                // Cập nhật RecyclerView khi có dữ liệu
-                loaiPhongAdapter = LoaiPhongAdapter(this, listLoaiPhong, this)
-                binding.recyclerViewLoaiPhong.adapter = loaiPhongAdapter
-            } else {
-                // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu Loại Phòng", Toast.LENGTH_SHORT).show()
-            }
-        })
+
+        nhatroViewModel.listNhaTro.observe(this) { nhaTroList ->
+
+                // Tạo adapter mới với danh sách mới
+                nhatroAdapter = SimpleHomeAdapter(this, nhaTroList, this)
+                binding.listViewNhaTro.adapter = nhatroAdapter
+
+
+
+        }
+
+
         gioitinhViewModel.getListGioiTinh().observe(this, Observer { gioiTinhList ->
             if (gioiTinhList != null && gioiTinhList.isNotEmpty()) {
                 // Cập nhật RecyclerView khi có dữ liệu
@@ -280,6 +308,8 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         Log.d("PhiDichVu", "Số lượng dịch vụ: ${listPhiDichVu.size}")
         soluongdv = listPhiDichVu.size
     }
+
+
 
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
         prices.forEach { (thongtin, price) ->
@@ -312,7 +342,13 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         loaiPhong: com.ph32395.staynow_datn.LoaiPhong.LoaiPhong,
         isSelected: Boolean
     ) {
-        Ma_loaiphong = loaiPhong.maLoaiPhong.toString()
+        maLoaiPhong = loaiPhong.maLoaiPhong.toString()
+    }
+
+    override fun onNhaTroSelected(nhaTro: NhaTroModel, isSelected: Boolean) {
+        if (isSelected) {
+            nhatroViewModel.updateSelectedNhaTro(nhaTro)
+        }
     }
 
     override fun onGioiTinhSelected(
@@ -348,11 +384,6 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         val dcTinhtp = Dc_tinhtp
 
 
-        //validate
-        if (fullAddressDeltail.isEmpty()) {
-            binding.roomAddress.error = "Địa chỉ không được để trống"
-            return
-        }
         if (roomName.isEmpty()) {
             binding.roomName.error = "Tên phòng trọ không được để trống"
             return
@@ -390,7 +421,7 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             Toast.makeText(this, "Vui lòng nhập giá thông tin", Toast.LENGTH_SHORT).show()
             return
         }
-        if (Ma_loaiphong.isEmpty()) {
+        if (maNhaTro.isEmpty()) {
             Toast.makeText(this, "Vui lòng chọn loại phòng", Toast.LENGTH_SHORT).show()
             return
         }
@@ -402,6 +433,21 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             Toast.makeText(this, "Vui lòng chọn ít nhất 1 ảnh", Toast.LENGTH_SHORT).show()
             return
         }
+        // Kiểm tra trùng tên phòng
+        firestore.collection("PhongTro")
+            .whereEqualTo("maNhaTro", maNhaTro)
+            .whereEqualTo("tenPhongTro", roomName)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Tên phòng đã tồn tại
+                    loadingUtil.hide()
+                    binding.roomName.error = "Tên phòng đã tồn tại trong nhà trọ này"
+                    Toast.makeText(this, "Tên phòng đã tồn tại trong nhà trọ này", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
+                }
+
+
 
 
 
@@ -456,10 +502,13 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     }
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Lỗi khi upload ảnh: ${e.message}", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(this, "Lỗi khi upload ảnh: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
         }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Lỗi khi kiểm tra tên phòng: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun saveRoomDataToFirestore(
@@ -486,12 +535,13 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     "giaPhong" to roomPrice,
                     "moTaChiTiet" to description,
                     "maNguoiDung" to userId,
-                    "diaChi" to fullAddressct,
-                    "diaChiChiTiet" to fullAddressDeltail,
+                    "diaChi" to diaChi,
+                    "diaChiChiTiet" to diaChiChiTiet,
                     "trangThaiDC" to false,
                     "dcQuanHuyen" to dc_quanhuyen,
                     "dcTinhTP" to dc_tinhtp,
-                    "maLoaiNhaTro" to Ma_loaiphong,
+                    "maLoaiNhaTro" to maLoaiPhong,
+                    "maNhaTro" to maNhaTro,
                     "maGioiTinh" to Ma_gioiTinh,
                     "trangThaiLuu" to Trang_thailuu,
                     "trangThaiDuyet" to Trang_thaiduyet,
@@ -513,6 +563,7 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 saveNoiThatToFirestore(maPhongTro, selectedNoiThatList)
                 savePhiDichVuToFirestore(maPhongTro)
                 savePhiThongTinToFirestore(maPhongTro)
+                nhatroViewModel.checkDuplicateRoom(maNhaTro, roomName)
 
                 withContext(Dispatchers.Main) {
                     // Ẩn loadingAnimation và hiển thị completionAnimation sau khi lưu thành công

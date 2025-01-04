@@ -44,6 +44,7 @@ import com.ph32395.staynow_datn.NoiThat.GioiTinhAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
+import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ThongTin.ThongTin
@@ -446,6 +447,9 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         isSelected: Boolean
     ) {
         Ma_loaiphong = loaiPhong.maLoaiPhong.toString()
+    }
+
+    override fun onNhaTroSelected(nhaTro: NhaTroModel, isSelected: Boolean) {
     }
 
     override fun onGioiTinhSelected(
