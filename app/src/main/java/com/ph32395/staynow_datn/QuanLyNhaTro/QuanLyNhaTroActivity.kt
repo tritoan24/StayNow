@@ -1,12 +1,17 @@
 package com.ph32395.staynow_datn.QuanLyNhaTro
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.ActivityQuanLyNhaTroBinding
 
 class QuanLyNhaTroActivity : AppCompatActivity() {
@@ -38,101 +43,93 @@ class QuanLyNhaTroActivity : AppCompatActivity() {
         }
 
 
-        fetchNhaTro(idUser)
+        //Lay danh sach nha tro
+//        fetchNhaTro(idUser)
+
+        val tabLayout = binding.tabLayoutQuanLyNhaTro
+        val viewPager2 = binding.viewPagerQuanLyNhaTro
+
+        //configTabLayout
+        configTabLayoutViewPager(tabLayout, viewPager2)
 
 
     }
 
-    //    private fun fetchNhaTro(idUser: String?) {
+    private fun configTabLayoutViewPager(tabLayout: TabLayout, viewPager2: ViewPager2) {
+        viewPager2.adapter = ViewPagerAdapterNhaTro(this)
+        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+            val tabTitles = arrayOf("Đang hoạt động", "Dừng hoạt động")
+            val customTab = LayoutInflater.from(this).inflate(R.layout.custom_tab_layout, null)
+
+//            Cai dat tieu de cho tung tabLayout
+            val tabTitle = customTab.findViewById<TextView>(R.id.tabTitle)
+            val tabCount = customTab.findViewById<TextView>(R.id.tabCount)
+
+            tabTitle.text = tabTitles[position]
+            tabCount.text = "(0)"
+
+//            Gan layout tuy chinh vao Tab
+            tab.customView = customTab
+            Log.e(TAG, "configTabLayoutViewPager: ${tab.isSelected}")
+            Log.e(TAG, "configTabLayoutViewPager: $position")
+
+        }.attach()
+
+    }
+
+
+//  Done
+
+//    private fun fetchNhaTro(idUser: String?) {
 //        val list = mutableListOf<NhaTroModel>()
 //        if (idUser != null) {
 //            nhaTroRef.document(idUser).collection("DanhSachNhaTro")
 //                .addSnapshotListener { value, error ->
+//                    if (error != null) {
+//                        Log.w(TAG, "Listen failed.", error)
+//                        return@addSnapshotListener
+//                    }
 //
 //                    for (docChange in value!!.documentChanges) {
 //                        when (docChange.type) {
 //                            DocumentChange.Type.ADDED -> {
 //                                val nhaTro = docChange.document.toObject(NhaTroModel::class.java)
-//                                Log.d(TAG, "fetchNhaTro:nhaTro $nhaTro")
 //                                list.add(nhaTro)
-//
-//                                Log.d(TAG, "fetchNhaTro:list $list")
-//                                val adapter = NhaTroAdapter(list)
-//                                binding.rvQuanLyNhaTro.layoutManager = LinearLayoutManager(
-//                                    applicationContext,
-//                                    LinearLayoutManager.VERTICAL,
-//                                    false
-//                                )
-//                                binding.rvQuanLyNhaTro.adapter = adapter
+//                                Log.d(TAG, "fetchNhaTro:nhaTro $nhaTro")
 //
 //                            }
 //
 //                            DocumentChange.Type.MODIFIED -> {
-//                                Log.d(TAG, "Updated contract: ${docChange.document.data}")
+//                                val modifiedNhaTro =
+//                                    docChange.document.toObject(NhaTroModel::class.java)
+//                                // Find the index of the modified item and update it
+//                                val index =
+//                                    list.indexOfFirst { it.maNhaTro == modifiedNhaTro.maNhaTro }
+//                                if (index != -1) {
+//                                    list[index] = modifiedNhaTro
+//                                    Log.d(TAG, "Updated contract: ${docChange.document.data}")
+//                                }
 //                            }
 //
 //                            DocumentChange.Type.REMOVED -> {
+//                                val removedNhaTroId = docChange.document.id
+//                                // Remove the item from the list
+//                                list.removeAll { it.maNhaTro == removedNhaTroId }
 //                                Log.d(TAG, "Removed contract: ${docChange.document.data}")
 //                            }
 //                        }
 //                    }
 //
-//
+//                    // Notify the adapter that the data has changed
+//                    val adapter = NhaTroAdapter(list)
+//                    binding.rvQuanLyNhaTro.layoutManager = LinearLayoutManager(
+//                        applicationContext,
+//                        LinearLayoutManager.VERTICAL,
+//                        false
+//                    )
+//                    binding.rvQuanLyNhaTro.adapter = adapter
 //                }
 //        }
-//
-//
 //    }
-    private fun fetchNhaTro(idUser: String?) {
-        val list = mutableListOf<NhaTroModel>()
-        if (idUser != null) {
-            nhaTroRef.document(idUser).collection("DanhSachNhaTro")
-                .addSnapshotListener { value, error ->
-                    if (error != null) {
-                        Log.w(TAG, "Listen failed.", error)
-                        return@addSnapshotListener
-                    }
-
-                    for (docChange in value!!.documentChanges) {
-                        when (docChange.type) {
-                            DocumentChange.Type.ADDED -> {
-                                val nhaTro = docChange.document.toObject(NhaTroModel::class.java)
-                                list.add(nhaTro)
-                                Log.d(TAG, "fetchNhaTro:nhaTro $nhaTro")
-
-                            }
-
-                            DocumentChange.Type.MODIFIED -> {
-                                val modifiedNhaTro =
-                                    docChange.document.toObject(NhaTroModel::class.java)
-                                // Find the index of the modified item and update it
-                                val index =
-                                    list.indexOfFirst { it.maNhaTro == modifiedNhaTro.maNhaTro }
-                                if (index != -1) {
-                                    list[index] = modifiedNhaTro
-                                    Log.d(TAG, "Updated contract: ${docChange.document.data}")
-                                }
-                            }
-
-                            DocumentChange.Type.REMOVED -> {
-                                val removedNhaTroId = docChange.document.id
-                                // Remove the item from the list
-                                list.removeAll { it.maNhaTro == removedNhaTroId }
-                                Log.d(TAG, "Removed contract: ${docChange.document.data}")
-                            }
-                        }
-                    }
-
-                    // Notify the adapter that the data has changed
-                    val adapter = NhaTroAdapter(list)
-                    binding.rvQuanLyNhaTro.layoutManager = LinearLayoutManager(
-                        applicationContext,
-                        LinearLayoutManager.VERTICAL,
-                        false
-                    )
-                    binding.rvQuanLyNhaTro.adapter = adapter
-                }
-        }
-    }
 
 }
