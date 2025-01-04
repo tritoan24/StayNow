@@ -30,7 +30,8 @@ class ContractFragment : Fragment() {
 
     private lateinit var activeAdapter: ContractAdapter
     private lateinit var pendingAdapter: ContractAdapter
-    private lateinit var expireAdapter: ContractAdapter
+    private lateinit var expiredAdapter: ContractAdapter
+    private lateinit var cancelledAdapter: ContractAdapter
     private lateinit var terminatedAdapter: ContractAdapter
     private lateinit var processingAdapter: ContractAdapter
 
@@ -95,8 +96,14 @@ class ContractFragment : Fragment() {
                     }
 
                     R.id.menu_expired_contracts -> {
-                        setupRecyclerView(expireAdapter, itemName)
-                        checkEmptyState(expireAdapter)
+                        setupRecyclerView(expiredAdapter, itemName)
+                        checkEmptyState(expiredAdapter)
+                        true
+                    }
+
+                    R.id.menu_cancelled_contracts -> {
+                        setupRecyclerView(cancelledAdapter, itemName)
+                        checkEmptyState(cancelledAdapter)
                         true
                     }
 
@@ -127,42 +134,71 @@ class ContractFragment : Fragment() {
             ContractAdapter(
                 contractViewModel,
                 ContractStatus.ACTIVE,
-                isLandlord
-            ) { contractId, newStatus ->
-                contractViewModel.updateContractStatus(contractId, newStatus)
-            }
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                },
+                {
+                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }
+            )
         pendingAdapter =
             ContractAdapter(
                 contractViewModel,
                 ContractStatus.PENDING,
-                isLandlord
-            ) { contractId, newStatus ->
-                contractViewModel.updateContractStatus(contractId, newStatus)
-            }
-        expireAdapter =
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                },
+                {
+                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }
+            )
+        expiredAdapter =
             ContractAdapter(
                 contractViewModel,
                 ContractStatus.EXPIRED,
-                isLandlord
-            ) { contractId, newStatus ->
-                contractViewModel.updateContractStatus(contractId, newStatus)
-            }
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                }, {
+                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }
+            )
+        cancelledAdapter =
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.CANCELLED,
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                },
+                {
+                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                })
         terminatedAdapter =
             ContractAdapter(
                 contractViewModel,
                 ContractStatus.TERMINATED,
-                isLandlord
-            ) { contractId, newStatus ->
-                contractViewModel.updateContractStatus(contractId, newStatus)
-            }
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                }, {
+                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }
+            )
+
         processingAdapter =
             ContractAdapter(
                 contractViewModel,
                 ContractStatus.PROCESSING,
-                isLandlord
-            ) { contractId, newStatus ->
-                contractViewModel.updateContractStatus(contractId, newStatus)
-            }
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                }, {
+                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }
+            )
 
     }
 
@@ -177,7 +213,10 @@ class ContractFragment : Fragment() {
 
         }
         contractViewModel.expiredContracts.observe(viewLifecycleOwner) { contracts ->
-            expireAdapter.updateContractList(contracts)
+            expiredAdapter.updateContractList(contracts)
+        }
+        contractViewModel.cancelledContracts.observe(viewLifecycleOwner) { contracts ->
+            cancelledAdapter.updateContractList(contracts)
         }
         contractViewModel.terminatedContracts.observe(viewLifecycleOwner) { contracts ->
             terminatedAdapter.updateContractList(contracts)
@@ -204,6 +243,10 @@ class ContractFragment : Fragment() {
                 )
                 contractViewModel.fetchContractsByLandlordForContractFragment(
                     userId,
+                    setOf(ContractStatus.CANCELLED)
+                )
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
                     setOf(ContractStatus.TERMINATED)
                 )
                 contractViewModel.fetchContractsByLandlordForContractFragment(
@@ -225,6 +268,10 @@ class ContractFragment : Fragment() {
                 contractViewModel.fetchContractsByTenantForContractFragment(
                     userId,
                     setOf(ContractStatus.EXPIRED)
+                )
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
+                    setOf(ContractStatus.CANCELLED)
                 )
                 contractViewModel.fetchContractsByTenantForContractFragment(
                     userId,

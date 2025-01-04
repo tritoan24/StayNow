@@ -73,7 +73,7 @@ class RoomContract {
 
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
-                            val invoiceRef = newDoc.collection("hoaDonhopdong").document()
+                            val invoiceRef = newDoc.collection("hoaDonHopDong").document()
                             val invoiceData = createBillMap(updatedInvoice)
                             transaction.set(invoiceRef, invoiceData)
 
@@ -93,8 +93,8 @@ class RoomContract {
                         val currentDate = Timestamp.now()
 
                         transaction.update(roomRef, mapOf(
-                            "Trang_thaiphong" to true,
-                            "Ngay_duocthue" to currentDate
+                            "trangThaiPhong" to true,
+                            "ngayDuocThue" to currentDate
                         ))
 
 
@@ -125,6 +125,7 @@ class RoomContract {
             "maHopDong" to contract.maHopDong,
             "ngayTao" to contract.ngayTao,
             "trangThai" to contract.trangThai.name,
+            "yeuCauChamDut" to contract.yeuCauChamDut,
             "ngayBatDau" to contract.ngayBatDau,
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
@@ -287,7 +288,26 @@ class RoomContract {
         getContracts("nguoiThue.maNguoiDung", tenantId, statuses, onContractsChanged)
     }
 
+    fun updateContractTerminationRequest(
+        contractId: String,
+        onResult: (Boolean) -> Unit
+    ) {
+        if (contractId.isEmpty()) {
+            onResult(false)
+            return
+        }
 
+        contractsCollection.document(contractId)
+            .update("yeuCauChamDut", true)
+            .addOnSuccessListener {
+                Log.d("HopDongViewModel", "Field yeuCauChamDut updated successfully for $contractId")
+                onResult(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("HopDongViewModel", "Error updating yeuCauChamDut: ${e.message}")
+                onResult(false)
+            }
+    }
 
     private fun getContracts(
         field: String,

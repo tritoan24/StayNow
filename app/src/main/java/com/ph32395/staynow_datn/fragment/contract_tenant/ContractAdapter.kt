@@ -7,6 +7,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -35,7 +36,8 @@ class ContractAdapter(
     private val viewmodel: ContractViewModel,
     private val type: ContractStatus,
     private val isLandlord: Boolean,
-    private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit
+    private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit,
+    private val onRequestTerminate: (HopDong) -> Unit
 ) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
 
@@ -72,6 +74,7 @@ class ContractAdapter(
         private val tvRentDuration: TextView = itemView.tvRentDuration
         private val tvRemainingTime: TextView = itemView.tvRemainingTime
         private val llBtn: LinearLayout = itemView.llBtn
+        private val btnTerminated: Button = itemView.btnTerminated
 
         private val btnXacNhan: TextView = itemView.btnConfirm
         private val btnCancel: TextView = itemView.btnCancel
@@ -91,6 +94,12 @@ class ContractAdapter(
             when (type) {
                 ContractStatus.ACTIVE -> {
                     tvRemainingTime.text = calculateRemainingDays(contract.ngayKetThuc)
+                    if (!isLandlord) {
+                        btnTerminated.visibility = View.VISIBLE
+                        if (contract.yeuCauChamDut) {
+                            btnTerminated.visibility = View.GONE
+                        }
+                    }
 
                     // Kiểm tra nếu ngày hết hạn đã qua, thay đổi trạng thái hợp đồng thành EXPIRED
                     val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -99,6 +108,16 @@ class ContractAdapter(
                     if (parsedEndDate.isBefore(LocalDate.now())) {
                         onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
                         updateContractList(contractList)
+                    }
+                    btnTerminated.tap {
+                        showConfirmDialog(
+                            itemView.context,
+                            "Xác nhận yêu cầu",
+                            "Bạn có chắc chắn muốn yêu cầu chấm dứt hợp đồng này không?"
+                        ) {
+                            onRequestTerminate(contract)
+                            notifyTerminatedRequest(itemView.context, contract)
+                        }
                     }
                 }
 
@@ -128,10 +147,10 @@ class ContractAdapter(
                         ) {
                             onStatusUpdated(
                                 contract.maHopDong,
-                                ContractStatus.TERMINATED
+                                ContractStatus.CANCELLED
                             )
                             updateContractList(contractList)
-                            handlePaymentSuccess(itemView.context, contract)
+                            notifyPayment(itemView.context, contract)
                         }
 
                     }
@@ -142,6 +161,10 @@ class ContractAdapter(
                 }
 
                 ContractStatus.TERMINATED -> {
+                    tvRemainingTime.text = "Hợp đồng đã chấm dứt"
+                }
+
+                ContractStatus.CANCELLED -> {
                     tvRemainingTime.text = "Hợp đồng đã bị hủy"
                 }
 
@@ -187,7 +210,7 @@ class ContractAdapter(
     }
 }
 
-private fun handlePaymentSuccess(context: Context, contract: HopDong) {
+private fun notifyPayment(context: Context, contract: HopDong) {
 
     val notification = NotificationModel(
         tieuDe = "Thanh toán hóa đơn hợp đồng",
@@ -217,6 +240,41 @@ private fun handlePaymentSuccess(context: Context, contract: HopDong) {
         if (isSuccess) {
             // Thông báo thành công
             Toast.makeText(context, "Thông báo đã được gửi!", Toast.LENGTH_SHORT).show()
+        } else {
+            // Thông báo thất bại
+            Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
+        }
+    })
+
+}
+
+private fun notifyTerminatedRequest(context: Context, contract: HopDong) {
+
+    val notification = NotificationModel(
+        tieuDe = "Yêu cầu chấm dứt hợp đồng",
+        tinNhan = "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen}",
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
+        mapLink = null,
+        daDoc = false,
+        daGui = true,
+        idModel = contract.maHopDong,
+        loaiThongBao = "yeuCauChamDut"
+    )
+
+    val factory = ViewModelFactory(context)
+    val notificationViewModel = ViewModelProvider(
+        context as AppCompatActivity,
+        factory
+    )[NotificationViewModel::class.java]
+
+    val recipientId = contract.chuNha.maNguoiDung
+    notificationViewModel.sendNotification(notification, recipientId)
+
+    notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
+        if (isSuccess) {
+            // Thông báo thành công
+            Toast.makeText(context, "Yêu cầu đã được gửi đến chủ trọ", Toast.LENGTH_SHORT).show()
         } else {
             // Thông báo thất bại
             Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()

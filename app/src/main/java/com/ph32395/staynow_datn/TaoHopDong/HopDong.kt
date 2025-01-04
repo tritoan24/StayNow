@@ -40,13 +40,13 @@ data class HopDong(
 
     // Trạng thái hợp đồng
     val trangThai: ContractStatus = ContractStatus.PENDING,
-
+    val yeuCauChamDut: Boolean = false,
     // Thông tin hóa đơn
     val hoaDonHopDong: Invoice = Invoice(),
 
     val soDienCu: Int = 0,
     val soNuocCu: Int = 0,
-):Serializable
+) : Serializable
 
 // Thông tin chi tiết về phòng
 data class RoomInfo(
@@ -139,6 +139,7 @@ enum class ContractStatus {
     ACTIVE, // Đang hiệu lực
     EXPIRED, // Hết hạn
     TERMINATED,
+    CANCELLED
 }
 
 data class UtilityFeeDetail(
@@ -147,7 +148,7 @@ data class UtilityFeeDetail(
     val donVi: String = "",
     val soLuong: Int = 0,
     val thanhTien: Double = 0.0
-): Serializable {
+) : Serializable {
     // No-argument constructor for Firestore
     constructor() : this("", 0.0, "", 0, 0.0)
 }
@@ -156,8 +157,8 @@ enum class InvoiceStatus {
     PENDING,
     PROCESSING,
     PAID,
+    TERMINATED,
     ACTIVE,
-    OVERDUE,
     CANCELLED,
     DONE
 }

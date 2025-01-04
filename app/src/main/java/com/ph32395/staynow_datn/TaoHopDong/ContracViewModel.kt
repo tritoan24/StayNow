@@ -37,6 +37,10 @@ class ContractViewModel : ViewModel() {
     private val _updateResult = MutableLiveData<Result<Unit>>()
     val updateResult: LiveData<Result<Unit>> = _updateResult
 
+
+    private val _updateYCResult = MutableLiveData<Boolean>()
+    val updateYCResult: LiveData<Boolean> get() = _updateYCResult
+
     private val _activeContracts = MutableLiveData<List<HopDong>>()
     val activeContracts: LiveData<List<HopDong>> get() = _activeContracts
 
@@ -45,6 +49,9 @@ class ContractViewModel : ViewModel() {
 
     private val _expiredContracts = MutableLiveData<List<HopDong>>()
     val expiredContracts: LiveData<List<HopDong>> get() = _expiredContracts
+
+    private val _cancelledContracts = MutableLiveData<List<HopDong>>()
+    val cancelledContracts: LiveData<List<HopDong>> get() = _cancelledContracts
 
     private val _terminatedContracts = MutableLiveData<List<HopDong>>()
     val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
@@ -68,8 +75,8 @@ class ContractViewModel : ViewModel() {
     val isWaterInputVisible: LiveData<Boolean> = _isWaterInputVisible
 
 
-    val contractStatus = MutableLiveData<String>()
-    val errorMessage = MutableLiveData<String>()
+    private val contractStatus = MutableLiveData<String>()
+    private val errorMessage = MutableLiveData<String>()
 
 
     // Phương thức để kiểm tra và cập nhật trạng thái hiển thị
@@ -240,8 +247,9 @@ class ContractViewModel : ViewModel() {
                 ContractStatus.ACTIVE -> _activeContracts.postValue(filteredContracts)
                 ContractStatus.PENDING -> _pendingContracts.postValue(filteredContracts)
                 ContractStatus.EXPIRED -> _expiredContracts.postValue(filteredContracts)
+                ContractStatus.CANCELLED -> _cancelledContracts.postValue(filteredContracts)
                 ContractStatus.TERMINATED -> _terminatedContracts.postValue(filteredContracts)
-                ContractStatus.PROCESSING -> _terminatedContracts.postValue(filteredContracts)
+                ContractStatus.PROCESSING -> _processingContracts.postValue(filteredContracts)
             }
         }
     }
@@ -456,6 +464,11 @@ class ContractViewModel : ViewModel() {
         }
     }
 
+    fun updateContractTerminationRequest(contractId: String) {
+        contractRepository.updateContractTerminationRequest(contractId) { success ->
+            _updateYCResult.postValue(success)
+        }
+    }
 
     // LiveData để lưu trữ kết quả
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()

@@ -203,8 +203,8 @@ class RoomDetailViewModel : ViewModel() {
                 .get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot?.let {
-                        val anhDaiDien = it.child("anh_daidien").value as? String ?: ""
-                        val hoTen = it.child("ho_ten").value as? String ?: ""
+                        val anhDaiDien = it.child("anhDaiDien").value as? String ?: ""
+                        val hoTen = it.child("hoTen").value as? String ?: ""
                         val ma_NguoiDung = room.maNguoiDung
                         _userId.value = Pair(ma_NguoiDung,hoTen)
                         _userInfo.value = Pair(anhDaiDien, hoTen)

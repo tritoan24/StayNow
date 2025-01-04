@@ -18,7 +18,11 @@
         android:title="Hợp đồng hết hạn"
         tools:ignore="HardcodedText" />
     <item
+        android:id="@+id/menu_cancelled_contracts"
+        android:title="Hợp đồng đã bị hủy"
+        tools:ignore="HardcodedText" />
+    <item
         android:id="@+id/menu_terminated_contracts"
-        android:title="Hợp đồng đã hủy"
+        android:title="Hợp đồng đã chấm dứt"
         tools:ignore="HardcodedText" />
 </menu>

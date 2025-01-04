@@ -30,6 +30,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.SystemUtils
@@ -128,6 +129,12 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
                 TYPE_NOTI_CONTRACT -> {
+                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+                TYPE_NOTI_TERMINATED_REQUEST-> {
                     val intent = Intent(this, ChiTietHopDong::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
                     }

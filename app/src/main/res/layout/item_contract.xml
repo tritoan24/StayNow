@@ -119,6 +119,23 @@
 
         </LinearLayout>
 
+        <!--        Nút yêu cầu chấm dứt-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/btn_terminated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gray"
+                android:text="Yêu cầu chấm dứt"
+                android:textColor="@android:color/white"
+                tools:ignore="ButtonStyle,HardcodedText" />
+        </LinearLayout>
+
         <!-- Thời gian còn lại -->
         <TextView
             android:id="@+id/tv_remaining_time"
