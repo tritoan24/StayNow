@@ -2,6 +2,7 @@ package com.ph32395.staynow_datn.TaoPhongTro
 
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -62,4 +63,27 @@ class SimpleHomeAdapter(
             binding.root.isSelected = isSelected
         }
     }
+
+    fun selectById(maNhaTro: String) {
+        // Tìm vị trí của nhà trọ theo mã nhà trọ
+        val newSelectedPosition = nhatrolist.indexOfFirst { it.maNhaTro == maNhaTro }
+
+        // Nếu tìm thấy, cập nhật vị trí được chọn
+        if (newSelectedPosition != -1) {
+            val previousPosition = selectedPosition
+            selectedPosition = newSelectedPosition
+
+            // Thông báo cập nhật giao diện cho item cũ và mới
+            notifyItemChanged(previousPosition)
+            notifyItemChanged(selectedPosition)
+
+            // Gọi listener để thông báo về nhà trọ được chọn
+            listener.onNhaTroSelected(nhatrolist[selectedPosition], true)
+        } else {
+            Log.e("SimpleHomeAdapter", "Không tìm thấy nhà trọ với ID: $maNhaTro")
+        }
+    }
+
+
+
 }

@@ -12,7 +12,7 @@ data class PhongTroModel(
     val maLoaiNhaTro: String = "",
     val trangThai: Boolean ,
     val giaPhong: Double = 0.0,
-    val soLuotXemPhong: Int? = 0,
+    val soLuotXemPhong: Int = 0,
     val thoiGianTaoPhong: Long? = 0L,
     val thoiGianXem: Long? = 0L,
     val ngayCapNhat: Long? = 0L,
@@ -23,7 +23,8 @@ data class PhongTroModel(
     val trangThaiLuu: Boolean = false,
     val trangThaiPhong: Boolean = false,
     val trangThaiYeuThich: Boolean = false,
-    var thoiGianYeuThich: Long? = null
+    var thoiGianYeuThich: Long? = null,
+    var maNhaTro: String = "",
 ): Serializable{
     constructor() : this("", "", "", "", "", "", "",false, 0.0, 0, 0L, 0L, 0L,ArrayList(), "")
 }

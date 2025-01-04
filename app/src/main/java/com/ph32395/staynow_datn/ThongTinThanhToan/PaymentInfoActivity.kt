@@ -135,7 +135,7 @@ class PaymentInfoActivity : AppCompatActivity() {
 
         // Dữ liệu cần cập nhật
         val updates = mapOf<String, Any>(
-            "statusPttt" to paymentStatus
+            "trangThaiPTTT" to paymentStatus
         )
 
         // Cập nhật trạng thái thanh toán vào bảng NguoiDung

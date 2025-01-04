@@ -23,7 +23,15 @@ class DichVuAdapter(
     private val listener: AdapterTaoPhongTroEnteredListenner
 ) : RecyclerView.Adapter<DichVuAdapter.DichVuViewHolder>() {
 
-    private val pricesMap = mutableMapOf<Int, Pair<Double, String>>()
+    val pricesMap = mutableMapOf<Int, Pair<Double, String>>()
+    //new code
+    private var defaultUnitList: List<String> = emptyList()
+    fun setDefaultUnitList(unitList: List<String>) {
+        Log.d("DichVuAdapter", "Setting default unit list: $unitList")
+        defaultUnitList = unitList
+        notifyDataSetChanged()
+    }
+
     // Thêm phương thức để cập nhật danh sách
     fun updateList(newList: List<DichVu>) {
         dichVuList = newList
@@ -104,34 +112,35 @@ class DichVuAdapter(
         }
         listener.onAllPricesEntered(priceList)
     }
+    //new
+    fun updatePrices(prices: List<PhiDichVu>) {
+        prices.forEachIndexed { index, phiDichVu ->
+            pricesMap[index] = phiDichVu.soTien to phiDichVu.donVi
+        }
+        notifyDataSetChanged()
+    }
     private fun showInputDialog(dichvu: DichVu, position: Int) {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_select_price_unit, null)
         val editText = dialogView.findViewById<EditText>(R.id.editPrice)
         val spinner = dialogView.findViewById<Spinner>(R.id.spinnerUnit)
 
-        // Thiết lập giá trị đã chọn trước đó (nếu có)
+        // Tạo danh sách đơn vị (đảm bảo không trùng lặp)
+        val unitList = (defaultUnitList + dichvu.donVi).distinct()
+        val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, unitList)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+
+        // Kiểm tra giá trị đã tồn tại
         val existingPriceInfo = pricesMap[position]
-        if (existingPriceInfo != null) {
+        existingPriceInfo?.let {
             // Set giá đã nhập trước đó
-            editText.setText(existingPriceInfo.first.toString())
+            editText.setText(it.first.toString())
 
             // Set đơn vị đã chọn trước đó
-            val unitList = dichvu.donVi
-            val adapter = ArrayAdapter(context, com.airbnb.lottie.R.layout.support_simple_spinner_dropdown_item, unitList)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = adapter
-
-            // Tìm vị trí của đơn vị đã chọn trong list và set cho Spinner
-            val selectedUnitPosition = unitList.indexOf(existingPriceInfo.second)
+            val selectedUnitPosition = unitList.indexOf(it.second)
             if (selectedUnitPosition != -1) {
                 spinner.setSelection(selectedUnitPosition)
             }
-        } else {
-            // Trường hợp chưa có giá trị
-            val unitList = dichvu.donVi
-            val adapter = ArrayAdapter(context, com.airbnb.lottie.R.layout.support_simple_spinner_dropdown_item, unitList)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinner.adapter = adapter
         }
 
         SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
@@ -139,10 +148,10 @@ class DichVuAdapter(
             .setCustomView(dialogView)
             .setConfirmText("Xác nhận")
             .setConfirmClickListener { sDialog ->
-                val inputText = CurrencyFormatTextWatcher.getUnformattedValue(editText).toDouble()
+                val inputText = editText.text.toString().replace(",", "").toDoubleOrNull()
                 val selectedUnit = spinner.selectedItem.toString()
 
-                if (inputText > 0 && selectedUnit.isNotEmpty()) {
+                if (inputText != null && inputText > 0 && selectedUnit.isNotEmpty()) {
                     // Lưu giá và đơn vị vào pricesMap
                     pricesMap[position] = inputText to selectedUnit
                     notifyItemChanged(position)
@@ -167,9 +176,10 @@ class DichVuAdapter(
             }
             .show()
 
-// Khi khởi tạo dialog, áp dụng CurrencyFormatTextWatcher
+        // Khi khởi tạo dialog, áp dụng CurrencyFormatTextWatcher
         CurrencyFormatTextWatcher.addTo(editText)
     }
+
 
     fun addDichVu(dichVu: DichVu) {
         // Tạo list mới và thêm dịch vụ
@@ -187,6 +197,22 @@ class DichVuAdapter(
 
         // Thông báo cho listener
         updatePriceList(updatedList)
+    }
+
+    fun getCurrentPhiDichVu(): List<PhiDichVu> {
+        return dichVuList.mapIndexed { index, dichVu ->
+            val priceInfo = pricesMap[index]
+            PhiDichVu(
+                maPhongTro = "",
+                tenDichVu = dichVu.tenDichVu,
+                donVi = priceInfo?.second ?: "",
+                iconDichVu = dichVu.iconDichVu,
+                soTien = priceInfo?.first ?: 0.0
+            )
+        }
+    }
+    fun getPhiDichVuList(): List<PhiDichVu> {
+        return getCurrentPhiDichVu()
     }
 
 }

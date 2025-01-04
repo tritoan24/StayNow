@@ -1,8 +1,7 @@
-package com.ph32395.staynow_datn.TaoPhongTro
+package com.ph32395.staynow_datn.SuaPhongTro
 
 import DichVuAdapter
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.net.Uri
@@ -24,17 +23,22 @@ import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.WriteBatch
 import com.google.firebase.storage.FirebaseStorage
 import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.DichVu.DichVu
 import com.ph32395.staynow_datn.DichVu.DichVuAddServiceUtil
-import com.ph32395.staynow_datn.DichVu.DichVuViewModel
+import com.ph32395.staynow_datn.GioiTinh.GioiTinh
 import com.ph32395.staynow_datn.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
+import com.ph32395.staynow_datn.LoaiPhong.LoaiPhong
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongAdapter
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongViewModel
 import com.ph32395.staynow_datn.Maps.RetrofitInstance
@@ -45,15 +49,19 @@ import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
-import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.TaoPhongTro.ChoiceImageAdapter
+import com.ph32395.staynow_datn.TaoPhongTro.NhaTroViewModel
+import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
+import com.ph32395.staynow_datn.TaoPhongTro.SimpleHomeAdapter
+import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow_datn.ThongTin.ThongTin
 import com.ph32395.staynow_datn.ThongTin.ThongTinAdapter
-import com.ph32395.staynow_datn.ThongTin.ThongTinViewModel
 import com.ph32395.staynow_datn.TienNghi.TienNghi
 import com.ph32395.staynow_datn.TienNghi.TienNghiAdapter
 import com.ph32395.staynow_datn.TienNghi.TienNghiViewModel
-import com.ph32395.staynow_datn.databinding.ActivityTaoPhongTroBinding
+import com.ph32395.staynow_datn.databinding.ActivitySuaPhongTroBinding
+import com.ph32395.staynow_datn.databinding.ActivitySuaPhongTroDonBinding
 import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -65,72 +73,72 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
 import java.util.Locale
+import kotlin.collections.isNotEmpty
+import kotlin.text.isNotEmpty
+import kotlin.text.toIntOrNull
 
-class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
+
+class SuaPhongTroDon : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     private lateinit var firestore: FirebaseFirestore
-
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-    private lateinit var binding: ActivityTaoPhongTroBinding
+    private lateinit var binding: ActivitySuaPhongTroDonBinding
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var noiThatViewModel: NoiThatViewModel
     private lateinit var TienNghiAdapter: TienNghiAdapter
     private lateinit var tienNghiViewModel: TienNghiViewModel
-    private lateinit var DichVuAdapter: DichVuAdapter
-    private lateinit var dichVuViewModel: DichVuViewModel
+    private lateinit var dichVuAdapter: DichVuAdapter
     private lateinit var thongTinAdapter: ThongTinAdapter
-    private lateinit var thongTinViewModel: ThongTinViewModel
-    private lateinit var loaiPhongAdapter: LoaiPhongAdapter
-    private lateinit var loaiPhongViewModel: LoaiPhongViewModel
     private lateinit var gioitinhViewModel: GioiTinhViewModel
     private lateinit var gioitinhAdapter: GioiTinhAdapter
+    private lateinit var loaiPhongAdapter: LoaiPhongAdapter
+    private lateinit var loaiPhongViewModel: LoaiPhongViewModel
 
+    private lateinit var roomDetailsViewModel: RoomDetailsViewModel
+    private lateinit var roomId: String
 
     private var listPhiDichVu = mutableListOf<PhiDichVu>()
-    val listDichVu: List<DichVu> = mutableListOf()
+    private val dichVuDonViMap = mutableMapOf<String, List<String>>()
 
-    // Khai bao bien luu tru du lieu thong tin
-
-    private val pricesMapThongTin = mutableMapOf<String, Pair<ThongTin, Int>>()
-
+    private var pricesMapThongTin = mutableMapOf<String, Pair<ThongTin, Int>>()
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var userId: String
 
-
     // Khai báo list để lưu thông tin dịch vụ và tiện nghi đã chọn
-    private val selectedDichVuList = mutableListOf<DichVu>()  // Lưu dịch vụ cùng giá
     private val selectedTienNghiList = mutableListOf<TienNghi>()  // Lưu tiện nghi
     private val selectedNoiThatList = mutableListOf<NoiThat>()  // Lưu nội thất
 
     private lateinit var imageAdapter: ChoiceImageAdapter
     private var mutableUriList: MutableList<Uri> = mutableListOf()
 
-    var Dc_quanhuyen = ""
-    var Dc_tinhtp = ""
-    var ward = ""
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
-    var addressDetail = ""
-    var fullAddressct = ""
-    var fullAddressDeltail = ""
-    var Ma_loaiphong = ""
     var Ma_gioiTinh = ""
     var TrangThaiPhong = false
+    var trangThaiDuyet = ""
+    var trangThaiLuu = false
+    var trangThaiDC = true
+    var soLuotXemPhong = ""
 
     //Phí thông tin
     var tendichvu = ""
-    var giadichvu = 0
-    var icondichvu = ""
-    var donvidv = ""
     var soluongdv = 0
+
+    //địa chỉ
+    var Dc_quanhuyen = ""
+    var Dc_tinhtp = ""
+
+    //mã nhà trọ
+    var maNhaTro = ""
+    var diaChi = ""
+    var diaChiChiTiet = ""
+    var maLoaiPhong = ""
 
 
     private lateinit var completionAnimation: LottieAnimationView
     private lateinit var loadingUtil: LoadingUtil
 
-
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var latitude: Double = 0.0
+    private var longitude: Double = 0.0
     private lateinit var mMap: GoogleMap
     private var lastText: String? = null
     private val delay: Long = 60
@@ -159,7 +167,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Khởi tạo ViewBinding
-        binding = ActivityTaoPhongTroBinding.inflate(layoutInflater)
+        binding = ActivitySuaPhongTroDonBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
@@ -254,10 +262,40 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         userId = currentUser?.uid ?: ""
         Log.d("UID", "UID: $userId")
 
+        //laays tu intent
+        roomId =  intent.getStringExtra("roomId").toString()
+
+
         //Khởi tạo LoadingUtil
         loadingUtil = LoadingUtil(this)
         loadingUtil.show()
 
+
+        // Khởi tạo ViewModel
+        roomDetailsViewModel = ViewModelProvider(this).get(RoomDetailsViewModel::class.java)
+
+        roomDetailsViewModel.fetchRoomDetails(roomId)
+
+        // Quan sát dữ liệu phòng
+        roomDetailsViewModel.roomDetails.observe(this) { roomDetails ->
+            roomDetails?.let { populateRoomDetails(it) }
+        }
+
+// Khởi tạo dichVuAdapter
+        dichVuAdapter = DichVuAdapter(this, emptyList(), this)
+        binding.listViewDichVu.adapter = dichVuAdapter
+
+        gioitinhAdapter = GioiTinhAdapter(this, emptyList(),this)
+        binding.listViewGioiTinh.adapter = gioitinhAdapter
+
+        loaiPhongAdapter = LoaiPhongAdapter(this, emptyList(),this)
+        binding.recyclerViewLoaiPhong.adapter = loaiPhongAdapter
+
+        // Khởi tạo thongTinAdapter
+        thongTinAdapter = ThongTinAdapter(this, emptyList(), this)
+        binding.listViewThongTin.adapter = thongTinAdapter
+
+        roomDetailsViewModel.getListDichVu()
 
         // Khởi tạo RecyclerView
         binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
@@ -265,31 +303,134 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         binding.listViewDichVu.layoutManager = GridLayoutManager(this, 3)
         binding.listViewThongTin.layoutManager = GridLayoutManager(this, 3)
         binding.imagegeContainer.layoutManager = GridLayoutManager(this, 4)
-        binding.recyclerViewLoaiPhong.layoutManager = GridLayoutManager(this, 4)
         binding.listViewGioiTinh.layoutManager = GridLayoutManager(this, 3)
+        binding.recyclerViewLoaiPhong.layoutManager = GridLayoutManager(this, 4)
+
+
 
         // Khởi tạo ViewModel
         noiThatViewModel = ViewModelProvider(this).get(NoiThatViewModel::class.java)
         tienNghiViewModel = ViewModelProvider(this).get(TienNghiViewModel::class.java)
-        dichVuViewModel = ViewModelProvider(this).get(DichVuViewModel::class.java)
-        thongTinViewModel = ViewModelProvider(this).get(ThongTinViewModel::class.java)
-        loaiPhongViewModel = ViewModelProvider(this).get(LoaiPhongViewModel::class.java)
         gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
+        loaiPhongViewModel = ViewModelProvider(this).get(LoaiPhongViewModel::class.java)
 
-        //lấy mã người dùng từ mAuth
 
+        // 2. Gọi API để lấy danh sách dịch vụ
+        roomDetailsViewModel.getListDichVu()
 
-        binding.addImage.setOnClickListener {
-            TedImagePicker.with(this)
-                .startMultiImage { uriList ->  // `uriList` là danh sách Uri của ảnh đã chọn
-                    displaySelectedImages(uriList)
-
+        // 3. Observe danh sách đơn vị mặc định trước
+        roomDetailsViewModel.listDichVu.observe(this) { dichVuList ->
+            if (dichVuList != null && dichVuList.isNotEmpty()) {
+                // Lưu đơn vị của từng dịch vụ vào Map
+                dichVuList.forEach { dichVu ->
+                    dichVuDonViMap[dichVu.tenDichVu] = dichVu.donVi
                 }
+                Log.d("DichVu_Debug", "Đã lưu Map đơn vị: $dichVuDonViMap")
+            }
         }
+
+        roomDetailsViewModel.services.observe(this) { services ->
+            if (services.isNotEmpty()) {
+                // Cập nhật adapter với danh sách phí dịch vụ
+                dichVuAdapter.updateList(services.map { service ->
+                    val donViList = dichVuDonViMap[service.tenDichVu] ?: listOf(service.donVi)
+                    DichVu(
+                        maDichVu = "",
+                        tenDichVu = service.tenDichVu,
+                        iconDichVu = service.iconDichVu,
+                        donVi = donViList,
+                        trangThai = true
+                    )
+                })
+
+                // Cập nhật giá tiền
+                dichVuAdapter.pricesMap.clear()
+                services.forEachIndexed { index, service ->
+                    dichVuAdapter.pricesMap[index] = service.soTien to service.donVi
+                }
+
+                // Cập nhật listPhiDichVu ngay sau khi load dữ liệu
+                onAllPricesEntered(dichVuAdapter.getCurrentPhiDichVu())
+
+                loadingUtil.hide()
+            }
+        }
+        roomDetailsViewModel.imfor.observe(this) { detailsList ->
+            if (detailsList.isNotEmpty()) {
+                // Cập nhật Adapter
+                thongTinAdapter.updateData(detailsList.map { chiTiet ->
+                    ThongTin(
+                        maThongTin = "",
+                        tenThongTin = chiTiet.tenThongTin.toString(),
+                        iconThongTin = chiTiet.iconThongTin.toString(),
+                        donVi = chiTiet.donVi.toString(),
+                        trangThai = true
+                    )
+                })
+
+                // Cập nhật giá trị
+                thongTinAdapter.pricesMap.clear()
+                detailsList.forEachIndexed { index, chiTiet ->
+                    thongTinAdapter.pricesMap[index] = chiTiet.soLuongDonVi.toLong()
+                }
+
+                // Cập nhật pricesMapThongTin ngay sau khi load dữ liệu
+                onThongTinimfor(thongTinAdapter.getCurrentThongTin())
+
+                thongTinAdapter.notifyDataSetChanged()
+            } else {
+                Toast.makeText(this, "Không có chi tiết thông tin nào", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Khởi tạo observers
+        roomDetailsViewModel.furniture.observe(this) { selectedFurniture ->
+            selectedFurniture?.let {
+                // Cập nhật adapter
+                noiThatAdapter.updateSelectedItems(it)
+                // Cập nhật selectedNoiThatList
+                selectedNoiThatList.clear()
+                selectedNoiThatList.addAll(noiThatAdapter.getSelectedNoiThat())
+            }
+        }
+
+        roomDetailsViewModel.amenities.observe(this) { selectedAmenities ->
+            selectedAmenities?.let {
+                // Cập nhật adapter
+                TienNghiAdapter.updateSelectedItems(it)
+                // Cập nhật selectedTienNghiList
+                selectedTienNghiList.clear()
+                selectedTienNghiList.addAll(TienNghiAdapter.getSelectedTienNghi())
+            }
+        }
+        // Gọi hàm khởi tạo dữ liệu
+        roomDetailsViewModel.initializeSelectedLists(roomId)
+
+        // Quan sát lỗi
+        roomDetailsViewModel.error.observe(this) { errorMessage ->
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        }
+        loaiPhongViewModel.getListLoaiPhong().observe(this, Observer { listLoaiPhong ->
+            if (listLoaiPhong != null && listLoaiPhong.isNotEmpty()) {
+                // Cập nhật RecyclerView khi có dữ liệu
+                loaiPhongAdapter = LoaiPhongAdapter(this, listLoaiPhong, this)
+                binding.recyclerViewLoaiPhong.adapter = loaiPhongAdapter
+            } else {
+                // Hiển thị thông báo nếu không có dữ liệu
+                Toast.makeText(this, "Không có dữ liệu Loại Phòng", Toast.LENGTH_SHORT).show()
+            }
+        })
+
 
         binding.btnBack.setOnClickListener {
             finish()
         }
+                // Logic khi nhấn nút "Lưu"
+        binding.addRoomButton2.setOnClickListener {
+            updateRoomInFirestore()
+            loadingUtil.show()
+        }
+
 
         binding.roomName.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
@@ -304,22 +445,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 //        // định dạng số tiền nhập vào
         CurrencyFormatTextWatcher.addTo(binding.roomPrice)
 
-        // Logic khi nhấn nút "Lưu"
-        binding.addRoomButton.setOnClickListener {
-            TrangThaiPhong = false
-            // Gọi hàm lưu phòng với trạng thái là "Lưu"
-            saveRoomToFirestore(isSaved = true, trangThaiPhong = TrangThaiPhong)
-            loadingUtil.show()
-        }
-
-        // Logic khi nhấn nút "Đăng"
-        binding.addRoomButton2.setOnClickListener {
-            TrangThaiPhong = false
-            saveRoomToFirestore(isSaved = false, trangThaiPhong = TrangThaiPhong)
-            loadingUtil.show()
-        }
-
-
+//nút lưu ở đây
         binding.addImage.setOnClickListener {
             TedImagePicker.with(this)
                 .startMultiImage { uriList ->
@@ -328,9 +454,9 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         }
         // Inside your fragment or activity
         binding.fabAddDichVu.setOnClickListener {
-            DichVuAddServiceUtil.showAddServiceDialog(this@TaoPhongTro) { newDichVu ->
+            DichVuAddServiceUtil.showAddServiceDialog(this@SuaPhongTroDon) { newDichVu ->
                 // Directly call the method in your adapter to add the service
-                DichVuAdapter.addDichVu(newDichVu)
+                dichVuAdapter.addDichVu(newDichVu)
             }
         }
 
@@ -359,43 +485,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             }
         })
 
-        dichVuViewModel.getListDichVu().observe(this, Observer { dichVuList ->
-            if (dichVuList != null && dichVuList.isNotEmpty()) {
-                // Nếu adapter đã tồn tại, chỉ cập nhật list
-                if (::DichVuAdapter.isInitialized) {
-                    DichVuAdapter.updateList(dichVuList)
-                } else {
-                    // Nếu chưa có adapter thì tạo mới
-                    DichVuAdapter = DichVuAdapter(this, dichVuList, this)
-                    binding.listViewDichVu.adapter = DichVuAdapter
-                }
-            } else {
-                Toast.makeText(this, "Không có dữ liệu Dịch Vụ ", Toast.LENGTH_SHORT).show()
-            }
-        })
 
-        thongTinViewModel.getListThongTin().observe(this, Observer { thongTinList ->
-            if (thongTinList != null && thongTinList.isNotEmpty()) {
-                // Cập nhật RecyclerView khi có dữ liệu
-                thongTinAdapter = ThongTinAdapter(this, thongTinList, this)
-                binding.listViewThongTin.adapter = thongTinAdapter
-                loadingUtil.hide()
-            } else {
-                // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu Thông Tin", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-        loaiPhongViewModel.getListLoaiPhong().observe(this, Observer { listLoaiPhong ->
-            if (listLoaiPhong != null && listLoaiPhong.isNotEmpty()) {
-                // Cập nhật RecyclerView khi có dữ liệu
-                loaiPhongAdapter = LoaiPhongAdapter(this, listLoaiPhong, this)
-                binding.recyclerViewLoaiPhong.adapter = loaiPhongAdapter
-            } else {
-                // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu Loại Phòng", Toast.LENGTH_SHORT).show()
-            }
-        })
         gioitinhViewModel.getListGioiTinh().observe(this, Observer { gioiTinhList ->
             if (gioiTinhList != null && gioiTinhList.isNotEmpty()) {
                 // Cập nhật RecyclerView khi có dữ liệu
@@ -406,6 +496,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 Toast.makeText(this, "Không có dữ liệu Giới Tính", Toast.LENGTH_SHORT).show()
             }
         })
+
     }
 
     override fun onAllPricesEntered(prices: List<PhiDichVu>) {
@@ -413,47 +504,49 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         listPhiDichVu = prices.toMutableList()
         Log.d("PhiDichVu", "Số lượng dịch vụ: ${listPhiDichVu.size}")
         soluongdv = listPhiDichVu.size
+        Log.d("PhiDichVu", "Danh sách dịch vụ: $listPhiDichVu")
     }
 
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
+        pricesMapThongTin.clear() // Clear map cũ trước khi thêm dữ liệu mới
         prices.forEach { (thongtin, price) ->
-            // Lưu thông tin dịch vụ và giá vào pricesMap
-            pricesMapThongTin[thongtin.maThongTin.toString()] = Pair(thongtin, price)
+            pricesMapThongTin[thongtin.tenThongTin] = Pair(thongtin, price)
         }
-
+        Log.d("ThongTin", "Số lượng thông tin: ${pricesMapThongTin.size}")
+        Log.d("ThongTin", "Danh sách thông tin: $pricesMapThongTin")
     }
 
     override fun onNoiThatSelected(noiThat: NoiThat, isSelected: Boolean) {
-        if (isSelected) {
-            selectedNoiThatList.add(noiThat)  // Thêm nội thất vào list nếu được chọn
-        } else {
-            selectedNoiThatList.remove(noiThat)  // Bỏ nội thất nếu không được chọn nữa
+        if (isSelected && !selectedNoiThatList.any { it.maNoiThat == noiThat.maNoiThat }) {
+            selectedNoiThatList.add(noiThat)
+        } else if (!isSelected) {
+            selectedNoiThatList.removeAll { it.maNoiThat == noiThat.maNoiThat }
         }
     }
 
-    override fun onTienNghiSelected(
-        tienNghi: TienNghi,
-        isSelected: Boolean
-    ) {
-        if (isSelected) {
-            selectedTienNghiList.add(tienNghi)  // Thêm tiện nghi vào list nếu được chọn
-        } else {
-            selectedTienNghiList.remove(tienNghi)  // Bỏ tiện nghi nếu không được chọn nữa
+    override fun onTienNghiSelected(tienNghi: TienNghi, isSelected: Boolean) {
+        if (isSelected && !selectedTienNghiList.any { it.maTienNghi == tienNghi.maTienNghi }) {
+            selectedTienNghiList.add(tienNghi)
+        } else if (!isSelected) {
+            selectedTienNghiList.removeAll { it.maTienNghi == tienNghi.maTienNghi }
         }
     }
+
 
     override fun onLoaiPhongSelected(
         loaiPhong: com.ph32395.staynow_datn.LoaiPhong.LoaiPhong,
         isSelected: Boolean
     ) {
-        Ma_loaiphong = loaiPhong.maLoaiPhong.toString()
+        maLoaiPhong = loaiPhong.maLoaiPhong.toString()
     }
 
     override fun onNhaTroSelected(nhaTro: NhaTroModel, isSelected: Boolean) {
+        if (isSelected) {
+        }
     }
 
     override fun onGioiTinhSelected(
-        gioiTinh: com.ph32395.staynow_datn.GioiTinh.GioiTinh,
+        gioiTinh: GioiTinh,
         isSelected: Boolean
     ) {
         Ma_gioiTinh = gioiTinh.maGioiTinh.toString()
@@ -477,301 +570,370 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     }
 
-    private fun saveRoomToFirestore(isSaved: Boolean, trangThaiPhong: Boolean) {
+    private fun populateRoomDetails(roomDetails: PhongTroModel) {
+        binding.roomName.setText(roomDetails.tenPhongTro)
+        binding.roomPrice.setText(roomDetails.giaPhong.toString())
+        binding.description.setText(roomDetails.moTaChiTiet)
+
+        // Điền thông tin địa chỉ
+        diaChi = roomDetails.diaChi
+        diaChiChiTiet = roomDetails.diaChiChiTiet
+        maNhaTro = roomDetails.maNhaTro
+        maLoaiPhong = roomDetails.maLoaiNhaTro
+        Ma_gioiTinh = roomDetails.maGioiTinh
+        TrangThaiPhong = roomDetails.trangThaiPhong
+        trangThaiDuyet = roomDetails.trangThaiDuyet
+        soLuotXemPhong = roomDetails.soLuotXemPhong.toString()
+
+
+        Log.d("DiaChi", "Giới tính : $Ma_gioiTinh")
+        Log.d( "DiaChi", "Mã nhà trọ : $maNhaTro")
+        gioitinhAdapter.selectById(Ma_gioiTinh)
+        loaiPhongAdapter.selectById(maLoaiPhong)
+        binding.roomAddress.setText(diaChiChiTiet)
+
+
+        // Hiển thị danh sách ảnh
+        displaySelectedImages(roomDetails.imageUrls.map { Uri.parse(it) })
+    }
+
+    private fun updateRoomInFirestore() {
         val roomName = binding.roomName.text.toString()
         val roomPrice = CurrencyFormatTextWatcher.getUnformattedValue(binding.roomPrice).toInt()
         val description = binding.description.text.toString()
-        val dcQuanhuyen = Dc_quanhuyen
-        val dcTinhtp = Dc_tinhtp
+        if (!validateInputs(roomName, roomPrice, description)) return
 
+        loadingUtil.show()
 
-        //validate
-        if (fullAddressDeltail.isEmpty()) {
-            binding.roomAddress.error = "Địa chỉ không được để trống"
-            return
-        }
-        if (roomName.isEmpty()) {
-            binding.roomName.error = "Tên phòng trọ không được để trống"
-            return
-        }
-        if (roomPrice == 0) {
-            binding.roomPrice.error = "Giá phòng không được để trống"
-            return
-        }
-        if(roomPrice < 0){
-            Toast.makeText(this, "Giá phòng không được âm", Toast.LENGTH_SHORT).show()
-        }
-        if (description.isEmpty()) {
-            binding.description.error = "Mô tả không được để trống"
-            return
-        }
-        if (selectedNoiThatList.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn nội thất", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (selectedTienNghiList.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn tiện nghi", Toast.LENGTH_SHORT).show()
-            return
-        }
-        //nếu chưa nhập đủ giá cho 4 dịch vụ thì thông báo
-        if (soluongdv < 1) {
-            Toast.makeText(this, "Vui lòng nhập giá dịch vụ", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (pricesMapThongTin.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập giá thông tin", Toast.LENGTH_SHORT).show()
-            return
-        }
-        // nếu chưa nhập đủ giá cho 4 thông tin thì thông báo
-        if (pricesMapThongTin.size < 4) {
-            Toast.makeText(this, "Vui lòng nhập giá thông tin", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (Ma_loaiphong.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn loại phòng", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (Ma_gioiTinh.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn giới tính", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (mutableUriList.isEmpty()) {
-            Toast.makeText(this, "Vui lòng chọn ít nhất 1 ảnh", Toast.LENGTH_SHORT).show()
-            return
-        }
+        // Check for duplicate room names
+        checkDuplicateRoomName(roomName) { isDuplicate ->
+            if (isDuplicate) {
+                loadingUtil.hide()
+                binding.roomName.error = "Tên phòng đã tồn tại trong nhà trọ này"
+                return@checkDuplicateRoomName
+            }
 
-
-
-
-        val ThoiGian_taophong = System.currentTimeMillis()
-        val Ngay_capnhat = System.currentTimeMillis()
-        val So_luotxemphong = 0
-
-
-        val Trang_thailuu = if (isSaved) true else false
-        val Trang_thaiduyet = if (isSaved) "" else "ChoDuyet"
-
-
-        // Tạo danh sách để chứa URL của các ảnh đã tải lên
-        val imageUrls = mutableListOf<String>()
-
-        // Biến đếm số ảnh đã tải lên thành công
-        var uploadedImagesCount = 0
-
-
-        // Vòng lặp để upload từng ảnh từ danh sách mutableUriList
-        for ((index, uri) in mutableUriList.withIndex()) {
-            val fileName = "room/${userId}_${System.currentTimeMillis()}_$index.jpg"
-            val storageRef = FirebaseStorage.getInstance().reference.child(fileName)
-
-            // Upload ảnh lên Firebase Storage
-            storageRef.putFile(uri)
-                .addOnSuccessListener { taskSnapshot ->
-                    // Lấy URL của ảnh sau khi tải lên thành công
-                    taskSnapshot.storage.downloadUrl.addOnSuccessListener { downloadUri ->
-                        imageUrls.add(downloadUri.toString())
-                        uploadedImagesCount++
-
-                        // Nếu đã upload tất cả ảnh, tiến hành lưu dữ liệu phòng
-                        if (uploadedImagesCount == mutableUriList.size) {
-                            saveRoomDataToFirestore(
-                                roomName,
-                                roomPrice,
-                                description,
-                                imageUrls,
-                                dcQuanhuyen,
-                                dcTinhtp,
-                                Trang_thailuu,
-                                Trang_thaiduyet,
-                                ThoiGian_taophong,
-                                Ngay_capnhat,
-                                So_luotxemphong,
-                                isSaved,
-                                trangThaiPhong
-                            )
-                        }
-                    }
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Lỗi khi upload ảnh: ${e.message}", Toast.LENGTH_SHORT)
-                        .show()
-                }
+            handleImageUpload()
         }
     }
 
-    private fun saveRoomDataToFirestore(
-        roomName: String,
-        roomPrice: Int,
-        description: String,
-        imageUrls: List<String>,
-        dc_quanhuyen: String,
-        dc_tinhtp: String,
-        Trang_thailuu: Boolean,
-        Trang_thaiduyet: String,
-        ThoiGian_taophong: Long,
-        Ngay_capnhat: Long,
-        So_luotxemphong: Int,
-        isSaved: Boolean,
-        trangThaiPhong: Boolean
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
+    private fun validateInputs(roomName: String, roomPrice: Int, description: String): Boolean {
+        when {
+            roomName.isEmpty() -> {
+                binding.roomName.error = "Tên phòng trọ không được để trống"
+                return false
+            }
+            roomPrice == 0 -> {
+                binding.roomPrice.error = "Giá phòng không được để trống"
+                return false
+            }
+            roomPrice < 0 -> {
+                Toast.makeText(this, "Giá phòng không được âm", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            description.isEmpty() -> {
+                binding.description.error = "Mô tả không được để trống"
+                return false
+            }
+            selectedNoiThatList.isEmpty() -> {
+                Toast.makeText(this, "Vui lòng chọn nội thất", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            selectedTienNghiList.isEmpty() -> {
+                Toast.makeText(this, "Vui lòng chọn tiện nghi", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            soluongdv < 1 -> {
+                Toast.makeText(this, "Vui lòng nhập giá dịch vụ", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            pricesMapThongTin.isEmpty() || pricesMapThongTin.size < 4 -> {
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            maNhaTro.isEmpty() -> {
+                Toast.makeText(this, "Vui lòng chọn nhà trọ", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            Ma_gioiTinh.isEmpty() -> {
+                Toast.makeText(this, "Vui lòng chọn giới tính", Toast.LENGTH_SHORT).show()
+                return false
+            }
+            mutableUriList.isEmpty() -> {
+                Toast.makeText(this, "Vui lòng chọn ít nhất 1 ảnh", Toast.LENGTH_SHORT).show()
+                return false
+            }
+        }
+        return true
+    }
 
-                // Chuẩn bị dữ liệu để lưu vào Firestore
-                val roomData = hashMapOf(
-                    "tenPhongTro" to roomName,
-                    "giaPhong" to roomPrice,
-                    "moTaChiTiet" to description,
-                    "maNguoiDung" to userId,
-                    "diaChi" to fullAddressct,
-                    "diaChiChiTiet" to fullAddressDeltail,
-                    "trangThaiDC" to false,
-                    "dcQuanHuyen" to dc_quanhuyen,
-                    "dcTinhTP" to dc_tinhtp,
-                    "maLoaiNhaTro" to Ma_loaiphong,
-                    "maNhaTro" to "",
-                    "maGioiTinh" to Ma_gioiTinh,
-                    "trangThaiLuu" to Trang_thailuu,
-                    "trangThaiDuyet" to Trang_thaiduyet,
-                    "thoiGianTaoPhong" to ThoiGian_taophong,
-                    "ngayCapNhat" to Ngay_capnhat,
-                    "soLuotXemPhong" to So_luotxemphong,
-                    "imageUrls" to imageUrls,
-                    "trangThaiPhong" to trangThaiPhong,
-                    "trangThaiDC" to true
-                )
+    private fun checkDuplicateRoomName(roomName: String, callback: (Boolean) -> Unit) {
+        firestore.collection("PhongTro")
+            .whereEqualTo("maNhaTro", maNhaTro)
+            .whereEqualTo("tenPhongTro", roomName)
+            .get()
+            .addOnSuccessListener { documents ->
+                val duplicateExists = documents.documents.any { it.id != roomId }
+                callback(duplicateExists)
+            }
+            .addOnFailureListener { e ->
+                loadingUtil.hide()
+                Toast.makeText(this, "Lỗi khi kiểm tra tên phòng: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
 
+    private fun handleImageUpload() {
+        if (mutableUriList.isEmpty()) {
+            updateRoomDataInFirestore(emptyList())
+            return
+        }
 
-                // Lưu phòng trọ
-                val roomTask = firestore.collection("PhongTro").add(roomData).await()
-                val maPhongTro = roomTask.id
+        val newImageUrls = mutableListOf<String>()
+        var uploadedCount = 0
 
-                // Lưu tiện nghi, nội thất, dịch vụ
-                saveTienNghiToFirestore(maPhongTro, selectedTienNghiList)
-                saveNoiThatToFirestore(maPhongTro, selectedNoiThatList)
-                savePhiDichVuToFirestore(maPhongTro)
-                savePhiThongTinToFirestore(maPhongTro)
-
-                withContext(Dispatchers.Main) {
-                    // Ẩn loadingAnimation và hiển thị completionAnimation sau khi lưu thành công
-                    loadingUtil.show()
-                    completionAnimation.setAnimation("done.json")
-                    completionAnimation.visibility = View.VISIBLE
-                    completionAnimation.playAnimation()
-
-                    // Sau khi animation hoàn thành trong 2 giây
-                    completionAnimation.postDelayed({
-                        completionAnimation.visibility = View.GONE
-
-                        // Toast thông báo thành công
-                        Toast.makeText(
-                            this@TaoPhongTro,
-                            "Tất cả dữ liệu đã được lưu thành công!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Điều hướng sau khi lưu thành công
-                        val intent = Intent(this@TaoPhongTro, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
-                        finish()
-
-                    }, 2000) // Thời gian delay 2 giây
+        mutableUriList.forEachIndexed { index, uri ->
+            when {
+                isNetworkUrl(uri) -> {
+                    newImageUrls.add(uri.toString())
+                    uploadedCount++
+                    checkUploadCompletion(uploadedCount, newImageUrls)
                 }
-
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    loadingUtil.hide()
-                    Toast.makeText(
-                        this@TaoPhongTro,
-                        "Lỗi khi lưu dữ liệu: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                else -> uploadLocalImage(uri, index, newImageUrls, uploadedCount) { count ->
+                    uploadedCount = count
+                    checkUploadCompletion(uploadedCount, newImageUrls)
                 }
             }
         }
     }
 
-    fun saveTienNghiToFirestore(
-        maPhongTro: String,
-        selectedTienNghi: List<TienNghi>,
-    ) {
-        for (tienNghi in selectedTienNghi) {
-            val phongTroTienNghi = PhongTroTienNghi(
-                maPhongTro = maPhongTro,
-                maTienNghi = tienNghi.maTienNghi.toString()
-            )
+    private fun isNetworkUrl(uri: Uri): Boolean =
+        uri.scheme?.toLowerCase() in listOf("http", "https")
 
-            firestore.collection("PhongTroTienNghi").add(phongTroTienNghi)
-                .addOnSuccessListener {
+    private fun uploadLocalImage(
+        uri: Uri,
+        index: Int,
+        newImageUrls: MutableList<String>,
+        currentCount: Int,
+        onUploadComplete: (Int) -> Unit
+    ) {
+        val fileName = "room/${userId}_${System.currentTimeMillis()}_$index.jpg"
+        val storageRef = FirebaseStorage.getInstance().reference.child(fileName)
+
+        storageRef.putFile(uri)
+            .continueWithTask { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let { throw it }
                 }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
-                }
+                storageRef.downloadUrl
+            }
+            .addOnSuccessListener { downloadUri ->
+                newImageUrls.add(downloadUri.toString())
+                onUploadComplete(currentCount + 1)
+            }
+            .addOnFailureListener { e ->
+                loadingUtil.hide()
+                Toast.makeText(this, "Lỗi khi upload ảnh: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun checkUploadCompletion(uploadedCount: Int, newImageUrls: List<String>) {
+        if (uploadedCount == mutableUriList.size) {
+            updateRoomDataInFirestore(newImageUrls)
         }
     }
 
-    fun saveNoiThatToFirestore(
-        maPhongTro: String,
-        selectedNoiThat: List<NoiThat>,
-    ) {
-        for (noithat in selectedNoiThat) {
-            val phongTroNoiThat = PhongTroNoiThat(
-                maPhongTro = maPhongTro,
-                maNoiThat = noithat.maNoiThat.toString()
-            )
+    private fun updateRoomDataInFirestore(imageUrls: List<String>) {
+        // Show loading trên main thread
+        CoroutineScope(Dispatchers.Main).launch {
+            loadingUtil.show()
 
-            firestore.collection("PhongTroNoiThat").add(phongTroNoiThat)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Lưu tiện nghi ${noithat.tenNoiThat} thành công!")
+            // Chuyển sang IO thread để xử lý dữ liệu
+            withContext(Dispatchers.IO) {
+                try {
+                    // 1. Xóa dữ liệu cũ
+                    val collections = listOf(
+                        "PhongTroTienNghi",
+                        "PhongTroNoiThat",
+                        "PhiDichVu",
+                        "ChiTietThongTin"
+                    )
+
+                    collections.forEach { collection ->
+                        val snapshot = firestore.collection(collection)
+                            .whereEqualTo("maPhongTro", roomId)
+                            .get()
+                            .await()
+
+                        val batch = firestore.batch()
+                        snapshot.documents.forEach { doc ->
+                            batch.delete(doc.reference)
+                        }
+                        batch.commit().await()
+                    }
+
+                    // 2. Tạo batch mới để thêm dữ liệu
+                    val updateBatch = firestore.batch()
+
+                    // 3. Cập nhật dữ liệu chính của phòng
+                    updateMainRoomData(updateBatch, imageUrls)
+
+                    // 4. Thêm dữ liệu mới
+                    updateRelatedCollections(updateBatch)
+
+                    // 5. Thực thi batch update
+                    updateBatch.commit().await()
+
+                    // Chuyển về main thread để cập nhật UI
+                    withContext(Dispatchers.Main) {
+                        handleSuccessfulUpdate()
+                    }
+                } catch (e: Exception) {
+                    // Chuyển về main thread để hiển thị lỗi
+                    withContext(Dispatchers.Main) {
+                        handleUpdateError(e)
+                    }
                 }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
-                }
+            }
         }
     }
 
-    fun savePhiDichVuToFirestore(maPhongTro: String) {
-        // Sử dụng listPhiDichVu đã lưu
+
+    private fun updateMainRoomData(batch: WriteBatch, imageUrls: List<String>) {
+        val roomRef = firestore.collection("PhongTro").document(roomId)
+        val roomData = hashMapOf(
+            "tenPhongTro" to binding.roomName.text.toString(),
+            "giaPhong" to CurrencyFormatTextWatcher.getUnformattedValue(binding.roomPrice).toInt(),
+            "moTaChiTiet" to binding.description.text.toString(),
+            "maNguoiDung" to userId,
+            "diaChi" to diaChi,
+            "diaChiChiTiet" to diaChiChiTiet,
+            "dcQuanHuyen" to Dc_quanhuyen,
+            "dcTinhTP" to Dc_tinhtp,
+            "maLoaiNhaTro" to maLoaiPhong,
+            "maNhaTro" to maNhaTro,
+            "maGioiTinh" to Ma_gioiTinh,
+            "trangThaiLuu" to trangThaiLuu,
+            "trangThaiDuyet" to trangThaiDuyet,
+            "ngayCapNhat" to System.currentTimeMillis(),
+            "soLuotXemPhong" to soLuotXemPhong.toInt(),
+            "trangThaiDC" to trangThaiDC,
+            "trangThaiPhong" to TrangThaiPhong,
+            "imageUrls" to imageUrls
+        )
+        batch.update(roomRef, roomData)
+    }
+
+    private fun updateRelatedCollections(batch: WriteBatch) {
+        // Add TienNghi
+        selectedTienNghiList.forEach { tienNghi ->
+            val newRef = firestore.collection("PhongTroTienNghi").document()
+            batch.set(newRef, hashMapOf(
+                "maPhongTro" to roomId,
+                "maTienNghi" to tienNghi.maTienNghi.toString()
+            ))
+        }
+
+        // Add NoiThat
+        selectedNoiThatList.forEach { noithat ->
+            val newRef = firestore.collection("PhongTroNoiThat").document()
+            batch.set(newRef, hashMapOf(
+                "maPhongTro" to roomId,
+                "maNoiThat" to noithat.maNoiThat.toString()
+            ))
+        }
+
+        // Add PhiDichVu
         listPhiDichVu.forEach { phiDichVu ->
-            // Tạo một bản copy với mã phòng trọ mới
-            val newPhiDichVu = phiDichVu.copy(maPhongTro = maPhongTro)
+            val newRef = firestore.collection("PhiDichVu").document()
+            batch.set(newRef, hashMapOf(
+                "maPhongTro" to roomId,
+                "tenDichVu" to phiDichVu.tenDichVu,
+                "donVi" to phiDichVu.donVi,
+                "soTien" to phiDichVu.soTien,
+                "iconDichVu" to phiDichVu.iconDichVu
+            ))
+        }
 
-            firestore.collection("PhiDichVu")
-                .add(newPhiDichVu)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Thêm phí dịch vụ thành công")
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("Firestore", "Lỗi khi thêm phí dịch vụ", exception)
-                }
+        // Add ThongTin
+        pricesMapThongTin.forEach { (_, pair) ->
+            val (thongtin, price) = pair
+            val newRef = firestore.collection("ChiTietThongTin").document()
+            batch.set(newRef, hashMapOf(
+                "soLuongDonVi" to price,
+                "maPhongTro" to roomId,
+                "tenThongTin" to thongtin.tenThongTin,
+                "iconThongTin" to thongtin.iconThongTin,
+                "donVi" to thongtin.donVi
+            ))
         }
     }
 
-    fun savePhiThongTinToFirestore(maPhongTro: String) {
-        val totalTasks = pricesMapThongTin.size
+    private suspend fun deleteExistingData(): Task<Void> {
+        val collectionsToDelete = listOf(
+            "PhongTroTienNghi",
+            "PhongTroNoiThat",
+            "PhiDichVu",
+            "ChiTietThongTin"
+        )
 
-        pricesMapThongTin.forEach { (maThongTin, pair) ->
-            val thongtin = pair.first
-            val price = pair.second
-
-            val chiTietThongTin = ChiTietThongTin(
-                soLuongDonVi = price,
-                maPhongTro = maPhongTro,
-                tenThongTin = thongtin.tenThongTin,
-                iconThongTin = thongtin.iconThongTin,
-                donVi = thongtin.donVi
-            )
-
-            firestore.collection("ChiTietThongTin")
-                .add(chiTietThongTin)
-                .addOnSuccessListener {
-
-                }
-                .addOnFailureListener { exception ->
-                }
+        val queryTasks = collectionsToDelete.map { collection ->
+            firestore.collection(collection)
+                .whereEqualTo("maPhongTro", roomId)
+                .get()
         }
-        Log.d("PhiThongTin", "Tổng số tasks: $totalTasks")
+
+        return Tasks.whenAll(queryTasks).continueWithTask { task ->
+            val batch = firestore.batch()
+
+            // Xử lý an toàn hơn với null check
+            task.result?.let { results ->
+                try {
+                    @Suppress("UNCHECKED_CAST")
+                    val querySnapshots = results as List<QuerySnapshot>
+
+                    querySnapshots.forEach { querySnapshot ->
+                        for (document in querySnapshot.documents) {
+                            batch.delete(document.reference)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("Firestore", "Lỗi khi cast kết quả: ${e.message}")
+                }
+            }
+
+            batch.commit()
+        }
     }
+
+    private fun handleSuccessfulUpdate() {
+        loadingUtil.hide()
+        completionAnimation.apply {
+            setAnimation("done.json")
+            visibility = View.VISIBLE
+            playAnimation()
+
+            postDelayed({
+                visibility = View.GONE
+                Toast.makeText(
+                    this@SuaPhongTroDon,
+                    "Cập nhật phòng trọ thành công!",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }, 2000)
+        }
+    }
+
+    private fun handleUpdateError(e: Exception) {
+        loadingUtil.hide()
+        Toast.makeText(
+            this@SuaPhongTroDon,
+            "Lỗi khi cập nhật dữ liệu: ${e.message}",
+            Toast.LENGTH_SHORT
+        ).show()
+        Log.e("Firestore", "Lỗi khi cập nhật dữ liệu: ${e.message}")
+    }
+
 
     private fun fetchSuggestions(query: String) {
         if (query.length < 2) return
@@ -822,7 +984,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                             Log.d(TAG, "TinhTP: $Dc_tinhtp")
 
                             // Gán giá trị cho fullAddressDeltail
-                            fullAddressDeltail = description
+                            diaChiChiTiet = description
 
                             // Kiểm tra "số" trong 10 ký tự đầu tiên của description
                             if (description.substring(0, minOf(description.length, 10))
@@ -831,24 +993,22 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                                 val indexOfNgo = description.indexOf("ngõ", ignoreCase = true)
                                 if (indexOfNgo != -1) {
                                     // Nếu tìm thấy "ngõ", lấy từ vị trí "ngõ"
-                                    fullAddressct = description.substring(indexOfNgo)
+                                    diaChi = description.substring(indexOfNgo)
                                 } else {
                                     // Nếu không tìm thấy "ngõ", mặc định lấy secondaryText
-                                    fullAddressct = secondaryText
+                                    diaChi = secondaryText
                                 }
                             } else {
                                 // Nếu không thỏa mãn điều kiện "số", mặc định lấy secondaryText
-                                fullAddressct = secondaryText
+                                diaChi = secondaryText
                             }
                         }
-                        Log.d(TAG, "onResponse: addressDetails $fullAddressDeltail")
-                        Log.d(TAG, "onResponse: addressDetails $fullAddressct")
-                        binding.roomAddress.setText(fullAddressDeltail)
+                        binding.roomAddress.setText(diaChiChiTiet)
 
                         // Set full and partial addresses
 
                         val adapter = ArrayAdapter(
-                            this@TaoPhongTro,
+                            this@SuaPhongTroDon,
                             android.R.layout.simple_list_item_1,
                             list
                         )
@@ -866,7 +1026,7 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
                         // Tạo adapter và set cho AutoCompleteTextView
                         val adapter = ArrayAdapter(
-                            this@TaoPhongTro,
+                            this@SuaPhongTroDon,
                             android.R.layout.simple_list_item_1,
                             list
                         )
@@ -920,13 +1080,6 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         }
     }
 
-    // Hàm được gọi khi người dùng nhấn nút Cập nhật vị trí
-    fun onUpdateLocationClick(view: View) {
-        // Hiện ProgressBar trong lúc đang lấy và cập nhật vị trí
-//        binding.progressBar.visibility = View.VISIBLE
-        getCurrentLocation()
-    }
-
     fun doiToaDoRaViTriCuThe(view: View) {
 
 
@@ -960,9 +1113,9 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 // Kiểm tra nếu địa chỉ cụ thể không trống thì cập nhật Firestore
                 if (detailedAddress.isNotEmpty() && diachict.isNotEmpty()) {
 
-                    fullAddressct = detailedAddress
-                    fullAddressDeltail = diachict
-                    binding.roomAddress.setText(fullAddressDeltail)
+                    diaChi = detailedAddress
+                    diaChiChiTiet = diachict
+                    binding.roomAddress.setText(diaChiChiTiet)
 
                     Log.d("Location", "Địa chỉ cụ thể: $detailedAddress")
                     Log.d("Location", "Địa chỉ cụ thể chi tiets: $diachict")
@@ -973,9 +1126,4 @@ class TaoPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             Log.e("Geocoder", "Lỗi khi lấy địa chỉ: ${e.message}")
         }
     }
-
 }
-
-
-
-

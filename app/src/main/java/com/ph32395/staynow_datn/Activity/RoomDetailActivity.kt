@@ -38,8 +38,9 @@ import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow_datn.MainActivity
-import com.ph32395.staynow_datn.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.SuaPhongTro.SuaPhongTro
+import com.ph32395.staynow_datn.SuaPhongTro.SuaPhongTroDon
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow_datn.fragment.RoomManagementFragment
 import com.ph32395.staynow_datn.fragment.home.HomeViewModel
@@ -435,46 +436,34 @@ class RoomDetailActivity : AppCompatActivity() {
 
 //            Chuc nang Cap nhat thong tin phong
             findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
-//                lay thong tin tu ViewModel chuyen doi sang UpdateRoomViewModel
-//                val updateRoomModel = UpdateRoomModel(
-//                    Ten_phongtro = viewModel.room.value?.tenPhongTro ?: "",
-//                    Dia_chi = viewModel.room.value?.diaChi ?: "",
-//                    Loai_phong = viewModel.roomType.value ?: "",
-//                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
-//                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
-//                    Gia_phong = viewModel.room.value?.giaPhong ?: 0.0,
-//                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
-//                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
-//                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
-//                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
-//                    Chi_tietthem = viewModel.room.value?.moTaChiTiet ?: ""
-//                )
                 //                    Truyen du lieu qua Intent
-//                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
-//                intent.putExtra("updateRoomModel", updateRoomModel)
-//                startActivity(intent)
+                viewModel.room.observe(this) { room ->
+
+                    if(room.maNhaTro.equals("")){
+                        val intent = Intent(this@RoomDetailActivity, SuaPhongTroDon::class.java)
+                        intent.putExtra("roomId",maPhongTro )
+                        startActivity(intent)
+                    }else{
+                        val intent = Intent(this@RoomDetailActivity, SuaPhongTro::class.java)
+                        intent.putExtra("roomId",maPhongTro )
+                        startActivity(intent)
+                    }
+                }
+
             }
             findViewById<LinearLayout>(R.id.btnSuaPhongLuu).setOnClickListener{
-//                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
-//                intent.putExtra("id_PhongTro", maPhongTro)
-//                startActivity(intent)
-//                val updateRoomModel = UpdateRoomModel(
-//                    Ten_phongtro = viewModel.room.value?.tenPhongTro ?: "",
-//                    Dia_chi = viewModel.room.value?.diaChi ?: "",
-//                    Loai_phong = viewModel.roomType.value ?: "",
-//                    Gioi_tinh = viewModel.genderInfo.value?.second ?: "",
-//                    Url_image = ArrayList(viewModel.room.value?.imageUrls ?: emptyList()),
-//                    Gia_phong = viewModel.room.value?.giaPhong ?: 0.0,
-//                    Chi_tietthongtin = ArrayList(viewModel.chiTietList.value ?: emptyList()),
-//                    Dich_vu = ArrayList(viewModel.phiDichVuList.value ?: emptyList()),
-//                    Noi_that = ArrayList(viewModel.noiThatList.value ?: emptyList()),
-//                    Tien_nghi = ArrayList(viewModel.tienNghiList.value ?: emptyList()),
-//                    Chi_tietthem = viewModel.room.value?.moTaChiTiet ?: ""
-//                )
-                //                    Truyen du lieu qua Intent
-//                val intent = Intent(this@RoomDetailActivity, UpdateRoomActivity::class.java)
-//                intent.putExtra("updateRoomModel", updateRoomModel)
-//                startActivity(intent)
+                viewModel.room.observe(this) { room ->
+
+                    if(room.maNhaTro.equals("")){
+                        val intent = Intent(this@RoomDetailActivity, SuaPhongTroDon::class.java)
+                        intent.putExtra("roomId",maPhongTro )
+                        startActivity(intent)
+                    }else{
+                        val intent = Intent(this@RoomDetailActivity, SuaPhongTro::class.java)
+                        intent.putExtra("roomId",maPhongTro )
+                        startActivity(intent)
+                    }
+                }
             }
 
 //            Chuc ang go phong chuyen sang man dang luu

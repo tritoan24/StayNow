@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.bumptech.glide.Glide
+import com.ph32395.staynow_datn.DichVu.DichVu
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import com.ph32395.staynow_datn.databinding.ItemThongtinBinding
@@ -22,18 +23,16 @@ class ThongTinAdapter(
     private val existingChiTietList: List<ChiTietThongTin>? = null
 ) : RecyclerView.Adapter<ThongTinAdapter.ThongTinViewHolder>() {
 
-    private val pricesMap = mutableMapOf<Int, Long>()
+     val pricesMap = mutableMapOf<Int, Long>()
     init {
-        Log.d("ThongTinAdapter", "Danh sách thông tin khi khởi tạo: $thongtinList")
-
-        existingChiTietList?.forEachIndexed { index, chiTiet ->
+        existingChiTietList?.forEach { chiTiet ->
             val matchingIndex = thongtinList.indexOfFirst { it.tenThongTin == chiTiet.tenThongTin }
             if (matchingIndex != -1) {
-                pricesMap[matchingIndex] = chiTiet.soLuongDonVi.toLong()
+                pricesMap[matchingIndex] = chiTiet.soLuongDonVi.toLong() // Gán soLuongDonVi vào pricesMap
             }
-
         }
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ThongTinViewHolder {
         val binding = ItemThongtinBinding.inflate(LayoutInflater.from(context), parent, false)
         return ThongTinViewHolder(binding)
@@ -73,6 +72,7 @@ class ThongTinAdapter(
             binding.itemDichvu.setOnClickListener {
                 showInputDialog(thongTin, position)
             }
+
         }
     }
     fun updateData(newList: List<ThongTin>) {
@@ -120,4 +120,11 @@ class ThongTinAdapter(
             .show()
     }
 
+
+    fun getCurrentThongTin(): List<Pair<ThongTin, Int>> {
+        return thongtinList.mapIndexed { index, thongTin ->
+            val price = pricesMap[index]?.toInt() ?: 0
+            Pair(thongTin, price)
+        }
+    }
 }

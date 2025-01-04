@@ -685,9 +685,6 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         }
         Log.d("PhiThongTin", "Tổng số tasks: $totalTasks")
     }
-
-
-
 }
 
 
