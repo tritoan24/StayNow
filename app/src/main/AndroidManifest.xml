@@ -50,9 +50,9 @@
         <activity
             android:name=".BaoMat.ThayDoiNgonNgu"
             android:exported="false" />
-        <activity
-            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"-->
+<!--            android:exported="false" />-->
 
         <service
             android:name=".hieunt.service.NotificationService"

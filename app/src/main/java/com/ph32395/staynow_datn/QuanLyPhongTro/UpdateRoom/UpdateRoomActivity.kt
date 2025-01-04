@@ -8,14 +8,17 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow_datn.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.DichVu.DichVu
@@ -44,6 +47,7 @@ import com.ph32395.staynow_datn.TienNghi.TienNghiAdapter
 import com.ph32395.staynow_datn.TienNghi.TienNghiViewModel
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow_datn.databinding.ActivityUpdateRoomBinding
+import com.ph32395.staynow_datn.fragment.home.HomeViewModel
 import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,16 +57,11 @@ import kotlinx.coroutines.withContext
 
 class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
     private lateinit var firestore: FirebaseFirestore
-
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     private lateinit var binding: ActivityUpdateRoomBinding
     private lateinit var noiThatAdapter: NoiThatAdapter
     private lateinit var noiThatViewModel: NoiThatViewModel
     private lateinit var TienNghiAdapter: TienNghiAdapter
     private lateinit var tienNghiViewModel: TienNghiViewModel
-    private lateinit var DichVuAdapter: DichVuAdapter
-    private lateinit var dichVuViewModel: DichVuViewModel
     private lateinit var thongTinAdapter: ThongTinAdapter
     private lateinit var thongTinViewModel: ThongTinViewModel
     private lateinit var loaiPhongAdapter: LoaiPhongAdapter
@@ -71,19 +70,17 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
     private lateinit var gioitinhAdapter: GioiTinhAdapter
     private lateinit var viewModel: RoomDetailViewModel
 
+    private lateinit var phiDichVuAdapter: PhiDichVuAdapter
+
 
     private var listPhiDichVu = mutableListOf<PhiDichVu>()
     private var listTT= mutableListOf<ThongTin>()
-    val listDichVu: List<DichVu> = mutableListOf()
 
     // Khai bao bien luu tru du lieu thong tin
     private val pricesMapThongTin = mutableMapOf<String, Pair<ThongTin, Int>>()
 
-
     private lateinit var mAuth: FirebaseAuth
     private lateinit var userId: String
-
-
     // Khai báo list để lưu thông tin dịch vụ và tiện nghi đã chọn
     private val selectedDichVuList = mutableListOf<DichVu>()  // Lưu dịch vụ cùng giá
     private val selectedTienNghiList = mutableListOf<TienNghi>()  // Lưu tiện nghi
@@ -91,25 +88,11 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 
     private lateinit var imageAdapter: ChoiceImageAdapter
     private var mutableUriList: MutableList<Uri> = mutableListOf()
-
-    var city = ""
-    var district = ""
-    var ward = ""
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
-    var addressDetail = ""
-    var fullAddressct = ""
-    var fullAddressDeltail = ""
     var Ma_loaiphong = ""
     var Ma_gioiTinh = ""
-    var TrangThaiPhong = false
 
     //Phí thông tin
     var tendichvu = ""
-    var giadichvu = 0
-    var icondichvu = ""
-    var donvidv = ""
-    var soluongdv = 0
 
 
     private lateinit var loadingAnimation: LottieAnimationView
@@ -123,22 +106,10 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         binding = ActivityUpdateRoomBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        // Lấy dữ liệu từ Intent
-//        val maPhongTro = intent.getStringExtra("id_PhongTro")
-//        viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
-//        //đây là các model lấy dữ liệu của tôi
-//        if (maPhongTro != null) {
-//            viewModel.fetchRoomDetail(maPhongTro)
-//            observeViewModel()
-//        }
 
-//        thongTinAdapter = ThongTinAdapter(this, listTT, this)
-        //lấy dữ liệu từ viewModel
-//        val updateRoomModel  = intent.getParcelableExtra<UpdateRoomModel>("updateRoomModel")
-//        Log.d("UpdateRoomModel", "UpdateRoomModel: $updateRoomModel")
+        val maPhongTro = "68dNr0UV4fMRtq9Fhgrt"
 
-        // Populate basic room details
-
+//
         //a
         firestore = FirebaseFirestore.getInstance()
 
@@ -173,74 +144,21 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         // Khởi tạo ViewModel
         noiThatViewModel = ViewModelProvider(this).get(NoiThatViewModel::class.java)
         tienNghiViewModel = ViewModelProvider(this).get(TienNghiViewModel::class.java)
-        dichVuViewModel = ViewModelProvider(this).get(DichVuViewModel::class.java)
         thongTinViewModel = ViewModelProvider(this).get(ThongTinViewModel::class.java)
         loaiPhongViewModel = ViewModelProvider(this).get(LoaiPhongViewModel::class.java)
         gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
 
-//        updateRoomModel?.let { model ->
-//
-//            Log.d("UpdateRoomModel", "UpdateRoomModel bảng chi tiéte thông tin: ${model.Chi_tietthongtin}")
-//
-//            // Set room name
-//            binding.roomName.setText(model.Ten_phongtro)
-//
-//            // Set room price
-//            binding.roomPrice.setText(model.Gia_phong.toString())
-//
-//            // Set description
-//            binding.description.setText(model.Chi_tietthem)
-//
-//            // Set address
-//            binding.roomAddress.setText(model.Dia_chi)
-//
-//            // Populate images
-//            if (model.Url_image.isNotEmpty()) {
-//                val uriList = model.Url_image.map { Uri.parse(it) }
-//                displaySelectedImages(uriList)
-//            }
-//
-//            val listThongtin = thongTinViewModel.getListThongTin().value ?: mutableListOf() // Xử lý null
-////            val existingChiTietList = model.Chi_tietthongtin.map { detail ->
-////                ChiTietThongTinModel(ten_thongtin = detail.ten_thongtin, so_luong_donvi = detail.so_luong_donvi)
-////            }
-//
-//
-////            // Select room type
-////            loaiPhongAdapter.selectByName(model.Loai_phong)
-////
-////            // Select gender type
-////            gioitinhAdapter.selectByName(model.Gioi_tinh)
-////
-////            // Populate Additional Information (Chi_tietthongtin)
-////            model.Chi_tietthongtin.forEach { detail ->
-//////                Log.d("UpdateRoomModel", "Detail: ten_thongtin = ${detail.ten_thongtin}, so_luong_donvi = ${detail.so_luong_donvi}")
-//////                thongTinAdapter.selectItemByName(detail.ten_thongtin, detail.so_luong_donvi)
-////
-////
-////
-////            }
-//
-////
-////            // Populate Services (Dich_vu)
-////            model.Dich_vu.forEach { service ->
-////                DichVuAdapter.selectItemByName(service.ten_dichvu, service.so_tien)
-////            }
-////
-////            // Populate Furniture (Noi_that)
-////            model.Noi_that.forEach { furniture ->
-////                noiThatAdapter.selectItemByName(furniture.Ten_noithat)
-////            }
-////
-////            // Populate Amenities (Tien_nghi)
-////            model.Tien_nghi.forEach { amenity ->
-////                TienNghiAdapter.selectItemByName(amenity.Ten_tiennghi)
-////            }
-//        }
+        viewModel = ViewModelProvider(this).get(RoomDetailViewModel::class.java)
 
+//
 
-        //lấy mã người dùng từ mAuth
-
+        // Khởi tạo RecyclerView và adapter như bình thường
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+        noiThatAdapter = NoiThatAdapter(this, emptyList(), this)
+        binding.recyclerView.adapter = noiThatAdapter
+        // Load tất cả dữ liệu
+        loadRoomData(maPhongTro)
+        loadSelectedNoiThat(maPhongTro)
 
         binding.addImage.setOnClickListener {
             TedImagePicker.with(this)
@@ -263,26 +181,12 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 //        // định dạng số tiền nhập vào
         CurrencyFormatTextWatcher.addTo(binding.roomPrice)
 
-//        // Logic khi nhấn nút "Lưu"
-//        binding.addRoomButton.setOnClickListener {
-//            TrangThaiPhong = false
-//            // Gọi hàm lưu phòng với trạng thái là "Lưu"
-//            saveRoomToFirestore(isSaved = true, trangThaiPhong = TrangThaiPhong)
-//        }
-
         // Handling Image Picker (Existing functionality for image selection)
         binding.addImage.setOnClickListener {
             TedImagePicker.with(this)
                 .startMultiImage { uriList ->
                     displaySelectedImages(uriList)
                 }
-        }
-        // Inside your fragment or activity
-        binding.fabAddDichVu.setOnClickListener {
-            DichVuAddServiceUtil.showAddServiceDialog(this@UpdateRoomActivity) { newDichVu ->
-                // Directly call the method in your adapter to add the service
-                DichVuAdapter.addDichVu(newDichVu)
-            }
         }
 
         // Quan sát LiveData từ ViewModel
@@ -309,20 +213,9 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
             }
         })
 
-        dichVuViewModel.getListDichVu().observe(this, Observer { dichVuList ->
-            if (dichVuList != null && dichVuList.isNotEmpty()) {
-                // Nếu adapter đã tồn tại, chỉ cập nhật list
-                if (::DichVuAdapter.isInitialized) {
-                    DichVuAdapter.updateList(dichVuList)
-                } else {
-                    // Nếu chưa có adapter thì tạo mới
-                    DichVuAdapter = DichVuAdapter(this, dichVuList, this)
-                    binding.listViewDichVu.adapter = DichVuAdapter
-                }
-            } else {
-                Toast.makeText(this, "Không có dữ liệu", Toast.LENGTH_SHORT).show()
-            }
-        })
+
+
+
 
         thongTinViewModel.getListThongTin().observe(this, Observer { thongTinList ->
             if (thongTinList != null && thongTinList.isNotEmpty()) {
@@ -360,11 +253,9 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
         })
     }
 
+    // Thay thế phương thức onAllPricesEntered
     override fun onAllPricesEntered(prices: List<PhiDichVu>) {
-        // Lưu toàn bộ danh sách vào biến
-        listPhiDichVu = prices.toMutableList()
-        Log.d("PhiDichVu", "Số lượng dịch vụ: ${listPhiDichVu.size}")
-        soluongdv = listPhiDichVu.size
+        // Trong trường hợp này không cần xử lý thêm vì đã xử lý trong observer
     }
 
     override fun onThongTinimfor(prices: List<Pair<ThongTin, Int>>) {
@@ -426,186 +317,66 @@ class UpdateRoomActivity : AppCompatActivity(), AdapterTaoPhongTroEnteredListenn
 
     }
 
-//    private fun observeViewModel() {
-////        Quan sat chi tiet phong tro chinh
-//        viewModel.room.observe(this) { room ->
-//            binding.roomName.setText(room.Ten_phongtro)
-//            binding.roomPrice.setText(room.Gia_phong.toString())
-//            binding.description.setText(room.Mota_chitiet)
-//            binding.roomAddress.setText(room.Dia_chi)
-//            gioitinhAdapter.selectById(room.Ma_gioiTinh)
-//        }
-//    }
-
-    private fun saveRoomDataToFirestore(
-        roomName: String,
-        roomPrice: Int,
-        description: String,
-        imageUrls: List<String>,
-        Trang_thailuu: Boolean,
-        Trang_thaiduyet: String,
-        ThoiGian_taophong: Long,
-        Ngay_capnhat: Long,
-        So_luotxemphong: Int,
-        isSaved: Boolean,
-        trangThaiPhong: Boolean
-    ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-
-                // Chuẩn bị dữ liệu để lưu vào Firestore
-                val roomData = hashMapOf(
-                    "Ten_phongtro" to roomName,
-                    "Gia_phong" to roomPrice,
-                    "Mota_chitiet" to description,
-                    "maNguoiDung" to userId,
-                    "Dia_chi" to fullAddressct,
-                    "Dia_chichitiet" to fullAddressDeltail,
-                    "Trang_thaidc" to false,
-                    "Ma_loaiphong" to Ma_loaiphong,
-                    "Ma_gioiTinh" to Ma_gioiTinh,
-                    "Trang_thailuu" to Trang_thailuu,
-                    "Trang_thaiduyet" to Trang_thaiduyet,
-                    "ThoiGian_taophong" to ThoiGian_taophong,
-                    "Ngay_capnhat" to Ngay_capnhat,
-                    "So_luotxemphong" to So_luotxemphong,
-                    "imageUrls" to imageUrls,
-                    "Trang_thaiphong" to trangThaiPhong,
-                    "Trang_thaidc" to true
-                )
 
 
-                // Lưu phòng trọ
-                val roomTask = firestore.collection("PhongTro").add(roomData).await()
-                val maPhongTro = roomTask.id
+    private fun loadRoomData(maPhongTro: String) {
+        // 1. Load thông tin cơ bản của phòng
+        firestore.collection("PhongTro").document(maPhongTro)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null) {
+                    // Điền thông tin cơ bản
+                    binding.roomName.setText(document.getString("tenPhongTro"))
+                    // Format giá phòng với CurrencyFormatTextWatcher
+                    val giaPhong = document.getLong("giaPhong")?.toString() ?: "0"
+                    binding.roomPrice.setText(giaPhong)
+                    binding.description.setText(document.getString("moTaChiTiet"))
 
-                // Lưu tiện nghi, nội thất, dịch vụ
-                saveTienNghiToFirestore(maPhongTro, selectedTienNghiList)
-                saveNoiThatToFirestore(maPhongTro, selectedNoiThatList)
-                savePhiDichVuToFirestore(maPhongTro)
-                savePhiThongTinToFirestore(maPhongTro)
+                    // Lưu các giá trị khác
+                    Ma_loaiphong = document.getString("maLoaiNhaTro") ?: ""
+                    Ma_gioiTinh = document.getString("maGioiTinh") ?: ""
 
-                withContext(Dispatchers.Main) {
-                    // Ẩn loadingAnimation và hiển thị completionAnimation sau khi lưu thành công
-                    loadingAnimation.visibility = View.GONE
-                    completionAnimation.setAnimation("done.json")
-                    completionAnimation.visibility = View.VISIBLE
-                    completionAnimation.playAnimation()
-
-                    // Sau khi animation hoàn thành trong 2 giây
-                    completionAnimation.postDelayed({
-                        completionAnimation.visibility = View.GONE
-
-                        // Toast thông báo thành công
-                        Toast.makeText(
-                            this@UpdateRoomActivity,
-                            "Tất cả dữ liệu đã được lưu thành công!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-
-                        // Điều hướng sau khi lưu thành công
-                        val intent =
-                            Intent(this@UpdateRoomActivity, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
-                        finish()
-
-                    }, 2000) // Thời gian delay 2 giây
-                }
-
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    loadingAnimation.visibility = View.GONE
-                    Toast.makeText(
-                        this@UpdateRoomActivity,
-                        "Lỗi khi lưu dữ liệu: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    // Load ảnh cũ
+                    val imageUrls = document.get("imageUrls") as? List<String> ?: listOf()
+                    loadExistingImages(imageUrls)
                 }
             }
-        }
     }
 
-    fun saveTienNghiToFirestore(
-        maPhongTro: String,
-        selectedTienNghi: List<TienNghi>,
-    ) {
-        for (tienNghi in selectedTienNghi) {
-            val phongTroTienNghi = PhongTroTienNghi(
-                maPhongTro = maPhongTro,
-                maTienNghi = tienNghi.maTienNghi.toString()
-            )
-
-            firestore.collection("PhongTroTienNghi").add(phongTroTienNghi)
-                .addOnSuccessListener {
-                }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
-                }
+    // Hàm load ảnh cũ
+    private fun loadExistingImages(imageUrls: List<String>) {
+        // Tạo danh sách Uri từ URLs
+        val uris = imageUrls.map { url ->
+            Uri.parse(url)
         }
+        // Hiển thị ảnh trong RecyclerView
+        displaySelectedImages(uris)
     }
-
-    fun saveNoiThatToFirestore(
-        maPhongTro: String,
-        selectedNoiThat: List<NoiThat>,
-    ) {
-        for (noithat in selectedNoiThat) {
-            val phongTroNoiThat = PhongTroNoiThat(
-                maPhongTro = maPhongTro,
-                maNoiThat = noithat.maNoiThat.toString()
-            )
-
-            firestore.collection("PhongTroNoiThat").add(phongTroNoiThat)
-                .addOnSuccessListener {
+    private fun loadSelectedNoiThat(maPhongTro: String) {
+        // 1. Trước tiên load tất cả nội thất
+        firestore.collection("NoiThat").get()
+            .addOnSuccessListener { noiThatDocs ->
+                val allNoiThat = noiThatDocs.mapNotNull { doc ->
+                    doc.toObject(NoiThat::class.java)
                 }
-                .addOnFailureListener { e ->
-                    Log.e("Firestore", "Lỗi khi lưu tiện nghi: ${e.message}")
-                }
-        }
+
+                // 2. Sau đó load danh sách nội thất đã chọn của phòng này
+                firestore.collection("PhongTroNoiThat")
+                    .whereEqualTo("maPhongTro", maPhongTro)
+                    .get()
+                    .addOnSuccessListener { selectedDocs ->
+                        // Lấy danh sách mã nội thất đã chọn
+                        val selectedIds = selectedDocs.mapNotNull { it.getString("maNoiThat") }
+
+                        // Tạo adapter mới với danh sách đầy đủ và các items đã chọn
+                        noiThatAdapter = NoiThatAdapter(
+                            context = this,
+                            noiThatList = allNoiThat,
+                            listener = this,
+                            selectedItems = selectedIds.toMutableSet()
+                        )
+                        binding.recyclerView.adapter = noiThatAdapter
+                    }
+            }
     }
-
-    fun savePhiDichVuToFirestore(maPhongTro: String) {
-        // Sử dụng listPhiDichVu đã lưu
-        listPhiDichVu.forEach { phiDichVu ->
-            // Tạo một bản copy với mã phòng trọ mới
-            val newPhiDichVu = phiDichVu.copy(maPhongTro = maPhongTro)
-
-            firestore.collection("PhiDichVu")
-                .add(newPhiDichVu)
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Thêm phí dịch vụ thành công")
-                }
-                .addOnFailureListener { exception ->
-                    Log.e("Firestore", "Lỗi khi thêm phí dịch vụ", exception)
-                }
-        }
-    }
-
-    fun savePhiThongTinToFirestore(maPhongTro: String) {
-        val totalTasks = pricesMapThongTin.size
-
-        pricesMapThongTin.forEach { (maThongTin, pair) ->
-            val thongtin = pair.first
-            val price = pair.second
-
-            val phiThongTin = ChiTietThongTin(
-                soLuongDonVi = price,
-                maPhongTro = maPhongTro,
-                tenThongTin = thongtin.tenThongTin,
-                iconThongTin = thongtin.iconThongTin,
-                donVi = thongtin.donVi
-            )
-
-            firestore.collection("ChiTietThongTin")
-                .add(phiThongTin)
-                .addOnSuccessListener {
-
-                }
-                .addOnFailureListener { exception ->
-                }
-        }
-        Log.d("PhiThongTin", "Tổng số tasks: $totalTasks")
-    }
-
-    //đẻ code nãy cất ở dưới này
-
 }

@@ -108,26 +108,42 @@ class HomeFragment : Fragment() {
         binding.viewLocationSearch.searchLayout.tap {
             startActivity(Intent(requireContext(), SearchActivity::class.java))
         }
+//        binding.viewLocationSearch.locationLayout.tap {
+//            // Tạo PopupMenu
+//            val popupMenu = PopupMenu(requireContext(), binding.viewLocationSearch.locationLayout)
+//
+//            // Thêm các item vào PopupMenu
+//            popupMenu.menu.add("Hà Nội")
+//            popupMenu.menu.add("Hồ Chí Minh")
+//
+//            popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+//                when (item.title) {
+//                    "Hà Nội" -> {
+//
+//                    }
+//
+//                    "Hồ Chí Minh" -> {
+//
+//                    }
+//
+//                }
+//
+//                true
+//            }
+//            popupMenu.show()
+//        }
         binding.viewLocationSearch.locationLayout.tap {
-            // Tạo PopupMenu
             val popupMenu = PopupMenu(requireContext(), binding.viewLocationSearch.locationLayout)
 
             // Thêm các item vào PopupMenu
+            popupMenu.menu.add("Tất Cả")
             popupMenu.menu.add("Hà Nội")
             popupMenu.menu.add("Hồ Chí Minh")
 
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
-                when (item.title) {
-                    "Hà Nội" -> {
-
-                    }
-
-                    "Hồ Chí Minh" -> {
-
-                    }
-
-                }
-
+                // Cập nhật location được chọn trong ViewModel
+                homeViewModel.updateSelectedLocation(item.title.toString())
+                binding.viewLocationSearch.currentLocationTv.text = item.title
                 true
             }
             popupMenu.show()
