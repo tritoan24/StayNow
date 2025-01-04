@@ -1,7 +1,9 @@
 package com.ph32395.staynow_datn.hieunt.model
 
+import androidx.room.Entity
 import java.io.Serializable
 
+@Entity
 data class ScheduleRoomModel(
     var maDatPhong: String = "",
     var maPhongTro: String = "",
@@ -17,5 +19,6 @@ data class ScheduleRoomModel(
     var thoiGianDatPhong: String = "",
     var ghiChu: String = "",
     var trangThaiDatPhong: Int = 0,
-    var thayDoiBoiChuTro: Boolean = false
+    var soLanDatPhong: Int = 0,
+    var thayDoiBoiChuTro: Boolean = false,
 ) : Serializable

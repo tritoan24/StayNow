@@ -5,11 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ph32395.staynow_datn.hieunt.database.dao.NotificationDao
+import com.ph32395.staynow_datn.hieunt.database.dao.ScheduleRoomDao
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
+import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
 
 @Database(
-    entities = [NotificationModel::class],
-    version = 7,
+    entities = [NotificationModel::class, ScheduleRoomModel::class],
+    version = 8,
     exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {
@@ -40,5 +42,6 @@ abstract class AppDatabase: RoomDatabase() {
     }
 
     abstract fun notificationDao(): NotificationDao
+    abstract fun scheduleDao(): ScheduleRoomDao
 
 }
