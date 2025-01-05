@@ -67,16 +67,6 @@ class HomeNguoiChoThueFragment : Fragment() {
         binding.fNotification.setOnClickListener {
             startActivity(Intent(context, NotificationActivity::class.java))
         }
-        // Quan sát số lượng thông báo chưa đọc
-//        notificationViewModel.unreadCount.observe(viewLifecycleOwner) { count ->
-//            if (count > 0) {
-//                binding.notificationBadge.text = count.toString()
-//                binding.notificationBadge.visibility = View.VISIBLE
-//            } else {
-//                binding.notificationBadge.visibility = View.GONE
-//            }
-//        }
-
 
 //        Khoi tao recyclerView
         setupRecyclerView()
