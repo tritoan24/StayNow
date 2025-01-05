@@ -31,7 +31,6 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.ROOM_SCHEDULE
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
-import com.ph32395.staynow_datn.hieunt.view.feature.ScheduleRoomSuccessActivity
 import com.ph32395.staynow_datn.hieunt.view_model.CommonVM
 import com.ph32395.staynow_datn.hieunt.widget.currentBundle
 import com.ph32395.staynow_datn.hieunt.widget.getTextEx
@@ -104,11 +103,12 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             }
             tvConfirm.tap {
                 if (AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().checkRoomExist(roomIdInDetail)) {
+                    showLoading()
                     val scheduleRoom = AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().getRoomScheduleRoomId(roomIdInDetail)
                     if (scheduleRoom == null) {
                         toast("Không lấy được thông tin phòng")
+                        dismissLoading()
                     } else {
-                        showLoading()
                         getScheduleRoomFromFireStore(scheduleRoom.maDatPhong) { isCompletion, scheduleRoomModel ->
                             lifecycleScope.launch {
                                 if (isCompletion) {
@@ -140,7 +140,6 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                                                 }
                                                 addScheduleRoomToFireStore(scheduleNew) { isCompletion, scheduleModelWithId ->
                                                     lifecycleScope.launch(Dispatchers.Main) {
-                                                        dismissLoading()
                                                         if (isCompletion) {
                                                             AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().updateSchedule(
                                                                     scheduleModelWithId.copy(soLanDatPhong = scheduleModelWithId.soLanDatPhong + 1

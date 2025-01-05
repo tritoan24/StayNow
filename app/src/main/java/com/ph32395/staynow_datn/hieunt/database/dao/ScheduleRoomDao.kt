@@ -1,11 +1,13 @@
 package com.ph32395.staynow_datn.hieunt.database.dao
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
 
+@Dao
 interface ScheduleRoomDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSchedule(model: ScheduleRoomModel)

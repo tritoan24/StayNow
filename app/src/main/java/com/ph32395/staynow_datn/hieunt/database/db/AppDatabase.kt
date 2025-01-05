@@ -11,7 +11,7 @@ import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
 
 @Database(
     entities = [NotificationModel::class, ScheduleRoomModel::class],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {
