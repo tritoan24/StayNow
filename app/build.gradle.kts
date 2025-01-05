@@ -73,6 +73,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
     implementation ("com.google.firebase:firebase-firestore")
+    implementation (platform("com.google.firebase:firebase-bom:32.0.0")) // Hoặc phiên bản mới nhất
     implementation ("com.google.firebase:firebase-dynamic-links")
 
     implementation("androidx.viewpager2:viewpager2:1.0.0")

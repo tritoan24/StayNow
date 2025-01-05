@@ -148,6 +148,8 @@ class RoomDetailActivity : AppCompatActivity() {
                 Log.e("RoomDetailActivity", "Error retrieving dynamic link", e)
             }
 
+
+
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
             val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
             // Lấy dữ liệu từ Firebase Realtime Database
@@ -208,8 +210,8 @@ class RoomDetailActivity : AppCompatActivity() {
                 intent.putExtra("idUser", maNguoiDung)
 
                 // Tạo dynamic link
-                val roomDetailLink = "https://Staynowapp.com/roomDetail/Product?roomType=${maPhongTro}"
-                createDynamicLink(roomDetailLink) { dynamicLink ->
+                val roomDetailLink = "https://Staynowapp.com/roomDetail/Product?roomType=${maPhongTro}&utm_source=messenger"
+                createShortDynamicLink(roomDetailLink) { dynamicLink ->
                     shareLink(dynamicLink)
                 }
             }
@@ -304,27 +306,23 @@ class RoomDetailActivity : AppCompatActivity() {
         // Hiển thị các ứng dụng có thể chia sẻ link
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"))
     }
-
-    private fun createDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
-        val dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-            .setLink(Uri.parse(roomDetailLink)) // Liên kết đích
-            .setDomainUriPrefix("https://staynow.page.link") // Miền Dynamic Link
+    private fun createShortDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLink(Uri.parse(roomDetailLink))
+            .setDomainUriPrefix("https://staynow.page.link")
             .setAndroidParameters(
-                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow_datn") // Tên gói Android
-                    .setFallbackUrl(Uri.parse("https://fallback.url")) // URL dự phòng
+                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow_datn")
                     .build()
             )
-            .setSocialMetaTagParameters(
-                DynamicLink.SocialMetaTagParameters.Builder()
-                    .setTitle("Chi tiết phòng trọ") // Tiêu đề của liên kết
-                    .setDescription("Xem phòng trọ chi tiết tại StayNow") // Mô tả
-                    .setImageUrl(Uri.parse("https://link.to/image.png")) // Ảnh minh họa
-                    .build()
-            )
-            .buildDynamicLink()
-
-        onComplete(dynamicLink.uri.toString())
+            .buildShortDynamicLink()
+            .addOnSuccessListener { shortDynamicLink ->
+                onComplete(shortDynamicLink.shortLink.toString())
+            }
+            .addOnFailureListener { e ->
+                Log.e("DynamicLinkError", "Error creating short link", e)
+            }
     }
+
 
     //    Danh sacch thng tin chi tiet
     private fun setupRecyclerView() {
