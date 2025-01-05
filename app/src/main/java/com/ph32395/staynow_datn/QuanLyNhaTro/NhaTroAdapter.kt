@@ -1,19 +1,24 @@
 package com.ph32395.staynow_datn.QuanLyNhaTro
 
 import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.databinding.DialogMsgNhaTroNhaBinding
 import com.ph32395.staynow_datn.databinding.ItemNhaTroNhaBinding
+import com.techiness.progressdialoglibrary.ProgressDialog
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -25,6 +30,7 @@ class NhaTroAdapter(
     private lateinit var binding: ItemNhaTroNhaBinding
     private val firestore = FirebaseFirestore.getInstance()
     private val nhaTroRef = firestore.collection("NhaTro")
+    private val phongTroRef = firestore.collection("PhongTro")
     private val TAG = "ZZNhaTroAdapterZZ"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NhaTroAdapterViewHolder {
@@ -38,6 +44,7 @@ class NhaTroAdapter(
         return listNhaTro.size
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: NhaTroAdapterViewHolder, position: Int) {
         val item = listNhaTro[position]
 
@@ -74,35 +81,236 @@ class NhaTroAdapter(
                 .show()
             true
         }
+
         holder.btnOnAndOf.setOnClickListener {
+            val progressDialog = ProgressDialog(holder.itemView.context)
+            with(progressDialog) {
+                theme = ProgressDialog.THEME_DARK
+            }
             if (item.trangThai) {
                 Log.e(TAG, "onBindViewHolder: nut ngung hoat dong toa nha")
-                nhaTroRef.document(userId!!)
-                    .collection("DanhSachNhaTro")
-                    .document(item.maNhaTro) // ID của tài liệu nhà trọ cần cập nhật
-                    .update("trangThai", false) // Cập nhật trường 'trangThai' thành true
-                    .addOnSuccessListener {
-                        Log.d("Firestore", "Successfully updated trạng thái")
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.e("Firestore", "Error updating trạng thái", exception)
-                    }
 
+                val dialog = Dialog(holder.itemView.context)
+                val binding2 =
+                    DialogMsgNhaTroNhaBinding.inflate(LayoutInflater.from(holder.itemView.context))
+                dialog.setContentView(binding2.root)
+
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                // Lấy `LayoutParams` và đặt `margin`
+                val layoutParams = dialog.window?.attributes
+                layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT // Đặt chiều rộng
+                dialog.window?.attributes = layoutParams
+
+                // Thêm margin vào nội dung chính của `Dialog`
+                val dialogLayoutParams = binding2.root.layoutParams as ViewGroup.MarginLayoutParams
+                dialogLayoutParams.setMargins(
+                    32,
+                    0,
+                    32,
+                    0
+                ) // Điều chỉnh margin (trái, trên, phải, dưới)
+                binding2.root.layoutParams = dialogLayoutParams
+
+                binding2.cbRead.setOnCheckedChangeListener { buttonView, isChecked ->
+                    Log.e(TAG, "onBindViewHolder: isChecked $isChecked")
+                    // Vô hiệu hóa hoặc kích hoạt nút btnConfirm
+                    binding2.btnConfirm.isEnabled = isChecked
+                    // Thay đổi màu nền dựa trên trạng thái
+                    if (!isChecked) {
+                        binding2.btnConfirm.setBackgroundColor(
+                            ContextCompat.getColor(
+                                holder.itemView.context,
+                                R.color.gray
+                            )
+                        )
+                    } else {
+                        binding2.btnConfirm.setBackgroundColor(
+                            ContextCompat.getColor(
+                                holder.itemView.context,
+                                R.color.my_light_primary
+                            )
+                        )
+
+                    }
+                }
+
+
+                binding2.btnConfirm.setOnClickListener {
+                    if (userId != null) {
+                        changeRoomOf(userId, item,dialog,progressDialog)
+                        Log.d(TAG, "onBindViewHolder: 1")
+                    }
+                }
+
+                binding2.btnNotConfirm.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.show()
             } else {
                 Log.e(TAG, "onBindViewHolder: nut hoat dong toa nha lai")
-                nhaTroRef.document(userId!!)
-                    .collection("DanhSachNhaTro")
-                    .document(item.maNhaTro) // ID của tài liệu nhà trọ cần cập nhật
-                    .update("trangThai", true) // Cập nhật trường 'trangThai' thành true
-                    .addOnSuccessListener {
-                        Log.d("Firestore", "Successfully updated trạng thái")
+                val dialog = Dialog(holder.itemView.context)
+                val binding2 =
+                    DialogMsgNhaTroNhaBinding.inflate(LayoutInflater.from(holder.itemView.context))
+                dialog.setContentView(binding2.root)
+
+                dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                // Lấy `LayoutParams` và đặt `margin`
+                val layoutParams = dialog.window?.attributes
+                layoutParams?.width = ViewGroup.LayoutParams.MATCH_PARENT // Đặt chiều rộng
+                dialog.window?.attributes = layoutParams
+
+                // Thêm margin vào nội dung chính của `Dialog`
+                val dialogLayoutParams = binding2.root.layoutParams as ViewGroup.MarginLayoutParams
+                dialogLayoutParams.setMargins(
+                    32,
+                    0,
+                    32,
+                    0
+                ) // Điều chỉnh margin (trái, trên, phải, dưới)
+                binding2.root.layoutParams = dialogLayoutParams
+
+                binding2.cbRead.setOnCheckedChangeListener { buttonView, isChecked ->
+                    Log.e(TAG, "onBindViewHolder: isChecked $isChecked")
+                    // Vô hiệu hóa hoặc kích hoạt nút btnConfirm
+                    binding2.btnConfirm.isEnabled = isChecked
+                    // Thay đổi màu nền dựa trên trạng thái
+                    if (!isChecked) {
+                        binding2.btnConfirm.setBackgroundColor(
+                            ContextCompat.getColor(
+                                holder.itemView.context,
+                                R.color.gray
+                            )
+                        )
+                    } else {
+                        binding2.btnConfirm.setBackgroundColor(
+                            ContextCompat.getColor(
+                                holder.itemView.context,
+                                R.color.my_light_primary
+                            )
+                        )
+
                     }
-                    .addOnFailureListener { exception ->
-                        Log.e("Firestore", "Error updating trạng thái", exception)
+                }
+
+                binding2.btnConfirm.setOnClickListener {
+                    if (userId != null){
+                        changeRoomOn(userId, item,dialog,progressDialog)
                     }
+                }
+
+                binding2.btnNotConfirm.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.show()
             }
         }
 
+    }
+
+    private fun changeRoomOn(
+        userId: String,
+        item: NhaTroModel,
+        dialog: Dialog,
+        progressDialog: ProgressDialog
+    ) {
+        progressDialog.show()
+        nhaTroRef.document(userId)
+            .collection("DanhSachNhaTro")
+            .document(item.maNhaTro) // ID của tài liệu nhà trọ cần cập nhật
+            .update("trangThai", true) // Cập nhật trường 'trangThai' thành true
+            .addOnSuccessListener {
+                Log.d(TAG, "Successfully updated trạng thái")
+                dialog.dismiss()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error updating trạng thái", exception)
+                progressDialog.dismiss()
+            }
+            .addOnCompleteListener {
+                progressDialog.dismiss()
+            }
+        phongTroRef.whereEqualTo("maNguoiDung", userId)
+            .whereEqualTo("maNhaTro", item.maNhaTro)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val docId = document.id // Lấy document ID
+                    phongTroRef.document(docId)
+                        .update(
+                            "trangThaiLuu", true,
+                            "trangThaiDuyet", ""
+                        )
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Cập nhật thành công: $docId")
+                            dialog.dismiss()
+                        }
+                        .addOnFailureListener {
+                            Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "onBindViewHolder: ${it.message.toString()}")
+            }
+            .addOnCompleteListener {
+                progressDialog.dismiss()
+
+            }
+
+    }
+
+    private fun changeRoomOf(
+        userId: String,
+        item: NhaTroModel,
+        dialog: Dialog,
+        progressDialog: ProgressDialog
+    ) {
+        progressDialog.show()
+        nhaTroRef.document(userId)
+            .collection("DanhSachNhaTro")
+            .document(item.maNhaTro) // ID của tài liệu nhà trọ cần cập nhật
+            .update("trangThai", false) // Cập nhật trường 'trangThai' thành true
+            .addOnSuccessListener {
+                Log.d(TAG, "Successfully updated trạng thái")
+                dialog.dismiss()
+            }
+            .addOnFailureListener { exception ->
+                Log.e(TAG, "Error updating trạng thái", exception)
+                progressDialog.dismiss()
+            }
+            .addOnCompleteListener {
+                progressDialog.dismiss()
+
+            }
+        phongTroRef.whereEqualTo("maNguoiDung", userId)
+            .whereEqualTo("maNhaTro", item.maNhaTro)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val docId = document.id // Lấy document ID
+                    phongTroRef.document(docId)
+                        .update(
+                            "trangThaiLuu", true,
+                            "trangThaiDuyet", ""
+                        )
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Cập nhật thành công: $docId")
+                            dialog.dismiss()
+                        }
+                        .addOnFailureListener {
+                            Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "onBindViewHolder: ${it.message.toString()}")
+                progressDialog.dismiss()
+            }
+            .addOnCompleteListener {
+                progressDialog.dismiss()
+            }
     }
 
     class NhaTroAdapterViewHolder(itemView: ItemNhaTroNhaBinding) :
