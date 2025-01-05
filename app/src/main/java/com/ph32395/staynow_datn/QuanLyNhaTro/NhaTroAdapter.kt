@@ -2,6 +2,7 @@ package com.ph32395.staynow_datn.QuanLyNhaTro
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.ItemNhaTroNhaBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -72,19 +74,56 @@ class NhaTroAdapter(
                 .show()
             true
         }
+        holder.btnOnAndOf.setOnClickListener {
+            if (item.trangThai) {
+                Log.e(TAG, "onBindViewHolder: nut ngung hoat dong toa nha")
+                nhaTroRef.document(userId!!)
+                    .collection("DanhSachNhaTro")
+                    .document(item.maNhaTro) // ID của tài liệu nhà trọ cần cập nhật
+                    .update("trangThai", false) // Cập nhật trường 'trangThai' thành true
+                    .addOnSuccessListener {
+                        Log.d("Firestore", "Successfully updated trạng thái")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("Firestore", "Error updating trạng thái", exception)
+                    }
+
+            } else {
+                Log.e(TAG, "onBindViewHolder: nut hoat dong toa nha lai")
+                nhaTroRef.document(userId!!)
+                    .collection("DanhSachNhaTro")
+                    .document(item.maNhaTro) // ID của tài liệu nhà trọ cần cập nhật
+                    .update("trangThai", true) // Cập nhật trường 'trangThai' thành true
+                    .addOnSuccessListener {
+                        Log.d("Firestore", "Successfully updated trạng thái")
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e("Firestore", "Error updating trạng thái", exception)
+                    }
+            }
+        }
 
     }
 
     class NhaTroAdapterViewHolder(itemView: ItemNhaTroNhaBinding) :
         RecyclerView.ViewHolder(itemView.root) {
         val btnEdit = itemView.btnEdit
+        val btnOnAndOf = itemView.btnNgungHoatDongAndHoatDong
 
         @SuppressLint("SetTextI18n")
         fun bin(item: NhaTroModel, itemView: ItemNhaTroNhaBinding) {
             itemView.tvTenNhaTro.text = item.tenNhaTro
             itemView.tvDiaChi.text = item.diaChiChiTiet
             itemView.tvTenLoaiNhaTro.text = item.tenLoaiNhaTro
+            itemView.tvTrangThai.text = if (item.trangThai) "Hoạt động" else "Ngừng hoạt động"
+
+            if (item.trangThai) itemView.tvTrangThai.setTextColor(Color.GREEN)
+            else itemView.tvTrangThai.setTextColor(Color.RED)
+
             itemView.tvNgayTao.text = convertTimestampToDate(item.ngayTao)
+
+            if (item.trangThai) itemView.icon.setImageResource(R.drawable.icon_ngung_hoat_dong)
+            else itemView.icon.setImageResource(R.drawable.icon_hoat_dong_lai)
         }
 
         fun convertTimestampToDate(timestamp: Long): String {

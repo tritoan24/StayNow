@@ -10,5 +10,6 @@ data class NhaTroModel(
     val diaChiChiTiet: String = "",
     val tenNhaTro: String = "",
     val tenLoaiNhaTro: String = "",
+    val trangThai: Boolean = true,
     val ngayTao: Long = 0L
 )
