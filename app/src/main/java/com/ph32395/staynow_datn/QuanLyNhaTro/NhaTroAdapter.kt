@@ -53,16 +53,14 @@ class NhaTroAdapter(
         holder.bin(item, binding)
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
+        // Chuyển đến màn hình QuanLyPhongTroActivity khi nhấn vào một tòa nhà
         holder.itemView.setOnClickListener {
-            // Chuyển đến màn hình QuanLyPhongTroActivity khi nhấn vào một tòa nhà
-            holder.itemView.setOnClickListener {
-                val intent = Intent(holder.itemView.context, QuanLyPhongTroActivity::class.java).apply {
-                    putExtra("maNhaTro", item.maNhaTro)
-                }
-                holder.itemView.context.startActivity(intent)
+            val intent = Intent(holder.itemView.context, QuanLyPhongTroActivity::class.java).apply {
+                putExtra("maNhaTro", item.maNhaTro)
             }
-
+            holder.itemView.context.startActivity(intent)
         }
+
         holder.btnEdit.setOnClickListener {
             val bottomSheetCreateAndUpdateNhaTro = BottomSheetCreateAndUpdateNhaTro(item)
             val context = holder.itemView.context
@@ -141,7 +139,7 @@ class NhaTroAdapter(
 
                 binding2.btnConfirm.setOnClickListener {
                     if (userId != null) {
-                        changeRoomOf(userId, item,dialog,progressDialog)
+                        changeRoomOf(userId, item, dialog, progressDialog)
                         Log.d(TAG, "onBindViewHolder: 1")
                     }
                 }
@@ -198,8 +196,8 @@ class NhaTroAdapter(
                 }
 
                 binding2.btnConfirm.setOnClickListener {
-                    if (userId != null){
-                        changeRoomOn(userId, item,dialog,progressDialog)
+                    if (userId != null) {
+                        changeRoomOn(userId, item, dialog, progressDialog)
                     }
                 }
 
