@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -13,6 +14,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.ph32395.staynow_datn.Adapter.ToCaoTaiKhoanAdapter
@@ -26,6 +31,7 @@ class ToCaoTaiKhoan : AppCompatActivity() {
     private lateinit var editTenChuTro: EditText
     private lateinit var editVanDe: EditText
     private lateinit var btnToCao: Button
+    private lateinit var mDatabase: DatabaseReference
 
     private val imageUriList = mutableListOf<Uri>()
     private val firestore = FirebaseFirestore.getInstance()
@@ -54,12 +60,27 @@ class ToCaoTaiKhoan : AppCompatActivity() {
 
         // Nhận userId từ Intent và truy vấn Firestore
         val userId = intent.getStringExtra("idUser")
-        userId?.let {
-            firestore.collection("NguoiDung").document(it).get().addOnSuccessListener { document ->
-                val user = document.toObject<User>()
-                user?.let { editTenChuTro.setText(it.hoTen) }
-            }
+        if (userId != null) {
+            Log.d("ToCaoTaiKhoan", "User ID: $userId")
+            mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val name = snapshot.child("hoTen").value.toString().trim()
+                        editTenChuTro.setText(name.ifEmpty { "Chưa cập nhật" })
+                    } else {
+                        Log.e("ToCaoTaiKhoan", "Người dùng không tồn tại trong cơ sở dữ liệu.")
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("ToCaoTaiKhoan", "Lỗi khi lấy dữ liệu người dùng: ${error.message}")
+                }
+            })
+        } else {
+            Log.e("ToCaoTaiKhoan", "Không có userId trong Intent")
         }
+
 
         // Lưu dữ liệu khi click btnToCao
         btnToCao.setOnClickListener {

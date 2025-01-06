@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
@@ -26,6 +27,7 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
     ): View {
         val view = inflater.inflate(R.layout.activity_thong_bao_to_cao_nguoi_dung, container, false)
 
+        viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
         // Ánh xạ các view từ layout
         checkbox = view.findViewById(R.id.checkQuyenThongBao)
         btnHuyTB = view.findViewById(R.id.btnHuyThongBao)
@@ -46,19 +48,12 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
 
         // Xử lý nút Xác nhận
         btnXacNhanTB.setOnClickListener {
-            // Tạo Intent để chuyển đến ToCaoTaiKhoan
             val intent = Intent(requireContext(), ToCaoTaiKhoan::class.java)
-
-            // Quan sát LiveData từ ViewModel
-            viewModel.userId.observe(viewLifecycleOwner) { (maNguoiDung, hoTen) ->
-                // Truyền dữ liệu qua Intent
-                intent.putExtra("idUser", maNguoiDung)
-                intent.putExtra("hoTen", hoTen) // Truyền hoTen
-
-                // Chỉ thực hiện chuyển màn hình sau khi dữ liệu đã được đặt
-                startActivity(intent)
-                dismiss() // Đóng dialog sau khi chuyển màn hình
+            // Kiểm tra lại cách lấy userId từ ViewModel hoặc các nguồn khác
+            viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
+                intent.putExtra("idUser", maNguoiDung) // Đảm bảo rằng maNguoiDung có giá trị đúng
             }
+            startActivity(intent)
         }
 
 

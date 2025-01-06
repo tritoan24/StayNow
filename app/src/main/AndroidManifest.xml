@@ -140,12 +140,12 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="Staynowapp.com"
-                    android:pathPrefix="/roomDetail/Product"
+                    android:host="staynowapp.com"
+                    android:pathPrefix=""
                     android:scheme="https" />
                 <data
                     android:host="staynow.page.link"
-                    android:pathPrefix="/roomDetail/Product"
+                    android:pathPrefix="/Product"
                     android:scheme="https" />
             </intent-filter>
         </activity>

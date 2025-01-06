@@ -210,7 +210,7 @@ class RoomDetailActivity : AppCompatActivity() {
                 intent.putExtra("idUser", maNguoiDung)
 
                 // Tạo dynamic link
-                val roomDetailLink = "https://Staynowapp.com/roomDetail/Product?roomType=${maPhongTro}&utm_source=messenger"
+                val roomDetailLink = "https://staynowapp.com?roomType=${maPhongTro}&utm_source=messenger"
                 createShortDynamicLink(roomDetailLink) { dynamicLink ->
                     shareLink(dynamicLink)
                 }
