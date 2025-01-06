@@ -138,8 +138,8 @@ class ContractFragment : Fragment() {
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
                 },
-                {
-                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                { contract, reason ->
+                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
                 }
             )
         pendingAdapter =
@@ -150,8 +150,8 @@ class ContractFragment : Fragment() {
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
                 },
-                {
-                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                { contract, reason ->
+                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
                 }
             )
         expiredAdapter =
@@ -161,8 +161,8 @@ class ContractFragment : Fragment() {
                 isLandlord,
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
-                }, {
-                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }, { contract, reason ->
+                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
                 }
             )
         cancelledAdapter =
@@ -173,8 +173,8 @@ class ContractFragment : Fragment() {
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
                 },
-                {
-                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                { contract, reason ->
+                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
                 })
         terminatedAdapter =
             ContractAdapter(
@@ -183,8 +183,8 @@ class ContractFragment : Fragment() {
                 isLandlord,
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
-                }, {
-                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }, { contract, reason ->
+                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
                 }
             )
 
@@ -195,8 +195,8 @@ class ContractFragment : Fragment() {
                 isLandlord,
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
-                }, {
-                    contractViewModel.updateContractTerminationRequest(it.maHopDong)
+                }, { contract, reason ->
+                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
                 }
             )
 

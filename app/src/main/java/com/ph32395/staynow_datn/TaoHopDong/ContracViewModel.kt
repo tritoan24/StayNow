@@ -464,8 +464,8 @@ class ContractViewModel : ViewModel() {
         }
     }
 
-    fun updateContractTerminationRequest(contractId: String) {
-        contractRepository.updateContractTerminationRequest(contractId) { success ->
+    fun updateContractTerminationRequest(contractId: String,reason:String?) {
+        contractRepository.updateContractTerminationRequest(contractId,reason) { success ->
             _updateYCResult.postValue(success)
         }
     }

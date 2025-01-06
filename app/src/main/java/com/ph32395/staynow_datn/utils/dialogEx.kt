@@ -25,3 +25,39 @@ fun showConfirmDialog(
 
     dialog.show()
 }
+fun showReasonInputDialog(
+    context: Context,
+    title: String,
+    hint: String,
+    onReasonEntered: (String) -> Unit
+) {
+    val input = android.widget.EditText(context).apply {
+        this.hint = hint
+        this.setPadding(16, 16, 16, 16)
+        this.background = null // Tùy chỉnh thêm nếu cần
+    }
+
+    val dialog = SweetAlertDialog(context, SweetAlertDialog.NORMAL_TYPE)
+        .setTitleText(title)
+        .setCustomView(input) // Thêm EditText vào dialog
+        .setConfirmText("Xác nhận")
+        .setCancelText("Hủy bỏ")
+        .setConfirmClickListener { sweetAlertDialog ->
+            val reason = input.text.toString().trim()
+            if (reason.isEmpty()) {
+                SweetAlertDialog(context, SweetAlertDialog.ERROR_TYPE)
+                    .setTitleText("Lỗi")
+                    .setContentText("Lý do không được để trống!")
+                    .setConfirmText("Đồng ý")
+                    .show()
+            } else {
+                sweetAlertDialog.dismiss()
+                onReasonEntered(reason) // Callback với lý do
+            }
+        }
+        .setCancelClickListener { sweetAlertDialog ->
+            sweetAlertDialog.dismiss()
+        }
+
+    dialog.show()
+}

@@ -4,14 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -21,12 +24,14 @@ import com.ph32395.staynow_datn.TaoHopDong.ContractStatus
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import com.ph32395.staynow_datn.TaoHopDong.HopDong
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
+import com.ph32395.staynow_datn.TaoHopDong.TerminationStatus
 import com.ph32395.staynow_datn.databinding.ItemContractBinding
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow_datn.hieunt.widget.tap
 import com.ph32395.staynow_datn.utils.showConfirmDialog
+import com.ph32395.staynow_datn.utils.showReasonInputDialog
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
@@ -37,7 +42,7 @@ class ContractAdapter(
     private val type: ContractStatus,
     private val isLandlord: Boolean,
     private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit,
-    private val onRequestTerminate: (HopDong) -> Unit
+    private val onRequestTerminate: (HopDong,String) -> Unit
 ) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
 
@@ -96,7 +101,7 @@ class ContractAdapter(
                     tvRemainingTime.text = calculateRemainingDays(contract.ngayKetThuc)
                     if (!isLandlord) {
                         btnTerminated.visibility = View.VISIBLE
-                        if (contract.yeuCauChamDut) {
+                        if (contract.yeuCauChamDut!=TerminationStatus.NOT_YET) {
                             btnTerminated.visibility = View.GONE
                         }
                     }
@@ -109,16 +114,24 @@ class ContractAdapter(
                         onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
                         updateContractList(contractList)
                     }
+
                     btnTerminated.tap {
-                        showConfirmDialog(
-                            itemView.context,
-                            "Xác nhận yêu cầu",
-                            "Bạn có chắc chắn muốn yêu cầu chấm dứt hợp đồng này không?"
-                        ) {
-                            onRequestTerminate(contract)
-                            notifyTerminatedRequest(itemView.context, contract)
+                        showReasonInputDialog(
+                            context = itemView.context,
+                            title = "Nhập lý do chấm dứt hợp đồng",
+                            hint = "Nhập lý do của bạn"
+                        ) { reason ->
+                            showConfirmDialog(
+                                context = itemView.context,
+                                title = "Xác nhận yêu cầu",
+                                message = "Bạn có chắc chắn muốn yêu cầu chấm dứt hợp đồng này không?"
+                            ) {
+                                onRequestTerminate(contract, reason)
+                                notifyTerminatedRequest(itemView.context, contract)
+                            }
                         }
                     }
+
                 }
 
                 ContractStatus.PENDING -> {

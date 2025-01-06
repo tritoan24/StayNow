@@ -74,6 +74,7 @@
             android:textSize="14sp"
             tools:ignore="HardcodedText" />
 
+        <!--        Nút xác nhận và hủy cho hợp đồng đang chờ xử lí(người thuê)-->
         <LinearLayout
             android:id="@+id/ll_btn"
             android:layout_width="match_parent"
@@ -119,21 +120,67 @@
 
         </LinearLayout>
 
-        <!--        Nút yêu cầu chấm dứt-->
+        <!--        Nút yêu cầu chấm dứt (người thuê)-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end">
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/btn_terminated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/gray"
                 android:text="Yêu cầu chấm dứt"
                 android:textColor="@android:color/white"
+                android:visibility="gone"
                 tools:ignore="ButtonStyle,HardcodedText" />
+        </LinearLayout>
+
+        <!--        Nút xác nhận và từ chối cho yêu cầu chấm dứt(chủ trọ)-->
+        <LinearLayout
+            android:id="@+id/ll_btn_termination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            tools:ignore="DisableBaselineAlignment">
+
+            <!-- Nút Xác nhận bên trái -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start">
+
+                <Button
+                    android:id="@+id/btn_confirm_termination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
+                    android:text="Đồng ý"
+                    android:textColor="@android:color/white"
+                    tools:ignore="ButtonStyle,HardcodedText" />
+            </LinearLayout>
+
+            <!-- Nút Hủy bên phải -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end">
+
+                <Button
+                    android:id="@+id/btn_cancel_termination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/gray"
+                    android:text="Từ chối"
+                    android:textColor="@android:color/white"
+                    tools:ignore="ButtonStyle,HardcodedText" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Thời gian còn lại -->

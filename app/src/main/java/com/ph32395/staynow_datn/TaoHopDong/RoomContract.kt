@@ -145,7 +145,6 @@ class RoomContract {
             "soDienCu" to contract.soDienCu,
             "soNuocCu" to contract.soNuocCu
 
-
             )
     }
 
@@ -290,6 +289,7 @@ class RoomContract {
 
     fun updateContractTerminationRequest(
         contractId: String,
+        reason: String?, // Lý do có thể là null
         onResult: (Boolean) -> Unit
     ) {
         if (contractId.isEmpty()) {
@@ -297,14 +297,23 @@ class RoomContract {
             return
         }
 
+        val updates = mutableMapOf<String, Any>(
+            "yeuCauChamDut" to TerminationStatus.PENDING
+        )
+
+        // Nếu có lý do, thêm vào bản đồ cập nhật
+        reason?.let {
+            updates["lyDoChamDut"] = it
+        }
+
         contractsCollection.document(contractId)
-            .update("yeuCauChamDut", true)
+            .update(updates)
             .addOnSuccessListener {
-                Log.d("HopDongViewModel", "Field yeuCauChamDut updated successfully for $contractId")
+                Log.d("HopDongRepository", "Fields updated successfully for $contractId")
                 onResult(true)
             }
             .addOnFailureListener { e ->
-                Log.e("HopDongViewModel", "Error updating yeuCauChamDut: ${e.message}")
+                Log.e("HopDongRepository", "Error updating fields: ${e.message}")
                 onResult(false)
             }
     }
@@ -389,8 +398,8 @@ class RoomContract {
                     roomsCollection.document(roomId)
                         .update(
                             mapOf(
-                                "Trang_thaiphong" to false,
-                                "Trang_thaiduyet" to "DaDuyet"
+                                "trangThaiPhong" to false,
+                                "trangThaiDuyet" to "DaDuyet"
                             )
                         )
                         .await()

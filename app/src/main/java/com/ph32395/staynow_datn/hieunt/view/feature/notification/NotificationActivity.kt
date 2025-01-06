@@ -16,6 +16,7 @@ import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
 import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
+import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractTerminatedActivity
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
@@ -135,15 +136,16 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
                 TYPE_NOTI_TERMINATED_REQUEST-> {
-                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
-                        putExtra("CONTRACT_ID", notification.idModel)
+                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                        putExtra("contractId", notification.idModel)
+                        putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }
 
                 TYPE_NOTI_PAYMENT_CONTRACT -> {
                     // Navigate to invoice creation
-                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                    val intent = Intent(this, BillContractTerminatedActivity::class.java).apply {
                         putExtra("contractId", notification.idModel)
                         putExtra("notify", "notify")
                     }

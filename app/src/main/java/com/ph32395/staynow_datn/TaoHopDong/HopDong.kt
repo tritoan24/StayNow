@@ -40,7 +40,8 @@ data class HopDong(
 
     // Trạng thái hợp đồng
     val trangThai: ContractStatus = ContractStatus.PENDING,
-    val yeuCauChamDut: Boolean = false,
+    val yeuCauChamDut: TerminationStatus = TerminationStatus.NOT_YET,
+    val lyDoChamDut: String = "",
     // Thông tin hóa đơn
     val hoaDonHopDong: Invoice = Invoice(),
 
@@ -161,4 +162,12 @@ enum class InvoiceStatus {
     ACTIVE,
     CANCELLED,
     DONE
+}
+
+enum class TerminationStatus {
+    NOT_YET,
+    PENDING,
+    APPROVED,
+    DENIED,
+    COMPLETED
 }
