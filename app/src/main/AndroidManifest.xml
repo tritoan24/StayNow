@@ -26,7 +26,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-
+        <activity
+            android:name=".BaoMat.ThongBaoToCaoNguoiDung"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.ToCaoTaiKhoan"
+            android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
             android:exported="false" />
@@ -43,7 +48,7 @@
         <activity
             android:name=".ChucNangNhanTinCC.TextingMessengeActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".TaoHoaDon.ChoiceContract"
             android:exported="false" />
@@ -130,8 +135,10 @@
             tools:ignore="AppLinkUrlError">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="Staynowapp.com"
                     android:pathPrefix="/roomDetail/Product"
