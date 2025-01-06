@@ -11,15 +11,6 @@
     <string name="select_location" translatable="false">Select location</string>
     <string name="previous" translatable="false">Previous</string>
 
-    <string name="Home" translatable="false">Nhà</string>
-
-    <!-- Bottom Navigation -->
-    <string name="Search" translatable="false">Tìm kiếm</string>
-    <string name="Calender" translatable="false">Lịch</string>
-    <string name="Message" translatable="false">Tin nhắn</string>
-    <string name="Profile" translatable="false">Cá nhân</string>
-
-
     <!-- Các phần khác trong strings.xml -->
     <string-array name="gender_options">
         <item>Nam</item>
@@ -27,6 +18,13 @@
         <item>Giới tính thứ 3</item>
     </string-array>
 
+    <string name="Home" translatable="false">Nhà</string>
+
+    <!-- Bottom Navigation -->
+    <string name="Search" translatable="false">Tìm kiếm</string>
+    <string name="Calender" translatable="false">Lịch</string>
+    <string name="Message" translatable="false">Tin nhắn</string>
+    <string name="Profile" translatable="false">Cá nhân</string>
 
     <!-- Bill Contract -->
     <string name="Thank_you_for_trusting_us" translatable="false">Cảm ơn bạn đã tin tưởng chúng tôi</string>
@@ -147,7 +145,7 @@
     <!-- OTP-->
     <string name="Verify" translatable="false">Xác minh</string>
     <string name="Enter_the_code_sent_to" translatable="false">Nhập mã được gửi đến</string>
-    <string name="If_you_haven_received_the_code_yet_click_Resend" translatable="false">Ấn gửi lại nếu chưa nhận được mã</string>
+    <string name="If_you_haven_received_the_code_yet_click_Resend" translatable="false">Nếu chưa nhận được mã, hãy ấn gửi lại</string>
     <string name="Confirm" translatable="false">Xác nhận</string>
     <string name="Resend_the_following_code" translatable="false">Gửi lại mã sau</string>
 
@@ -225,13 +223,15 @@
     <!-- tao phòng trọ -->
     <string name="Add_a_room" translatable="false">Thêm phòng trọ</string>
     <string name="Room_information" translatable="false">Thông tin phòng</string>
-    <string name="Name_house_number" translatable="false">Tên phòng*</string>
+    <string name="Enter_Address" translatable="false">Nhập địa chỉ</string>
+    <string name="Name_house_number" translatable="false">Tên/ số nhà *</string>
     <string name="Room_Rate" translatable="false">Giá phòng *</string>
-    <string name="Description" translatable="false">Nhập mô tả của bạn</string>
+    <string name="Description" translatable="false">Mô tả</string>
     <string name="Service_Information" translatable="false">Thông tin dịch vụ</string>
     <string name="Furniture_List" translatable="false">Danh sách nội thất</string>
     <string name="List_of_Amenities" translatable="false">Danh sách tiện nghi</string>
-
+    <string name="Stay_Room" translatable="false">Lưu phòng trọ</string>
+    <string name="Posting_a_room" translatable="false">Đăng phòng trọ</string>
 
     <!-- manage_schedule_room -->
     <string name="Waiting_for_confirmation" translatable="false">Chờ xác nhận</string>

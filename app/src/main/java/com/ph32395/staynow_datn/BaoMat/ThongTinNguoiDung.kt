@@ -29,6 +29,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
     private lateinit var phoneInfor: TextView
     private lateinit var emailInfor: TextView
     private lateinit var rcListRoom: RecyclerView
+    private lateinit var imgThongBao: ImageView
     private lateinit var btnBackCT: ImageView
     private lateinit var btnNhanTin: CardView
     private lateinit var mAuth: FirebaseAuth
@@ -46,6 +47,14 @@ class ThongTinNguoiDung : AppCompatActivity() {
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
+        imgThongBao = findViewById(R.id.imgThongBao)
+
+        imgThongBao.setOnClickListener {
+            val dialog = ThongBaoToCaoNguoiDung()
+            dialog.show(supportFragmentManager, "ThongBaoToCaoNguoiDung")
+        }
+
+
         //cong comment
 //        btnNhanTin = findViewById(R.id.btnNhanTin)
         btnBackCT = findViewById(R.id.btnBackCT)

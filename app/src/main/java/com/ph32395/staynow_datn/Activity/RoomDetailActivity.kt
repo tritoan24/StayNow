@@ -109,6 +109,7 @@ class RoomDetailActivity : AppCompatActivity() {
             viewmodelHome.incrementRoomViewCount(maPhongTro)
         }
 
+        // Xử lý nhận Dynamic Link
         FirebaseDynamicLinks.getInstance()
             .getDynamicLink(intent)
             .addOnSuccessListener { pendingDynamicLinkData ->
@@ -116,8 +117,8 @@ class RoomDetailActivity : AppCompatActivity() {
                 if (deepLink != null) {
                     val roomType = deepLink.getQueryParameter("roomType")
                     Log.e("RoomDetailActivity", "RoomType: $roomType")
-
-                    if (roomType != null) {
+                    if (!roomType.isNullOrEmpty()) {
+                        // Lấy dữ liệu theo roomType
                         viewModel.fetchChiTietThongTin(roomType)
                         viewModel.fetchPhiDichVu(roomType)
                         viewModel.fetchNoiThat(roomType)
@@ -127,16 +128,15 @@ class RoomDetailActivity : AppCompatActivity() {
                         findViewById<ImageView>(R.id.iconBack).setOnClickListener {
                             startActivity(Intent(this@RoomDetailActivity, MainActivity::class.java))
                         }
-                    }else {
-
+                    } else {
+                        Log.e("RoomDetailActivity", "RoomType không xác định")
                     }
-                }else {
+                } else {
+                    // Xử lý khi không có deep link
                     viewModel.fetchChiTietThongTin(maPhongTro)
                     viewModel.fetchPhiDichVu(maPhongTro)
                     viewModel.fetchNoiThat(maPhongTro)
                     viewModel.fetchTienNghi(maPhongTro)
-
-                    // Tải dữ liệu từ Firebase
                     viewModel.fetchRoomDetail(maPhongTro)
 
                     findViewById<ImageView>(R.id.iconBack).setOnClickListener {
@@ -147,6 +147,7 @@ class RoomDetailActivity : AppCompatActivity() {
             .addOnFailureListener { e ->
                 Log.e("RoomDetailActivity", "Error retrieving dynamic link", e)
             }
+
 
 
         findViewById<LinearLayout>(R.id.ll_schedule_room).setOnClickListener {
@@ -203,17 +204,19 @@ class RoomDetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        findViewById<ImageView>(R.id.shareRoom).setOnClickListener{
+        // Chức năng tạo và chia sẻ Dynamic Link
+        findViewById<ImageView>(R.id.shareRoom).setOnClickListener {
             viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
                 intent.putExtra("idUser", maNguoiDung)
 
                 // Tạo dynamic link
-                val roomDetailLink = "https://staynowshare.page.link/roomDetail?roomType=${maPhongTro}"
-                createDynamicLink(roomDetailLink) { dynamicLink ->
+                val roomDetailLink = "https://staynowapp.com?roomType=${roomId}&utm_source=messenger"
+                createShortDynamicLink(roomDetailLink) { dynamicLink ->
                     shareLink(dynamicLink)
                 }
             }
         }
+
 
 //        khoi tao Adapter
         chiTietAdapter = ChiTietThongTinAdapter(emptyList())
@@ -296,35 +299,40 @@ class RoomDetailActivity : AppCompatActivity() {
 
     private fun shareLink(dynamicLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain" // Định dạng chia sẻ là văn bản
-            putExtra(Intent.EXTRA_TEXT, dynamicLink) // Thêm dynamic link vào Intent
+            type = "text/plain" // The format for the link being shared
+            putExtra(Intent.EXTRA_TEXT, dynamicLink) // Add dynamic link as text
         }
 
-        // Hiển thị các ứng dụng có thể chia sẻ link
+        // Find Messenger package and set it as the target for sharing
+        val messengerPackage = "com.facebook.orca" // Package name for Messenger
+        val resolvedIntentActivities = packageManager.queryIntentActivities(shareIntent, 0)
+        for (resolvedIntentInfo in resolvedIntentActivities) {
+            if (resolvedIntentInfo.activityInfo.packageName == messengerPackage) {
+                shareIntent.setPackage(messengerPackage) // Specify Messenger as the target
+                break
+            }
+        }
+
+        // Show the share dialog, defaulting to Messenger if available
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"))
     }
 
-    private fun createDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
-        val dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink()
-            .setLink(Uri.parse(roomDetailLink)) // Liên kết đích
-            .setDomainUriPrefix("https://staynowshare.page.link") // Miền Dynamic Link
+    private fun createShortDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
+        FirebaseDynamicLinks.getInstance().createDynamicLink()
+            .setLink(Uri.parse(roomDetailLink))
+            .setDomainUriPrefix("https://staynow.page.link")
             .setAndroidParameters(
-                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow") // Tên gói Android
-                    .setFallbackUrl(Uri.parse("https://fallback.url")) // URL dự phòng (tùy chọn)
+                DynamicLink.AndroidParameters.Builder("com.ph32395.staynow_datn")
                     .build()
             )
-            .setSocialMetaTagParameters(
-                DynamicLink.SocialMetaTagParameters.Builder()
-                    .setTitle("Chi tiết phòng trọ") // Tùy chỉnh tiêu đề
-                    .setDescription("Xem phòng trọ chi tiết tại StayNow")
-                    .setImageUrl(Uri.parse("https://link.to/image.png")) // Ảnh minh họa (tùy chọn)
-                    .build()
-            )
-            .buildDynamicLink()
-
-        onComplete(dynamicLink.uri.toString())
+            .buildShortDynamicLink()
+            .addOnSuccessListener { shortDynamicLink ->
+                onComplete(shortDynamicLink.shortLink.toString())
+            }
+            .addOnFailureListener { e ->
+                Log.e("DynamicLinkError", "Error creating short link", e)
+            }
     }
-
 
 
     //    Danh sacch thng tin chi tiet
