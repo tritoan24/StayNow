@@ -39,20 +39,6 @@ class InvoiceViewModel : ViewModel() {
             }
     }
 
-    // Lấy danh sách hóa đơn từ Firestore
-    fun fetchInvoices() {
-        invoiceCollection.get()
-            .addOnSuccessListener { querySnapshot ->
-                val invoicesList =
-                    querySnapshot.documents.mapNotNull { it.toObject<InvoiceMonthlyModel>() }
-                _invoices.value = invoicesList
-            }
-            .addOnFailureListener { exception ->
-                _invoices.value = emptyList()
-                // Bạn có thể xử lý lỗi tại đây nếu cần
-            }
-    }
-
     fun fetchInvoiceById(invoiceId: String) {
         // Ensure the full path is used
         val fullPath = "HoaDon/$invoiceId" // Adjust the collection name as needed

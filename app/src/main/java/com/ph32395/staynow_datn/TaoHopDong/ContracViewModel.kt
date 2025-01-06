@@ -55,6 +55,10 @@ class ContractViewModel : ViewModel() {
 
     private val _terminatedContracts = MutableLiveData<List<HopDong>>()
     val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
+
+    private val _terminatedProcessingContracts = MutableLiveData<List<HopDong>>()
+    val terminatedProcessingContracts: LiveData<List<HopDong>> get() = _terminatedProcessingContracts
+
     private val _processingContracts = MutableLiveData<List<HopDong>>()
     val processingContracts: LiveData<List<HopDong>> get() = _processingContracts
 
@@ -249,6 +253,7 @@ class ContractViewModel : ViewModel() {
                 ContractStatus.EXPIRED -> _expiredContracts.postValue(filteredContracts)
                 ContractStatus.CANCELLED -> _cancelledContracts.postValue(filteredContracts)
                 ContractStatus.TERMINATED -> _terminatedContracts.postValue(filteredContracts)
+                ContractStatus.TERMINATED_PROCESSING -> _terminatedProcessingContracts.postValue(filteredContracts)
                 ContractStatus.PROCESSING -> _processingContracts.postValue(filteredContracts)
             }
         }
@@ -464,8 +469,12 @@ class ContractViewModel : ViewModel() {
         }
     }
 
-    fun updateContractTerminationRequest(contractId: String,reason:String?) {
-        contractRepository.updateContractTerminationRequest(contractId,reason) { success ->
+    fun updateContractTerminationRequest(
+        contractId: String,
+        reason: String?,
+        status: TerminationStatus
+    ) {
+        contractRepository.updateContractTerminationRequest(contractId, reason, status) { success ->
             _updateYCResult.postValue(success)
         }
     }

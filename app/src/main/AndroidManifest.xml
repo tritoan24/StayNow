@@ -27,6 +27,9 @@
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".fragment.contract_tenant.ContractActivity"
+            android:exported="false" />
+        <activity
             android:name=".fragment.contract_tenant.BillContractTerminatedActivity"
             android:exported="false" />
         <activity

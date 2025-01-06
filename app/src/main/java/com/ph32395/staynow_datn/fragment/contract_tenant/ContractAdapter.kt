@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,6 +23,7 @@ import com.ph32395.staynow_datn.TaoHopDong.HopDong
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.TerminationStatus
 import com.ph32395.staynow_datn.databinding.ItemContractBinding
+import com.ph32395.staynow_datn.hieunt.helper.Default
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
@@ -42,7 +40,7 @@ class ContractAdapter(
     private val type: ContractStatus,
     private val isLandlord: Boolean,
     private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit,
-    private val onRequestTerminate: (HopDong,String) -> Unit
+    private val onRequestTerminate: (HopDong, String, status: TerminationStatus) -> Unit
 ) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
 
@@ -78,11 +76,16 @@ class ContractAdapter(
         private val tvEndDate: TextView = itemView.tvEndDate
         private val tvRentDuration: TextView = itemView.tvRentDuration
         private val tvRemainingTime: TextView = itemView.tvRemainingTime
+        private val tvTermination: TextView = itemView.tvTerminated
+
         private val llBtn: LinearLayout = itemView.llBtn
+        private val llBtnTermination: LinearLayout = itemView.llBtnTermination
         private val btnTerminated: Button = itemView.btnTerminated
 
         private val btnXacNhan: TextView = itemView.btnConfirm
         private val btnCancel: TextView = itemView.btnCancel
+        private val btnXacNhanTer: TextView = itemView.btnConfirmTermination
+        private val btnCancelTer: TextView = itemView.btnCancelTermination
 
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n", "DefaultLocale")
@@ -101,8 +104,13 @@ class ContractAdapter(
                     tvRemainingTime.text = calculateRemainingDays(contract.ngayKetThuc)
                     if (!isLandlord) {
                         btnTerminated.visibility = View.VISIBLE
-                        if (contract.yeuCauChamDut!=TerminationStatus.NOT_YET) {
+                        if (contract.yeuCauChamDut != TerminationStatus.NOT_YET) {
                             btnTerminated.visibility = View.GONE
+                        }
+                    } else {
+                        if (contract.yeuCauChamDut == TerminationStatus.PENDING) {
+                            llBtnTermination.visibility = View.VISIBLE
+                            tvTermination.visibility = View.VISIBLE
                         }
                     }
 
@@ -119,16 +127,74 @@ class ContractAdapter(
                         showReasonInputDialog(
                             context = itemView.context,
                             title = "Nhập lý do chấm dứt hợp đồng",
-                            hint = "Nhập lý do của bạn"
+                            hint = "nhập lý do ở đây"
                         ) { reason ->
                             showConfirmDialog(
                                 context = itemView.context,
-                                title = "Xác nhận yêu cầu",
+                                title = "Xác nhận",
                                 message = "Bạn có chắc chắn muốn yêu cầu chấm dứt hợp đồng này không?"
                             ) {
-                                onRequestTerminate(contract, reason)
-                                notifyTerminatedRequest(itemView.context, contract)
+                                onRequestTerminate(contract, reason, TerminationStatus.PENDING)
+                                notifyTermination(
+                                    itemView.context,
+                                    contract,
+                                    LoaiTaiKhoan.NguoiChoThue,
+                                    Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST,
+                                    "Yêu cầu chấm dứt hợp đồng",
+                                    "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen}"
+                                )
                             }
+                        }
+                    }
+
+                    btnXacNhanTer.tap {
+
+                        showConfirmDialog(
+                            context = itemView.context,
+                            title = "Xác nhận",
+                            message = "Bạn chắc chắn đồng ý chấm dứt hợp đồng này?"
+                        ) {
+                            llBtnTermination.visibility = View.GONE
+                            tvTermination.visibility = View.GONE
+
+                            onRequestTerminate(
+                                contract,
+                                null.toString(),
+                                TerminationStatus.APPROVED
+                            )
+                            onStatusUpdated(
+                                contract.maHopDong,
+                                ContractStatus.TERMINATED_PROCESSING
+                            )
+                            notifyTermination(
+                                itemView.context,
+                                contract,
+                                LoaiTaiKhoan.TatCa,
+                                Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM,
+                                "Xác nhận chấm dứt hợp đồng",
+                                "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã được xác nhận chấm dứt bởi ${contract.chuNha.hoTen} và đang được xử lý"
+                            )
+                        }
+
+                    }
+                    btnCancelTer.tap {
+                        showConfirmDialog(
+                            context = itemView.context,
+                            title = "Xác nhận",
+                            message = "Bạn chắc chắn từ chối chấm dứt hợp đồng này?"
+                        ) {
+                            llBtnTermination.visibility = View.GONE
+                            tvTermination.visibility = View.GONE
+
+                            onRequestTerminate(contract, null.toString(), TerminationStatus.DENIED)
+                            notifyTermination(
+                                itemView.context,
+                                contract,
+                                LoaiTaiKhoan.NguoiThue,
+                                Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY,
+                                "Từ chối chấm dứt hợp đồng",
+                                "Hợp đồng với mã hợp đồng ${contract.maHopDong} bị từ chối chấm dứt bởi ${contract.chuNha.hoTen}"
+                            )
                         }
                     }
 
@@ -175,6 +241,10 @@ class ContractAdapter(
 
                 ContractStatus.TERMINATED -> {
                     tvRemainingTime.text = "Hợp đồng đã chấm dứt"
+                }
+
+                ContractStatus.TERMINATED_PROCESSING -> {
+                    tvRemainingTime.text = "Hợp đồng đang xử lý chấm dứt"
                 }
 
                 ContractStatus.CANCELLED -> {
@@ -261,18 +331,23 @@ private fun notifyPayment(context: Context, contract: HopDong) {
 
 }
 
-private fun notifyTerminatedRequest(context: Context, contract: HopDong) {
+private fun notifyTermination(
+    context: Context, contract: HopDong, role: LoaiTaiKhoan,
+    loaiThongBao: String,
+    tieuDe: String,
+    tinNhan: String
+) {
 
     val notification = NotificationModel(
-        tieuDe = "Yêu cầu chấm dứt hợp đồng",
-        tinNhan = "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen}",
+        tieuDe = tieuDe,
+        tinNhan = tinNhan,
         ngayGuiThongBao = Calendar.getInstance().time.toString(),
         thoiGian = "0",
         mapLink = null,
         daDoc = false,
         daGui = true,
         idModel = contract.maHopDong,
-        loaiThongBao = "yeuCauChamDut"
+        loaiThongBao = loaiThongBao
     )
 
     val factory = ViewModelFactory(context)
@@ -281,17 +356,28 @@ private fun notifyTerminatedRequest(context: Context, contract: HopDong) {
         factory
     )[NotificationViewModel::class.java]
 
-    val recipientId = contract.chuNha.maNguoiDung
-    notificationViewModel.sendNotification(notification, recipientId)
+    val recipientIds = when (role) {
+        LoaiTaiKhoan.NguoiThue -> listOf(contract.nguoiThue.maNguoiDung)
+        LoaiTaiKhoan.NguoiChoThue -> listOf(contract.chuNha.maNguoiDung)
+        LoaiTaiKhoan.TatCa -> listOf(
+            contract.nguoiThue.maNguoiDung,
+            contract.chuNha.maNguoiDung
+        ) // Gửi cho cả 2
+        else -> emptyList()
+    }
 
-    notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
-        if (isSuccess) {
-            // Thông báo thành công
-            Toast.makeText(context, "Yêu cầu đã được gửi đến chủ trọ", Toast.LENGTH_SHORT).show()
-        } else {
-            // Thông báo thất bại
-            Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
-        }
-    })
+    recipientIds.forEach { recipientId ->
+        notificationViewModel.sendNotification(notification, recipientId)
+
+        notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
+            if (isSuccess) {
+                // Thông báo thành công
+                Toast.makeText(context, "Thông báo đã được gửi.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Thông báo thất bại
+                Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
 }

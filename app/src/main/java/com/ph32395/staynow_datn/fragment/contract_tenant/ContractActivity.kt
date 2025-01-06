@@ -2,52 +2,41 @@ package com.ph32395.staynow_datn.fragment.contract_tenant
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.TaoHopDong.ContractStatus
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
-import com.ph32395.staynow_datn.databinding.FragmentContractBinding
+import com.ph32395.staynow_datn.databinding.ActivityContractBinding
 import com.ph32395.staynow_datn.hieunt.widget.tap
 import kotlinx.coroutines.launch
 
-@Suppress("DEPRECATION")
-class ContractFragment : Fragment() {
+class ContractActivity : AppCompatActivity() {
 
     // Đối tượng Binding
-    private var _binding: FragmentContractBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityContractBinding
 
-    private lateinit var contractViewModel: ContractViewModel
+    private val contractViewModel: ContractViewModel by viewModels()
 
     private lateinit var activeAdapter: ContractAdapter
     private lateinit var pendingAdapter: ContractAdapter
     private lateinit var expiredAdapter: ContractAdapter
     private lateinit var cancelledAdapter: ContractAdapter
     private lateinit var terminatedAdapter: ContractAdapter
+    private lateinit var terminatedProcessingAdapter: ContractAdapter
     private lateinit var processingAdapter: ContractAdapter
 
     private lateinit var mAuth: FirebaseAuth
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentContractBinding.inflate(inflater, container, false)
-        // Khởi tạo ViewModel
-        contractViewModel = ViewModelProvider(this)[ContractViewModel::class.java]
-
-        binding.ivBack.tap {
-            requireActivity().onBackPressed()
-        }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityContractBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         // Khởi tạo FirebaseAuth và lấy userId
         mAuth = FirebaseAuth.getInstance()
@@ -56,7 +45,7 @@ class ContractFragment : Fragment() {
         setupObservers()
 
         // Quan sát LiveData để nhận giá trị vai trò
-        contractViewModel.userRoleLiveData.observe(viewLifecycleOwner) { role ->
+        contractViewModel.userRoleLiveData.observe(this) { role ->
             val isLandlord = checkUserRole(role)
             if (userId != null) {
                 fetchContractsByUser(userId, isLandlord)
@@ -69,8 +58,12 @@ class ContractFragment : Fragment() {
             contractViewModel.getUserRole(userId)
         }
 
+        binding.ivBack.tap {
+            onBackPressed()
+        }
+
         binding.ivMenu.setOnClickListener {
-            val popupMenu = PopupMenu(requireContext(), binding.ivMenu)
+            val popupMenu = PopupMenu(this, binding.ivMenu)
             popupMenu.menuInflater.inflate(R.menu.menu_contracts, popupMenu.menu)
             popupMenu.show()
             popupMenu.setOnMenuItemClickListener { item ->
@@ -107,6 +100,11 @@ class ContractFragment : Fragment() {
                         true
                     }
 
+                    R.id.menu_terminatedProcessing_contracts -> {
+                        setupRecyclerView(terminatedProcessingAdapter, itemName)
+                        checkEmptyState(terminatedProcessingAdapter)
+                        true
+                    }
                     R.id.menu_terminated_contracts -> {
                         setupRecyclerView(terminatedAdapter, itemName)
                         checkEmptyState(terminatedAdapter)
@@ -117,14 +115,12 @@ class ContractFragment : Fragment() {
                 }
             }
         }
-
-        return binding.root
     }
 
     private fun setupRecyclerView(adapter: ContractAdapter, title: String) {
         binding.rvContracts.apply {
             this.adapter = adapter
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(this@ContractActivity)
         }
         binding.tvContractsTitle.text = title
     }
@@ -138,8 +134,12 @@ class ContractFragment : Fragment() {
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
                 },
-                { contract, reason ->
-                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
+                { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
                 }
             )
         pendingAdapter =
@@ -150,8 +150,12 @@ class ContractFragment : Fragment() {
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
                 },
-                { contract, reason ->
-                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
+                { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
                 }
             )
         expiredAdapter =
@@ -161,8 +165,12 @@ class ContractFragment : Fragment() {
                 isLandlord,
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
-                }, { contract, reason ->
-                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
+                }, { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
                 }
             )
         cancelledAdapter =
@@ -173,8 +181,12 @@ class ContractFragment : Fragment() {
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
                 },
-                { contract, reason ->
-                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
+                { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
                 })
         terminatedAdapter =
             ContractAdapter(
@@ -183,8 +195,27 @@ class ContractFragment : Fragment() {
                 isLandlord,
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
-                }, { contract, reason ->
-                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
+                }, { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
+                }
+            )
+        terminatedProcessingAdapter =
+            ContractAdapter(
+                contractViewModel,
+                ContractStatus.TERMINATED_PROCESSING,
+                isLandlord,
+                { contractId, newStatus ->
+                    contractViewModel.updateContractStatus(contractId, newStatus)
+                }, { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
                 }
             )
 
@@ -195,8 +226,12 @@ class ContractFragment : Fragment() {
                 isLandlord,
                 { contractId, newStatus ->
                     contractViewModel.updateContractStatus(contractId, newStatus)
-                }, { contract, reason ->
-                    contractViewModel.updateContractTerminationRequest(contract.maHopDong, reason)
+                }, { contract, reason, status ->
+                    contractViewModel.updateContractTerminationRequest(
+                        contract.maHopDong,
+                        reason,
+                        status
+                    )
                 }
             )
 
@@ -204,24 +239,25 @@ class ContractFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun setupObservers() {
-        contractViewModel.activeContracts.observe(viewLifecycleOwner) { contracts ->
+        contractViewModel.activeContracts.observe(this) { contracts ->
             activeAdapter.updateContractList(contracts)
-
         }
-        contractViewModel.pendingContracts.observe(viewLifecycleOwner) { contracts ->
+        contractViewModel.pendingContracts.observe(this) { contracts ->
             pendingAdapter.updateContractList(contracts)
-
         }
-        contractViewModel.expiredContracts.observe(viewLifecycleOwner) { contracts ->
+        contractViewModel.expiredContracts.observe(this) { contracts ->
             expiredAdapter.updateContractList(contracts)
         }
-        contractViewModel.cancelledContracts.observe(viewLifecycleOwner) { contracts ->
+        contractViewModel.cancelledContracts.observe(this) { contracts ->
             cancelledAdapter.updateContractList(contracts)
         }
-        contractViewModel.terminatedContracts.observe(viewLifecycleOwner) { contracts ->
+        contractViewModel.terminatedContracts.observe(this) { contracts ->
             terminatedAdapter.updateContractList(contracts)
         }
-        contractViewModel.processingContracts.observe(viewLifecycleOwner) { contracts ->
+        contractViewModel.terminatedProcessingContracts.observe(this) { contracts ->
+            terminatedProcessingAdapter.updateContractList(contracts)
+        }
+        contractViewModel.processingContracts.observe(this) { contracts ->
             processingAdapter.updateContractList(contracts)
         }
     }
@@ -251,6 +287,10 @@ class ContractFragment : Fragment() {
                 )
                 contractViewModel.fetchContractsByLandlordForContractFragment(
                     userId,
+                    setOf(ContractStatus.TERMINATED_PROCESSING)
+                )
+                contractViewModel.fetchContractsByLandlordForContractFragment(
+                    userId,
                     setOf(ContractStatus.PROCESSING)
                 )
 
@@ -279,6 +319,10 @@ class ContractFragment : Fragment() {
                 )
                 contractViewModel.fetchContractsByTenantForContractFragment(
                     userId,
+                    setOf(ContractStatus.TERMINATED_PROCESSING)
+                )
+                contractViewModel.fetchContractsByTenantForContractFragment(
+                    userId,
                     setOf(ContractStatus.PROCESSING)
                 )
             }
@@ -298,21 +342,11 @@ class ContractFragment : Fragment() {
         } else {
             binding.icEmptyList.visibility = View.GONE
         }
-
     }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-
-        if (activity is MainActivity) {
-            (activity as MainActivity).setBottomNavigationVisibility(true)
-        }
-    }
-
 }
 
 enum class LoaiTaiKhoan {
     NguoiChoThue,
-    NguoiThue
+    NguoiThue,
+    TatCa
 }

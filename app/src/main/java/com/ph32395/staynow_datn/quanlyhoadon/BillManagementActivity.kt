@@ -108,17 +108,22 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
                         userId,
                         setOf(
                             ContractStatus.ACTIVE,
+                            ContractStatus.PROCESSING,
                             ContractStatus.TERMINATED,
-                            ContractStatus.EXPIRED
-                        )
+                            ContractStatus.TERMINATED_PROCESSING,
+                            ContractStatus.EXPIRED,
+
+                            )
                     )
                 } else {
                     contractViewModel.fetchContractsByTenantForBillManagement(
                         userId,
                         setOf(
                             ContractStatus.ACTIVE,
+                            ContractStatus.PROCESSING,
                             ContractStatus.TERMINATED,
-                            ContractStatus.EXPIRED
+                            ContractStatus.TERMINATED_PROCESSING,
+                            ContractStatus.EXPIRED,
                         )
                     )
                 }

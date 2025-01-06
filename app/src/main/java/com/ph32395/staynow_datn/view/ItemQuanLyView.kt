@@ -7,12 +7,9 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.ph32395.staynow_datn.QuanLyNguoiThue.QuanLyNguoiThueActivity
-import androidx.appcompat.app.AppCompatActivity
-import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity
-import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
-import com.ph32395.staynow_datn.fragment.contract_tenant.ContractFragment
+import com.ph32395.staynow_datn.fragment.contract_tenant.ContractActivity
 import com.ph32395.staynow_datn.quanlyhoadon.BillManagementActivity
 
 class ItemQuanLyView @JvmOverloads constructor(
@@ -42,23 +39,7 @@ class ItemQuanLyView @JvmOverloads constructor(
             }
 
             "QuanLyHopDong" -> {
-                val fragmentManager = (context as AppCompatActivity).supportFragmentManager
-                val fragmentTag = "ContractFragment"
-
-                // Fragment chưa tồn tại, tạo mới và thêm vào
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                val newFragment = ContractFragment()
-
-                // Ẩn Bottom Navigation
-                val activity = context as androidx.fragment.app.FragmentActivity
-                if (activity is MainActivity) {
-                    activity.setBottomNavigationVisibility(false)
-                }
-
-                fragmentTransaction.replace(R.id.fragment_container, newFragment, fragmentTag)
-                fragmentTransaction.addToBackStack(fragmentTag)
-                fragmentTransaction.commit()
-
+                context.startActivity(Intent(context, ContractActivity::class.java))
             }
 
             "QuanLyHoaDon" -> {

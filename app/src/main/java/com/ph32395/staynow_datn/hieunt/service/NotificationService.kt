@@ -30,6 +30,8 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
@@ -111,6 +113,7 @@ class NotificationService : Service() {
                     putExtra("contractId", notificationModel.idModel)
                 }
             }
+
             TYPE_NOTI_CONTRACT -> {
                 Intent(this, NotificationActivity::class.java)
             }
@@ -125,11 +128,25 @@ class NotificationService : Service() {
                     putExtra("contractId", notificationModel.idModel)
                 }
             }
+
             TYPE_NOTI_TERMINATED_REQUEST -> {
                 Intent(this, NotificationActivity::class.java).apply {
                     putExtra("contractId", notificationModel.idModel)
                 }
             }
+
+            TYPE_NOTI_TERMINATED_CONFIRM -> {
+                Intent(this, NotificationActivity::class.java).apply {
+                    putExtra("contractId", notificationModel.idModel)
+                }
+            }
+
+            TYPE_NOTI_TERMINATED_DENY -> {
+                Intent(this, NotificationActivity::class.java).apply {
+                    putExtra("contractId", notificationModel.idModel)
+                }
+            }
+
 
             TYPE_NOTI_PAYMENT_INVOICE -> {
                 Intent(this, NotificationActivity::class.java).apply {

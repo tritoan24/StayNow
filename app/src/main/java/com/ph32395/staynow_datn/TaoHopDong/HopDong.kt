@@ -140,6 +140,7 @@ enum class ContractStatus {
     ACTIVE, // Đang hiệu lực
     EXPIRED, // Hết hạn
     TERMINATED,
+    TERMINATED_PROCESSING,
     CANCELLED
 }
 
@@ -158,10 +159,7 @@ enum class InvoiceStatus {
     PENDING,
     PROCESSING,
     PAID,
-    TERMINATED,
-    ACTIVE,
     CANCELLED,
-    DONE
 }
 
 enum class TerminationStatus {
@@ -169,5 +167,4 @@ enum class TerminationStatus {
     PENDING,
     APPROVED,
     DENIED,
-    COMPLETED
 }

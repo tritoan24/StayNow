@@ -92,10 +92,12 @@ class RoomContract {
                         val roomRef = roomsCollection.document(contract.thongtinphong.maPhongTro)
                         val currentDate = Timestamp.now()
 
-                        transaction.update(roomRef, mapOf(
-                            "trangThaiPhong" to true,
-                            "ngayDuocThue" to currentDate
-                        ))
+                        transaction.update(
+                            roomRef, mapOf(
+                                "trangThaiPhong" to true,
+                                "ngayDuocThue" to currentDate
+                            )
+                        )
 
 
                         // Xóa lịch hẹn
@@ -145,7 +147,7 @@ class RoomContract {
             "soDienCu" to contract.soDienCu,
             "soNuocCu" to contract.soNuocCu
 
-            )
+        )
     }
 
     private fun createRoomInfoMap(roomInfo: RoomInfo): HashMap<String, Any> {
@@ -289,7 +291,8 @@ class RoomContract {
 
     fun updateContractTerminationRequest(
         contractId: String,
-        reason: String?, // Lý do có thể là null
+        reason: String?,
+        status: TerminationStatus,
         onResult: (Boolean) -> Unit
     ) {
         if (contractId.isEmpty()) {
@@ -298,7 +301,7 @@ class RoomContract {
         }
 
         val updates = mutableMapOf<String, Any>(
-            "yeuCauChamDut" to TerminationStatus.PENDING
+            "yeuCauChamDut" to status
         )
 
         // Nếu có lý do, thêm vào bản đồ cập nhật
