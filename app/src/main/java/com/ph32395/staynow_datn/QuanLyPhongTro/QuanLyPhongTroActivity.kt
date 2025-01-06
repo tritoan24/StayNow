@@ -7,84 +7,191 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.MainActivity
+import com.ph32395.staynow_datn.QuanLyPhongTro.fragment.PhongDaDangFragment
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.fragment.home.HomeViewModel
 
+//class QuanLyPhongTroActivity : AppCompatActivity() {
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        setContentView(R.layout.activity_quan_ly_phong_tro)
+//
+//        findViewById<ImageView>(R.id.imgBackQLPhong).setOnClickListener {
+////            startActivity(Intent(this@QuanLyPhongTroActivity, MainActivity::class.java))
+//            finish()
+//        }
+//
+//        val viewPagerQLPhong: ViewPager2 = findViewById(R.id.viewPagerQLPhong)
+//        val tabLayoutQLPhong: TabLayout = findViewById(R.id.tabLayoutQLPhong)
+//
+////        Cai dat Adapter
+//        viewPagerQLPhong.adapter = ViewPagerQLPhongAdapter(this)
+//
+////        Ket noiTabLayout voi viewPager
+//
+//        TabLayoutMediator(tabLayoutQLPhong, viewPagerQLPhong) {tab, position ->
+//            val tabTitles = arrayOf("Phòng đã đăng", "Đang lưu", "Chờ duyệt", "Đã bị hủy", "Đã cho thuê")
+//            val customTab = LayoutInflater.from(this).inflate(R.layout.custom_tab_layout, null)
+//
+////            Cai dat tieu de cho tung tabLayout
+//            val tabTitle = customTab.findViewById<TextView>(R.id.tabTitle)
+//            val tabCount = customTab.findViewById<TextView>(R.id.tabCount)
+//
+//            tabTitle.text = tabTitles[position]
+//            tabCount.text = "(0)"
+//
+////            Gan layout tuy chinh vao Tab
+//            tab.customView = customTab
+//        }.attach()
+//
+////        Khoi tao ViewModel
+//        val viewModel: HomeViewModel by viewModels()
+//        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
+//
+//        updateTabCount(viewModel, tabLayoutQLPhong)
+//
+//    }
+//
+//    private fun updateTabCount(viewModel: HomeViewModel, tabLayout: TabLayout) {
+//        viewModel.phongDaDang.observe(this) {roomList ->
+//            val customTab = tabLayout.getTabAt(0)?.customView
+//            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+//            tabCount?.text = "(${roomList.size})"
+//        }
+//
+//        viewModel.phongDangLuu.observe(this) {roomList ->
+//            val customTab = tabLayout.getTabAt(1)?.customView
+//            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+//            tabCount?.text = "(${roomList.size})"
+//        }
+//
+//        viewModel.phongChoDuyet.observe(this) {roomList ->
+//            val customTab = tabLayout.getTabAt(2)?.customView
+//            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+//            tabCount?.text = "(${roomList.size})"
+//        }
+//
+//        viewModel.phongDaHuy.observe(this) {roomList ->
+//            val customTab = tabLayout.getTabAt(3)?.customView
+//            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+//            tabCount?.text = "(${roomList.size})"
+//        }
+//
+//        viewModel.phongDaChoThue.observe(this) {roomList ->
+//            val customTab = tabLayout.getTabAt(4)?.customView
+//            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
+//            tabCount?.text = "(${roomList.size})"
+//        }
+//    }
+//}
+
 class QuanLyPhongTroActivity : AppCompatActivity() {
+    private lateinit var viewModel: HomeViewModel
+    private var maNhaTro: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quan_ly_phong_tro)
 
+        // Lấy maNhaTro từ intent nếu đến từ danh sách tòa nhà
+        maNhaTro = intent.getStringExtra("maNhaTro")
+
+        caiDatGiaoDien()
+        caiDatViewModel()
+    }
+
+
+
+    private fun caiDatGiaoDien() {
+        // Nút quay lại
         findViewById<ImageView>(R.id.imgBackQLPhong).setOnClickListener {
-//            startActivity(Intent(this@QuanLyPhongTroActivity, MainActivity::class.java))
             finish()
         }
 
+        // Cài đặt ViewPager và TabLayout
         val viewPagerQLPhong: ViewPager2 = findViewById(R.id.viewPagerQLPhong)
         val tabLayoutQLPhong: TabLayout = findViewById(R.id.tabLayoutQLPhong)
 
-//        Cai dat Adapter
         viewPagerQLPhong.adapter = ViewPagerQLPhongAdapter(this)
 
-//        Ket noiTabLayout voi viewPager
+        // Cài đặt các tab
+        TabLayoutMediator(tabLayoutQLPhong, viewPagerQLPhong) { tab, position ->
+            val danhSachTab = arrayOf("Phòng đã đăng", "Đang lưu", "Chờ duyệt", "Đã bị hủy", "Đã cho thuê")
+            val tabTuyChinh = LayoutInflater.from(this).inflate(R.layout.custom_tab_layout, null)
 
-        TabLayoutMediator(tabLayoutQLPhong, viewPagerQLPhong) {tab, position ->
-            val tabTitles = arrayOf("Phòng đã đăng", "Đang lưu", "Chờ duyệt", "Đã bị hủy", "Đã cho thuê")
-            val customTab = LayoutInflater.from(this).inflate(R.layout.custom_tab_layout, null)
+            val tieuDeTab = tabTuyChinh.findViewById<TextView>(R.id.tabTitle)
+            val soLuongTab = tabTuyChinh.findViewById<TextView>(R.id.tabCount)
 
-//            Cai dat tieu de cho tung tabLayout
-            val tabTitle = customTab.findViewById<TextView>(R.id.tabTitle)
-            val tabCount = customTab.findViewById<TextView>(R.id.tabCount)
+            tieuDeTab.text = danhSachTab[position]
+            soLuongTab.text = "(0)"
 
-            tabTitle.text = tabTitles[position]
-            tabCount.text = "(0)"
-
-//            Gan layout tuy chinh vao Tab
-            tab.customView = customTab
+            tab.customView = tabTuyChinh
         }.attach()
-
-//        Khoi tao ViewModel
-        val viewModel: HomeViewModel by viewModels()
-        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
-
-        updateTabCount(viewModel, tabLayoutQLPhong)
-
     }
 
-    private fun updateTabCount(viewModel: HomeViewModel, tabLayout: TabLayout) {
-        viewModel.phongDaDang.observe(this) {roomList ->
-            val customTab = tabLayout.getTabAt(0)?.customView
-            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
-            tabCount?.text = "(${roomList.size})"
+    private fun caiDatViewModel() {
+        viewModel = ViewModelProvider(this)[HomeViewModel::class.java]
+
+        val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+        if (maNhaTro != null) {
+            // Tải danh sách phòng của tòa nhà cụ thể
+            viewModel.loadPhongTheoToaNha(userId, maNhaTro!!)
+            // Cập nhật tiêu đề hiển thị tên tòa nhà
+            capNhatTieuDeToaNha(userId, maNhaTro!!)
+        } else {
+            // Tải danh sách phòng đơn lẻ
+            viewModel.loadPhongDonLe(userId)
         }
 
-        viewModel.phongDangLuu.observe(this) {roomList ->
-            val customTab = tabLayout.getTabAt(1)?.customView
-            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
-            tabCount?.text = "(${roomList.size})"
-        }
+        // Cài đặt theo dõi số lượng tab
+        caiDatTheoDoiSoLuongTab()
+    }
 
-        viewModel.phongChoDuyet.observe(this) {roomList ->
-            val customTab = tabLayout.getTabAt(2)?.customView
-            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
-            tabCount?.text = "(${roomList.size})"
-        }
+    private fun capNhatTieuDeToaNha(userId: String, maNhaTro: String) {
+        FirebaseFirestore.getInstance()
+            .collection("NhaTro")
+            .document(userId)
+            .collection("DanhSachNhaTro")
+            .document(maNhaTro)
+            .get()
+            .addOnSuccessListener { document ->
+                document.getString("tenNhaTro")?.let { tenToaNha ->
+                    findViewById<TextView>(R.id.tvTitle)?.text = tenToaNha
+                }
+            }
+    }
 
-        viewModel.phongDaHuy.observe(this) {roomList ->
-            val customTab = tabLayout.getTabAt(3)?.customView
-            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
-            tabCount?.text = "(${roomList.size})"
-        }
+    private fun caiDatTheoDoiSoLuongTab() {
+        val tabLayout: TabLayout = findViewById(R.id.tabLayoutQLPhong)
 
-        viewModel.phongDaChoThue.observe(this) {roomList ->
-            val customTab = tabLayout.getTabAt(4)?.customView
-            val tabCount = customTab?.findViewById<TextView>(R.id.tabCount)
-            tabCount?.text = "(${roomList.size})"
+        // Theo dõi số lượng phòng trong mỗi trạng thái
+        viewModel.phongDaDang.observe(this) { danhSachPhong ->
+            capNhatSoLuongTab(tabLayout, 0, danhSachPhong.size)
         }
+        viewModel.phongDangLuu.observe(this) { danhSachPhong ->
+            capNhatSoLuongTab(tabLayout, 1, danhSachPhong.size)
+        }
+        viewModel.phongChoDuyet.observe(this) { danhSachPhong ->
+            capNhatSoLuongTab(tabLayout, 2, danhSachPhong.size)
+        }
+        viewModel.phongDaHuy.observe(this) { danhSachPhong ->
+            capNhatSoLuongTab(tabLayout, 3, danhSachPhong.size)
+        }
+        viewModel.phongDaChoThue.observe(this) { danhSachPhong ->
+            capNhatSoLuongTab(tabLayout, 4, danhSachPhong.size)
+        }
+    }
+
+    private fun capNhatSoLuongTab(tabLayout: TabLayout, viTri: Int, soLuong: Int) {
+        val tabTuyChinh = tabLayout.getTabAt(viTri)?.customView
+        val soLuongTab = tabTuyChinh?.findViewById<TextView>(R.id.tabCount)
+        soLuongTab?.text = "($soLuong)"
     }
 }

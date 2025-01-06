@@ -1,6 +1,7 @@
 package com.ph32395.staynow_datn.DangKiDangNhap
 
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -52,12 +53,26 @@ object OtpService {
             }
 
             override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
                 if (response.isSuccessful) {
-                    callback.onSuccess()
-                } else {
                     (context as? android.app.Activity)?.runOnUiThread {
-                        Toast.makeText(context, "OTP chưa đúng", Toast.LENGTH_SHORT).show()
-                        callback.onFailure("OTP chưa đúng")
+                        Toast.makeText(context, "OTP xác thực thành công!", Toast.LENGTH_SHORT)
+                            .show()
+                        callback.onSuccess()
+                    }
+                } else {
+                    try {
+                        val jsonResponse = JSONObject(responseBody ?: "{}")
+                        val errorMessage = jsonResponse.optString("details", "Lỗi không xác định")
+                        (context as? android.app.Activity)?.runOnUiThread {
+                            callback.onFailure(errorMessage)
+                        }
+                    } catch (e: JSONException) {
+                        (context as? android.app.Activity)?.runOnUiThread {
+                            Toast.makeText(context, "Phản hồi không hợp lệ", Toast.LENGTH_SHORT)
+                                .show()
+                            callback.onFailure("Phản hồi không hợp lệ")
+                        }
                     }
                 }
             }
@@ -97,11 +112,22 @@ object OtpService {
             }
 
             override fun onResponse(call: Call, response: Response) {
+                val responseBody = response.body?.string()
                 if (response.isSuccessful) {
                     callback.onSuccess()
                 } else {
-                    (context as? android.app.Activity)?.runOnUiThread {
-                        callback.onFailure("Lỗi từ server: ${response.message}")
+                    try {
+                        val jsonResponse = JSONObject(responseBody ?: "{}")
+                        val errorMessage = jsonResponse.optString("details", "Lỗi không xác định")
+                        (context as? android.app.Activity)?.runOnUiThread {
+                            callback.onFailure(errorMessage)
+                        }
+                    } catch (e: JSONException) {
+                        (context as? android.app.Activity)?.runOnUiThread {
+                            Toast.makeText(context, "Phản hồi không hợp lệ", Toast.LENGTH_SHORT)
+                                .show()
+                            callback.onFailure("Phản hồi không hợp lệ")
+                        }
                     }
                 }
             }

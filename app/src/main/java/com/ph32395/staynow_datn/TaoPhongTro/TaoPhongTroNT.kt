@@ -26,12 +26,14 @@ import com.ph32395.staynow_datn.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongAdapter
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongViewModel
+import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.NoiThat.GioiTinhAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroAdapter
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
+import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ThongTin.ThongTin
@@ -584,7 +586,7 @@ class TaoPhongTroNT : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                         ).show()
 
                         // Điều hướng sau khi lưu thành công
-                        val intent = Intent(this@TaoPhongTroNT, QuanLyPhongTroActivity::class.java)
+                        val intent = Intent(this@TaoPhongTroNT, QuanLyKhoPhongActivity::class.java)
                         startActivity(intent)
                         finish()
 

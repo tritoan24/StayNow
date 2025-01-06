@@ -79,7 +79,7 @@ class HomeViewModel : ViewModel() {
         _selectedLoaiPhongTro.value = idLoaiPhong
     }
 
-    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai(chuc nang quan ly phong tro)
     fun loadRoomByStatus(maNguoiDung: String) {
         // Lắng nghe thay đổi trong bảng PhongTro
         firestore.collection("PhongTro")
@@ -141,6 +141,85 @@ class HomeViewModel : ViewModel() {
             }
     }
 
+    // Hàm tải danh sách phòng đơn lẻ (không thuộc tòa nhà nào)
+    fun loadPhongDonLe(maNguoiDung: String) {
+        firestore.collection("PhongTro")
+            .whereEqualTo("maNguoiDung", maNguoiDung)
+            .whereEqualTo("maNhaTro", "") // Phòng đơn lẻ có maNhaTro rỗng
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("HomeViewModel", "Lỗi khi lắng nghe danh sách phòng: ", error)
+                    return@addSnapshotListener
+                }
+                xuLyDanhSachPhong(snapshot, maNguoiDung)
+            }
+    }
+
+
+    // Hàm tải danh sách phòng của một tòa nhà cụ thể
+    fun loadPhongTheoToaNha(maNguoiDung: String, maNhaTro: String) {
+        firestore.collection("PhongTro")
+            .whereEqualTo("maNguoiDung", maNguoiDung)
+            .whereEqualTo("maNhaTro", maNhaTro)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("HomeViewModel", "Lỗi khi lắng nghe danh sách phòng: ", error)
+                    return@addSnapshotListener
+                }
+                xuLyDanhSachPhong(snapshot, maNguoiDung)
+            }
+    }
+
+    // Hàm xử lý dữ liệu phòng từ Firestore
+    private fun xuLyDanhSachPhong(snapshot: QuerySnapshot?, maNguoiDung: String) {
+        if (snapshot != null && !snapshot.isEmpty) {
+            val danhSachPhong = snapshot.documents.mapNotNull { doc ->
+                doc.toObject(PhongTroModel::class.java)?.let { phong ->
+                    Pair(doc.id, phong)
+                }
+            }
+
+            val danhSachMaPhong = danhSachPhong.map { it.first }
+
+            // Lấy thông tin diện tích của phòng
+            firestore.collection("ChiTietThongTin")
+                .whereIn("maPhongTro", danhSachMaPhong)
+                .whereEqualTo("tenThongTin", "Diện tích")
+                .addSnapshotListener { chiTietSnapshot, chiTietError ->
+                    if (chiTietError != null) {
+                        Log.e("HomeViewModel", "Lỗi khi lấy chi tiết phòng: ", chiTietError)
+                        return@addSnapshotListener
+                    }
+
+                    val mapDienTich = chiTietSnapshot?.documents?.associate { doc ->
+                        doc.getString("maPhongTro") to doc.getDouble("soLuongDonVi")
+                    } ?: emptyMap()
+
+                    // Cập nhật diện tích cho từng phòng
+                    val danhSachPhongCapNhat = danhSachPhong.map { (id, phong) ->
+                        phong.dienTich = mapDienTich[id]?.toLong()
+                        Pair(id, phong)
+                    }
+
+                    // Phân loại phòng theo trạng thái
+                    _phongDaDang.value = danhSachPhongCapNhat.filter {
+                        it.second.trangThaiDuyet == "DaDuyet" && !it.second.trangThaiPhong
+                    }
+                    _phongDangLuu.value = danhSachPhongCapNhat.filter { it.second.trangThaiLuu }
+                    _phongChoDuyet.value = danhSachPhongCapNhat.filter { it.second.trangThaiDuyet == "ChoDuyet" }
+                    _phongDaHuy.value = danhSachPhongCapNhat.filter { it.second.trangThaiDuyet == "BiHuy" }
+                    _phongDaChoThue.value = danhSachPhongCapNhat.filter { it.second.trangThaiPhong }
+                }
+        } else {
+            Log.d("HomeViewModel", "Không tìm thấy phòng cho người dùng: $maNguoiDung")
+            // Xóa tất cả danh sách khi không có phòng
+            _phongDaDang.value = emptyList()
+            _phongDangLuu.value = emptyList()
+            _phongChoDuyet.value = emptyList()
+            _phongDaHuy.value = emptyList()
+            _phongDaChoThue.value = emptyList()
+        }
+    }
 
     //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
     fun updateRoomStatus(roomId: String, trangThaiDuyet: String, trangThaiLuu: Boolean) {

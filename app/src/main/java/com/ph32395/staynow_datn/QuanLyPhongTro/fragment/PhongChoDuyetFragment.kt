@@ -21,45 +21,44 @@ class PhongChoDuyetFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var roomAdapter: PhongTroAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var txtNoRoomChoDuyet: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        Khoi tao viewModel
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        val viewModel: HomeViewModel by viewModels()
-        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
-
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_cho_duyet, container, false)
 
-        val txtNoRoomChoDuyet = binding.findViewById<TextView>(R.id.txtNoRoomChoDuyet)
-
+        // Khởi tạo các view
         recyclerView = binding.findViewById(R.id.recyclerViewPhongChoDuyet)
+        txtNoRoomChoDuyet = binding.findViewById(R.id.txtNoRoomChoDuyet)
 
-        Log.d("PhongChoDuyetFragment", "Setting up RecyclerView and Adapter")
-        // Gán LayoutManager cho RecyclerView
+        // Lấy ViewModel được chia sẻ từ Activity
+        viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
+        setupRecyclerView()
+        observeRoomData()
+
+        return binding
+    }
+
+    private fun setupRecyclerView() {
         recyclerView.layoutManager = GridLayoutManager(context, 2)
-
-        // Gán Adapter cho RecyclerView
-        roomAdapter = PhongTroAdapter(mutableListOf(), viewModel) // Cập nhật lại list phòng từ viewModel
+        roomAdapter = PhongTroAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = roomAdapter
+    }
 
-        // Lắng nghe thay đổi từ ViewModel
-        viewModel.phongChoDuyet.observe(viewLifecycleOwner) { rooms ->
-            if (rooms.isEmpty()) {
+    private fun observeRoomData() {
+        viewModel.phongChoDuyet.observe(viewLifecycleOwner) { roomList ->
+            if (roomList.isEmpty()) {
                 txtNoRoomChoDuyet.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
             } else {
                 txtNoRoomChoDuyet.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
-                roomAdapter.updateRoomList(rooms)
+                roomAdapter.updateRoomList(roomList)
             }
-
         }
-
-        return binding
     }
 }

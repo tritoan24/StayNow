@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.DialogMsgNhaTroNhaBinding
 import com.ph32395.staynow_datn.databinding.ItemNhaTroNhaBinding
@@ -52,12 +54,14 @@ class NhaTroAdapter(
         val userId = FirebaseAuth.getInstance().currentUser?.uid
 
         holder.itemView.setOnClickListener {
-            //Update navigation quản ly nha tro
-            Toast.makeText(
-                holder.itemView.context,
-                "navigation quản ly nha tro",
-                Toast.LENGTH_SHORT
-            ).show()
+            // Chuyển đến màn hình QuanLyPhongTroActivity khi nhấn vào một tòa nhà
+            holder.itemView.setOnClickListener {
+                val intent = Intent(holder.itemView.context, QuanLyPhongTroActivity::class.java).apply {
+                    putExtra("maNhaTro", item.maNhaTro)
+                }
+                holder.itemView.context.startActivity(intent)
+            }
+
         }
         holder.btnEdit.setOnClickListener {
             val bottomSheetCreateAndUpdateNhaTro = BottomSheetCreateAndUpdateNhaTro(item)
