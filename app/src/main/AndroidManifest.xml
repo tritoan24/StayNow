@@ -34,7 +34,7 @@
             android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
             android:exported="true" />
         <activity
-            android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
+            android:name=".hieunt.view.feature.schedule_room.ScheduleRoomSuccessActivity"
             android:exported="false" />
         <activity
             android:name=".quanlyhoadon.DetailBillActivity"

@@ -1,4 +1,4 @@
-package com.ph32395.staynow_datn.hieunt.view.feature
+package com.ph32395.staynow_datn.hieunt.view.feature.schedule_room
 
 import android.annotation.SuppressLint
 import com.ph32395.staynow_datn.MainActivity

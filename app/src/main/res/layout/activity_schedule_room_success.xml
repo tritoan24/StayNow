@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".hieunt.view.feature.ScheduleRoomSuccessActivity"
+    tools:context=".hieunt.view.feature.schedule_room.ScheduleRoomSuccessActivity"
     android:paddingVertical="16dp">
     <LinearLayout
         android:layout_width="match_parent"

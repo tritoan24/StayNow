@@ -12,6 +12,7 @@ import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.ActivityScheduleRoomBinding
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.custom_view.WheelView
+import com.ph32395.staynow_datn.hieunt.database.db.AppDatabase
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DATE
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DAT_PHONG
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.HO_TEN
@@ -30,7 +31,6 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.ROOM_SCHEDULE
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
-import com.ph32395.staynow_datn.hieunt.view.feature.ScheduleRoomSuccessActivity
 import com.ph32395.staynow_datn.hieunt.view_model.CommonVM
 import com.ph32395.staynow_datn.hieunt.widget.currentBundle
 import com.ph32395.staynow_datn.hieunt.widget.getTextEx
@@ -74,7 +74,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
         roomIdInDetail = currentBundle()?.getString(ROOM_ID).toString()
 
-        if (roomIdInDetail.isEmpty()){
+        if (roomIdInDetail.isEmpty()) {
             toast("Có lỗi khi lấy thông tin!")
             finish()
         }
@@ -102,32 +102,97 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                 onBackPressedSystem()
             }
             tvConfirm.tap {
-                showLoading()
-                val scheduleRoomModel = ScheduleRoomModel().apply {
-                    maPhongTro = roomIdInDetail
-                    tenPhong = roomModel.tenPhongTro
-                    maChuTro = roomModel.maNguoiDung
-                    diaChiPhong = roomModel.diaChiChiTiet
-                    tenChuTro = renterNameByGetInfo
-                    sdtChuTro = renterPhoneNumberByGetInfo
-                    maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                    tenNguoiThue = tenantNameByGetInfo
-                    sdtNguoiThue = tenantPhoneNumberByGetInfo
-                    ngayDatPhong = dateSelected
-                    thoiGianDatPhong = "${hours}:${minutes}"
-                    ghiChu = edtNote.getTextEx()
-                    trangThaiDatPhong = 0
-                }
-                addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion ->
-                    lifecycleScope.launch(Dispatchers.Main) {
+                if (AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().checkRoomExist(roomIdInDetail)) {
+                    showLoading()
+                    val scheduleRoom = AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().getRoomScheduleRoomId(roomIdInDetail)
+                    if (scheduleRoom == null) {
+                        toast("Không lấy được thông tin phòng")
                         dismissLoading()
-                        if (isCompletion) {
-                            pushNotification(scheduleRoomModel){
-                                toastNotification(it)
+                    } else {
+                        getScheduleRoomFromFireStore(scheduleRoom.maDatPhong) { isCompletion, scheduleRoomModel ->
+                            lifecycleScope.launch {
+                                if (isCompletion) {
+                                    when(scheduleRoomModel?.trangThaiDatPhong) {
+                                        0 -> {
+                                            toast("Vui lòng chờ chủ trọ xác nhận")
+                                        }
+                                        1 -> {
+                                            toast("Phòng trọ đã được chủ trọ xác nhận")
+                                        }
+                                        2, 3 -> {
+                                            if (scheduleRoomModel.soLanDatPhong > 2) {
+                                                toast("Bạn đã bị đánh dấu Spam")
+                                            } else {
+                                                val scheduleNew = ScheduleRoomModel().apply {
+                                                    maPhongTro = roomIdInDetail
+                                                    tenPhong = roomModel.tenPhongTro
+                                                    maChuTro = roomModel.maNguoiDung
+                                                    diaChiPhong = roomModel.diaChiChiTiet
+                                                    tenChuTro = renterNameByGetInfo
+                                                    sdtChuTro = renterPhoneNumberByGetInfo
+                                                    maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                                                    tenNguoiThue = tenantNameByGetInfo
+                                                    sdtNguoiThue = tenantPhoneNumberByGetInfo
+                                                    ngayDatPhong = dateSelected
+                                                    thoiGianDatPhong = "${hours}:${minutes}"
+                                                    ghiChu = edtNote.getTextEx()
+                                                    trangThaiDatPhong = 0
+                                                }
+                                                addScheduleRoomToFireStore(scheduleNew) { isCompletion, scheduleModelWithId ->
+                                                    lifecycleScope.launch(Dispatchers.Main) {
+                                                        if (isCompletion) {
+                                                            AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().updateSchedule(
+                                                                    scheduleModelWithId.copy(soLanDatPhong = scheduleModelWithId.soLanDatPhong + 1
+                                                                )
+                                                            )
+                                                            pushNotification(scheduleNew){
+                                                                toastNotification(it)
+                                                            }
+                                                            launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleNew) }, ScheduleRoomSuccessActivity::class.java)
+                                                        } else {
+                                                            toast("Error")
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    toast("Lỗi khi lấy thông tin phòng")
+                                }
+                                dismissLoading()
                             }
-                            launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleRoomModel) }, ScheduleRoomSuccessActivity::class.java)
-                        } else {
-                            toast("Error")
+                        }
+                    }
+                } else {
+                    showLoading()
+                    val scheduleRoomModel = ScheduleRoomModel().apply {
+                        maPhongTro = roomIdInDetail
+                        tenPhong = roomModel.tenPhongTro
+                        maChuTro = roomModel.maNguoiDung
+                        diaChiPhong = roomModel.diaChiChiTiet
+                        tenChuTro = renterNameByGetInfo
+                        sdtChuTro = renterPhoneNumberByGetInfo
+                        maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                        tenNguoiThue = tenantNameByGetInfo
+                        sdtNguoiThue = tenantPhoneNumberByGetInfo
+                        ngayDatPhong = dateSelected
+                        thoiGianDatPhong = "${hours}:${minutes}"
+                        ghiChu = edtNote.getTextEx()
+                        trangThaiDatPhong = 0
+                    }
+                    addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion, scheduleModelWithId ->
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            dismissLoading()
+                            if (isCompletion) {
+                                AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().insertSchedule(scheduleModelWithId)
+                                pushNotification(scheduleRoomModel){
+                                    toastNotification(it)
+                                }
+                                launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleRoomModel) }, ScheduleRoomSuccessActivity::class.java)
+                            } else {
+                                toast("Error")
+                            }
                         }
                     }
                 }
@@ -148,23 +213,49 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         }
     }
 
+    private fun getScheduleRoomFromFireStore(
+        maDatPhong: String,
+        onCompletion: (Boolean, ScheduleRoomModel?) -> Unit
+    ) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val documentRef = FirebaseFirestore.getInstance().collection(DAT_PHONG).document(maDatPhong)
+                documentRef.get().addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        val scheduleRoom = documentSnapshot.toObject(ScheduleRoomModel::class.java)
+                        onCompletion.invoke(true, scheduleRoom)
+                    } else {
+                        onCompletion.invoke(false, null)
+                    }
+                }.addOnFailureListener { e ->
+                    Log.d("getScheduleRoomFromFireStore", "Error getting document: ${e.message}")
+                    onCompletion.invoke(false, null)
+                }
+            } catch (e: Exception) {
+                Log.d("getScheduleRoomFromFireStore", "Error: ${e.message}")
+                onCompletion.invoke(false, null)
+            }
+        }
+    }
+
+
     private fun addScheduleRoomToFireStore(
         schedule: ScheduleRoomModel,
-        onCompletion: (Boolean) -> Unit = {}
+        onCompletion: (Boolean, ScheduleRoomModel) -> Unit
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val documentRef = FirebaseFirestore.getInstance().collection(DAT_PHONG).document()
                 val scheduleWithId = schedule.copy(maDatPhong = documentRef.id)
                 documentRef.set(scheduleWithId).addOnSuccessListener {
-                    onCompletion.invoke(true)
+                    onCompletion.invoke(true, scheduleWithId)
                 }.addOnFailureListener { e ->
                     Log.d("addScheduleRoomToFireStore", "Error adding document: ${e.message}")
-                    onCompletion.invoke(false)
+                    onCompletion.invoke(false, scheduleWithId)
                 }
             } catch (e: Exception) {
                 Log.d("addScheduleRoomToFireStore", "Error: ${e.message}")
-                onCompletion.invoke(false)
+                onCompletion.invoke(false, ScheduleRoomModel())
             }
         }
     }
