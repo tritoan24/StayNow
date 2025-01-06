@@ -33,6 +33,13 @@
             android:name=".BaoMat.ToCaoTaiKhoan"
             android:exported="false" />
         <activity
+            android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
+            android:exported="false" />
+        <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
+        <activity
+            android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
+            android:exported="true" />
+        <activity
             android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
             android:exported="false" />
         <activity
@@ -55,9 +62,9 @@
         <activity
             android:name=".BaoMat.ThayDoiNgonNgu"
             android:exported="false" />
-        <activity
-            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"-->
+<!--            android:exported="false" />-->
 
         <service
             android:name=".hieunt.service.NotificationService"
@@ -122,6 +129,12 @@
             android:exported="false" />
         <activity
             android:name=".Activity.FullScreenImageActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TaoPhongTro.TaoPhongTroNT"
+            android:exported="false" />
+        <activity
+            android:name=".TaoPhongTro.TaoPhongTro"
             android:exported="false" />
         <activity
             android:name=".ChucNangTimKiem.SearchActivity"
@@ -205,9 +218,7 @@
         <activity
             android:name=".hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity"
             android:exported="true" />
-        <activity
-            android:name=".TaoPhongTro.TaoPhongTro"
-            android:exported="false" /> <!-- Thêm cấu hình cho Google Sign-In -->
+
         <meta-data
             android:name="com.google.android.gms.auth.api.signin.DEFAULT_SIGN_IN"
             android:value="@string/default_web_client_id" />

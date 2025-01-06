@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import androidx.cardview.widget.CardView
@@ -69,7 +70,7 @@ class RoomDetailActivity : AppCompatActivity() {
     //khai báo loading animation
     private lateinit var loadingUtil: LoadingUtil
 
-    private var maPhongTro = "68dNr0UV4fMRtq9Fhgrt"
+    private var maPhongTro = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,8 +81,7 @@ class RoomDetailActivity : AppCompatActivity() {
             finish()
         }
 
-//        roomId = intent.getStringExtra("maPhongTro") ?: ""
-        roomId = "68dNr0UV4fMRtq9Fhgrt"
+        roomId = intent.getStringExtra("maPhongTro") ?: ""
         favoriteIcon = findViewById(R.id.iconFavorite)
 
 //        fetch trang thai yeu thich tu Firestore
@@ -101,7 +101,7 @@ class RoomDetailActivity : AppCompatActivity() {
         viewmodelHome = ViewModelProvider(this)[HomeViewModel::class.java]
 
 //        Nhan du lieu tu Intent
-//        maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+        maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         ManHome = intent.getStringExtra("ManHome") ?: ""
 
 
@@ -498,6 +498,12 @@ class RoomDetailActivity : AppCompatActivity() {
                 )
                 dialog.show(supportFragmentManager, "CustomConfirmationDialog")
             }
+
+//            Chuc nang sao chep phong
+            findViewById<LinearLayout>(R.id.btnSaoChep).setOnClickListener {
+                showCopyRoomDialog()
+            }
+
 //            Chuc nang cho duyet -> dang luu
             findViewById<LinearLayout>(R.id.btnXacNhanHuy).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
@@ -695,6 +701,28 @@ class RoomDetailActivity : AppCompatActivity() {
         }
 
     }
+
+//    Ham xu ly code copy phong tro
+    private fun showCopyRoomDialog() {
+        CustomConfirmationDialog(
+            message = "Bạn có chắc chắn muốn sao chép phòng trọ này không?",
+            onConfirm = {
+                viewModel.room.value?.let { room ->
+                    viewModel.copyRoom(
+                        room,
+                        onSuccess = {
+                            Toast.makeText(this, "Sao chép phòng thành công", Toast.LENGTH_SHORT).show()
+                        },
+                        onError = { error ->
+                            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            },
+            onCancel = { /* Không cần làm gì khi hủy */ }
+        ).show(supportFragmentManager, "CopyRoomDialog")
+    }
+
     private fun navigateToUpdateCCCD() {
         val intent = Intent(this, CCCD::class.java)
         startActivity(intent)

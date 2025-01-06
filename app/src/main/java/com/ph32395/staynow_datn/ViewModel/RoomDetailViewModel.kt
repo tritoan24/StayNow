@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.Model.PhongTroModel
 import com.ph32395.staynow_datn.NoiThat.NoiThat
+import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
 import com.ph32395.staynow_datn.TienNghi.TienNghi
 
@@ -138,6 +139,17 @@ class RoomDetailViewModel : ViewModel() {
 //Lay thong tin chi tiet phong tro
     fun fetchRoomDetail(maPhongTro: String) {
         _isLoading.value = true //Bat dau tai
+
+//    Them kiem tra
+        if (maPhongTro.isBlank()) {
+            Log.e("RoomDetailViewModel", "Loi: ma phong tro trong")
+            _isLoading.value = false
+            return
+        }
+
+//    Them log de debug
+        Log.d("RoomDetailViewModel", "Dang tai thong tin phong cos ma: $maPhongTro")
+
         val docRef = db.collection("PhongTro").document(maPhongTro)
         docRef.get()
             .addOnSuccessListener { document ->
@@ -146,7 +158,7 @@ class RoomDetailViewModel : ViewModel() {
                         _room.value = room
                         Log.d("fetchRoomDetail", "room: $room")
                         fetchAdditionalInfo(room)
-                    }
+                    } ?: Log.d("RoomDetailViewModel", "Khong the chuyen doi du lieu qua PhongTroModel")
                 } else {
                     Log.d("RoomDetailViewModel", "Không có tài liệu này")
                 }
@@ -190,8 +202,8 @@ class RoomDetailViewModel : ViewModel() {
                 .get()
                 .addOnSuccessListener { dataSnapshot ->
                     dataSnapshot?.let {
-                        val anhDaiDien = it.child("anh_daidien").value as? String ?: ""
-                        val hoTen = it.child("ho_ten").value as? String ?: ""
+                        val anhDaiDien = it.child("anhDaiDien").value as? String ?: ""
+                        val hoTen = it.child("hoTen").value as? String ?: ""
                         val ma_NguoiDung = room.maNguoiDung
                         _userId.value = Pair(ma_NguoiDung,hoTen)
                         _userInfo.value = Pair(anhDaiDien, hoTen)
@@ -208,4 +220,87 @@ class RoomDetailViewModel : ViewModel() {
     fun getTienCocValue(): Double {
         return _tienCocInfo.value?.soLuongDonVi?.toDouble() ?: 0.0
     }
+
+//    Ham sao chep phong tro
+    fun copyRoom(originalRoom: PhongTroModel, onSuccess: () -> Unit, onError: (String) -> Unit) {
+        _isLoading.value = true
+
+//    Tao Id moi cho phong tro
+        val newRoomId = db.collection("PhongTro").document().id
+
+//    Tao ban sao cua phong voi Id moi
+        val copiedRoom = originalRoom.copy(
+            maPhongTro = newRoomId,
+            thoiGianTaoPhong = System.currentTimeMillis(),
+            ngayCapNhat = System.currentTimeMillis(),
+            soLuotXemPhong = 0,
+            thoiGianXem = 0L,
+            trangThaiLuu = false,
+            trangThaiYeuThich = false,
+            thoiGianYeuThich = null
+        )
+
+//    Bat dau transaction de sao chep tat ca cac du lieu lien quan
+        db.runTransaction { transaction ->
+//            1. Luu thong tin phong moi
+            transaction.set(db.collection("PhongTro").document(newRoomId), copiedRoom)
+
+//            2. Sao chep chi tiet thong tin
+            _chiTietList.value?.forEach { chiTiet ->
+                val newChiTietId = db.collection("ChiTietThongTin").document().id
+                val copiedChiTiet = chiTiet.copy(
+                    maPhongTro = newRoomId
+                )
+                transaction.set(
+                    db.collection("ChiTietThongTin").document(newChiTietId),
+                    copiedChiTiet
+                )
+            }
+
+//            3. Sao chep phi dich vu
+            _phiDichVuList.value?.forEach { phiDichVu ->
+                val newPhiDichVuId = db.collection("PhiDichVu").document().id
+                val copiedPhiDichVu = phiDichVu.copy(
+                    maPhongTro = newRoomId
+                )
+                transaction.set(
+                    db.collection("PhiDichVu").document(newPhiDichVuId),
+                    copiedPhiDichVu
+                )
+            }
+
+//            4. Sao chep noi that
+            _noiThatList.value?.forEach { noiThat ->
+                val newPhongTroNoiThatId = db.collection("PhongTroNoiThat").document().id
+                val phongTroNoiThat = hashMapOf(
+                    "maPhongTro" to newRoomId,
+                    "maNoiThat" to noiThat.maNoiThat
+                )
+                transaction.set(
+                    db.collection("PhongTroNoiThat").document(newPhongTroNoiThatId),
+                    phongTroNoiThat
+                )
+            }
+
+//            5. Sao chep tien nghi
+            _tienNghiList.value?.forEach { tienNghi ->
+                val newPhongTroTienNghiId = db.collection("PhongTroTienNghi").document().id
+                val phongTroTienNghi = hashMapOf(
+                    "maPhongTro" to newRoomId,
+                    "maTienNghi" to tienNghi.maTienNghi
+                )
+                transaction.set(
+                    db.collection("PhongTroTienNghi").document(newPhongTroTienNghiId),
+                    phongTroTienNghi
+                )
+            }
+        }.addOnSuccessListener {
+            _isLoading.value = false
+            onSuccess()
+        }.addOnFailureListener { e ->
+            _isLoading.value = false
+            onError(e.message ?: "Co loi xay ra khi sao chep phong")
+        }
+    }
 }
+

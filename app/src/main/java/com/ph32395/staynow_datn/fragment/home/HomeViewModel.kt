@@ -58,11 +58,28 @@ class HomeViewModel : ViewModel() {
     private val _roomListCT = MutableLiveData<List<Pair<String, PhongTroModel>>>()
     val roomListCT: LiveData<List<Pair<String, PhongTroModel>>> get() = _roomListCT
 
+
+    // LiveData for selected location
+    private val _selectedLocation = MutableLiveData<String>("Tất Cả")
+    val selectedLocation: LiveData<String> = _selectedLocation
+
+    // Cache cho từng location
+    private val cachedRoomsByLocation = mutableMapOf<String, Map<String, List<Pair<String, PhongTroModel>>>>()
+
+    // Hàm để cập nhật location được chọn
+    fun updateSelectedLocation(location: String) {
+        _selectedLocation.value = location
+        // Cập nhật lại danh sách phòng với location mới
+        selectedLoaiPhongTro.value?.let { maloaiPhongTro ->
+            updateRoomList(maloaiPhongTro)
+        }
+    }
+
     fun selectLoaiPhongTro(idLoaiPhong: String) {
         _selectedLoaiPhongTro.value = idLoaiPhong
     }
 
-    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai
+    //    Ham lay danh sach phong tro theo ma nguoi dung va trang thai(chuc nang quan ly phong tro)
     fun loadRoomByStatus(maNguoiDung: String) {
         // Lắng nghe thay đổi trong bảng PhongTro
         firestore.collection("PhongTro")
@@ -124,6 +141,85 @@ class HomeViewModel : ViewModel() {
             }
     }
 
+    // Hàm tải danh sách phòng đơn lẻ (không thuộc tòa nhà nào)
+    fun loadPhongDonLe(maNguoiDung: String) {
+        firestore.collection("PhongTro")
+            .whereEqualTo("maNguoiDung", maNguoiDung)
+            .whereEqualTo("maNhaTro", "") // Phòng đơn lẻ có maNhaTro rỗng
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("HomeViewModel", "Lỗi khi lắng nghe danh sách phòng: ", error)
+                    return@addSnapshotListener
+                }
+                xuLyDanhSachPhong(snapshot, maNguoiDung)
+            }
+    }
+
+
+    // Hàm tải danh sách phòng của một tòa nhà cụ thể
+    fun loadPhongTheoToaNha(maNguoiDung: String, maNhaTro: String) {
+        firestore.collection("PhongTro")
+            .whereEqualTo("maNguoiDung", maNguoiDung)
+            .whereEqualTo("maNhaTro", maNhaTro)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("HomeViewModel", "Lỗi khi lắng nghe danh sách phòng: ", error)
+                    return@addSnapshotListener
+                }
+                xuLyDanhSachPhong(snapshot, maNguoiDung)
+            }
+    }
+
+    // Hàm xử lý dữ liệu phòng từ Firestore
+    private fun xuLyDanhSachPhong(snapshot: QuerySnapshot?, maNguoiDung: String) {
+        if (snapshot != null && !snapshot.isEmpty) {
+            val danhSachPhong = snapshot.documents.mapNotNull { doc ->
+                doc.toObject(PhongTroModel::class.java)?.let { phong ->
+                    Pair(doc.id, phong)
+                }
+            }
+
+            val danhSachMaPhong = danhSachPhong.map { it.first }
+
+            // Lấy thông tin diện tích của phòng
+            firestore.collection("ChiTietThongTin")
+                .whereIn("maPhongTro", danhSachMaPhong)
+                .whereEqualTo("tenThongTin", "Diện tích")
+                .addSnapshotListener { chiTietSnapshot, chiTietError ->
+                    if (chiTietError != null) {
+                        Log.e("HomeViewModel", "Lỗi khi lấy chi tiết phòng: ", chiTietError)
+                        return@addSnapshotListener
+                    }
+
+                    val mapDienTich = chiTietSnapshot?.documents?.associate { doc ->
+                        doc.getString("maPhongTro") to doc.getDouble("soLuongDonVi")
+                    } ?: emptyMap()
+
+                    // Cập nhật diện tích cho từng phòng
+                    val danhSachPhongCapNhat = danhSachPhong.map { (id, phong) ->
+                        phong.dienTich = mapDienTich[id]?.toLong()
+                        Pair(id, phong)
+                    }
+
+                    // Phân loại phòng theo trạng thái
+                    _phongDaDang.value = danhSachPhongCapNhat.filter {
+                        it.second.trangThaiDuyet == "DaDuyet" && !it.second.trangThaiPhong
+                    }
+                    _phongDangLuu.value = danhSachPhongCapNhat.filter { it.second.trangThaiLuu }
+                    _phongChoDuyet.value = danhSachPhongCapNhat.filter { it.second.trangThaiDuyet == "ChoDuyet" }
+                    _phongDaHuy.value = danhSachPhongCapNhat.filter { it.second.trangThaiDuyet == "BiHuy" }
+                    _phongDaChoThue.value = danhSachPhongCapNhat.filter { it.second.trangThaiPhong }
+                }
+        } else {
+            Log.d("HomeViewModel", "Không tìm thấy phòng cho người dùng: $maNguoiDung")
+            // Xóa tất cả danh sách khi không có phòng
+            _phongDaDang.value = emptyList()
+            _phongDangLuu.value = emptyList()
+            _phongChoDuyet.value = emptyList()
+            _phongDaHuy.value = emptyList()
+            _phongDaChoThue.value = emptyList()
+        }
+    }
 
     //    Ham cap nhat trang thai phong chuyen phong tu da dang sang dang luu
     fun updateRoomStatus(roomId: String, trangThaiDuyet: String, trangThaiLuu: Boolean) {
@@ -221,59 +317,63 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    // Sửa lại hàm updateRoomList để hỗ trợ lọc theo location
     fun updateRoomList(maloaiPhongTro: String) {
-        // Nếu dữ liệu đã có trong cache, sử dụng luôn
-        cachedRooms[maloaiPhongTro]?.let {
+        val currentLocation = _selectedLocation.value ?: "Tất Cả"
+
+        // Kiểm tra cache
+        cachedRoomsByLocation[currentLocation]?.get(maloaiPhongTro)?.let {
             _roomList.postValue(it)
             return
         }
-        // Bọc logic trong coroutine với Dispatchers.IO
+
         viewModelScope.launch(Dispatchers.IO) {
             firestore.collection("LoaiPhong")
                 .whereEqualTo("maLoaiPhong", maloaiPhongTro)
                 .addSnapshotListener { loaiPhongSnapshot, exception ->
-
                     if (exception != null) {
                         Log.e("HomeViewModel", "Error listening for changes: ", exception)
                         return@addSnapshotListener
                     }
 
-                    val tenLoaiPhong =
-                        loaiPhongSnapshot?.documents?.firstOrNull()?.getString("tenLoaiPhong")
+                    val tenLoaiPhong = loaiPhongSnapshot?.documents?.firstOrNull()?.getString("tenLoaiPhong")
                     if (tenLoaiPhong != null) {
                         val roomsRef = firestore.collection("PhongTro")
-                        val query = if (tenLoaiPhong == "Tất Cả")
-                            roomsRef.whereEqualTo(
-                                "trangThaiDuyet",
-                                "DaDuyet"
-                            ).whereEqualTo("trangThaiPhong", false)
-                        else {
-                            roomsRef.whereEqualTo(
-                                "maLoaiNhaTro", maloaiPhongTro
-                            ).whereEqualTo(
-                                "trangThaiDuyet",
-                                "DaDuyet"
-                            ).whereEqualTo("trangThaiPhong", false)
-                        }
-                        query.addSnapshotListener { snapshot, exception ->
 
-                            if (exception != null) {
-                                Log.e("HomeViewModel", "Error fetching rooms: ", exception)
+                        // Tạo query cơ bản
+                        var query = roomsRef.whereEqualTo("trangThaiDuyet", "DaDuyet")
+                            .whereEqualTo("trangThaiPhong", false)
+
+                        // Thêm điều kiện lọc theo location nếu không phải "Tất Cả"
+                        if (currentLocation != "Tất Cả") {
+                            query = query.whereEqualTo("dcTinhTP", currentLocation)
+                        }
+
+                        // Thêm điều kiện lọc theo loại phòng nếu không phải "Tất Cả"
+                        if (tenLoaiPhong != "Tất Cả") {
+                            query = query.whereEqualTo("maLoaiNhaTro", maloaiPhongTro)
+                        }
+
+                        query.addSnapshotListener { snapshot, e ->
+                            if (e != null) {
+                                Log.e("HomeViewModel", "Error fetching rooms: ", e)
                                 return@addSnapshotListener
                             }
 
                             if (snapshot != null) {
-                                handleRoomList(snapshot) // Giữ lại hàm này như yêu cầu
+                                val rooms = snapshot.documents.map { doc ->
+                                    Pair(doc.id, doc.toObject(PhongTroModel::class.java)!!)
+                                }
+
+                                // Cập nhật cache cho location hiện tại
+                                if (!cachedRoomsByLocation.containsKey(currentLocation)) {
+                                    cachedRoomsByLocation[currentLocation] = mutableMapOf()
+                                }
+                                (cachedRoomsByLocation[currentLocation] as MutableMap)[maloaiPhongTro] = rooms
+
+                                fetchChiTietThongTinForRoomList(rooms, maloaiPhongTro)
+                                _roomList.postValue(rooms)
                             }
-
-                            val rooms = snapshot?.documents?.map { doc ->
-                                Pair(doc.id, doc.toObject(PhongTroModel::class.java)!!)
-                            } ?: emptyList()
-
-                            fetchChiTietThongTinForRoomList(rooms, maloaiPhongTro)
-                            cachedRooms[maloaiPhongTro] = rooms
-                            _roomList.postValue(rooms)
-
                         }
                     }
                 }
@@ -440,7 +540,7 @@ class HomeViewModel : ViewModel() {
 
     fun clearRoomCache() {
         cachedRooms.clear()  // Xóa cache trước khi tải lại dữ liệu
+        cachedRoomsByLocation.clear()
         Log.d("HomeViewModel", "Cache cleared")  // Để debug log khi cache bị xóa
     }
-
 }

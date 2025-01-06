@@ -150,4 +150,7 @@ dependencies {
     //progressdialog
     implementation("com.github.techinessoverloaded:progress-dialog:1.5.1")
 
+    implementation ("com.github.aabhasr1:OtpView:v1.1.2-ktx")
+
+
 }

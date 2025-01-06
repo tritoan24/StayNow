@@ -116,6 +116,7 @@ public class DangKy extends AppCompatActivity {
 
         // Đăng ký sự kiện cho nút "Đăng ký"
         registerButton.setOnClickListener(view -> {
+            loadingUtil = new LoadingUtil(this);
             loadingUtil.show();
             String ten = tenEditText.getText().toString().trim();
             String sdt = sdtEditText.getText().toString().trim();
@@ -308,7 +309,7 @@ public class DangKy extends AppCompatActivity {
                                     if (dataSnapshot.exists()) {
                                         // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            String trangThaiTaiKhoan = snapshot.child(" ").getValue(String.class);
+                                            String trangThaiTaiKhoan = snapshot.child("trangThaiTaiKhoan").getValue(String.class);
                                             Boolean daXacThucValue = snapshot.child("daXacThuc").getValue(Boolean.class);
                                             // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
                                             boolean daXacThuc = daXacThucValue != null && daXacThucValue;

@@ -251,6 +251,7 @@ public class DangNhap extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             runOnUiThread(() -> {
+                                loadingUtil.hide();
                                 Intent intent = new Intent(DangNhap.this, OTPActivity.class);
                                 intent.putExtra("uid", user.getUid());
                                 intent.putExtra("email", user.getEmail());
@@ -261,6 +262,7 @@ public class DangNhap extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull String errorMessage) {
                             runOnUiThread(() -> {
+                                loadingUtil.hide();
                                 Toast.makeText(DangNhap.this, errorMessage, Toast.LENGTH_SHORT).show();
                             });
                         }
@@ -298,7 +300,7 @@ public class DangNhap extends AppCompatActivity {
                                     if (dataSnapshot.exists()) {
                                         // Tài khoản đã tồn tại, kiểm tra trạng thái tài khoản
                                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                            String trangThaiTaiKhoan = snapshot.child(" ").getValue(String.class);
+                                            String trangThaiTaiKhoan = snapshot.child("trangThaiTaiKhoan").getValue(String.class);
                                             Boolean daXacThucValue = snapshot.child("daXacThuc").getValue(Boolean.class);
                                             // Đảm bảo `daXacThuc` không null, mặc định là false nếu không có giá trị
                                             boolean daXacThuc = daXacThucValue != null && daXacThucValue;
@@ -320,8 +322,10 @@ public class DangNhap extends AppCompatActivity {
                                                         loadingUtil.hide();
                                                         intent = new Intent(DangNhap.this, ChonLoaiTK.class);
                                                     }
+                                                    loadingUtil.hide();
                                                     startActivity(intent);
                                                 } else {
+                                                    loadingUtil.hide();
                                                     proceedToOtpActivity(user);
                                                 }
 
@@ -398,9 +402,7 @@ public class DangNhap extends AppCompatActivity {
 
         dialog.show();
 
-        new Handler().postDelayed(() -> {
-            dialog.dismiss();
-        }, 1500);
+        new Handler().postDelayed(dialog::dismiss, 1500);
     }
 
 
