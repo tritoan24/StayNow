@@ -68,7 +68,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
         return ActivityScheduleRoomBinding.inflate(layoutInflater)
     }
 
-    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java    
+    override fun initViewModel(): Class<CommonVM> = CommonVM::class.java
 
     override fun initView() {
         roomModel = currentBundle()?.getSerializable(ROOM_DETAIL) as? PhongTroModel ?: PhongTroModel()
@@ -104,12 +104,14 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
             tvConfirm.tap {
                 if (AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().checkRoomExist(roomIdInDetail)) {
                     showLoading()
-                    val scheduleRoom = AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().getRoomScheduleRoomId(roomIdInDetail)
-                    if (scheduleRoom == null) {
+                    val scheduleRoomInDataBase = AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().getRoomScheduleRoomId(roomIdInDetail)
+                    if (scheduleRoomInDataBase == null) {
                         toast("Không lấy được thông tin phòng")
                         dismissLoading()
                     } else {
-                        getScheduleRoomFromFireStore(scheduleRoom.maDatPhong) { isCompletion, scheduleRoomModel ->
+                        Log.d("soLanDatPhong", "soLanDatPhongInDB: ${scheduleRoomInDataBase.soLanDatPhong}")
+                        getScheduleRoomFromFireStore(scheduleRoomInDataBase.maDatPhong) { isCompletion, scheduleRoomModel ->
+                            Log.d("soLanDatPhong", "soLanDatPhongInFireStore: ${scheduleRoomModel?.soLanDatPhong}")
                             lifecycleScope.launch {
                                 if (isCompletion) {
                                     when(scheduleRoomModel?.trangThaiDatPhong) {
@@ -120,7 +122,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                                             toast("Phòng trọ đã được chủ trọ xác nhận")
                                         }
                                         2, 3 -> {
-                                            if (scheduleRoomModel.soLanDatPhong > 2) {
+                                            if (scheduleRoomInDataBase.soLanDatPhong > 3) {
                                                 toast("Bạn đã bị đánh dấu Spam")
                                             } else {
                                                 val scheduleNew = ScheduleRoomModel().apply {
@@ -137,12 +139,14 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                                                     thoiGianDatPhong = "${hours}:${minutes}"
                                                     ghiChu = edtNote.getTextEx()
                                                     trangThaiDatPhong = 0
+                                                    soLanDatPhong = scheduleRoomInDataBase.soLanDatPhong + 1
                                                 }
                                                 addScheduleRoomToFireStore(scheduleNew) { isCompletion, scheduleModelWithId ->
                                                     lifecycleScope.launch(Dispatchers.Main) {
                                                         if (isCompletion) {
+                                                            Log.d("soLanDatPhong", "soLanDatPhong: ${scheduleModelWithId.maDatPhong}")
                                                             AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().updateSchedule(
-                                                                    scheduleModelWithId.copy(soLanDatPhong = scheduleModelWithId.soLanDatPhong + 1
+                                                                scheduleModelWithId.copy(soLanDatPhong = scheduleRoomInDataBase.soLanDatPhong + 1
                                                                 )
                                                             )
                                                             pushNotification(scheduleNew){
@@ -180,6 +184,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                         thoiGianDatPhong = "${hours}:${minutes}"
                         ghiChu = edtNote.getTextEx()
                         trangThaiDatPhong = 0
+                        soLanDatPhong = 1
                     }
                     addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion, scheduleModelWithId ->
                         lifecycleScope.launch(Dispatchers.Main) {
