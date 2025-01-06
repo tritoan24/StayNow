@@ -40,6 +40,11 @@ class TenantManageScheduleRoomAdapter(
                 tvNameRoom.text = "Tên phòng: ${data.tenPhong}"
                 tvPhoneNumber.text = "SDT: ${data.sdtChuTro}"
                 tvTime.text = "Thời gian: ${data.thoiGianDatPhong} ngày ${data.ngayDatPhong}"
+                if (data.ghiChu.isNotEmpty()){
+                    tvNote.text = data.ghiChu
+                } else {
+                    tvNote.gone()
+                }
                 tvCancelSchedule.tap {
                     onClickCancelSchedule.invoke(data)
                 }
@@ -65,6 +70,11 @@ class TenantManageScheduleRoomAdapter(
                 tvNameRoom.text = "Tên phòng: ${data.tenPhong}"
                 tvPhoneNumber.text = "SDT: ${data.sdtChuTro}"
                 tvTime.text = "Thời gian: ${data.thoiGianDatPhong} ngày ${data.ngayDatPhong}"
+                if (data.ghiChu.isNotEmpty()){
+                    tvNote.text = data.ghiChu
+                } else {
+                    tvNote.gone()
+                }
                 tvWatched.tap {
                     onClickWatched.invoke(data)
                 }

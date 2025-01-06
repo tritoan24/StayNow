@@ -1,5 +1,7 @@
 package com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -25,6 +27,9 @@ import com.ph32395.staynow_datn.hieunt.widget.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 class TenantManageScheduleRoomActivity :
     BaseActivity<ActivityTenantManageScheduleRoomBinding, ManageScheduleRoomVM>() {
@@ -99,6 +104,7 @@ class TenantManageScheduleRoomActivity :
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun dataObserver() {
         showLoading()
         viewModel.fetchAllScheduleByTenant(FirebaseAuth.getInstance().currentUser?.uid.toString()) {
@@ -113,6 +119,23 @@ class TenantManageScheduleRoomActivity :
                         } else {
                             binding.tvNoData.visible()
                         }
+
+                        val filteredList = it.filter { schedule ->
+                            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                            val currentDate = LocalDate.now()
+                            // Chuyển đổi `ngayDatPhong` thành LocalDate
+                            val ngayDatPhong = try {
+                                LocalDate.parse(schedule.ngayDatPhong, formatter)
+                            } catch (e: Exception) {
+                                null
+                            }
+                            // Kiểm tra điều kiện lọc
+                            ngayDatPhong?.let { ngayDat ->
+                                val daysBetween = ChronoUnit.DAYS.between(ngayDat, currentDate)
+                                daysBetween > 3 && schedule.trangThaiDatPhong == 1
+                            } ?: false
+                        }
+
                         manageScheduleRoomAdapter?.addListObserver(it)
                         dismissLoading()
                     }

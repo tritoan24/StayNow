@@ -48,6 +48,16 @@
             android:fontFamily="@font/inter_medium"
             android:layout_marginBottom="8dp"
             />
+        <TextView
+            android:id="@+id/tv_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Note"
+            android:textSize="16sp"
+            android:fontFamily="@font/inter_medium"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/quantum_yellow"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="44dp"
