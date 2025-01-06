@@ -1,18 +1,14 @@
 package com.ph32395.staynow_datn.QuanLyPhongTro.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.fragment.home.HomeViewModel
 import com.ph32395.staynow_datn.fragment.home.PhongTroAdapter
@@ -21,32 +17,36 @@ class PhongDaDangFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var roomAdapter: PhongTroAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var txtNoRoomDaDang: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //        Khoi tao viewModel
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        val viewModel: HomeViewModel by viewModels()
-        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
-
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_da_dang, container, false)
 
-        val txtNoRoomDaDang = binding.findViewById<TextView>(R.id.txtNoRoomDaDang)
-
+        // Khởi tạo các view
         recyclerView = binding.findViewById(R.id.recyclerViewPhongDaDang)
-        Log.d("PhongDaDangFragment", "Setting up RecyclerView and Adapter")
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        txtNoRoomDaDang = binding.findViewById(R.id.txtNoRoomDaDang)
 
-        // Setup RecyclerView
+        // Lấy ViewModel được chia sẻ từ Activity
+        viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
+        setupRecyclerView()
+        observeRoomData()
+
+        return binding
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
         roomAdapter = PhongTroAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = roomAdapter
+    }
 
-        // Quan sat du lieu tu ViewModel
-        viewModel.phongDaDang.observe(viewLifecycleOwner, Observer { roomList ->
+    private fun observeRoomData() {
+        viewModel.phongDaDang.observe(viewLifecycleOwner) { roomList ->
             if (roomList.isEmpty()) {
                 txtNoRoomDaDang.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
@@ -55,9 +55,7 @@ class PhongDaDangFragment : Fragment() {
                 recyclerView.visibility = View.VISIBLE
                 roomAdapter.updateRoomList(roomList)
             }
-
-        })
-
-        return binding
+        }
     }
 }
+

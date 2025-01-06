@@ -21,32 +21,36 @@ class PhongDaChoThueFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
     private lateinit var roomAdapter: PhongTroAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var txtNoRoomDaChoThue: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        //        Khoi tao viewModel
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-
-        val viewModel: HomeViewModel by viewModels()
-        viewModel.loadRoomByStatus(FirebaseAuth.getInstance().currentUser?.uid ?: "")
-
         // Inflate the layout for this fragment
         val binding = inflater.inflate(R.layout.fragment_phong_da_cho_thue, container, false)
 
-        val txtNoRoomDaChoThue = binding.findViewById<TextView>(R.id.txtNoRoomDaChoThue)
-
+        // Khởi tạo các view
         recyclerView = binding.findViewById(R.id.recyclerViewPhongDaThue)
-        Log.d("PhongDaChoThueFragment", "Setting up RecyclerView and Adapter")
-        recyclerView.layoutManager = GridLayoutManager(context, 2)
+        txtNoRoomDaChoThue = binding.findViewById(R.id.txtNoRoomDaChoThue)
 
-        // Setup RecyclerView
+        // Lấy ViewModel được chia sẻ từ Activity
+        viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
+        setupRecyclerView()
+        observeRoomData()
+
+        return binding
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView.layoutManager = GridLayoutManager(context, 2)
         roomAdapter = PhongTroAdapter(mutableListOf(), viewModel)
         recyclerView.adapter = roomAdapter
+    }
 
-        // Observe phongDaChoThue LiveData from ViewModel
-        viewModel.phongDaChoThue.observe(viewLifecycleOwner, Observer { roomList ->
+    private fun observeRoomData() {
+        viewModel.phongDaChoThue.observe(viewLifecycleOwner) { roomList ->
             if (roomList.isEmpty()) {
                 txtNoRoomDaChoThue.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
@@ -55,9 +59,6 @@ class PhongDaChoThueFragment : Fragment() {
                 recyclerView.visibility = View.VISIBLE
                 roomAdapter.updateRoomList(roomList)
             }
-
-        })
-
-        return binding
+        }
     }
 }
