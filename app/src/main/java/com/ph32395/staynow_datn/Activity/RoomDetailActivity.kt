@@ -210,7 +210,7 @@ class RoomDetailActivity : AppCompatActivity() {
                 intent.putExtra("idUser", maNguoiDung)
 
                 // Tạo dynamic link
-                val roomDetailLink = "https://staynowapp.com?roomType=${maPhongTro}&utm_source=messenger"
+                val roomDetailLink = "https://staynowapp.com?roomType=${roomId}&utm_source=messenger"
                 createShortDynamicLink(roomDetailLink) { dynamicLink ->
                     shareLink(dynamicLink)
                 }
@@ -299,13 +299,24 @@ class RoomDetailActivity : AppCompatActivity() {
 
     private fun shareLink(dynamicLink: String) {
         val shareIntent = Intent(Intent.ACTION_SEND).apply {
-            type = "text/plain" // Định dạng chia sẻ là văn bản
-            putExtra(Intent.EXTRA_TEXT, dynamicLink) // Thêm dynamic link vào Intent
+            type = "text/plain" // The format for the link being shared
+            putExtra(Intent.EXTRA_TEXT, dynamicLink) // Add dynamic link as text
         }
 
-        // Hiển thị các ứng dụng có thể chia sẻ link
+        // Find Messenger package and set it as the target for sharing
+        val messengerPackage = "com.facebook.orca" // Package name for Messenger
+        val resolvedIntentActivities = packageManager.queryIntentActivities(shareIntent, 0)
+        for (resolvedIntentInfo in resolvedIntentActivities) {
+            if (resolvedIntentInfo.activityInfo.packageName == messengerPackage) {
+                shareIntent.setPackage(messengerPackage) // Specify Messenger as the target
+                break
+            }
+        }
+
+        // Show the share dialog, defaulting to Messenger if available
         startActivity(Intent.createChooser(shareIntent, "Chia sẻ qua"))
     }
+
     private fun createShortDynamicLink(roomDetailLink: String, onComplete: (String) -> Unit) {
         FirebaseDynamicLinks.getInstance().createDynamicLink()
             .setLink(Uri.parse(roomDetailLink))
