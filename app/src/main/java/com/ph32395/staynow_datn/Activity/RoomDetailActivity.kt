@@ -10,7 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
 import androidx.cardview.widget.CardView
@@ -38,7 +37,6 @@ import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow_datn.MainActivity
-import com.ph32395.staynow_datn.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow_datn.fragment.RoomManagementFragment
@@ -103,6 +101,9 @@ class RoomDetailActivity : AppCompatActivity() {
 //        Nhan du lieu tu Intent
         maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         ManHome = intent.getStringExtra("ManHome") ?: ""
+        //cong add
+        val trangThaiNhaTro = intent.getStringExtra("trangThaiNhaTro")?:""
+        Log.e("TAGRoomDetail", "onCreate: $trangThaiNhaTro" )
 
 
         if (ManHome == "ManND") {
@@ -226,7 +227,7 @@ class RoomDetailActivity : AppCompatActivity() {
 
         setupRecyclerViewNoiThat()
         setupImage()
-        observeViewModel()
+        observeViewModel(trangThaiNhaTro)//cong add
         setupRecyclerView()
         setupListPhiDichVu()
         setupRecyViewTienNghi()
@@ -393,7 +394,7 @@ class RoomDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun observeViewModel() {
+    private fun observeViewModel(trangThaiNhaTro: String) {//cong add
 //        Quan sat chi tiet phong tro chinh
         viewModel.room.observe(this) { room ->
 //            Cap nhat giao dien thong tin phong tro
@@ -410,6 +411,7 @@ class RoomDetailActivity : AppCompatActivity() {
             Log.d("RoomDetailActivity", "Trang thai duyet: $trangThaiDuyet")
             Log.d("RoomDetailActivity", "Trang thai luu: $trangThaiLuu")
             Log.d("RoomDetailActivity", "Trang thai phong: $trangThaiPhong")
+            Log.d("RoomDetailActivity", "Trang thai nha tro: $trangThaiNhaTro")
 
 
             Log.d("RoomDetailActivity", "Home: $ManHome")
@@ -421,6 +423,11 @@ class RoomDetailActivity : AppCompatActivity() {
                     findViewById<CardView>(R.id.cardViewChucNangPhongDangDang).visibility = View.VISIBLE
                     findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE
                 }
+                //cong add start
+                else if(trangThaiNhaTro == "NgungHoatDong"){
+                    findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.GONE
+                }
+                //cong add end
                 else if(trangThaiLuu == true) {
                     findViewById<CardView>(R.id.cardViewChucNangPhongDangLuu).visibility = View.VISIBLE
                     findViewById<CardView>(R.id.cardThongTinChuTro).visibility = View.GONE

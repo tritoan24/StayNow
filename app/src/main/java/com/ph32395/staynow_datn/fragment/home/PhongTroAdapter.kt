@@ -65,6 +65,7 @@ class PhongTroAdapter(
         private val roomTime: TextView = itemView.tvTgianTao
         private var loaiTaiKhoan: String = ""
         private val firestore = FirebaseFirestore.getInstance()
+        private var trangThaiNhaTro: Boolean? = null
 
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(room: PhongTroModel, roomId: String) {
@@ -103,17 +104,24 @@ class PhongTroAdapter(
             }
 
 
+            fetchTrangThaiNhaTro(roomId, firestore, userId) {
+                trangThaiNhaTro = it
+            }
+
 //            Xu ly su kien khi click item sang man chi tiet
             itemView.tap {
                 //Luu thong tin phong tro da xem
                 val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return@tap
                 saveRoomToHistory(userId, roomId)
-
+                Log.e("TAG", "bind: $trangThaiNhaTro")
                 val context = itemView.context
                 val intent = Intent(context, RoomDetailActivity::class.java)
                 intent.putExtra("maPhongTro", roomId)
                 Log.d("PTAdapter", loaiTaiKhoan)
                 intent.putExtra("ManHome", loaiTaiKhoan)
+                if (trangThaiNhaTro == false) {
+                    intent.putExtra("trangThaiNhaTro", "NgungHoatDong")
+                }
                 context.startActivity(intent)
             }
         }
@@ -143,5 +151,43 @@ class PhongTroAdapter(
                 Log.e("Firestore", "Error saving room to history", it)
             }
         }
+    }
+
+    private fun fetchTrangThaiNhaTro(
+        maPhongTro: String,
+        firestore: FirebaseFirestore,
+        userId: String,
+        onResult: (Boolean) -> Unit
+    ) {
+        Log.e("TAG", "fetchTrangThaiNhaTro: $maPhongTro")
+        firestore.collection("PhongTro").document(maPhongTro)
+            .get()
+            .addOnSuccessListener {
+                val maNhaTro = it.getString("maNhaTro").toString()
+                Log.e("TAG", "fetchTrangThaiNhaTro: $maNhaTro")
+                if (maNhaTro != ""){
+                    firestore.collection("NhaTro")
+                        .document(userId)
+                        .collection("DanhSachNhaTro")
+                        .document(maNhaTro)
+                        .get()
+                        .addOnSuccessListener {
+                            val trangThaiNhaTro = it.getBoolean("trangThai")
+                            Log.e("TAG", "fetchTrangThaiNhaTro:trangThaiNhaTro $trangThaiNhaTro")
+                            if (trangThaiNhaTro != null) {
+                                onResult(trangThaiNhaTro)
+                            }
+                        }
+                        .addOnFailureListener {
+                            Log.e("TAG", "fetchTrangThaiNhaTro:${it.message.toString()}")
+                        }
+                }
+
+            }
+
+            .addOnFailureListener {
+                Log.e("TAG", "fetchTrangThaiNhaTro: ${it.message.toString()}")
+            }
+
     }
 }
