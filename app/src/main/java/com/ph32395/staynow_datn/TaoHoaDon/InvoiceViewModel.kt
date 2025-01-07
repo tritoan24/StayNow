@@ -24,7 +24,7 @@ class InvoiceViewModel : ViewModel() {
     // Thêm một hóa đơn mới
     fun addInvoice(
         invoice: InvoiceMonthlyModel,
-        onSuccess: () -> Unit,
+        onSuccess: (String) -> Unit,
         onFailure: (Exception) -> Unit
     ) {
         val invoiceId = invoiceCollection.document().id // Tạo ID tự động
@@ -32,7 +32,7 @@ class InvoiceViewModel : ViewModel() {
 
         invoiceCollection.document(invoiceId).set(invoiceWithId)
             .addOnSuccessListener {
-                onSuccess()
+                onSuccess(invoiceId)
             }
             .addOnFailureListener { exception ->
                 onFailure(exception)
@@ -40,11 +40,8 @@ class InvoiceViewModel : ViewModel() {
     }
 
     fun fetchInvoiceById(invoiceId: String) {
-        // Ensure the full path is used
-        val fullPath = "HoaDon/$invoiceId" // Adjust the collection name as needed
-
         FirebaseFirestore.getInstance()
-            .collection("HoaDon") // Ensure this matches your Firestore collection name
+            .collection("HoaDon")
             .document(invoiceId)
             .get()
             .addOnSuccessListener { documentSnapshot ->
@@ -61,7 +58,8 @@ class InvoiceViewModel : ViewModel() {
                 _invoice.value = null
             }
     }
-    fun fetchInvoicesForUser(type: String,userId: String, trangThai: InvoiceStatus) {
+
+    fun fetchInvoicesForUser(type: String, userId: String, trangThai: InvoiceStatus) {
         invoiceCollection
             .whereEqualTo("trangThai", trangThai)
             .whereEqualTo(type, userId)
@@ -107,6 +105,7 @@ class InvoiceViewModel : ViewModel() {
             _invoices.value = invoicesList ?: emptyList()
         }
     }
+
     fun updateInvoiceStatus(invoiceId: String, newStatus: InvoiceStatus) {
         // Lấy tham chiếu đến Firestore collection chứa hóa đơn
         val invoiceRef = invoiceCollection.document(invoiceId)

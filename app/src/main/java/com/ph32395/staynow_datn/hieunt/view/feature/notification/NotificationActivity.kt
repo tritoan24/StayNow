@@ -16,7 +16,6 @@ import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
 import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
-import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractTerminatedActivity
 import com.ph32395.staynow_datn.fragment.contract_tenant.ContractActivity
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
@@ -118,7 +117,6 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 TYPE_NOTI_BILL_MONTHLY_REMIND,TYPE_NOTI_PAYMENT_INVOICE -> {
                     val intent = Intent(this, DetailBillActivity::class.java).apply {
                         putExtra("invoiceId", notification.idModel)
-                        putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }
@@ -133,7 +131,6 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 TYPE_NOTI_TERMINATED_REQUEST -> {
                     val intent = Intent(this, BillContractActivity::class.java).apply {
                         putExtra("contractId", notification.idModel)
-                        putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }

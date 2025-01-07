@@ -42,6 +42,7 @@ data class HopDong(
     val trangThai: ContractStatus = ContractStatus.PENDING,
     val yeuCauChamDut: TerminationStatus = TerminationStatus.NOT_YET,
     val lyDoChamDut: String = "",
+    val daTaoHoaDonChamDut: Boolean = false,
     // Thông tin hóa đơn
     val hoaDonHopDong: Invoice = Invoice(),
 

@@ -23,7 +23,7 @@
         tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_terminatedProcessing_contracts"
-        android:title="Hợp đồng đang xử lý chấm dứt"
+        android:title="Hợp đồng đang chờ xử lý chấm dứt"
         tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_terminated_contracts"

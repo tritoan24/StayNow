@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -47,45 +48,49 @@ class DetailBillActivity : AppCompatActivity() {
         // nhận intent từ billAdapter
         val invoice = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
         val invoiceId = intent.getStringExtra("invoiceId")
-
         val detail = intent.getStringExtra("detail")
-        val notify = intent.getStringExtra("notify")
 
         // convert invoice to jsonArrStr
         val gson = Gson()
         val itemsArrStr = gson.toJson(listOf(invoice))
 
+        // Kiểm tra nếu có invoiceId
         if (invoiceId != null) {
+            Log.d("zzzzDetailBillActivity", "invoiceId: $invoiceId")
             invoiceViewModel.fetchInvoiceById(invoiceId)
             invoiceViewModel.invoice.observe(this) { invoices ->
-                if (invoice != null) {
-                    invoices?.let { updateUI(it) }
+                invoices?.let {
+                    updateUI(it)  // Cập nhật UI với dữ liệu lấy được từ ViewModel
+                } ?: run {
+                    Log.d("zzzzDetailBillActivity", "Không tìm thấy hóa đơn với id: $invoiceId")
                 }
             }
         }
 
-        if(invoice!=null){
-            updateUI(invoice)
+        // Kiểm tra nếu có invoice từ Intent
+        invoice?.let {
+            updateUI(it)  // Cập nhật UI với dữ liệu từ Intent
         }
 
+        // Nếu có thông tin detail, ẩn nút thanh toán
         if (detail != null) {
             binding.btnThanhtoan.visibility = View.GONE
             binding.tvTitle.text = "Chi tiết hóa đơn hàng tháng"
         }
-        if (notify != null) {
-            binding.btnThanhtoan.visibility = View.GONE
-        }
+
+        // Nếu hóa đơn không phải trạng thái PENDING, ẩn nút thanh toán
         if (invoice?.trangThai != InvoiceStatus.PENDING) {
             binding.btnThanhtoan.visibility = View.GONE
         }
 
+        // Sự kiện nhấn nút quay lại
         binding.ivBack.tap {
             onBackPressed()
             finish()
         }
 
+        // Sự kiện nhấn nút thanh toán
         binding.btnThanhtoan.tap {
-
             showConfirmDialog(
                 this,
                 "Xác nhận thanh toán",
@@ -95,7 +100,7 @@ class DetailBillActivity : AppCompatActivity() {
                 val orderProcessor = OrderProcessorService(this)
                 orderProcessor.checkAndCreateOrder(
                     invoice?.tongTien ?: 0.0,
-                    invoice?.idHoaDon?:"",
+                    invoice?.idHoaDon ?: "",
                     itemsArrStr,
                     TypeBill.HoaDonHangThang
                 ) { token, orderUrl, remainTime ->
@@ -110,23 +115,24 @@ class DetailBillActivity : AppCompatActivity() {
                     }
                 }
             }
-
         }
-
     }
 
+    // Cập nhật giao diện với dữ liệu hóa đơn
     @SuppressLint("SetTextI18n")
     private fun updateUI(invoice: InvoiceMonthlyModel) {
+        if(invoice.trangThai!=InvoiceStatus.PENDING){
+            binding.btnThanhtoan.visibility = View.GONE
+        }
         // Thông tin chung hóa đơn
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
-        binding.tvRoomName.text = "Phòng: " + invoice.tenPhong
+        binding.tvRoomName.text = "Phòng: ${invoice.tenPhong}"
         binding.tvInvoiceDate.text = "Ngày tạo hóa đơn: ${invoice.ngayTaoHoaDon}"
         binding.tvTotal.text = formatCurrency(invoice.tongTien)
         binding.tvRoomPrice.text = formatCurrency(invoice.tienPhong)
         binding.tvServiceFee.text = formatCurrency(invoice.tongTienDichVu)
         binding.tvTienGiam.text = formatCurrency(invoice.tienGiam)
         binding.tvTienThem.text = formatCurrency(invoice.tienThem)
-        binding.tvTotal.text = formatCurrency(invoice.tongTien)
 
         // Phí cố định
         val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
@@ -137,7 +143,6 @@ class DetailBillActivity : AppCompatActivity() {
         val variableFeeAdapter = VariableFeeAdapter(invoice.phiBienDong)
         binding.rcvVariableFees.adapter = variableFeeAdapter
         binding.rcvVariableFees.layoutManager = LinearLayoutManager(this)
-
     }
 
     // Định dạng tiền tệ
@@ -146,19 +151,21 @@ class DetailBillActivity : AppCompatActivity() {
         return formatter.format(amount)
     }
 
+    // Hiển thị loading
     private fun showLoading() {
         loadingIndicator.visibility = View.VISIBLE
         loadingIndicator.playAnimation()
     }
 
+    // Ẩn loading
     private fun hideLoading() {
         loadingIndicator.visibility = View.GONE
     }
 
+    // Khởi tạo ZaloPay SDK
     private fun initZaloPay() {
         StrictMode.ThreadPolicy.Builder().permitAll().build()
             .also { StrictMode.setThreadPolicy(it) }
         ZaloPaySDK.init(Constants.APP_ID, Environment.SANDBOX)
     }
-
 }

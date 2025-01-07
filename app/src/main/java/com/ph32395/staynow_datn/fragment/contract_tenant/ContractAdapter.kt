@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.TaoHopDong.ContractStatus
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
@@ -82,10 +83,11 @@ class ContractAdapter(
         private val llBtnTermination: LinearLayout = itemView.llBtnTermination
         private val btnTerminated: Button = itemView.btnTerminated
 
-        private val btnXacNhan: TextView = itemView.btnConfirm
-        private val btnCancel: TextView = itemView.btnCancel
-        private val btnXacNhanTer: TextView = itemView.btnConfirmTermination
-        private val btnCancelTer: TextView = itemView.btnCancelTermination
+        private val btnXacNhan: Button = itemView.btnConfirm
+        private val btnCancel: Button = itemView.btnCancel
+        private val btnXacNhanTer: Button = itemView.btnConfirmTermination
+        private val btnCancelTer: Button = itemView.btnCancelTermination
+        private val btnCreateBill: Button = itemView.btnCreateBill
 
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n", "DefaultLocale")
@@ -244,7 +246,21 @@ class ContractAdapter(
                 }
 
                 ContractStatus.TERMINATED_PROCESSING -> {
-                    tvRemainingTime.text = "Hợp đồng đang xử lý chấm dứt"
+                    tvRemainingTime.text = "Hợp đồng đang chờ xử lý chấm dứt"
+                    if (contract.yeuCauChamDut == TerminationStatus.APPROVED) {
+                        if (!contract.daTaoHoaDonChamDut) {
+                            if(isLandlord){
+                                btnCreateBill.visibility = View.VISIBLE
+                                btnCreateBill.tap {
+                                    val intent = Intent(itemView.context, CreateInvoice::class.java)
+                                    intent.putExtra("CONTRACT_ID", contract.maHopDong)
+                                    intent.putExtra("chamDutHopDong", "true")
+                                    itemView.context.startActivity(intent)
+                                }
+                            }
+
+                        }
+                    }
                 }
 
                 ContractStatus.CANCELLED -> {

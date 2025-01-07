@@ -128,6 +128,7 @@ class RoomContract {
             "ngayTao" to contract.ngayTao,
             "trangThai" to contract.trangThai.name,
             "yeuCauChamDut" to contract.yeuCauChamDut,
+            "daTaoHoaDonChamDut" to contract.daTaoHoaDonChamDut,
             "ngayBatDau" to contract.ngayBatDau,
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
@@ -308,6 +309,31 @@ class RoomContract {
         reason?.let {
             updates["lyDoChamDut"] = it
         }
+
+        contractsCollection.document(contractId)
+            .update(updates)
+            .addOnSuccessListener {
+                Log.d("HopDongRepository", "Fields updated successfully for $contractId")
+                onResult(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("HopDongRepository", "Error updating fields: ${e.message}")
+                onResult(false)
+            }
+    }
+
+    fun updateIsCreateBillContract(
+        contractId: String,
+        onResult: (Boolean) -> Unit,
+    ) {
+        if (contractId.isEmpty()) {
+            onResult(false)
+            return
+        }
+
+        val updates = mutableMapOf<String, Any>(
+            "daTaoHoaDonChamDut" to true
+        )
 
         contractsCollection.document(contractId)
             .update(updates)

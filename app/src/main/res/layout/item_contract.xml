@@ -195,6 +195,19 @@
 
         </LinearLayout>
 
+        <!--        Nút yêu cầu chấm dứt (người thuê)-->
+        <Button
+            android:id="@+id/btn_createBill"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="@color/gray"
+            android:text="Tạo hóa đơn"
+            android:visibility="gone"
+            android:textColor="@android:color/white"
+            tools:ignore="ButtonStyle,HardcodedText" />
+
+
         <!-- Thời gian còn lại -->
         <TextView
             android:id="@+id/tv_remaining_time"

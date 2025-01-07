@@ -120,6 +120,7 @@ class NotificationService : Service() {
 
             TYPE_NOTI_BILL_MONTHLY_REMIND -> {
                 Intent(this, BillManagementActivity::class.java).apply {
+                    putExtra("invoiceId", notificationModel.idModel)
                 }
             }
 

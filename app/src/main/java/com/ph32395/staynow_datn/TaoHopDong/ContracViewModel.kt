@@ -37,7 +37,6 @@ class ContractViewModel : ViewModel() {
     private val _updateResult = MutableLiveData<Result<Unit>>()
     val updateResult: LiveData<Result<Unit>> = _updateResult
 
-
     private val _updateYCResult = MutableLiveData<Boolean>()
     val updateYCResult: LiveData<Boolean> get() = _updateYCResult
 
@@ -353,6 +352,25 @@ class ContractViewModel : ViewModel() {
             }
         }
     }
+
+    fun updateIsCreateBillContract(
+        contractId: String
+    ) {
+        viewModelScope.launch {
+            try {
+                contractRepository.updateIsCreateBillContract(contractId) {
+                    _updateResult.postValue(Result.success(Unit))
+                }
+            } catch (e: Exception) {
+                _updateResult.postValue(Result.failure(e)) // Xử lý lỗi ngoài ý muốn
+                Log.e(
+                    "com.ph32395.staynow.TaoHopDong.ContractViewModel",
+                    "Lỗi không mong muốn khi cập nhật trạng thái: ${e.message}"
+                )
+            }
+        }
+    }
+
 
     //hàm lấy tất cả hợp đồng theo người dùng
     fun fetchAllContractsByUser(userId: String) {
