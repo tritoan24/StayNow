@@ -39,6 +39,7 @@ import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
+import com.ph32395.staynow_datn.QuanLyPhongTro.fragment.PhongDangLuuFragment
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
 import com.ph32395.staynow_datn.fragment.RoomManagementFragment
@@ -477,23 +478,28 @@ class RoomDetailActivity : AppCompatActivity() {
 //                startActivity(intent)
             }
 
+            //            Chuc nang sao chep phong
+            findViewById<LinearLayout>(R.id.btnSaoChep).setOnClickListener {
+                showCopyRoomDialog()
+            }
+
 //            Chuc ang go phong chuyen sang man dang luu
             findViewById<LinearLayout>(R.id.btnGoPhong).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
-                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+//                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
                 val dialog = CustomConfirmationDialog(
                     message = "Bạn có chắc chắn muốn gỡ phòng không?",
                     onConfirm = {
 //                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatus(roomId, "", true)
+                        viewmodelHome.updateRoomStatus(roomId, "", true)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Phòng trọ đã được gỡ!", Toast.LENGTH_SHORT).show()
                         // Chuyển đến Fragment "Phòng Đang Lưu"
                         val intent = Intent(this, QuanLyPhongTroActivity::class.java)
                         startActivity(intent)
-                        finish() // Đóng màn hình hiện tại
+                        finish()
                     },
                     onCancel = {
 
@@ -502,27 +508,22 @@ class RoomDetailActivity : AppCompatActivity() {
                 dialog.show(supportFragmentManager, "CustomConfirmationDialog")
             }
 
-//            Chuc nang sao chep phong
-            findViewById<LinearLayout>(R.id.btnSaoChep).setOnClickListener {
-                showCopyRoomDialog()
-            }
+
 
 //            Chuc nang cho duyet -> dang luu
             findViewById<LinearLayout>(R.id.btnXacNhanHuy).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
-                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+//                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
                 val dialog = CustomConfirmationDialog(
                     message = "Bạn có chắc chắn muốn hủy chờ duyệt không?",
                     onConfirm = {
 //                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatus(roomId, "", true)
+                        viewmodelHome.updateRoomStatus(roomId, "", true)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Đã hủy chờ duyệt!", Toast.LENGTH_SHORT).show()
                         // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
                         finish() // Đóng màn hình hiện tại
                     },
                     onCancel = {
@@ -560,8 +561,6 @@ class RoomDetailActivity : AppCompatActivity() {
                         // Hiển thị thông báo
                         Toast.makeText(this, "Đã đăng phòng trọ!", Toast.LENGTH_SHORT).show()
                         // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
                         finish() // Đóng màn hình hiện tại
                     },
                     onCancel = {
@@ -574,19 +573,17 @@ class RoomDetailActivity : AppCompatActivity() {
             //            Chuc ang go phong chuyen sang man huy phong
             findViewById<LinearLayout>(R.id.btnHuyPhong).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
-                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+//                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
                 val dialog = CustomConfirmationDialog(
                     message = "Bạn có chắc chắn muốn hủy phòng không?",
                     onConfirm = {
 //                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatusHuyPhong(roomId, "BiHuy")
+                        viewmodelHome.updateRoomStatusHuyPhong(roomId, "BiHuy")
                         // Hiển thị thông báo
                         Toast.makeText(this, "Đã hủy phòng trọ!", Toast.LENGTH_SHORT).show()
                         // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
                         finish() // Đóng màn hình hiện tại
                     },
                     onCancel = {
@@ -599,19 +596,17 @@ class RoomDetailActivity : AppCompatActivity() {
             //            Chuc nang go phong chuyen sang man luu phong tu man bi huy
             findViewById<LinearLayout>(R.id.btnLuuPhong).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
-                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+//                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java) o")
 
 //                Hien thi Dialog xacs nhan
                 val dialog = CustomConfirmationDialog(
                     message = "Bạn có chắc chắn muốn lưu phòng không?",
                     onConfirm = {
 //                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatus(roomId, "", true)
+                        viewmodelHome.updateRoomStatus(roomId, "", true)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Phòng trọ đã được lưu!", Toast.LENGTH_SHORT).show()
                         // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
                         finish() // Đóng màn hình hiện tại
                     },
                     onCancel = {
@@ -624,19 +619,17 @@ class RoomDetailActivity : AppCompatActivity() {
             //            Chuc nang go phong chuyen sang man bi huy tu man luu phong
             findViewById<LinearLayout>(R.id.btnHuyPhongLuu).setOnClickListener {
                 val roomId = intent.getStringExtra("maPhongTro") ?: return@setOnClickListener
-                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+//                val viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
 //                Hien thi Dialog xacs nhan
                 val dialog = CustomConfirmationDialog(
                     message = "Bạn có chắc chắn muốn hủy phòng không?",
                     onConfirm = {
 //                        Nguoi dung nhan xac nhan
-                        viewModel.updateRoomStatus(roomId, "BiHuy", false)
+                        viewmodelHome.updateRoomStatus(roomId, "BiHuy", false)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Phòng trọ đã được hủy!", Toast.LENGTH_SHORT).show()
                         // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
                         finish() // Đóng màn hình hiện tại
                     },
                     onCancel = {
