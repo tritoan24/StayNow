@@ -41,7 +41,7 @@ class ContractAdapter(
     private val type: ContractStatus,
     private val isLandlord: Boolean,
     private val onStatusUpdated: (contractId: String, newStatus: ContractStatus) -> Unit,
-    private val onRequestTerminate: (HopDong, String, status: TerminationStatus) -> Unit
+    private val onRequestTerminate: (HopDong, String?, status: TerminationStatus) -> Unit
 ) : RecyclerView.Adapter<ContractAdapter.ContractViewHolder>() {
     private var contractList: List<HopDong> = listOf()
 
@@ -161,7 +161,7 @@ class ContractAdapter(
 
                             onRequestTerminate(
                                 contract,
-                                null.toString(),
+                                null,
                                 TerminationStatus.APPROVED
                             )
                             onStatusUpdated(
@@ -188,7 +188,7 @@ class ContractAdapter(
                             llBtnTermination.visibility = View.GONE
                             tvTermination.visibility = View.GONE
 
-                            onRequestTerminate(contract, null.toString(), TerminationStatus.DENIED)
+                            onRequestTerminate(contract, null, TerminationStatus.DENIED)
                             notifyTermination(
                                 itemView.context,
                                 contract,
@@ -249,7 +249,7 @@ class ContractAdapter(
                     tvRemainingTime.text = "Hợp đồng đang chờ xử lý chấm dứt"
                     if (contract.yeuCauChamDut == TerminationStatus.APPROVED) {
                         if (!contract.daTaoHoaDonChamDut) {
-                            if(isLandlord){
+                            if (isLandlord) {
                                 btnCreateBill.visibility = View.VISIBLE
                                 btnCreateBill.tap {
                                     val intent = Intent(itemView.context, CreateInvoice::class.java)
