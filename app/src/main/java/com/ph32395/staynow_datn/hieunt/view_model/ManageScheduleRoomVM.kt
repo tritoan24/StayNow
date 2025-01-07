@@ -20,6 +20,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TIME_STAMP
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TITLE
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TYPE_NOTIFICATION
+import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_OVER_TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
@@ -194,11 +195,11 @@ class ManageScheduleRoomVM : ViewModel() {
         titleNotification: String,
         data: ScheduleRoomModel,
         isRenterPushNotification: Boolean = true,
-        onCompletion: (Boolean) -> Unit
+        onCompletion: (Boolean) -> Unit = {}
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val mapLink =
-                if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT)
+                if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT || titleNotification == TITLE_CANCELED_BY_OVER_TIME)
                     null
                 else data.diaChiPhong
             val notificationData = hashMapOf(

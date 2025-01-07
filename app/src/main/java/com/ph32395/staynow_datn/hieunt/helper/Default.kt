@@ -68,6 +68,7 @@ object Default {
         const val TITLE_CONFIRMED = "Lịch hẹn đã được xác nhận"
         const val TITLE_CANCELED_BY_RENTER = "Lịch hẹn đã bị hủy bởi chủ trọ"
         const val TITLE_CANCELED_BY_TENANT = "Lịch hẹn đã bị hủy bỏ bởi người thuê"
+        const val TITLE_CANCELED_BY_OVER_TIME = "Lịch hẹn đã bị hủy bỏ vì quá hẹn"
         const val TITLE_LEAVED_BY_RENTER = "Lịch hẹn đã thay đổi bởi chủ trọ"
         const val TITLE_LEAVED_BY_TENANT = "Lịch hẹn đã thay đổi bởi người thuê"
         const val TITLE_SCHEDULE_ROOM_SUCCESSFULLY = "Phòng trọ đã được đặt thành công"
