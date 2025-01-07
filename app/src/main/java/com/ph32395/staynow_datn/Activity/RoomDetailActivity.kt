@@ -33,6 +33,7 @@ import com.ph32395.staynow_datn.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow_datn.Adapter.SpacingItemDecoration
 import com.ph32395.staynow_datn.Adapter.TienNghiAdapter
 import com.ph32395.staynow_datn.BaoMat.ThongTinNguoiDung
+import com.ph32395.staynow_datn.BaoMat.ToCaoPhongTro
 import com.ph32395.staynow_datn.CCCD.CCCD
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
@@ -215,6 +216,12 @@ class RoomDetailActivity : AppCompatActivity() {
                     shareLink(dynamicLink)
                 }
             }
+        }
+
+        findViewById<ImageView>(R.id.toCaoPhong).setOnClickListener {
+            val intent = Intent(this, ToCaoPhongTro::class.java)
+            intent.putExtra("maPhongTro", maPhongTro) // Truyền dữ liệu maPhongTro
+            startActivity(intent)
         }
 
 

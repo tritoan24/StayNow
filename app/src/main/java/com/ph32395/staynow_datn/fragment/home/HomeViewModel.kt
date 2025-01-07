@@ -59,6 +59,8 @@ class HomeViewModel : ViewModel() {
     val roomListCT: LiveData<List<Pair<String, PhongTroModel>>> get() = _roomListCT
 
 
+
+
     // LiveData for selected location
     private val _selectedLocation = MutableLiveData<String>("Tất Cả")
     val selectedLocation: LiveData<String> = _selectedLocation

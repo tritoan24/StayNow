@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@color/white"
-    tools:context=".BaoMat.ToCaoTaiKhoan">
+    tools:context=".BaoMat.ToCaoNguoiDung">
 
     <!-- Header with Back Button and Title -->
     <LinearLayout
@@ -27,7 +27,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tố Cáo Tài Khoản"
+            android:text="Tố Cáo Người Dùng"
             android:textStyle="bold"
             android:textSize="20sp"
             android:layout_marginStart="16dp"
@@ -45,7 +45,7 @@
             android:paddingHorizontal="24dp">
 
             <ImageView
-                android:id="@+id/tocao_avatar"
+                android:id="@+id/tocao_avatarNguoiDung"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center_horizontal"
@@ -53,7 +53,7 @@
                 android:src="@drawable/addavatar" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/RcToCao"
+                android:id="@+id/RcToCaoNguoiDung"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -63,7 +63,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tên Chủ Trọ Cần Tố Cáo"
+                android:text="Tên Người Dùng Cần Tố Cáo"
                 android:textSize="15dp"
                 android:textStyle="bold"
                 android:padding="5dp"
@@ -77,17 +77,12 @@
                 app:cardElevation="4dp">
 
                 <EditText
-                    android:id="@+id/tocao_Tennguoi"
+                    android:id="@+id/tocao_TenNguoiDung"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:background="@android:color/transparent"
                     android:drawablePadding="12dp"
-                    android:inputType="phone"
-                    android:padding="10dp"
-                    android:focusable="false"
-                    android:clickable="false"
-                    android:focusableInTouchMode="false"
-                    />
+                    android:padding="10dp" />
             </androidx.cardview.widget.CardView>
 
             <TextView
@@ -107,7 +102,7 @@
                 app:cardElevation="4dp">
 
                 <EditText
-                    android:id="@+id/tocao_Vande"
+                    android:id="@+id/tocao_VandeNguoiDung"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:background="@android:color/transparent"
@@ -122,7 +117,7 @@
                 android:layout_marginTop="30dp"
                 android:gravity="center_horizontal">
                 <Button
-                    android:id="@+id/btnToCao"
+                    android:id="@+id/btnToCaoNguoiDung"
                     android:layout_width="200dp"
                     android:layout_height="50dp"
                     android:text="Tố Cáo"

@@ -27,6 +27,15 @@
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".BaoMat.ToCaoNguoiDung"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.ToCaoPhongTro"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.ThongBaoChuTro"
+            android:exported="false" />
+        <activity
             android:name=".BaoMat.ThongBaoToCaoNguoiDung"
             android:exported="false" />
         <activity
@@ -34,8 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
-            android:exported="false" />
-        <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
+            android:exported="false" /> <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
         <activity
             android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
             android:exported="true" />
@@ -61,11 +69,9 @@
             android:exported="false" />
         <activity
             android:name=".BaoMat.ThayDoiNgonNgu"
-            android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity"-->
-<!--            android:exported="false" />-->
-
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity" -->
+        <!-- android:exported="false" /> -->
         <service
             android:name=".hieunt.service.NotificationService"
             android:exported="false"
@@ -148,8 +154,10 @@
             tools:ignore="AppLinkUrlError">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="staynowapp.com"
                     android:pathPrefix=""

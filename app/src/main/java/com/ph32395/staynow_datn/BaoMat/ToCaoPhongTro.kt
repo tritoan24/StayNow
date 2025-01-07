@@ -1,7 +1,6 @@
 package com.ph32395.staynow_datn.BaoMat
 
 import android.app.Activity
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,14 +26,14 @@ import com.ph32395.staynow_datn.Adapter.ToCaoTaiKhoanAdapter
 import com.ph32395.staynow_datn.R
 import java.util.*
 
-class ToCaoTaiKhoan : AppCompatActivity() {
+class ToCaoPhongTro : AppCompatActivity() {
 
-    private lateinit var imgBackToCao: ImageButton
-    private lateinit var imgToCao: ImageView
-    private lateinit var rcToCao: RecyclerView
-    private lateinit var editTenChuTro: EditText
-    private lateinit var editVanDe: EditText
-    private lateinit var btnToCao: Button
+    private lateinit var imgBackToCaoPhong: ImageButton
+    private lateinit var imgToCaoPhong: ImageView
+    private lateinit var rcToCaoPhong: RecyclerView
+    private lateinit var editTenPhongTro: EditText
+    private lateinit var editVanDePhong: EditText
+    private lateinit var btnToCaoPhong: Button
     private lateinit var mDatabase: DatabaseReference
 
     private val imageUriList = mutableListOf<Uri>() // Lưu URL của ảnh đã tải lên Firebase Storage
@@ -46,30 +44,47 @@ class ToCaoTaiKhoan : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_to_cao_tai_khoan)
+        setContentView(R.layout.activity_to_cao_phong_tro)
 
         // Ánh xạ View
-        imgBackToCao = findViewById(R.id.backScreenToCao)
-        imgToCao = findViewById(R.id.tocao_avatar)
-        rcToCao = findViewById(R.id.RcToCao)
-        editTenChuTro = findViewById(R.id.tocao_Tennguoi)
-        editVanDe = findViewById(R.id.tocao_Vande)
-        btnToCao = findViewById(R.id.btnToCao)
+        imgBackToCaoPhong = findViewById(R.id.backScreenToCao)
+        imgToCaoPhong = findViewById(R.id.tocao_avatarPhong)
+        rcToCaoPhong = findViewById(R.id.RcToCaoPhong)
+        editTenPhongTro = findViewById(R.id.tocao_Tenphong)
+        editVanDePhong = findViewById(R.id.tocao_VandePhong)
+        btnToCaoPhong = findViewById(R.id.btnToCaoPhong)
 
         // Cài đặt RecyclerView
-        rcToCao.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rcToCaoPhong.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         val adapter = ToCaoTaiKhoanAdapter(imageUriList)
-        rcToCao.adapter = adapter
+        rcToCaoPhong.adapter = adapter
 
-        // Mở thư viện khi click imgToCao
-        imgToCao.setOnClickListener {
+        // Mở thư viện khi click imgToCaoPhong
+        imgToCaoPhong.setOnClickListener {
             selectImageFromGallery()
         }
 
-
         mDatabase = FirebaseDatabase.getInstance().getReference()
 
-        // Nhận userId từ Intent và truy vấn Firebase
+        // Nhận maPhongTro từ Intent và truy vấn Firebase
+        val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
+        if (maPhongTro.isNotEmpty()) {
+            // Truy vấn Firebase hoặc Firestore để lấy tên phòng
+            firestore.collection("PhongTro").document(maPhongTro).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val tenPhong = document.getString("tenPhongTro") ?: "Chưa cập nhật"
+                        editTenPhongTro.setText(tenPhong)
+
+                        // Có thể thêm các dữ liệu khác nếu cần
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("ToCaoPhongTro", "Lỗi khi lấy tên phòng: ${exception.message}")
+                }
+        } else {
+            Log.e("ToCaoPhongTro", "Không có maPhongTro trong Intent")
+        }
         val userId = intent.getStringExtra("idUser")
         if (userId != null) {
             Log.d("ToCaoTaiKhoan", "User ID: $userId")
@@ -78,61 +93,59 @@ class ToCaoTaiKhoan : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val name = snapshot.child("hoTen").value.toString().trim()
-                        editTenChuTro.setText(name.ifEmpty { "Chưa cập nhật" })
+                        editTenPhongTro.setText(name.ifEmpty { "Chưa cập nhật" })
 
-                        // Lấy mã người dùng từ Firebase
+                        // Lấy mã người dùng từ Firebase Realtime Database
                         maNguoiDung = snapshot.child("maNguoiDung").value.toString()
 
                         // Làm cho trường không thể chỉnh sửa
-                        editTenChuTro.isFocusable = false
-                        editTenChuTro.isFocusableInTouchMode = false
-                        editTenChuTro.isClickable = false
+                        editTenPhongTro.isFocusable = false
+                        editTenPhongTro.isFocusableInTouchMode = false
+                        editTenPhongTro.isClickable = false
                     } else {
-                        Log.e("ToCaoTaiKhoan", "Người dùng không tồn tại trong cơ sở dữ liệu.")
+                        Log.e("ToCaoPhongTro", "Người dùng không tồn tại trong cơ sở dữ liệu.")
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    Log.e("ToCaoTaiKhoan", "Lỗi khi lấy dữ liệu người dùng: ${error.message}")
+                    Log.e("ToCaoPhongTro", "Lỗi khi lấy dữ liệu người dùng: ${error.message}")
                 }
             })
         } else {
-            Log.e("ToCaoTaiKhoan", "Không có userId trong Intent")
+            Log.e("ToCaoPhongTro", "Không có userId trong Intent")
         }
 
-        imgBackToCao.setOnClickListener {
+        imgBackToCaoPhong.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
-
         val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
         val maNguoiDung = sharedPreferences.getString("maNguoiDung", null)
 
-        // Lưu dữ liệu khi click btnToCao
-        btnToCao.setOnClickListener {
-            val toCaoData = hashMapOf(
-                "tenChuTro" to editTenChuTro.text.toString(),
-                "vanDe" to editVanDe.text.toString(),
+
+
+        // Lưu dữ liệu khi click btnToCaoPhong
+        btnToCaoPhong.setOnClickListener {
+            val toCaoPhongData = hashMapOf(
+                "tenPhongTro" to editTenPhongTro.text.toString(),
+                "vanDePhong" to editVanDePhong.text.toString(),
                 "images" to imageUriList.map { it.toString() }, // Lưu URL từ Firebase Storage
-                "idUser" to userId,
+                "maPhongTro" to maPhongTro,
                 "maNguoiDung" to maNguoiDung // Gửi mã người dùng vào Firestore
             )
-            firestore.collection("ToCaoTaiKhoan").add(toCaoData).addOnSuccessListener {
-                Toast.makeText(this, "Tố cáo được gửi thành công", Toast.LENGTH_SHORT).show()
-                editTenChuTro.text.clear()
-                // Xóa dữ liệu trên các ô nhập liệu
-                editVanDe.text.clear()
-                // Xóa danh sách ảnh và cập nhật RecyclerView
+            firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
+                Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
+                editTenPhongTro.text.clear()
+                editVanDePhong.text.clear()
                 imageUriList.clear()
-                rcToCao.adapter?.notifyDataSetChanged()
+                rcToCaoPhong.adapter?.notifyDataSetChanged()
 
-                // Hiển thị lại nút imgToCao nếu cần
-                imgToCao.visibility = ImageView.VISIBLE
+                // Hiển thị lại nút imgToCaoPhong nếu cần
+                imgToCaoPhong.visibility = ImageView.VISIBLE
             }.addOnFailureListener {
                 Toast.makeText(this, "Lỗi khi gửi tố cáo, vui lòng thử lại!", Toast.LENGTH_SHORT).show()
             }
         }
     }
-
 
     private fun selectImageFromGallery() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -176,10 +189,10 @@ class ToCaoTaiKhoan : AppCompatActivity() {
                 // Lấy URL từ Firebase Storage
                 storageRef.downloadUrl.addOnSuccessListener { downloadUri ->
                     imageUriList.add(downloadUri) // Thêm URL vào danh sách
-                    rcToCao.adapter?.notifyDataSetChanged()
+                    rcToCaoPhong.adapter?.notifyDataSetChanged()
 
-                    // Ẩn imgToCao sau khi tải lên thành công
-                    imgToCao.visibility = ImageView.GONE
+                    // Ẩn imgToCaoPhong sau khi tải lên thành công
+                    imgToCaoPhong.visibility = ImageView.GONE
 
                     Toast.makeText(this, "Tải ảnh lên thành công!", Toast.LENGTH_SHORT).show()
                 }

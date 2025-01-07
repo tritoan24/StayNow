@@ -154,6 +154,15 @@
                         android:layout_width="0dp"
                         android:layout_height="25dp"
                         android:layout_weight="0.2"
+                        android:src="@drawable/to_cao_phong"
+                        android:id="@+id/toCaoPhong"
+                        android:layout_gravity="end"
+                        />
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="25dp"
+                        android:layout_weight="0.2"
                         android:src="@drawable/share"
                         android:id="@+id/shareRoom"
                         android:layout_gravity="end"

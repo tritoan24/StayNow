@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.button.MaterialButton
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.ViewModel.RoomDetailViewModel
+import com.ph32395.staynow_datn.fragment.home.HomeViewModel
 
 class ThongBaoToCaoNguoiDung : DialogFragment() {
 
@@ -20,6 +22,7 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
     private lateinit var btnHuyTB: MaterialButton
     private lateinit var btnXacNhanTB: MaterialButton
     private lateinit var viewModel: RoomDetailViewModel
+    private lateinit var homViewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +31,7 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
         val view = inflater.inflate(R.layout.activity_thong_bao_to_cao_nguoi_dung, container, false)
 
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
+        homViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         // Ánh xạ các view từ layout
         checkbox = view.findViewById(R.id.checkQuyenThongBao)
         btnHuyTB = view.findViewById(R.id.btnHuyThongBao)
@@ -46,14 +50,16 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
             dismiss() // Đóng dialog
         }
 
-        // Xử lý nút Xác nhận
+        val userId = arguments?.getString("idUser")
+
         btnXacNhanTB.setOnClickListener {
-            val intent = Intent(requireContext(), ToCaoTaiKhoan::class.java)
-            // Kiểm tra lại cách lấy userId từ ViewModel hoặc các nguồn khác
-            viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
-                intent.putExtra("idUser", maNguoiDung) // Đảm bảo rằng maNguoiDung có giá trị đúng
+            if (userId != null) {
+                val intent = Intent(requireContext(), ToCaoTaiKhoan::class.java)
+                intent.putExtra("idUser", userId) // Truyền userId qua Intent
+                startActivity(intent)
+            } else {
+                Toast.makeText(requireContext(), "Không có userId để truyền", Toast.LENGTH_SHORT).show()
             }
-            startActivity(intent)
         }
 
 
