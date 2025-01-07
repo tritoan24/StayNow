@@ -267,6 +267,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
             diaChiChiTiet = if (fullAddressDeltail == "") item.diaChiChiTiet else fullAddressct,
             tenNhaTro = tenNhaTro,
             tenLoaiNhaTro = loaiNhaTro,
+            trangThai = item.trangThai,
             ngayTao = System.currentTimeMillis()
         )
         Log.d(TAG, "updateRoom: update $updatedNhaTro")
@@ -353,6 +354,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
             diaChiChiTiet = fullAddressDeltail,
             tenNhaTro = tenNhaTro,
             tenLoaiNhaTro = loaiNhaTro,
+            trangThai = true,
             ngayTao = ngayTao
         )
 

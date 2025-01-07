@@ -27,6 +27,12 @@
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".BaoMat.ThongBaoToCaoNguoiDung"
+            android:exported="false" />
+        <activity
+            android:name=".BaoMat.ToCaoTaiKhoan"
+            android:exported="false" />
+        <activity
             android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
             android:exported="false" />
         <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
@@ -34,7 +40,7 @@
             android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
             android:exported="true" />
         <activity
-            android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
+            android:name=".hieunt.view.feature.schedule_room.ScheduleRoomSuccessActivity"
             android:exported="false" />
         <activity
             android:name=".quanlyhoadon.DetailBillActivity"
@@ -140,15 +146,17 @@
             android:name=".Activity.RoomDetailActivity"
             android:exported="true"
             tools:ignore="AppLinkUrlError">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
-                    android:host="staynowshare.page.link"
-                    android:pathPrefix="/roomDetail"
+                    android:host="staynowapp.com"
+                    android:pathPrefix=""
+                    android:scheme="https" />
+                <data
+                    android:host="staynow.page.link"
+                    android:pathPrefix="/Product"
                     android:scheme="https" />
             </intent-filter>
         </activity>

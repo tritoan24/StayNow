@@ -46,44 +46,61 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="10dp"
             android:background="#C8C8C8"
 
             />
     </LinearLayout>
 
-    <LinearLayout
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:id="@+id/layoutDanhSachNhaTro">-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rvQuanLyNhaTro"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" />-->
+
+<!--    </LinearLayout>-->
+<!--    <LinearLayout-->
+<!--        android:id="@+id/layoutNullQuanLyNhaTro"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:gravity="center"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <ImageView-->
+<!--            android:layout_width="200dp"-->
+<!--            android:layout_height="200dp"-->
+<!--            android:src="@drawable/icon_no_house"/>-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:fontFamily="serif"-->
+<!--            android:gravity="center"-->
+<!--            android:text="Chưa có nhà trọ nào cả !!!"-->
+<!--            android:textStyle="italic"-->
+<!--            android:textSize="16sp" />-->
+<!--    </LinearLayout>-->
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutQuanLyNhaTro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        app:tabRippleColor="@android:color/transparent"
+        android:elevation="0dp"
+        app:tabIndicatorColor="@color/purple_border_bottom"
+        app:tabGravity="fill"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerQuanLyNhaTro"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/layoutDanhSachNhaTro">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvQuanLyNhaTro"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/layoutNullQuanLyNhaTro"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/icon_no_house"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:gravity="center"
-            android:text="Chưa có nhà trọ nào cả !!!"
-            android:textStyle="italic"
-            android:textSize="16sp" />
-    </LinearLayout>
-
+        android:layout_marginTop="10dp"
+        />
 
 </LinearLayout>
