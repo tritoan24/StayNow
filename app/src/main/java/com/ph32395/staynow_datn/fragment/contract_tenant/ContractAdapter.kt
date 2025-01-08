@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,24 +13,30 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.TaoHopDong.ContractStatus
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import com.ph32395.staynow_datn.TaoHopDong.HopDong
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
+import com.ph32395.staynow_datn.TaoHopDong.UpdateHopDong
 import com.ph32395.staynow_datn.databinding.ItemContractBinding
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import com.ph32395.staynow_datn.hieunt.widget.tap
 import com.ph32395.staynow_datn.utils.showConfirmDialog
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 class ContractAdapter(
     private val viewmodel: ContractViewModel,
@@ -76,6 +83,10 @@ class ContractAdapter(
         private val btnXacNhan: TextView = itemView.btnConfirm
         private val btnCancel: TextView = itemView.btnCancel
 
+        //công add
+        private val btnEditHopDongPending = itemView.btnEditHopDong
+        private val btnHuyHopDongPending = itemView.btnHuyHopDong
+
         @RequiresApi(Build.VERSION_CODES.O)
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
@@ -109,7 +120,76 @@ class ContractAdapter(
 
                     if (isLandlord) {
                         llBtn.visibility = View.GONE
+                        //cong add
+                        btnEditHopDongPending.visibility = View.VISIBLE
+                        btnHuyHopDongPending.visibility = View.VISIBLE
+                    } else {
+                        //cong add
+                        Log.e("TAGzzz", "bind: not nguoi chu")
+                        btnEditHopDongPending.visibility = View.GONE
+                        btnHuyHopDongPending.visibility = View.GONE
                     }
+
+
+                    //công add start
+                    btnEditHopDongPending.setOnClickListener {
+                        Log.e("TAGzzz", "bind: btn sửa hợp đồng Pending")
+                        val bottomSheetUpdateHopDong = UpdateHopDong(
+                            contract.thongtinphong.maPhongTro,
+                            contract.nguoiThue.maNguoiDung,
+                            contract
+                        )
+                        val context = itemView.context
+                        if (context is FragmentActivity) {
+                            bottomSheetUpdateHopDong.show(
+                                context.supportFragmentManager,
+                                bottomSheetUpdateHopDong.tag
+                            )
+                        }
+                    }
+                    btnHuyHopDongPending.setOnClickListener {
+                        Log.e("TAGzzz", "bind: btn Hủy hợp đồng Pending")
+                        showConfirmDialog(
+                            itemView.context,
+                            "Hủy Hợp Đồng",
+                            "Bạn có chắc chắn muốn hủy hợp đồng này?"
+                        ) {
+                            FirebaseFirestore.getInstance().collection("HopDong")
+                                .document(contract.maHopDong)
+                                .update("trangThai", "TERMINATED")
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        itemView.context,
+                                        "Hủy thành công",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    val notificationModel = NotificationModel(
+                                        tieuDe = "Hợp đồng đã bị hủy",
+                                        tinNhan = "Hợp đồng phòng ${contract.thongtinphong.tenPhong} đã bị hủy bở chủ nhà ${contract.chuNha.hoTen}",
+                                        ngayGuiThongBao = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(
+                                            Date()
+                                        ),
+                                        thoiGian = SimpleDateFormat("HH:mm", Locale.getDefault()).format(
+                                            Date()
+                                        ),
+                                        loaiThongBao = "HuyHopDong",
+                                        mapLink = null,
+                                        thoiGianGuiThongBao = System.currentTimeMillis(),
+                                        idModel = contract.maHopDong,
+                                    )
+                                    val factory = ViewModelFactory(itemView.context)
+                                    val viewModelNotification = ViewModelProvider(
+                                        itemView.context as AppCompatActivity,
+                                        factory
+                                    )[NotificationViewModel::class.java]
+                                    viewModelNotification.sendNotification(notificationModel, contract.nguoiThue.maNguoiDung)
+                                }
+                                .addOnFailureListener {
+                                    Log.e("TAG_Update contract", "bind: ${it.message.toString()}")
+                                }
+                        }
+                    }
+                    //Công add end
 
                     btnXacNhan.tap {
 
