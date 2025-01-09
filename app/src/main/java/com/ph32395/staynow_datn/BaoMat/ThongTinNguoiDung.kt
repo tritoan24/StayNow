@@ -49,10 +49,7 @@ class ThongTinNguoiDung : AppCompatActivity() {
         rcListRoom = findViewById(R.id.rc_listRoom)
         imgThongBao = findViewById(R.id.imgThongBao)
 
-        imgThongBao.setOnClickListener {
-            val dialog = ThongBaoToCaoNguoiDung()
-            dialog.show(supportFragmentManager, "ThongBaoToCaoNguoiDung")
-        }
+
 
 
         //cong comment
@@ -67,6 +64,15 @@ class ThongTinNguoiDung : AppCompatActivity() {
 
         homViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val userId = getIntent().getStringExtra("idUser");
+
+        imgThongBao.setOnClickListener {
+            val dialog = ThongBaoToCaoNguoiDung()
+            val bundle = Bundle()
+            bundle.putString("idUser", userId)
+            dialog.arguments = bundle
+            dialog.show(supportFragmentManager, "ThongBaoToCaoNguoiDung")
+        }
+
         if(userId != null) {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {

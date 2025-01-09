@@ -567,6 +567,51 @@
                         android:backgroundTint="@color/white" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray" />
+
+                <LinearLayout
+                    android:id="@+id/next_toCaoNguoiDung"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp"
+                    android:background="?attr/selectableItemBackground">
+
+                    <!-- Icon Exit (Bên trái) -->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/to_cao_person" />
+
+                    <!-- TextView Đăng xuất (Bên trái, sau Icon Exit) -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tố cáo người thuê"
+                        android:textStyle="bold"
+                        android:layout_marginStart="8dp"
+                        android:ellipsize="end"
+                        android:maxLines="1" />
+
+                    <!-- Khoảng trống để đẩy ImageView sang phải -->
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1" />
+
+                    <!-- ImageView Đăng xuất (Bên phải) -->
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/right_row"
+                        android:backgroundTint="@color/white" />
+                </LinearLayout>
+
+
 
                 <View
                     android:layout_width="match_parent"
