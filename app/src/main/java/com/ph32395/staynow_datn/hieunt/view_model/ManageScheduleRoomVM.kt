@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.CHANGED_SCHEDULE_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DATE
+import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DATE_PUSH_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DAT_PHONG
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.MAP_LINK
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.MESSAGE
@@ -208,6 +209,7 @@ class ManageScheduleRoomVM : ViewModel() {
                 TIME to data.thoiGianDatPhong,
                 MAP_LINK to mapLink,
                 TIME_STAMP to System.currentTimeMillis(),
+                DATE_PUSH_NOTIFICATION to Calendar.getInstance().time.toString(),
                 TYPE_NOTIFICATION to if (isRenterPushNotification) TYPE_SCHEDULE_ROOM_TENANT else TYPE_SCHEDULE_ROOM_RENTER
                 //thay doi TYPE_NOTIFICATION de them cac pendingIntent trong service neu can
             )

@@ -104,7 +104,6 @@ class RoomDetailActivity : AppCompatActivity() {
         maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
         ManHome = intent.getStringExtra("ManHome") ?: ""
 
-
         if (ManHome == "ManND") {
             viewmodelHome.incrementRoomViewCount(maPhongTro)
         }

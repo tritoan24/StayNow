@@ -50,6 +50,7 @@ object Default {
         const val TITLE = "tieuDe"
         const val MAP_LINK = "mapLink"
         const val TIME_STAMP = "thoiGianGuiThongBao"
+        const val DATE_PUSH_NOTIFICATION = "ngayGuiThongBao"
         const val MESSAGE = "tinNhan"
         const val CHANGED_SCHEDULE_BY_RENTER = "thayDoiBoiChuTro"
         const val ROOM_SCHEDULE_ID = "maDatPhong"
