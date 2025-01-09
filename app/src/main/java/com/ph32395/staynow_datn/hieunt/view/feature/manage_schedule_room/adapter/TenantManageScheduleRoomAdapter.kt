@@ -17,6 +17,7 @@ import com.ph32395.staynow_datn.hieunt.widget.visible
 
 @SuppressLint("SetTextI18n")
 class TenantManageScheduleRoomAdapter(
+    private val onClickSchedule : (ScheduleRoomModel) -> Unit,
     private val onClickCancelSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickLeaveSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickWatched: (ScheduleRoomModel) -> Unit,
@@ -57,6 +58,9 @@ class TenantManageScheduleRoomAdapter(
                 tvYes.tap {
                     onClickConfirm.invoke(data)
                 }
+                root.tap {
+                    onClickSchedule(data)
+                }
             }
         }
     }
@@ -83,6 +87,9 @@ class TenantManageScheduleRoomAdapter(
                 }
                 tvCancelSchedule.tap {
                     onClickCancelSchedule.invoke(data)
+                }
+                root.tap {
+                    onClickSchedule(data)
                 }
             }
         }

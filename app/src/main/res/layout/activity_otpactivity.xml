@@ -93,7 +93,7 @@
                 app:bar_margin_bottom="0dp"
                 app:bar_margin_left="2dp"
                 app:bar_margin_right="2dp"
-                app:bar_success_color="@color/green"
+                app:bar_success_color="@color/main_green_color"
                 app:box_margin="0dp"
                 app:height="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"

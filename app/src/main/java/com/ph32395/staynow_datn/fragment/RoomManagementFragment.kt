@@ -11,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow_datn.Activity.RoomDetailActivity
 import com.ph32395.staynow_datn.BaoMat.CapNhatThongTin
 import com.ph32395.staynow_datn.CCCD.CCCD
 import com.ph32395.staynow_datn.TaoHopDong.TaoHopDong
@@ -107,6 +108,11 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                         createContract(it.maPhongTro, it.maNguoiThue, it.maDatPhong)
                     }.show(childFragmentManager,javaClass.name)
                 }
+            },
+            onClickSchedule = {
+                startActivity(Intent(requireContext(), RoomDetailActivity::class.java).apply {
+                    putExtra("maPhongTro", it.maPhongTro)
+                })
             }
         )
 

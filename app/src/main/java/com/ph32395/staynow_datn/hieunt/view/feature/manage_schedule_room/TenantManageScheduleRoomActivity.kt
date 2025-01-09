@@ -1,5 +1,6 @@
 package com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room
 
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -7,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
+import com.ph32395.staynow_datn.Activity.RoomDetailActivity
 import com.ph32395.staynow_datn.databinding.ActivityTenantManageScheduleRoomBinding
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_OVER_TIME
@@ -23,6 +25,7 @@ import com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room.adapter
 import com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room.adapter.TenantManageScheduleRoomAdapter
 import com.ph32395.staynow_datn.hieunt.view_model.ManageScheduleRoomVM
 import com.ph32395.staynow_datn.hieunt.widget.gone
+import com.ph32395.staynow_datn.hieunt.widget.launchActivity
 import com.ph32395.staynow_datn.hieunt.widget.tap
 import com.ph32395.staynow_datn.hieunt.widget.toast
 import com.ph32395.staynow_datn.hieunt.widget.visible
@@ -93,6 +96,11 @@ class TenantManageScheduleRoomActivity :
                 viewModel.pushNotification(TITLE_CONFIRMED, it, false) { isCompletion ->
                     toastNotification(isCompletion)
                 }
+            },
+            onClickSchedule = {
+                startActivity(Intent(this@TenantManageScheduleRoomActivity, RoomDetailActivity::class.java).apply {
+                    putExtra("maPhongTro", it.maPhongTro)
+                })
             }
         )
 
