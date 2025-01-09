@@ -9,6 +9,8 @@ import android.provider.MediaStore
 import android.util.Base64
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -34,6 +36,7 @@ class CCCD : AppCompatActivity() {
 
     private lateinit var previewView: PreviewView
     private lateinit var chooseImageButton: Button
+    private lateinit var btnBack: ImageButton
     private lateinit var cameraExecutor: ExecutorService
 
     //khai báo viewmodel
@@ -61,6 +64,7 @@ class CCCD : AppCompatActivity() {
 
         previewView = findViewById(R.id.cameraPreview)
         chooseImageButton = findViewById(R.id.chooseImageButton)
+        btnBack = findViewById(R.id.btnBackQR)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -75,6 +79,12 @@ class CCCD : AppCompatActivity() {
         chooseImageButton.setOnClickListener {
             getContent.launch("image/*")
         }
+
+        //back
+        btnBack.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
     }
 
     private fun requestCameraPermission() {

@@ -19,7 +19,7 @@
             android:layout_height="30dp"
             android:src="@drawable/arrow_back"
             android:background="#6A2CB8"
-            android:onClick="back"
+            android:id="@+id/btnBackQR"
             android:layout_gravity="center_vertical"
             />
         <TextView

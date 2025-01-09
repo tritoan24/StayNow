@@ -6,6 +6,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.content.Intent
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -334,7 +337,117 @@ class NhaTroAdapter(
 
             if (item.trangThai) itemView.icon.setImageResource(R.drawable.icon_ngung_hoat_dong)
             else itemView.icon.setImageResource(R.drawable.icon_hoat_dong_lai)
+
+            fetchTotalPhongTroTrongNhaTro(item.maNhaTro) { totalPhong, totalLuu, totalDuyet, totalChoDuyet, totalHuy, totalDaThue ->
+                itemView.tvTongSoPhong.text = "${totalPhong.size} Phòng"
+                val spannable = SpannableString(
+                    "Duyệt(${totalDuyet}) - Lưu(${totalLuu}) - Chờ duyệt(${totalChoDuyet})"
+                )
+                val spannable2 = SpannableString(
+                    "Hủy(${totalHuy}) - Đã thuê(${totalDaThue})"
+                )
+
+                // Thay đổi màu sắc cho từng phần
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#28A745")),
+                    0,
+                    8,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ) // Duyệt
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#6C757D")),
+                    11,
+                    17,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ) // Lưu
+                spannable.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#FFC107")),
+                    20,
+                    32,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ) // Chờ duyệt
+                spannable2.setSpan(
+                    ForegroundColorSpan(Color.RED),
+                    0,
+                    6,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ) // Hủy
+                spannable2.setSpan(
+                    ForegroundColorSpan(Color.parseColor("#007BFF")),
+                    9,
+                    19,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ) // Đã thuê
+
+                itemView.tvTrangThaiPhongDuyetLuuChoDuyet.text = spannable
+                itemView.tvTrangThaiPhongHuyVaDaThue.text = spannable2
+            }
+
         }
+
+        private fun fetchTotalPhongTroTrongNhaTro(
+            maNhaTro: String,
+            onResult: (List<String>, Int, Int, Int, Int, Int) -> Unit
+        ) {
+            FirebaseFirestore.getInstance().collection("PhongTro")
+                .whereEqualTo("maNhaTro", maNhaTro)
+                .addSnapshotListener { querySnapshot, exception ->
+                    if (exception != null) {
+                        Log.e(
+                            "TAGNhaTroAdapter",
+                            "Lỗi khi lắng nghe thay đổi: ${exception.message}"
+                        )
+                        return@addSnapshotListener
+                    }
+
+                    if (querySnapshot != null) {
+                        val totalPhongTro = querySnapshot.documents.mapNotNull { snapMap ->
+                            snapMap.getString("tenPhongTro").toString()
+                        }
+
+                        val totalNhaTroLuu = querySnapshot.documents.count { snapMap ->
+                            snapMap.getString("trangThaiDuyet").isNullOrEmpty() &&
+                                    (snapMap.getBoolean("trangThaiLuu") == true) &&
+                                    (snapMap.getBoolean("trangThaiPhong") == false)
+                        }
+
+                        val totalPhongTroDaDuyet = querySnapshot.documents.count { snapMap ->
+                            snapMap.getString("trangThaiDuyet") == "DaDuyet" &&
+                                    snapMap.getBoolean("trangThaiPhong") == false &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
+                        }
+
+                        val totalPhongTroChoDuyet = querySnapshot.documents.count { snapMap ->
+                            snapMap.getString("trangThaiDuyet") == "ChoDuyet" &&
+                                    snapMap.getBoolean("trangThaiPhong") == false &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
+                        }
+
+                        val totalPhongTroDaHuy = querySnapshot.documents.count { snapMap ->
+                            snapMap.getString("trangThaiDuyet") == "BiHuy" &&
+                                    snapMap.getBoolean("trangThaiPhong") == false &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
+                        }
+
+                        val totalPhongTroDaThue = querySnapshot.documents.count { snapMap ->
+                            snapMap.getString("trangThaiDuyet") == "" &&
+                                    snapMap.getBoolean("trangThaiPhong") == true &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
+
+                        }
+
+                        onResult(
+                            totalPhongTro,
+                            totalNhaTroLuu,
+                            totalPhongTroDaDuyet,
+                            totalPhongTroChoDuyet,
+                            totalPhongTroDaHuy,
+                            totalPhongTroDaThue
+                        )
+                    }
+                }
+        }
+
 
         fun convertTimestampToDate(timestamp: Long): String {
             // Chọn định dạng ngày bạn muốn
