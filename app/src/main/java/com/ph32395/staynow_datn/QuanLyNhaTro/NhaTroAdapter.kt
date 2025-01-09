@@ -407,24 +407,33 @@ class NhaTroAdapter(
 
                         val totalNhaTroLuu = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet").isNullOrEmpty() &&
-                                    (snapMap.getBoolean("trangThaiLuu") == true)
+                                    (snapMap.getBoolean("trangThaiLuu") == true) &&
+                                    (snapMap.getBoolean("trangThaiPhong") == false)
                         }
 
                         val totalPhongTroDaDuyet = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet") == "DaDuyet" &&
-                                    snapMap.getBoolean("trangThaiPhong") == false
+                                    snapMap.getBoolean("trangThaiPhong") == false &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
                         }
 
                         val totalPhongTroChoDuyet = querySnapshot.documents.count { snapMap ->
-                            snapMap.getString("trangThaiDuyet") == "ChoDuyet"
+                            snapMap.getString("trangThaiDuyet") == "ChoDuyet" &&
+                                    snapMap.getBoolean("trangThaiPhong") == false &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
                         }
 
                         val totalPhongTroDaHuy = querySnapshot.documents.count { snapMap ->
-                            snapMap.getString("trangThaiDuyet") == "BiHuy"
+                            snapMap.getString("trangThaiDuyet") == "BiHuy" &&
+                                    snapMap.getBoolean("trangThaiPhong") == false &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
                         }
 
                         val totalPhongTroDaThue = querySnapshot.documents.count { snapMap ->
-                            snapMap.getBoolean("trangThaiPhong") == true
+                            snapMap.getString("trangThaiDuyet") == "" &&
+                                    snapMap.getBoolean("trangThaiPhong") == true &&
+                                    snapMap.getBoolean("trangThaiLuu") == false
+
                         }
 
                         onResult(
