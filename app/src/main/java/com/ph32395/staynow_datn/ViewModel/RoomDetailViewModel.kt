@@ -229,36 +229,18 @@ class RoomDetailViewModel : ViewModel() {
         val newRoomId = db.collection("PhongTro").document().id
 
 //    Tao ban sao cua phong voi Id moi
-//        val copiedRoom = originalRoom.copy(
-//            maPhongTro = newRoomId,
-//            tenPhongTro = "${originalRoom.tenPhongTro} (bản nháp)",
-//            thoiGianTaoPhong = System.currentTimeMillis(),
-//            ngayCapNhat = System.currentTimeMillis(),
-//            soLuotXemPhong = 0,
-//            thoiGianXem = 0L,
-//            trangThaiLuu = false,
-//            trangThaiYeuThich = false,
-//            thoiGianYeuThich = null
-//        )
-
-    val copiedRoom = hashMapOf(
-        "tenPhongTro" to "${originalRoom.tenPhongTro} (bản nháp)",
-        "maNhaTro" to originalRoom.maNhaTro,
-        "maNguoiDung" to originalRoom.maNguoiDung,
-        "diaChi" to originalRoom.diaChi,
-        "giaPhong" to originalRoom.giaPhong,
-        "dienTich" to originalRoom.dienTich,
-        "moTa" to originalRoom.moTaChiTiet,
-        "imageUrls" to originalRoom.imageUrls,
-        "thoiGianTaoPhong" to System.currentTimeMillis(),
-        "ngayCapNhat" to System.currentTimeMillis(),
-        "soLuotXemPhong" to 0,
-        "thoiGianXem" to 0L,
-        "trangThaiLuu" to false,
-        "trangThaiYeuThich" to false,
-        "thoiGianYeuThich" to null
-        // Thêm các trường khác từ model của bạn vào đây
-    )
+        val copiedRoom = originalRoom.copy(
+            maPhongTro = newRoomId,
+            tenPhongTro = "${originalRoom.tenPhongTro} (bản nháp)",
+            maNhaTro = originalRoom.maNhaTro,
+            thoiGianTaoPhong = System.currentTimeMillis(),
+            ngayCapNhat = System.currentTimeMillis(),
+            soLuotXemPhong = 0,
+            thoiGianXem = 0L,
+            trangThaiLuu = true,
+            trangThaiYeuThich = false,
+            thoiGianYeuThich = null
+        )
 
 //    Bat dau transaction de sao chep tat ca cac du lieu lien quan
         db.runTransaction { transaction ->

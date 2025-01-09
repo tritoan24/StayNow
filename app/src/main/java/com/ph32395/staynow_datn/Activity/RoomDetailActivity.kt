@@ -504,10 +504,7 @@ class RoomDetailActivity : AppCompatActivity() {
                         viewmodelHome.updateRoomStatus(roomId, "", true)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Phòng trọ đã được gỡ!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        val intent = Intent(this, QuanLyPhongTroActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        onBackPressedDispatcher.onBackPressed()
                     },
                     onCancel = {
 
@@ -531,8 +528,7 @@ class RoomDetailActivity : AppCompatActivity() {
                         viewmodelHome.updateRoomStatus(roomId, "", true)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Đã hủy chờ duyệt!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        finish() // Đóng màn hình hiện tại
+                        onBackPressedDispatcher.onBackPressed()
                     },
                     onCancel = {
 
@@ -568,8 +564,7 @@ class RoomDetailActivity : AppCompatActivity() {
                         }
                         // Hiển thị thông báo
                         Toast.makeText(this, "Đã đăng phòng trọ!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        finish() // Đóng màn hình hiện tại
+                        onBackPressedDispatcher.onBackPressed()
                     },
                     onCancel = {
 
@@ -591,8 +586,7 @@ class RoomDetailActivity : AppCompatActivity() {
                         viewmodelHome.updateRoomStatusHuyPhong(roomId, "BiHuy")
                         // Hiển thị thông báo
                         Toast.makeText(this, "Đã hủy phòng trọ!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        finish() // Đóng màn hình hiện tại
+                        onBackPressedDispatcher.onBackPressed()
                     },
                     onCancel = {
 
@@ -614,8 +608,7 @@ class RoomDetailActivity : AppCompatActivity() {
                         viewmodelHome.updateRoomStatus(roomId, "", true)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Phòng trọ đã được lưu!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        finish() // Đóng màn hình hiện tại
+                        onBackPressedDispatcher.onBackPressed()
                     },
                     onCancel = {
 
@@ -637,8 +630,7 @@ class RoomDetailActivity : AppCompatActivity() {
                         viewmodelHome.updateRoomStatus(roomId, "BiHuy", false)
                         // Hiển thị thông báo
                         Toast.makeText(this, "Phòng trọ đã được hủy!", Toast.LENGTH_SHORT).show()
-                        // Chuyển đến Fragment "Phòng Đang Lưu"
-                        finish() // Đóng màn hình hiện tại
+                        onBackPressedDispatcher.onBackPressed()
                     },
                     onCancel = {
 

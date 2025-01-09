@@ -44,8 +44,10 @@ class PhongTroAdapter(
     fun updateRoomList(newRoomList: List<Pair<String, PhongTroModel>>) {
         roomList.clear()
         roomList.addAll(newRoomList)
-        notifyItemRangeChanged(0, roomList.size)
+//        notifyItemRangeChanged(0, roomList.size)
+        notifyDataSetChanged()
     }
+
 
     //    Lay thoi gian tao phong
     fun getFormattedTimeCustom(thoiGianTaoPhong: Long?): String {
