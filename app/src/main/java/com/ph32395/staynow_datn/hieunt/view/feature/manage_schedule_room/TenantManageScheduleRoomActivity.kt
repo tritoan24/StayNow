@@ -1,6 +1,7 @@
 package com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -8,6 +9,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.firebase.auth.FirebaseAuth
 import com.ph32395.staynow_datn.databinding.ActivityTenantManageScheduleRoomBinding
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
+import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_OVER_TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_TENANT
@@ -120,35 +122,47 @@ class TenantManageScheduleRoomActivity :
                             binding.tvNoData.visible()
                         }
 
-                        val filteredList = it.filter { schedule ->
-                            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                            val currentDate = LocalDate.now()
-                            // Chuyển đổi `ngayDatPhong` thành LocalDate
-                            val ngayDatPhong = try {
-                                LocalDate.parse(schedule.ngayDatPhong, formatter)
-                            } catch (e: Exception) {
-                                null
-                            }
-                            // Kiểm tra điều kiện lọc
-                            ngayDatPhong?.let { ngayDat ->
-                                val daysBetween = ChronoUnit.DAYS.between(ngayDat, currentDate)
-                                daysBetween > 3 && schedule.trangThaiDatPhong == 1
-                            } ?: false
-                        }
-
                         manageScheduleRoomAdapter?.addListObserver(it)
                         dismissLoading()
                     }
                 }
                 launch {
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
-                        val newList = async(Dispatchers.IO) {
-                            listScheduleState.map { scheduleState ->
-                                val count = allRoomStates.filter { room -> room.trangThaiDatPhong == scheduleState.status }.size
-                                scheduleState.copy(count = count)
+                        launch {
+                            val filteredList = allRoomStates.filter { schedule ->
+                                val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                                val currentDate = LocalDate.now()
+
+                                val ngayDatPhong = try {
+                                    LocalDate.parse(schedule.ngayDatPhong, formatter)
+                                } catch (e: Exception) {
+                                    null
+                                }
+                                ngayDatPhong?.let { ngayDat ->
+                                    val ngayDatCong3Ngay = ngayDat.plusDays(3)
+                                    ngayDatCong3Ngay.isBefore(currentDate) && schedule.trangThaiDatPhong == 1
+                                } ?: false
                             }
-                        }.await()
-                        scheduleStateAdapter?.addListObserver(newList)
+                            Log.d("filteredList", "filteredList: $filteredList")
+                            if (filteredList.isNotEmpty()){
+                                filteredList.forEach {
+                                    updateStatusRoom(it.maDatPhong, CANCELED)
+                                    viewModel.pushNotification(TITLE_CANCELED_BY_OVER_TIME, it, true)
+                                    viewModel.pushNotification(TITLE_CANCELED_BY_OVER_TIME, it, false) { _ ->
+                                        toast("Huỷ lịch hẹn thành công!")
+                                    }
+                                }
+                            }
+                        }
+                        launch {
+                            val newList = async(Dispatchers.IO) {
+                                listScheduleState.map { scheduleState ->
+                                    val count = allRoomStates.filter { room -> room.trangThaiDatPhong == scheduleState.status }.size
+                                    scheduleState.copy(count = count)
+                                }
+                            }.await()
+                            scheduleStateAdapter?.addListObserver(newList)
+                        }
                     }
                 }
             }
