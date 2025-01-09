@@ -2,9 +2,11 @@ package com.ph32395.staynow_datn.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -18,6 +20,7 @@ import com.ph32395.staynow_datn.TaoHopDong.TaoHopDong
 import com.ph32395.staynow_datn.ThongTinThanhToan.PaymentInfoActivity
 import com.ph32395.staynow_datn.databinding.FragmentRoomManagementBinding
 import com.ph32395.staynow_datn.hieunt.base.BaseFragment
+import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_OVER_TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_RENTER
@@ -38,6 +41,8 @@ import com.ph32395.staynow_datn.hieunt.widget.visible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, ManageScheduleRoomVM>() {
     private var manageScheduleRoomAdapter: RenterManageScheduleRoomAdapter? = null
@@ -126,6 +131,7 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
 
     override fun initViewModel(): Class<ManageScheduleRoomVM> = ManageScheduleRoomVM::class.java
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun dataObserver() {
         showLoadingIfNotBaseActivity()
         viewModel.fetchAllScheduleByRenter(FirebaseAuth.getInstance().currentUser?.uid.toString()) {
@@ -144,15 +150,46 @@ class RoomManagementFragment : BaseFragment<FragmentRoomManagementBinding, Manag
                         dismissLoadingIfNotBaseActivity()
                     }
                 }
+
                 launch {
                     viewModel.allScheduleRoomState.collect { allRoomStates ->
-                        val newList = async(Dispatchers.IO) {
-                            listScheduleState.map { scheduleState ->
-                                val count = allRoomStates.filter { room -> room.trangThaiDatPhong == scheduleState.status }.size
-                                scheduleState.copy(count = count)
+                        launch {
+                            launch {
+                                val filteredList = allRoomStates.filter { schedule ->
+                                    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                                    val currentDate = LocalDate.now()
+
+                                    val ngayDatPhong = try {
+                                        LocalDate.parse(schedule.ngayDatPhong, formatter)
+                                    } catch (e: Exception) {
+                                        null
+                                    }
+                                    ngayDatPhong?.let { ngayDat ->
+                                        val ngayDatCong3Ngay = ngayDat.plusDays(3)
+                                        ngayDatCong3Ngay.isBefore(currentDate) && schedule.trangThaiDatPhong == 1
+                                    } ?: false
+                                }
+                                Log.d("filteredList", "filteredList: $filteredList")
+                                if (filteredList.isNotEmpty()){
+                                    filteredList.forEach {
+                                        updateStatusRoom(it.maDatPhong, CANCELED)
+                                        viewModel.pushNotification(TITLE_CANCELED_BY_OVER_TIME, it, true)
+                                        viewModel.pushNotification(TITLE_CANCELED_BY_OVER_TIME, it, false) { _ ->
+                                            toast("Huỷ lịch hẹn thành công!")
+                                        }
+                                    }
+                                }
                             }
-                        }.await()
-                        scheduleStateAdapter?.addListObserver(newList)
+                        }
+                        launch {
+                            val newList = async(Dispatchers.IO) {
+                                listScheduleState.map { scheduleState ->
+                                    val count = allRoomStates.filter { room -> room.trangThaiDatPhong == scheduleState.status }.size
+                                    scheduleState.copy(count = count)
+                                }
+                            }.await()
+                            scheduleStateAdapter?.addListObserver(newList)
+                        }
                     }
                 }
             }
