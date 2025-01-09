@@ -23,7 +23,7 @@ class ThayDoiNgonNgu : AppCompatActivity() {
 
         // Lấy ngôn ngữ đã lưu trước đó và áp dụng
         sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
-        val savedLanguage = sharedPreferences.getString("Language", "en") // Mặc định là tiếng việt
+        val savedLanguage = sharedPreferences.getString("Language", "vi") // Mặc định là tiếng việt
         setLocale(savedLanguage!!)
 
         val radioGroupLanguage = findViewById<RadioGroup>(R.id.radio_group_language)

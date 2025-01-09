@@ -60,7 +60,7 @@
         android:id="@+id/checkQuyenThongBao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tôi đã đọc, không hiển thị lại"
+        android:text="Tôi đã đọc và đồng ý với điều khoản trên"
         android:textColor="@color/black"
         android:textSize="14sp"
         android:fontFamily="serif"

@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         val sharedPreferences = getSharedPreferences("AppSettings", MODE_PRIVATE)
-        val savedLanguage = sharedPreferences.getString("Language", "en") // Mặc định là tiếng Anh
+        val savedLanguage = sharedPreferences.getString("Language", "vi") // Mặc định là tiếng Anh
         setLocale(savedLanguage!!)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
