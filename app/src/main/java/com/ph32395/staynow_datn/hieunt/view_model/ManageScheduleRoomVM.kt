@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.toObject
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.CHANGED_SCHEDULE_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DATE
+import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DATE_PUSH_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.DAT_PHONG
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.MAP_LINK
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.MESSAGE
@@ -20,6 +21,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TIME_STAMP
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TITLE
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.TYPE_NOTIFICATION
+import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_OVER_TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
@@ -194,13 +196,14 @@ class ManageScheduleRoomVM : ViewModel() {
         titleNotification: String,
         data: ScheduleRoomModel,
         isRenterPushNotification: Boolean = true,
-        onCompletion: (Boolean) -> Unit
+        onCompletion: (Boolean) -> Unit = {}
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val mapLink =
-                if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT)
+                if (titleNotification == TITLE_CANCELED_BY_RENTER || titleNotification == TITLE_CANCELED_BY_TENANT || titleNotification == TITLE_CANCELED_BY_OVER_TIME)
                     null
-                else data.diaChiPhong
+                else
+                    data.diaChiPhong
             val notificationData = hashMapOf(
                 TITLE to titleNotification,
                 MESSAGE to "Phòng: ${data.tenPhong}, Địa chỉ: ${data.diaChiPhong}",
@@ -208,6 +211,7 @@ class ManageScheduleRoomVM : ViewModel() {
                 TIME to data.thoiGianDatPhong,
                 MAP_LINK to mapLink,
                 TIME_STAMP to System.currentTimeMillis(),
+                DATE_PUSH_NOTIFICATION to Calendar.getInstance().time.toString(),
                 TYPE_NOTIFICATION to if (isRenterPushNotification) TYPE_SCHEDULE_ROOM_TENANT else TYPE_SCHEDULE_ROOM_RENTER
                 //thay doi TYPE_NOTIFICATION de them cac pendingIntent trong service neu can
             )

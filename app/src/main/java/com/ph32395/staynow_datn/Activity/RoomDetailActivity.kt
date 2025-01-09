@@ -108,7 +108,6 @@ class RoomDetailActivity : AppCompatActivity() {
         val trangThaiNhaTro = intent.getStringExtra("trangThaiNhaTro")?:""
         Log.e("TAGRoomDetail", "onCreate: $trangThaiNhaTro" )
 
-
         if (ManHome == "ManND") {
             viewmodelHome.incrementRoomViewCount(maPhongTro)
         }

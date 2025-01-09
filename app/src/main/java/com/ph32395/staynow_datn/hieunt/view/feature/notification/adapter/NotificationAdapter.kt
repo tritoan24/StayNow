@@ -9,6 +9,7 @@ import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.databinding.ItemNotificationBinding
 import com.ph32395.staynow_datn.hieunt.base.BaseAdapter
 import com.ph32395.staynow_datn.hieunt.base.BaseViewHolder
+import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_OVER_TIME
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CONFIRMED
@@ -30,7 +31,7 @@ class NotificationAdapter(
                     TITLE_CONFIRMED -> {
                         tvTitle.setTextColor(Color.parseColor("#00FF00"))
                     }
-                    TITLE_CANCELED_BY_RENTER, TITLE_CANCELED_BY_TENANT -> {
+                    TITLE_CANCELED_BY_RENTER, TITLE_CANCELED_BY_TENANT, TITLE_CANCELED_BY_OVER_TIME-> {
                         tvTitle.setTextColor(Color.parseColor("#FF0000"))
                     }
                     TITLE_LEAVED_BY_RENTER, TITLE_LEAVED_BY_TENANT -> {

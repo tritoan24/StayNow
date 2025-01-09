@@ -10,12 +10,14 @@ import com.ph32395.staynow_datn.databinding.RenterItemRoomWaitBinding
 import com.ph32395.staynow_datn.hieunt.base.BaseAdapter
 import com.ph32395.staynow_datn.hieunt.base.BaseViewHolder
 import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
+import com.ph32395.staynow_datn.hieunt.widget.gone
 import com.ph32395.staynow_datn.hieunt.widget.layoutInflate
 import com.ph32395.staynow_datn.hieunt.widget.tap
 
 
 @SuppressLint("SetTextI18n")
 class RenterManageScheduleRoomAdapter(
+    private val onClickSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickCancelSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickLeaveSchedule: (ScheduleRoomModel) -> Unit,
     private val onClickConfirm: (ScheduleRoomModel) -> Unit,
@@ -31,7 +33,11 @@ class RenterManageScheduleRoomAdapter(
                 tvNameRoom.text = "Tên phòng: ${data.tenPhong}"
                 tvPhoneNumber.text = "SDT: ${data.sdtNguoiThue}"
                 tvTime.text = "Thời gian: ${data.thoiGianDatPhong} ngày ${data.ngayDatPhong}"
-
+                if (data.ghiChu.isNotEmpty()){
+                    tvNote.text = data.ghiChu
+                } else {
+                    tvNote.gone()
+                }
                 tvConfirm.tap {
                     onClickConfirm.invoke(data)
                 }
@@ -40,6 +46,9 @@ class RenterManageScheduleRoomAdapter(
                 }
                 tvLeaveSchedule.tap {
                     onClickLeaveSchedule.invoke(data)
+                }
+                root.tap {
+                    onClickSchedule(data)
                 }
             }
         }
@@ -54,6 +63,11 @@ class RenterManageScheduleRoomAdapter(
                 tvNameRoom.text = "Tên phòng: ${data.tenPhong}"
                 tvPhoneNumber.text = "SDT: ${data.sdtNguoiThue}"
                 tvTime.text = "Thời gian: ${data.thoiGianDatPhong} ngày ${data.ngayDatPhong}"
+                if (data.ghiChu.isNotEmpty()){
+                    tvNote.text = data.ghiChu
+                } else {
+                    tvNote.gone()
+                }
                 tvCreateContract.tap {
                     onClickCreateContract.invoke(data)
                 }
@@ -65,6 +79,9 @@ class RenterManageScheduleRoomAdapter(
                 }
                 tvLeaveSchedule.tap {
                     onClickLeaveSchedule.invoke(data)
+                }
+                root.tap {
+                    onClickSchedule(data)
                 }
             }
         }

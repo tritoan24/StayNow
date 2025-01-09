@@ -75,7 +75,7 @@ class OTPActivity : AppCompatActivity() {
                             runOnUiThread {
                                 loadingUtil.hide()
                                 binding.countMissOtp.text = "Xác thực thành công"
-                                binding.countMissOtp.setTextColor(ContextCompat.getColor(this@OTPActivity, R.color.green))
+                                binding.countMissOtp.setTextColor(ContextCompat.getColor(this@OTPActivity, cn.pedant.SweetAlert.R.color.main_green_color))
                             }
                             checkAccountTypeInRealtimeDatabase(uid)
                         }

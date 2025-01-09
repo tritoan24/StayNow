@@ -6,10 +6,9 @@ import java.io.Serializable
 
 @Entity
 data class ScheduleRoomModel(
-    @PrimaryKey(autoGenerate = true)
-    var id : Int = 0,
-    var maDatPhong: String = "",
+    @PrimaryKey
     var maPhongTro: String = "",
+    var maDatPhong: String = "",
     var tenPhong: String = "",
     var diaChiPhong: String = "",
     var maNguoiThue: String = "",
