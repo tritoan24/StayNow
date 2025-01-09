@@ -5,12 +5,13 @@ import java.io.Serializable
 data class PhongTroModel(
     val maNguoiDung: String = "", // ma chu tro
     val maPhongTro: String = "",
+    val maNhaTro: String = "",
     val tenPhongTro: String = "",
     val diaChi: String = "",
     val diaChiChiTiet: String = "",
     val moTaChiTiet: String? = "",
     val maLoaiNhaTro: String = "",
-    val trangThai: Boolean ,
+    val trangThai: Boolean = false,
     val giaPhong: Double = 0.0,
     val soLuotXemPhong: Int? = 0,
     val thoiGianTaoPhong: Long? = 0L,
@@ -25,5 +26,5 @@ data class PhongTroModel(
     val trangThaiYeuThich: Boolean = false,
     var thoiGianYeuThich: Long? = null
 ): Serializable{
-    constructor() : this("", "", "", "", "", "", "",false, 0.0, 0, 0L, 0L, 0L,ArrayList(), "")
+//    constructor() : this("", "", "", "", "", "", "","", false, 0.0, 0, 0L, 0L,ArrayList(), "")
 }
