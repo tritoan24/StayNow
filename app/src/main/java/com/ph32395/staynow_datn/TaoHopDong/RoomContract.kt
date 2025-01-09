@@ -73,7 +73,7 @@ class RoomContract {
 
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
-                            val invoiceRef = newDoc.collection("hoaDonhopdong").document()
+                            val invoiceRef = newDoc.collection("hoaDonHopDong").document()
                             val invoiceData = createBillMap(updatedInvoice)
                             transaction.set(invoiceRef, invoiceData)
 
@@ -92,10 +92,12 @@ class RoomContract {
                         val roomRef = roomsCollection.document(contract.thongtinphong.maPhongTro)
                         val currentDate = Timestamp.now()
 
-                        transaction.update(roomRef, mapOf(
-                            "Trang_thaiphong" to true,
-                            "Ngay_duocthue" to currentDate
-                        ))
+                        transaction.update(
+                            roomRef, mapOf(
+                                "trangThaiPhong" to true,
+                                "ngayDuocThue" to currentDate
+                            )
+                        )
 
 
                         // Xóa lịch hẹn
@@ -125,6 +127,8 @@ class RoomContract {
             "maHopDong" to contract.maHopDong,
             "ngayTao" to contract.ngayTao,
             "trangThai" to contract.trangThai.name,
+            "yeuCauChamDut" to contract.yeuCauChamDut,
+            "daTaoHoaDonChamDut" to contract.daTaoHoaDonChamDut,
             "ngayBatDau" to contract.ngayBatDau,
             "ngayKetThuc" to contract.ngayKetThuc,
             "thoiHanThue" to contract.thoiHanThue,
@@ -144,8 +148,7 @@ class RoomContract {
             "soDienCu" to contract.soDienCu,
             "soNuocCu" to contract.soNuocCu
 
-
-            )
+        )
     }
 
     private fun createRoomInfoMap(roomInfo: RoomInfo): HashMap<String, Any> {
@@ -287,7 +290,62 @@ class RoomContract {
         getContracts("nguoiThue.maNguoiDung", tenantId, statuses, onContractsChanged)
     }
 
+    fun updateContractTerminationRequest(
+        contractId: String,
+        reason: String?,
+        status: TerminationStatus,
+        onResult: (Boolean) -> Unit
+    ) {
+        if (contractId.isEmpty()) {
+            onResult(false)
+            return
+        }
 
+        val updates = mutableMapOf<String, Any>(
+            "yeuCauChamDut" to status
+        )
+
+        // Nếu có lý do, thêm vào bản đồ cập nhật
+        reason?.let {
+            updates["lyDoChamDut"] = it
+        }
+
+        contractsCollection.document(contractId)
+            .update(updates)
+            .addOnSuccessListener {
+                Log.d("HopDongRepository", "Fields updated successfully for $contractId")
+                onResult(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("HopDongRepository", "Error updating fields: ${e.message}")
+                onResult(false)
+            }
+    }
+
+    fun updateIsCreateBillContract(
+        contractId: String,
+        onResult: (Boolean) -> Unit,
+    ) {
+        if (contractId.isEmpty()) {
+            onResult(false)
+            return
+        }
+
+        val updates = mutableMapOf<String, Any>(
+            "daTaoHoaDonChamDut" to true
+        )
+
+        contractsCollection.document(contractId)
+            .update(updates)
+            .addOnSuccessListener {
+                Log.d("HopDongRepository", "Fields updated successfully for $contractId")
+                onResult(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("HopDongRepository", "Error updating fields: ${e.message}")
+                onResult(false)
+            }
+    }
 
     private fun getContracts(
         field: String,
@@ -369,8 +427,8 @@ class RoomContract {
                     roomsCollection.document(roomId)
                         .update(
                             mapOf(
-                                "Trang_thaiphong" to false,
-                                "Trang_thaiduyet" to "DaDuyet"
+                                "trangThaiPhong" to false,
+                                "trangThaiDuyet" to "DaDuyet"
                             )
                         )
                         .await()

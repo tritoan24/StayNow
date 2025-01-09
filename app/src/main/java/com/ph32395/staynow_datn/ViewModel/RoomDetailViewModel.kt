@@ -71,6 +71,7 @@ class RoomDetailViewModel : ViewModel() {
                         .addOnSuccessListener { tienNghiDocs ->
                             val tienNghiList = tienNghiDocs.mapNotNull { it.toObject(TienNghi::class.java) }
                             _tienNghiList.value = tienNghiList
+                            Log.d("RoomDetailModel", "Tien nghi list: $tienNghiList")
                         }
                         .addOnFailureListener { exception ->
                             Log.e("RoomDetailModel", "Lỗi khi lấy dữ liệu tien nghi", exception)

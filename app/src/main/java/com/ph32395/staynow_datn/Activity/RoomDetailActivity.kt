@@ -159,8 +159,8 @@ class RoomDetailActivity : AppCompatActivity() {
             val database = FirebaseDatabase.getInstance().reference
             val userRef = database.child("NguoiDung").child(userId)
             userRef.get().addOnSuccessListener { snapshot ->
-                val statusCCCD = snapshot.child("statusCCCD").value as? Boolean ?: false
-                val statusPTTT = snapshot.child("statusPTTT").value as? Boolean ?: false
+                val statusCCCD = snapshot.child("trangThaiCCCD").value as? Boolean ?: false
+                val statusPTTT = snapshot.child("trangThaiPTTT").value as? Boolean ?: false
                 Log.d("RoomManagementFragment", "statusCCCD: $statusCCCD")
                 Log.d("RoomManagementFragment", "StatusPttt: $statusPTTT")
 

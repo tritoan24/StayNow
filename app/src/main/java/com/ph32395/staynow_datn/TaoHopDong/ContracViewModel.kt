@@ -37,6 +37,9 @@ class ContractViewModel : ViewModel() {
     private val _updateResult = MutableLiveData<Result<Unit>>()
     val updateResult: LiveData<Result<Unit>> = _updateResult
 
+    private val _updateYCResult = MutableLiveData<Boolean>()
+    val updateYCResult: LiveData<Boolean> get() = _updateYCResult
+
     private val _activeContracts = MutableLiveData<List<HopDong>>()
     val activeContracts: LiveData<List<HopDong>> get() = _activeContracts
 
@@ -46,8 +49,15 @@ class ContractViewModel : ViewModel() {
     private val _expiredContracts = MutableLiveData<List<HopDong>>()
     val expiredContracts: LiveData<List<HopDong>> get() = _expiredContracts
 
+    private val _cancelledContracts = MutableLiveData<List<HopDong>>()
+    val cancelledContracts: LiveData<List<HopDong>> get() = _cancelledContracts
+
     private val _terminatedContracts = MutableLiveData<List<HopDong>>()
     val terminatedContracts: LiveData<List<HopDong>> get() = _terminatedContracts
+
+    private val _terminatedProcessingContracts = MutableLiveData<List<HopDong>>()
+    val terminatedProcessingContracts: LiveData<List<HopDong>> get() = _terminatedProcessingContracts
+
     private val _processingContracts = MutableLiveData<List<HopDong>>()
     val processingContracts: LiveData<List<HopDong>> get() = _processingContracts
 
@@ -68,8 +78,8 @@ class ContractViewModel : ViewModel() {
     val isWaterInputVisible: LiveData<Boolean> = _isWaterInputVisible
 
 
-    val contractStatus = MutableLiveData<String>()
-    val errorMessage = MutableLiveData<String>()
+    private val contractStatus = MutableLiveData<String>()
+    private val errorMessage = MutableLiveData<String>()
 
 
     // Phương thức để kiểm tra và cập nhật trạng thái hiển thị
@@ -240,8 +250,10 @@ class ContractViewModel : ViewModel() {
                 ContractStatus.ACTIVE -> _activeContracts.postValue(filteredContracts)
                 ContractStatus.PENDING -> _pendingContracts.postValue(filteredContracts)
                 ContractStatus.EXPIRED -> _expiredContracts.postValue(filteredContracts)
+                ContractStatus.CANCELLED -> _cancelledContracts.postValue(filteredContracts)
                 ContractStatus.TERMINATED -> _terminatedContracts.postValue(filteredContracts)
-                ContractStatus.PROCESSING -> _terminatedContracts.postValue(filteredContracts)
+                ContractStatus.TERMINATED_PROCESSING -> _terminatedProcessingContracts.postValue(filteredContracts)
+                ContractStatus.PROCESSING -> _processingContracts.postValue(filteredContracts)
             }
         }
     }
@@ -340,6 +352,25 @@ class ContractViewModel : ViewModel() {
             }
         }
     }
+
+    fun updateIsCreateBillContract(
+        contractId: String
+    ) {
+        viewModelScope.launch {
+            try {
+                contractRepository.updateIsCreateBillContract(contractId) {
+                    _updateResult.postValue(Result.success(Unit))
+                }
+            } catch (e: Exception) {
+                _updateResult.postValue(Result.failure(e)) // Xử lý lỗi ngoài ý muốn
+                Log.e(
+                    "com.ph32395.staynow.TaoHopDong.ContractViewModel",
+                    "Lỗi không mong muốn khi cập nhật trạng thái: ${e.message}"
+                )
+            }
+        }
+    }
+
 
     //hàm lấy tất cả hợp đồng theo người dùng
     fun fetchAllContractsByUser(userId: String) {
@@ -456,6 +487,15 @@ class ContractViewModel : ViewModel() {
         }
     }
 
+    fun updateContractTerminationRequest(
+        contractId: String,
+        reason: String?,
+        status: TerminationStatus
+    ) {
+        contractRepository.updateContractTerminationRequest(contractId, reason, status) { success ->
+            _updateYCResult.postValue(success)
+        }
+    }
 
     // LiveData để lưu trữ kết quả
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()

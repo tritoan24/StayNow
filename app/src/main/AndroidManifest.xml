@@ -33,9 +33,14 @@
             android:name=".BaoMat.ToCaoTaiKhoan"
             android:exported="false" />
         <activity
-            android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
+            android:name=".fragment.contract_tenant.ContractActivity"
             android:exported="false" />
-        <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
+        <activity
+            android:name=".fragment.contract_tenant.BillContractTerminatedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
+            android:exported="false" /> <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
         <activity
             android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
             android:exported="true" />

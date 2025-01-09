@@ -5,7 +5,7 @@ import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
 import java.io.Serializable
 
 data class InvoiceMonthlyModel(
-    val idHoaDon: String = "",
+    var idHoaDon: String = "",
     val idNguoiNhan: String = "",
     val idNguoiGui: String = "",
     val idHopDong: String = "",

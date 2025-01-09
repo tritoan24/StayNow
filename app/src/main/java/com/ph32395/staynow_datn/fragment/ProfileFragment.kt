@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -28,10 +27,9 @@ import com.ph32395.staynow_datn.BaoMat.CaiDat
 import com.ph32395.staynow_datn.BaoMat.PhanHoi
 import com.ph32395.staynow_datn.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow_datn.DangKiDangNhap.DangNhap
-import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.PhongTroDaXem.PhongTroDaXemActivity
 import com.ph32395.staynow_datn.R
-import com.ph32395.staynow_datn.fragment.contract_tenant.ContractFragment
+import com.ph32395.staynow_datn.fragment.contract_tenant.ContractActivity
 import com.ph32395.staynow_datn.hieunt.database.db.AppDatabase
 import com.ph32395.staynow_datn.hieunt.service.NotificationService
 import com.ph32395.staynow_datn.hieunt.view.feature.manage_schedule_room.TenantManageScheduleRoomActivity
@@ -207,7 +205,7 @@ class ProfileFragment : Fragment() {
             launchActivity(TenantManageScheduleRoomActivity::class.java)
         }
         llContract.tap {
-            replaceFragment(ContractFragment())
+            launchActivity(ContractActivity::class.java)
         }
         llBill.tap {
             launchActivity(BillManagementActivity::class.java)
@@ -228,27 +226,6 @@ class ProfileFragment : Fragment() {
                 }
             }
             userRef.child("thoiGianKichHoatCuoiCung").setValue(ServerValue.TIMESTAMP)
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment) {
-        if (context is androidx.fragment.app.FragmentActivity) {
-            val activity = context as androidx.fragment.app.FragmentActivity
-
-            activity.supportFragmentManager.beginTransaction()
-                .replace(
-                    R.id.fragment_container,
-                    fragment
-                ) // fragment_container là ID của ViewGroup chứa Fragment
-                .addToBackStack(null) // Để quay lại màn hình trước
-                .commit()
-
-            // Ẩn Bottom Navigation
-            if (activity is MainActivity) {
-                activity.setBottomNavigationVisibility(false)
-            }
-        } else {
-            Toast.makeText(context, "Không thể chuyển Fragment", Toast.LENGTH_SHORT).show()
         }
     }
 

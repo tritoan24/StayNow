@@ -88,6 +88,7 @@ class BillAdapter(
                 intent.putExtra("bill", bill)
                 binding.root.context.startActivity(intent)
             }
+
             binding.btnCancel.tap {
                 showConfirmDialog(
                     binding.root.context,

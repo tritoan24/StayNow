@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/menu_pending_contracts"
         android:title="Hợp đồng đang chờ xác nhận"
@@ -18,7 +18,15 @@
         android:title="Hợp đồng hết hạn"
         tools:ignore="HardcodedText" />
     <item
+        android:id="@+id/menu_cancelled_contracts"
+        android:title="Hợp đồng đã bị hủy"
+        tools:ignore="HardcodedText" />
+    <item
+        android:id="@+id/menu_terminatedProcessing_contracts"
+        android:title="Hợp đồng đang chờ xử lý chấm dứt"
+        tools:ignore="HardcodedText" />
+    <item
         android:id="@+id/menu_terminated_contracts"
-        android:title="Hợp đồng đã hủy"
+        android:title="Hợp đồng đã chấm dứt"
         tools:ignore="HardcodedText" />
 </menu>

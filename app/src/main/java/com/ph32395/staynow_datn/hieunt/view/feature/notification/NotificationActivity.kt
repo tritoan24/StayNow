@@ -16,6 +16,7 @@ import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
 import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
+import com.ph32395.staynow_datn.fragment.contract_tenant.ContractActivity
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CANCELED_BY_RENTER
@@ -30,6 +31,9 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.SystemUtils
@@ -110,26 +114,39 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
 
-                TYPE_NOTI_BILL_MONTHLY_REMIND -> {
-                    // Navigate to invoice creation
+                TYPE_NOTI_BILL_MONTHLY_REMIND,TYPE_NOTI_PAYMENT_INVOICE -> {
                     val intent = Intent(this, DetailBillActivity::class.java).apply {
                         putExtra("invoiceId", notification.idModel)
-                        putExtra("notify","notify")
                     }
                     startActivity(intent)
                 }
 
-                TYPE_NOTI_PAYMENT_INVOICE -> {
-                    // Navigate to invoice creation
-                    val intent = Intent(this, DetailBillActivity::class.java).apply {
-                        putExtra("invoiceId", notification.idModel)
+                TYPE_NOTI_CONTRACT -> {
+                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+
+                TYPE_NOTI_TERMINATED_REQUEST -> {
+                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                        putExtra("contractId", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+
+                TYPE_NOTI_TERMINATED_CONFIRM -> {
+                    val intent = Intent(this, ContractActivity::class.java).apply {
+                        putExtra("contractId", notification.idModel)
                         putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }
-                TYPE_NOTI_CONTRACT -> {
-                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
-                        putExtra("CONTRACT_ID", notification.idModel)
+
+                TYPE_NOTI_TERMINATED_DENY -> {
+                    val intent = Intent(this, ContractActivity::class.java).apply {
+                        putExtra("contractId", notification.idModel)
+                        putExtra("notify", "notify")
                     }
                     startActivity(intent)
                 }

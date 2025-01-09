@@ -72,6 +72,7 @@ class CreateInvoice : AppCompatActivity() {
 
 
         val idHopDong = intent.getStringExtra("CONTRACT_ID")
+        val isChamDut = intent.getStringExtra("chamDutHopDong")
 
         idHopDong?.let {
             viewModelHopDong.fetchInvoiceDetails(it)
@@ -80,7 +81,9 @@ class CreateInvoice : AppCompatActivity() {
         // Quan sát dữ liệu và cập nhật UI
         viewModelHopDong.invoiceDetails.observe(this) { fetchedInvoice ->
             invoice = fetchedInvoice
-            updateUI(invoice)
+            if (idHopDong != null) {
+                updateUI(invoice, idHopDong,isChamDut)
+            }
             setupCalculationListeners()
         }
         if (idHopDong != null) {
@@ -100,7 +103,7 @@ class CreateInvoice : AppCompatActivity() {
     // Thêm biến flag để kiểm soát việc lưu dữ liệu
     private var isFinalCalculation = false
 
-    private fun updateUI(invoice: Invoice) {
+    private fun updateUI(invoice: Invoice, contractId: String,isChamDut:String?) {
 
         // Tính toán các giá trị ban đầu
         tienPhong = invoice.tienPhong
@@ -129,12 +132,6 @@ class CreateInvoice : AppCompatActivity() {
         binding.tvTienThem.text = formatCurrency(tienThem)
         binding.tvTienGiam.text = formatCurrency(tienGiam)
 
-
-        Log.d("Invoice", "tien phong: " + tienPhong)
-        Log.d("Invoice", "phi co dinh: " + tongTienDichVuCoDinh)
-        Log.d("Invoice", "tong tien phi bien dong: " + tongTienPhiBienDong)
-        Log.d("Invoice", "tong phi dich vu: " + tongPhiDichVu)
-        Log.d("Invoice", "tong tien hoa don: " + tongTienHoaDon)
 
         // Thiết lập adapter cho các phí cố định và biến động
         val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
@@ -172,12 +169,12 @@ class CreateInvoice : AppCompatActivity() {
             calculateUtilities()
             updateTotalBill()
 
-            val soDienCu =   binding.editTextSoNuocCu.text.toString().toInt()
-            if(soDienCu != invoice.soDienCu){
-              Toast.makeText(this, "Số điện cũ đã bị thay đổi", Toast.LENGTH_SHORT).show()
+            val soDienCu = binding.editTextSoNuocCu.text.toString().toInt()
+            if (soDienCu != invoice.soDienCu) {
+                Log.d("zzzzCreateInvoice", "Số điện đã thay đổi: $idHopDong")
             }
             loadingUtil.show()
-            saveInvoice()
+            saveInvoice(contractId,isChamDut)
         }
 
         // định dạng số tiền nhập vào
@@ -323,15 +320,16 @@ class CreateInvoice : AppCompatActivity() {
         Log.d("Invoice1", "Utility Fee Details: $utilityFeeDetails")
     }
 
-    private fun saveInvoice() {
+    private fun saveInvoice(contractId: String, isChamDut: String?) {
         // Phương thức lưu hóa đơn
         // Sử dụng utilityFeeDetails để lưu chi tiết phí
         // Triển khai logic lưu vào Firestore hoặc cơ sở dữ liệu của bạn
+
         val hoaDonMon = InvoiceMonthlyModel(
             idHoaDon = "",
             idNguoiNhan = idNguoiNhan,
             idNguoiGui = idNguoiGui,
-            idHopDong = idHopDong,
+            idHopDong = contractId,
             tenKhachHang = tenKhachHang,
             tenPhong = tenPhong,
             ngayTaoHoaDon = Calendar.getInstance().time.toString(),
@@ -345,7 +343,7 @@ class CreateInvoice : AppCompatActivity() {
             tongPhiCoDinh = tongTienDichVuCoDinh,
             tongPhiBienDong = tongTienPhiBienDong,
             tongTienDichVu = tongPhiDichVu,
-            kieuHoadon = invoice.kieuHoadon,
+            kieuHoadon = if (isChamDut == null) invoice.kieuHoadon else "HoaDonChamDut",
             paymentDate = "Ngày thanh toán",
             soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0,
             soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0,
@@ -361,35 +359,35 @@ class CreateInvoice : AppCompatActivity() {
         )
         Log.d("Invoice2", "Invoice: $hoaDonMon")
 
-        invoiceViewModel.addInvoice(hoaDonMon, {
+        invoiceViewModel.addInvoice(hoaDonMon, { invoiceId ->
+
+            hoaDonMon.idHoaDon = invoiceId
+
             val factory = ViewModelFactory(applicationContext) // Hoặc context cần thiết
             val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
             Toast.makeText(this, "Tạo hóa đơn thành công", Toast.LENGTH_SHORT).show()
             loadingUtil.hide()
 
-            if(soDienCu==0){
+            if (soDienCu == 0) {
                 //gọi hàm update số điện số nc
                 viewModelHopDong.updatePreviousUtilities(
                     idHopDong,
                     0,
                     binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
                 )
-            }else if (soNuocCu ==0){
+            } else if (soNuocCu == 0) {
                 viewModelHopDong.updatePreviousUtilities(
                     idHopDong,
                     binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
                     0
                 )
-            }else {
+            } else {
                 viewModelHopDong.updatePreviousUtilities(
                     idHopDong,
                     binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
                     binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
                 )
             }
-
-            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soDienCu)
-            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soNuocCu)
 
             Log.d("Invoice", "idHopDong: $idHopDong")
             // Giám sát trạng thái gửi thông báo
@@ -408,10 +406,11 @@ class CreateInvoice : AppCompatActivity() {
             } else {
                 "Đến ngày cần thanh toán hóa đơn cho tháng ${hoaDonMon.hoaDonThang}"
             }
+            val messageExtra="Hãy thanh toán hóa đơn này để hoàn thành chấm dứt hợp đồng với mã hợp đồng ${hoaDonMon.idHopDong}"
             // Ví dụ: gửi thông báo
             val notification = NotificationModel(
                 tieuDe = "Thanh toán hóa đơn",
-                tinNhan = message,
+                tinNhan = if(isChamDut==null) message else messageExtra,
                 //lấy ngày hôm nay
                 ngayGuiThongBao = Calendar.getInstance().time.toString(),
                 thoiGian = "0",
@@ -419,11 +418,13 @@ class CreateInvoice : AppCompatActivity() {
                 daDoc = false,
                 daGui = true,
                 loaiThongBao = "invoiceRemind",
-                idModel = idHopDong
+                idModel = hoaDonMon.idHoaDon
             )
 
             val recipientId = idNguoiNhan
             notificationViewModel.sendNotification(notification, recipientId)
+
+            viewModelHopDong.updateIsCreateBillContract(hoaDonMon.idHopDong)
 
             //chuyển sang màn home khi tạo hóa đơn thành công
             startActivity(Intent(this, MainActivity::class.java))

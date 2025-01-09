@@ -56,7 +56,6 @@ class BillContractActivity : AppCompatActivity() {
         val contractId = intent.getStringExtra("contractId")
 
         val detail = intent.getStringExtra("detail")
-        val notify = intent.getStringExtra("notify")
 
         // convert invoice to jsonArrStr
         val gson = Gson()
@@ -81,9 +80,7 @@ class BillContractActivity : AppCompatActivity() {
         if (contract?.hoaDonHopDong?.trangThai == InvoiceStatus.PAID) {
             binding.btnThanhtoan.visibility = View.GONE
         }
-        if (notify != null) {
-            binding.btnThanhtoan.visibility = View.GONE
-        }
+
         if (detail != null) {
             binding.btnThanhtoan.visibility = View.GONE
             binding.tvTitle.text = "Chi tiết hóa đơn hợp đồng"
@@ -133,6 +130,9 @@ class BillContractActivity : AppCompatActivity() {
     private fun updateUI(invoice: Invoice, contract: HopDong?) {
         if (contract == null) {
             binding.tvReminderDate.visibility = View.GONE
+        }
+        if(invoice.trangThai!=InvoiceStatus.PENDING){
+            binding.btnThanhtoan.visibility = View.GONE
         }
 
         binding.tvInvoiceId.text = "Mã hóa đơn: ${invoice.idHoaDon}"
