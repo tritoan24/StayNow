@@ -617,7 +617,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     listFullRoom.clear()
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
-                        .whereIn("maLoaiPhong", maLoaiPhongList)
+                        .whereIn("maLoaiNhaTro", maLoaiPhongList)
                         .get()
                         .addOnSuccessListener { phongTroSnapshot ->
                             val phongTroIds = phongTroSnapshot.documents.map { it.id }
@@ -648,11 +648,38 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                 TAG,
                                                 "Danh sách phòng trọ có tiện nghi: $phongTroWithTienNghiIds"
                                             )
-                                            // Tìm giao của ba danh sách phòng trọ
-                                            val finalRooms = phongTroIds
-                                                .intersect(phongTroWithNoiThatIds.toSet())
-                                                .intersect(phongTroWithTienNghiIds.toSet())
-                                            Log.d(TAG, "Danh sách phòng trọ cuối cùng: $finalRooms")
+                                            // Hợp tất cả ID của phòng trọ
+                                            val allPhongTroIds = phongTroIds
+                                                .union(phongTroWithNoiThatIds.toSet())
+                                                .union(phongTroWithTienNghiIds.toSet())
+
+                                            // Tính số tiêu chí thỏa mãn và tìm mức độ phù hợp cao nhất
+                                            val roomsWithMatchScore = allPhongTroIds.map { id ->
+                                                val matchScore = listOf(
+                                                    phongTroIds.contains(id),          // Thỏa mãn loại phòng
+                                                    phongTroWithNoiThatIds.contains(id), // Thỏa mãn nội thất
+                                                    phongTroWithTienNghiIds.contains(id) // Thỏa mãn tiện nghi
+                                                ).count { it } // Đếm số tiêu chí thỏa mãn
+
+                                                id to matchScore
+                                            }
+
+                                            // Tìm `matchScore` cao nhất
+                                            val maxMatchScore =
+                                                roomsWithMatchScore.maxOf { it.second }
+
+                                            // Lọc ra các phòng trọ có `matchScore` cao nhất
+                                            val bestRooms =
+                                                roomsWithMatchScore.filter { it.second == maxMatchScore }
+                                            val finalRooms = bestRooms.map { it.first }
+                                            Log.d(
+                                                TAG,
+                                                "Danh sách phòng trọ sắp xếp theo mức độ phù hợp: ${
+                                                    bestRooms.map {
+                                                        it.first
+                                                    }
+                                                }"
+                                            )
                                             if (finalRooms.isEmpty()) {
                                                 binding.layoutNullMsg.visibility = View.VISIBLE
                                                 binding.rvListRoom.visibility = View.GONE
@@ -720,22 +747,25 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                     if (listFullRoom.size > 0) {
                                                                         binding.layoutLoading.visibility =
                                                                             View.GONE
-                                                                        binding.layoutNullMsg.visibility = View.GONE
+                                                                        binding.layoutNullMsg.visibility =
+                                                                            View.GONE
                                                                         binding.rvListRoom.visibility =
                                                                             View.VISIBLE
                                                                         updateUI(
                                                                             listFullRoom,
                                                                             homeViewModel
                                                                         )
-                                                                    }else{
+                                                                    } else {
                                                                         Log.d(
                                                                             TAG,
                                                                             "onFilterSelected: else $listFullRoom"
                                                                         )
                                                                         binding.rvListRoom.visibility =
                                                                             View.GONE
-                                                                        binding.layoutLoading.visibility = View.GONE
-                                                                        binding.layoutNullMsg.visibility = View.VISIBLE
+                                                                        binding.layoutLoading.visibility =
+                                                                            View.GONE
+                                                                        binding.layoutNullMsg.visibility =
+                                                                            View.VISIBLE
                                                                     }
                                                                 }
                                                                 .addOnFailureListener { exception ->
