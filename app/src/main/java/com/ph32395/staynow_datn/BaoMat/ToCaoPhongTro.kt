@@ -64,7 +64,6 @@ class ToCaoPhongTro : AppCompatActivity() {
             selectImageFromGallery()
         }
 
-        mDatabase = FirebaseDatabase.getInstance().getReference()
 
         // Nhận maPhongTro từ Intent và truy vấn Firebase
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
@@ -85,9 +84,12 @@ class ToCaoPhongTro : AppCompatActivity() {
         } else {
             Log.e("ToCaoPhongTro", "Không có maPhongTro trong Intent")
         }
+        mDatabase = FirebaseDatabase.getInstance().getReference()
+
+        // Nhận userId từ Intent và truy vấn Firebase
         val userId = intent.getStringExtra("idUser")
         if (userId != null) {
-            Log.d("ToCaoTaiKhoan", "User ID: $userId")
+            Log.d("ToCaoPhongTro", "User ID: $userId")
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -95,7 +97,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                         val name = snapshot.child("hoTen").value.toString().trim()
                         editTenPhongTro.setText(name.ifEmpty { "Chưa cập nhật" })
 
-                        // Lấy mã người dùng từ Firebase Realtime Database
+                        // Lấy mã người dùng từ Firebase
                         maNguoiDung = snapshot.child("maNguoiDung").value.toString()
 
                         // Làm cho trường không thể chỉnh sửa
@@ -125,13 +127,36 @@ class ToCaoPhongTro : AppCompatActivity() {
 
         // Lưu dữ liệu khi click btnToCaoPhong
         btnToCaoPhong.setOnClickListener {
+            val tenPhongTro = editTenPhongTro.text.toString().trim()
+            val vanDePhong = editVanDePhong.text.toString().trim()
+
+            // Kiểm tra các trường không được để trống
+            if (tenPhongTro.isEmpty()) {
+                Toast.makeText(this, "Tên phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (vanDePhong.isEmpty()) {
+                Toast.makeText(this, "Vấn đề phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (imageUriList.isEmpty()) {
+                Toast.makeText(this, "Hãy chọn ít nhất một hình ảnh để tố cáo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Nếu tất cả các trường hợp lệ, tiến hành lưu dữ liệu
             val toCaoPhongData = hashMapOf(
-                "tenPhongTro" to editTenPhongTro.text.toString(),
-                "vanDePhong" to editVanDePhong.text.toString(),
+                "tenPhongTro" to tenPhongTro,
+                "vanDePhong" to vanDePhong,
                 "images" to imageUriList.map { it.toString() }, // Lưu URL từ Firebase Storage
+                "maNguoiBiToCao" to userId,
                 "maPhongTro" to maPhongTro,
-                "maNguoiDung" to maNguoiDung // Gửi mã người dùng vào Firestore
+                "maNguoiToCao" to maNguoiDung, // Gửi mã người dùng vào Firestore
+                "trangThai" to ""
             )
+
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
                 editTenPhongTro.text.clear()
@@ -145,6 +170,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                 Toast.makeText(this, "Lỗi khi gửi tố cáo, vui lòng thử lại!", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun selectImageFromGallery() {
