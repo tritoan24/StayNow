@@ -127,15 +127,36 @@ class ToCaoPhongTro : AppCompatActivity() {
 
         // Lưu dữ liệu khi click btnToCaoPhong
         btnToCaoPhong.setOnClickListener {
+            val tenPhongTro = editTenPhongTro.text.toString().trim()
+            val vanDePhong = editVanDePhong.text.toString().trim()
+
+            // Kiểm tra các trường không được để trống
+            if (tenPhongTro.isEmpty()) {
+                Toast.makeText(this, "Tên phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (vanDePhong.isEmpty()) {
+                Toast.makeText(this, "Vấn đề phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (imageUriList.isEmpty()) {
+                Toast.makeText(this, "Hãy chọn ít nhất một hình ảnh để tố cáo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Nếu tất cả các trường hợp lệ, tiến hành lưu dữ liệu
             val toCaoPhongData = hashMapOf(
-                "tenPhongTro" to editTenPhongTro.text.toString(),
-                "vanDePhong" to editVanDePhong.text.toString(),
-                "images" to imageUriList.map { it.toString() },// Lưu URL từ Firebase Storage
+                "tenPhongTro" to tenPhongTro,
+                "vanDePhong" to vanDePhong,
+                "images" to imageUriList.map { it.toString() }, // Lưu URL từ Firebase Storage
                 "maNguoiBiToCao" to userId,
                 "maPhongTro" to maPhongTro,
-                "maNguoiToCao" to maNguoiDung, // Gửi mã người dùng vào Firestore,
+                "maNguoiToCao" to maNguoiDung, // Gửi mã người dùng vào Firestore
                 "trangThai" to ""
             )
+
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
                 editTenPhongTro.text.clear()
@@ -149,6 +170,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                 Toast.makeText(this, "Lỗi khi gửi tố cáo, vui lòng thử lại!", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun selectImageFromGallery() {

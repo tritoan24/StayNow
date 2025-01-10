@@ -113,8 +113,8 @@ class ToCaoTaiKhoan : AppCompatActivity() {
                 "tenChuTro" to editTenChuTro.text.toString(),
                 "vanDe" to editVanDe.text.toString(),
                 "images" to imageUriList.map { it.toString() }, // Lưu URL từ Firebase Storage
-                "idUser" to userId,
-                "maNguoiDung" to maNguoiDung // Gửi mã người dùng vào Firestore
+                "maNguoiBiToCao" to userId,
+                "maNguoiToCao" to maNguoiDung // Gửi mã người dùng vào Firestore
             )
             firestore.collection("ToCaoTaiKhoan").add(toCaoData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo được gửi thành công", Toast.LENGTH_SHORT).show()
