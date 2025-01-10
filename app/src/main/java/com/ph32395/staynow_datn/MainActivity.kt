@@ -9,11 +9,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow_datn.Activity.RoomDetailActivity
 import com.ph32395.staynow_datn.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow_datn.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTro
+import com.ph32395.staynow_datn.aiGenmini.ChatActivity
 import com.ph32395.staynow_datn.databinding.ActivityMainBinding
 import com.ph32395.staynow_datn.fragment.MessageFragment
 import com.ph32395.staynow_datn.fragment.ProfileFragment
@@ -87,35 +90,14 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
-//        FirebaseMessaging.getInstance().getToken()
-//            .addOnCompleteListener(
-//                object : OnCompleteListener<String?> {
-//                    override fun onComplete(task: Task<String?>) {
-//                        if (!task.isSuccessful) {
-//                            Log.w(
-//                                ContentValues.TAG,
-//                                "Fetching FCM registration token failed",
-//                                task.exception
-//                            )
-//                            return
-//                        }
 //
-//                        // Get new FCM registration token
-//                        val token = task.result
-//
-//                        //lưu token này vào database
-//                        if (currentUser != null) {
-//
-//                            Log.d("token", "tạo ra cái khỉ gió ở đây này ")
-//                            mDatabase.child("NguoiDung").child(currentUser.getUid()).child("token")
-//                                .setValue(token)
-//
-//
-//                        }
-//                        //nếu không có người dùng nào đăng nhập thì không lưu token
-//
-//                    }
-//                })
+        val fabCustom = findViewById<FloatingActionButton>(R.id.chatAI)
+        fabCustom.setOnClickListener {
+        //chuyen sang man chatActivity
+            val intent = Intent(this, ChatActivity::class.java)
+            startActivity(intent)
+
+        }
 
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {

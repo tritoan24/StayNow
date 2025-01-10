@@ -26,15 +26,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
-<!--        <activity-->
-<!--            android:name=".aiGenmini.ChatActivity"-->
-<!--            android:exported="false" />-->
+
         <!-- <activity -->
         <!-- android:name=".aiHugging.AiHugging" -->
         <!-- android:exported="false" /> -->
-        <!-- <activity -->
-        <!-- android:name=".ai.ChatWithAi" -->
-        <!-- android:exported="false" /> -->
+         <activity
+         android:name=".aiGenmini.ChatActivity"
+         android:exported="false" />
         <activity
             android:name=".hieunt.view.feature.ScheduleRoomSuccessActivity"
             android:exported="false" />
@@ -168,7 +166,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".aiGenmini.ChatActivity"
+            android:name=".Activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
