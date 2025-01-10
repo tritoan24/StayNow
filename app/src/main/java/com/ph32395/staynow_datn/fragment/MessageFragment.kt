@@ -129,7 +129,7 @@ class MessageFragment : Fragment() {
         val maNguoiDung: String = "",
         val hoTen: String = "",
         val anhDaiDien: String = "",
-        val status: String = ""
+        val trangThai: String = ""
     ) {
         constructor() : this("", "", "", "")
     }
@@ -153,6 +153,8 @@ class MessageFragment : Fragment() {
                 val statusMessage = document.toObject(StatusMessage::class.java)
                 if (statusMessage?.maNguoiThue == idUser) {
                     statusMessage?.maNguoiChoThue?.let { listUserId.add(it) }
+                } else if (statusMessage?.maNguoiChoThue == idUser) {
+                    statusMessage?.maNguoiThue?.let { listUserId.add(it) }
                 }
             }
 
@@ -166,12 +168,14 @@ class MessageFragment : Fragment() {
                             val maNguoiDung = snapshot.child("maNguoiDung").value.toString()
                             val hoTen = snapshot.child("hoTen").value.toString()
                             val anhDaiDien = snapshot.child("anhDaiDien").value.toString()
-                            val status = snapshot.child("status").value.toString()
+                            val status = snapshot.child("trangThai").value.toString()
 
                             // Tìm user đã tồn tại và cập nhật trạng thái mới
-                            val existingUserIndex = listUser.indexOfFirst { it.maNguoiDung == maNguoiDung }
+                            val existingUserIndex =
+                                listUser.indexOfFirst { it.maNguoiDung == maNguoiDung }
                             if (existingUserIndex != -1) {
-                                listUser[existingUserIndex] = UserStatus(maNguoiDung, hoTen, anhDaiDien, status)
+                                listUser[existingUserIndex] =
+                                    UserStatus(maNguoiDung, hoTen, anhDaiDien, status)
                             } else {
                                 listUser.add(UserStatus(maNguoiDung, hoTen, anhDaiDien, status))
                             }
