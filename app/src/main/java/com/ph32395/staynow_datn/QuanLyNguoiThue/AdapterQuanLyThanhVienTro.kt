@@ -180,7 +180,7 @@ class AdapterQuanLyThanhVienTro(
 
                         // Cập nhật danh sách trong Firestore
                         dbQuanLyNguoiThue.document(nguoiThue.idHopDong)
-                            .update("thanhVienList", updatedList)
+                            .update("danhSachThanhVien", updatedList)
                             .addOnSuccessListener {
                                 Log.d("Firestore", "Thêm thành viên mới thành công")
                             }

@@ -127,16 +127,16 @@ class MessageFragment : Fragment() {
 
     data class UserStatus(
         val maNguoiDung: String = "",
-        val ho_ten: String = "",
-        val anh_daidien: String = "",
+        val hoTen: String = "",
+        val anhDaiDien: String = "",
         val status: String = ""
     ) {
         constructor() : this("", "", "", "")
     }
 
     data class StatusMessage(
-        val landlordId: String = "",
-        val tenantId: String = ""
+        val maNguoiThue: String = "",
+        val maNguoiChoThue: String = ""
     ) {
         constructor() : this("", "")
     }
@@ -151,8 +151,8 @@ class MessageFragment : Fragment() {
         statusMessageRef.get().addOnSuccessListener { documents ->
             for (document in documents.documents) {
                 val statusMessage = document.toObject(StatusMessage::class.java)
-                if (statusMessage?.tenantId == idUser) {
-                    statusMessage?.landlordId?.let { listUserId.add(it) }
+                if (statusMessage?.maNguoiThue == idUser) {
+                    statusMessage?.maNguoiChoThue?.let { listUserId.add(it) }
                 }
             }
 

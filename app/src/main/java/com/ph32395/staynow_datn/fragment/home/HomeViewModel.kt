@@ -104,7 +104,7 @@ class HomeViewModel : ViewModel() {
                     // Lắng nghe thay đổi trong bảng ChiTietThongTin
                     firestore.collection("ChiTietThongTin")
                         .whereIn("maPhongTro", roomIds)
-                        .whereEqualTo("tenThongTin", "Diện tích")
+                        .whereEqualTo("tenThongTin", "Diện Tích")
                         .addSnapshotListener { chiTietSnapshot, chiTietError ->
                             if (chiTietError != null) {
                                 Log.e("HomeViewModel", "Error listening to room details: ", chiTietError)
@@ -186,7 +186,7 @@ class HomeViewModel : ViewModel() {
             // Lấy thông tin diện tích của phòng
             firestore.collection("ChiTietThongTin")
                 .whereIn("maPhongTro", danhSachMaPhong)
-                .whereEqualTo("tenThongTin", "Diện tích")
+                .whereEqualTo("tenThongTin", "Diện Tích")
                 .addSnapshotListener { chiTietSnapshot, chiTietError ->
                     if (chiTietError != null) {
                         Log.e("HomeViewModel", "Lỗi khi lấy chi tiết phòng: ", chiTietError)
@@ -452,7 +452,7 @@ class HomeViewModel : ViewModel() {
             roomList.forEach { (roomId, room) ->
                 firestore.collection("ChiTietThongTin")
                     .whereEqualTo("maPhongTro", roomId)
-                    .whereEqualTo("tenThongTin", "Diện tích")
+                    .whereEqualTo("tenThongTin", "Diện Tích")
                     .addSnapshotListener { documents, exception ->
                         if (exception != null) {
                             Log.e(
@@ -503,7 +503,7 @@ class HomeViewModel : ViewModel() {
             roomList.forEach { (roomId, room) ->
                 firestore.collection("ChiTietThongTin")
                     .whereEqualTo("maPhongTro", roomId)
-                    .whereEqualTo("tenThongTin", "Diện tích")
+                    .whereEqualTo("tenThongTin", "Diện Tích")
                     .addSnapshotListener { documents, exception ->
                         if (exception != null) {
                             Log.e(

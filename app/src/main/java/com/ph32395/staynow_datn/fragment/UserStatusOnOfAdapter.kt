@@ -43,7 +43,7 @@ class UserStatusOnOfAdapter(
         val status = itemView.vTrangThaiUser
         fun bin(userStatus: MessageFragment.UserStatus) {
             Glide.with(itemView.context)
-                .load(userStatus.anh_daidien)
+                .load(userStatus.anhDaiDien)
                 .circleCrop()
                 .into(ivAvatar)
             val statusDrawable = status.background as GradientDrawable
