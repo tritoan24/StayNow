@@ -274,7 +274,7 @@ class CCCD : AppCompatActivity() {
 
         // Dữ liệu cần cập nhật
         val updates = mapOf<String, Any>(
-            "statusCCCD" to CCCDstatus
+            "trangThaiCCCD" to CCCDstatus
         )
 
         // Cập nhật trạng thái thanh toán vào bảng NguoiDung

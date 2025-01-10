@@ -47,8 +47,15 @@
         <activity
             android:name=".QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity"
             android:exported="false" /> <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
+        <!-- Man moi cua công.QuanLyNhaTro.QuanLyNhaTroActivity -->
         <activity
             android:name=".QuanLyNhaTro.QuanLyNhaTroActivity"
+            android:exported="true" />
+        <activity
+            android:name=".SuaPhongTro.SuaPhongTroDon"
+            android:exported="true" />
+        <activity
+            android:name=".SuaPhongTro.SuaPhongTro"
             android:exported="true" />
         <activity
             android:name=".hieunt.view.feature.schedule_room.ScheduleRoomSuccessActivity"

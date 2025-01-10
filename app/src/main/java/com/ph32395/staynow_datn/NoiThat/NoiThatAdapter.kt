@@ -63,4 +63,13 @@ class NoiThatAdapter(
             }
         }
     }
+    fun updateSelectedItems(selected: List<com.ph32395.staynow_datn.SuaPhongTro.NoiThat>?) {
+        selectedItems.clear()
+        selected?.forEach { selectedItems.add(it.maNoiThat.toString()) }
+        notifyDataSetChanged()
+    }
+
+    fun getSelectedNoiThat(): List<NoiThat> {
+        return noiThatList.filter { selectedItems.contains(it.maNoiThat.toString()) }
+    }
 }

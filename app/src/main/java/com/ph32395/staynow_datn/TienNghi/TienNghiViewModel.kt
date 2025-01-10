@@ -44,5 +44,6 @@ class TienNghiViewModel : ViewModel() {
             }
     }
 
+
     fun getListTienNghi(): LiveData<List<TienNghi>> = listTienNghi
 }
