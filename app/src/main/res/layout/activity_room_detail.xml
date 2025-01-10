@@ -804,6 +804,7 @@
                             android:id="@+id/btnXacNhanHuy"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_marginRight="10dp"
                             android:orientation="vertical"
                             android:gravity="center_horizontal"
                             android:clickable="true"
@@ -819,6 +820,30 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/Cancellation_Confirmation"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+<!--                        Sua cho duyet-->
+                        <LinearLayout
+                            android:id="@+id/btnSuaPhongChoDuyet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="10dp"
+                            android:orientation="vertical"
+                            android:gravity="center_horizontal"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackground"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:src="@drawable/ic_chinh_sua"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/Room_Repair"
                                 android:textSize="12sp"/>
                         </LinearLayout>
 

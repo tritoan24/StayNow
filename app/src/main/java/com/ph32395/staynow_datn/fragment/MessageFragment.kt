@@ -26,7 +26,7 @@ class MessageFragment : Fragment() {
     private lateinit var adapterMessage: MessageAdapter
     private val data = FirebaseFirestore.getInstance()
     private val database = Firebase.database.reference
-    private val statusMessageRef = data.collection("StatusMessages")
+    private val statusMessageRef = data.collection("DieuKienChat")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

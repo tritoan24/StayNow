@@ -487,6 +487,21 @@ class RoomDetailActivity : AppCompatActivity() {
                 }
             }
 
+            findViewById<LinearLayout>(R.id.btnSuaPhongChoDuyet).setOnClickListener{
+                viewModel.room.observe(this) { room ->
+
+                    if(room.maNhaTro.equals("")){
+                        val intent = Intent(this@RoomDetailActivity, SuaPhongTroDon::class.java)
+                        intent.putExtra("roomId",maPhongTro )
+                        startActivity(intent)
+                    }else{
+                        val intent = Intent(this@RoomDetailActivity, SuaPhongTro::class.java)
+                        intent.putExtra("roomId",maPhongTro )
+                        startActivity(intent)
+                    }
+                }
+            }
+
             //            Chuc nang sao chep phong
             findViewById<LinearLayout>(R.id.btnSaoChep).setOnClickListener {
                 showCopyRoomDialog()
