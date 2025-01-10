@@ -405,30 +405,35 @@ class NhaTroAdapter(
                             snapMap.getString("tenPhongTro").toString()
                         }
 
+//                        Phong luu
                         val totalNhaTroLuu = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet").isNullOrEmpty() &&
                                     (snapMap.getBoolean("trangThaiLuu") == true) &&
                                     (snapMap.getBoolean("trangThaiPhong") == false)
                         }
 
+//                        Da duyet
                         val totalPhongTroDaDuyet = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet") == "DaDuyet" &&
                                     snapMap.getBoolean("trangThaiPhong") == false &&
                                     snapMap.getBoolean("trangThaiLuu") == false
                         }
 
+//                        cho duyet
                         val totalPhongTroChoDuyet = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet") == "ChoDuyet" &&
                                     snapMap.getBoolean("trangThaiPhong") == false &&
                                     snapMap.getBoolean("trangThaiLuu") == false
                         }
 
+//                        Da huy
                         val totalPhongTroDaHuy = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet") == "BiHuy" &&
                                     snapMap.getBoolean("trangThaiPhong") == false &&
                                     snapMap.getBoolean("trangThaiLuu") == false
                         }
 
+//                        Da thue
                         val totalPhongTroDaThue = querySnapshot.documents.count { snapMap ->
                             snapMap.getString("trangThaiDuyet") == "" &&
                                     snapMap.getBoolean("trangThaiPhong") == true &&

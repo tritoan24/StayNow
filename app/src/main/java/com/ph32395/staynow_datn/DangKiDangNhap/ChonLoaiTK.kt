@@ -30,8 +30,9 @@ class ChonLoaiTK : AppCompatActivity() {
                 if (task.isSuccessful) {
                     showToast("Đã cập nhật loại tài khoản: Chủ nhà trọ")
                         // Chuyển sang màn home
-                        val intent = Intent(this, MainActivity::class.java)
+                        val intent = Intent(this, DangNhap::class.java)
                         startActivity(intent)
+                         finish()
                 } else {
                     showToast("Lỗi cập nhật loại tài khoản!")
                 }
@@ -43,9 +44,9 @@ class ChonLoaiTK : AppCompatActivity() {
             userRef.child("loaiTaiKhoan").setValue("NguoiThue").addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("Đã cập nhật loại tài khoản: Người thuê trọ")
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, DangNhap::class.java)
                     startActivity(intent)
-
+                    finish()
                 } else {
                     showToast("Lỗi cập nhật loại tài khoản!")
                 }
