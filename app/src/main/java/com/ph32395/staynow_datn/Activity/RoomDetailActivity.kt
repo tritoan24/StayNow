@@ -35,11 +35,8 @@ import com.ph32395.staynow_datn.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow_datn.BaoMat.ToCaoPhongTro
 import com.ph32395.staynow_datn.CCCD.CCCD
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
-import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.custom.CustomConfirmationDialog
 import com.ph32395.staynow_datn.MainActivity
-import com.ph32395.staynow_datn.QuanLyPhongTro.UpdateRoom.UpdateRoomActivity
-import com.ph32395.staynow_datn.QuanLyPhongTro.fragment.PhongDangLuuFragment
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.SuaPhongTro.SuaPhongTro
 import com.ph32395.staynow_datn.SuaPhongTro.SuaPhongTroDon

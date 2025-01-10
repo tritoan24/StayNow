@@ -5,7 +5,6 @@ import java.io.Serializable
 data class PhongTroModel(
     val maNguoiDung: String = "", // ma chu tro
     val maPhongTro: String = "",
-    val maNhaTro: String = "",
     val tenPhongTro: String = "",
     val diaChi: String = "",
     val diaChiChiTiet: String = "",
