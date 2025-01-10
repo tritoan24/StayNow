@@ -21,10 +21,10 @@ class SharePrefUtils(context: Context) {
             editor.apply()
         }
 
-    var isRated
-        get() = pre.getBoolean("rated", false)
+    var isViewedWarningSchedule
+        get() = pre.getBoolean("isViewedWarningSchedule", false)
         set(value) {
-            editor.putBoolean("rated", value)
+            editor.putBoolean("isViewedWarningSchedule", value)
             editor.apply()
         }
     var isPassPermission

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="24dp"
+    android:background="@drawable/bg_dialog_white"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Bạn sẽ bị đánh dấu spam,\nNếu lịch hẹn bị hủy đến lần thứ 3 !"
+        android:layout_marginHorizontal="16dp"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:fontFamily="@font/nunito_bold"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"/>
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tôi đã hiểu"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textAllCaps="true"
+        android:background="@drawable/bg_button_red"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        android:layout_gravity="center"/>
+</LinearLayout>

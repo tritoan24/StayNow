@@ -30,7 +30,9 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.ROOM_ID
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.ROOM_SCHEDULE
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
+import com.ph32395.staynow_datn.hieunt.helper.SharePrefUtils
 import com.ph32395.staynow_datn.hieunt.model.ScheduleRoomModel
+import com.ph32395.staynow_datn.hieunt.view.dialog.WarningScheduleDialog
 import com.ph32395.staynow_datn.hieunt.view_model.CommonVM
 import com.ph32395.staynow_datn.hieunt.widget.currentBundle
 import com.ph32395.staynow_datn.hieunt.widget.getTextEx
@@ -102,104 +104,108 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                 onBackPressedSystem()
             }
             tvConfirm.tap {
-                if (AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().checkRoomExist(roomIdInDetail)) {
-                    showLoading()
-                    val scheduleRoomInDataBase = AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().getRoomScheduleRoomId(roomIdInDetail)
-                    if (scheduleRoomInDataBase == null) {
-                        toast("Không lấy được thông tin phòng")
-                        dismissLoading()
-                    } else {
-                        Log.d("soLanDatPhong", "soLanDatPhongInDB: ${scheduleRoomInDataBase.soLanDatPhong}")
-                        getScheduleRoomFromFireStore(scheduleRoomInDataBase.maDatPhong) { isCompletion, scheduleRoomModel ->
-                            Log.d("soLanDatPhong", "soLanDatPhongInFireStore: ${scheduleRoomModel?.soLanDatPhong}")
-                            lifecycleScope.launch {
-                                if (isCompletion) {
-                                    when(scheduleRoomModel?.trangThaiDatPhong) {
-                                        0 -> {
-                                            toast("Vui lòng chờ chủ trọ xác nhận")
-                                        }
-                                        1 -> {
-                                            toast("Phòng trọ đã được chủ trọ xác nhận")
-                                        }
-                                        2, 3 -> {
-                                            if (scheduleRoomInDataBase.soLanDatPhong > 3) {
-                                                toast("Bạn đã bị đánh dấu Spam")
-                                            } else {
-                                                val scheduleNew = ScheduleRoomModel().apply {
-                                                    maPhongTro = roomIdInDetail
-                                                    tenPhong = roomModel.tenPhongTro
-                                                    maChuTro = roomModel.maNguoiDung
-                                                    diaChiPhong = roomModel.diaChiChiTiet
-                                                    tenChuTro = renterNameByGetInfo
-                                                    sdtChuTro = renterPhoneNumberByGetInfo
-                                                    maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                                                    tenNguoiThue = tenantNameByGetInfo
-                                                    sdtNguoiThue = tenantPhoneNumberByGetInfo
-                                                    ngayDatPhong = dateSelected
-                                                    thoiGianDatPhong = "${hours}:${minutes}"
-                                                    ghiChu = edtNote.getTextEx()
-                                                    trangThaiDatPhong = 0
-                                                    soLanDatPhong = scheduleRoomInDataBase.soLanDatPhong + 1
-                                                }
-                                                addScheduleRoomToFireStore(scheduleNew) { isCompletion, scheduleModelWithId ->
-                                                    lifecycleScope.launch(Dispatchers.Main) {
-                                                        if (isCompletion) {
-                                                            Log.d("soLanDatPhong", "soLanDatPhong: ${scheduleModelWithId.maDatPhong}")
-                                                            AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().updateSchedule(
-                                                                scheduleModelWithId.copy(soLanDatPhong = scheduleRoomInDataBase.soLanDatPhong + 1
+                if (SharePrefUtils(this@ScheduleRoomActivity).isViewedWarningSchedule) {
+                    if (AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().checkRoomExist(roomIdInDetail)) {
+                        showLoading()
+                        val scheduleRoomInDataBase = AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().getRoomScheduleRoomId(roomIdInDetail)
+                        if (scheduleRoomInDataBase == null) {
+                            toast("Không lấy được thông tin phòng")
+                            dismissLoading()
+                        } else {
+                            Log.d("soLanDatPhong", "soLanDatPhongInDB: ${scheduleRoomInDataBase.soLanDatPhong}")
+                            getScheduleRoomFromFireStore(scheduleRoomInDataBase.maDatPhong) { isCompletion, scheduleRoomModel ->
+                                Log.d("soLanDatPhong", "soLanDatPhongInFireStore: ${scheduleRoomModel?.soLanDatPhong}")
+                                lifecycleScope.launch {
+                                    if (isCompletion) {
+                                        when(scheduleRoomModel?.trangThaiDatPhong) {
+                                            0 -> {
+                                                toast("Vui lòng chờ chủ trọ xác nhận")
+                                            }
+                                            1 -> {
+                                                toast("Phòng trọ đã được chủ trọ xác nhận")
+                                            }
+                                            2, 3 -> {
+                                                if (scheduleRoomInDataBase.soLanDatPhong > 2) {
+                                                    toast("Bạn đã bị đánh dấu Spam")
+                                                } else {
+                                                    val scheduleNew = ScheduleRoomModel().apply {
+                                                        maPhongTro = roomIdInDetail
+                                                        tenPhong = roomModel.tenPhongTro
+                                                        maChuTro = roomModel.maNguoiDung
+                                                        diaChiPhong = roomModel.diaChiChiTiet
+                                                        tenChuTro = renterNameByGetInfo
+                                                        sdtChuTro = renterPhoneNumberByGetInfo
+                                                        maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                                                        tenNguoiThue = tenantNameByGetInfo
+                                                        sdtNguoiThue = tenantPhoneNumberByGetInfo
+                                                        ngayDatPhong = dateSelected
+                                                        thoiGianDatPhong = "${hours}:${minutes}"
+                                                        ghiChu = edtNote.getTextEx()
+                                                        trangThaiDatPhong = 0
+                                                        soLanDatPhong = scheduleRoomInDataBase.soLanDatPhong + 1
+                                                    }
+                                                    addScheduleRoomToFireStore(scheduleNew) { isCompletion, scheduleModelWithId ->
+                                                        lifecycleScope.launch(Dispatchers.Main) {
+                                                            if (isCompletion) {
+                                                                Log.d("soLanDatPhong", "soLanDatPhong: ${scheduleModelWithId.maDatPhong}")
+                                                                AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().updateSchedule(
+                                                                    scheduleModelWithId.copy(soLanDatPhong = scheduleRoomInDataBase.soLanDatPhong + 1
+                                                                    )
                                                                 )
-                                                            )
-                                                            pushNotification(scheduleNew){
-                                                                toastNotification(it)
+                                                                pushNotification(scheduleNew){
+                                                                    toastNotification(it)
+                                                                }
+                                                                launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleNew) }, ScheduleRoomSuccessActivity::class.java)
+                                                            } else {
+                                                                toast("Error")
                                                             }
-                                                            launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleNew) }, ScheduleRoomSuccessActivity::class.java)
-                                                        } else {
-                                                            toast("Error")
                                                         }
                                                     }
                                                 }
                                             }
                                         }
+                                    } else {
+                                        toast("Lỗi khi lấy thông tin phòng")
                                     }
-                                } else {
-                                    toast("Lỗi khi lấy thông tin phòng")
+                                    dismissLoading()
                                 }
+                            }
+                        }
+                    } else {
+                        showLoading()
+                        val scheduleRoomModel = ScheduleRoomModel().apply {
+                            maPhongTro = roomIdInDetail
+                            tenPhong = roomModel.tenPhongTro
+                            maChuTro = roomModel.maNguoiDung
+                            diaChiPhong = roomModel.diaChiChiTiet
+                            tenChuTro = renterNameByGetInfo
+                            sdtChuTro = renterPhoneNumberByGetInfo
+                            maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
+                            tenNguoiThue = tenantNameByGetInfo
+                            sdtNguoiThue = tenantPhoneNumberByGetInfo
+                            ngayDatPhong = dateSelected
+                            thoiGianDatPhong = "${hours}:${minutes}"
+                            ghiChu = edtNote.getTextEx()
+                            trangThaiDatPhong = 0
+                            soLanDatPhong = 1
+                        }
+                        addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion, scheduleModelWithId ->
+                            lifecycleScope.launch(Dispatchers.Main) {
                                 dismissLoading()
+                                if (isCompletion) {
+                                    AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().insertSchedule(scheduleModelWithId)
+                                    pushNotification(scheduleRoomModel){
+                                        toastNotification(it)
+                                    }
+                                    launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleRoomModel) }, ScheduleRoomSuccessActivity::class.java)
+                                } else {
+                                    toast("Error")
+                                }
                             }
                         }
                     }
                 } else {
-                    showLoading()
-                    val scheduleRoomModel = ScheduleRoomModel().apply {
-                        maPhongTro = roomIdInDetail
-                        tenPhong = roomModel.tenPhongTro
-                        maChuTro = roomModel.maNguoiDung
-                        diaChiPhong = roomModel.diaChiChiTiet
-                        tenChuTro = renterNameByGetInfo
-                        sdtChuTro = renterPhoneNumberByGetInfo
-                        maNguoiThue = FirebaseAuth.getInstance().currentUser?.uid.toString()
-                        tenNguoiThue = tenantNameByGetInfo
-                        sdtNguoiThue = tenantPhoneNumberByGetInfo
-                        ngayDatPhong = dateSelected
-                        thoiGianDatPhong = "${hours}:${minutes}"
-                        ghiChu = edtNote.getTextEx()
-                        trangThaiDatPhong = 0
-                        soLanDatPhong = 1
-                    }
-                    addScheduleRoomToFireStore(scheduleRoomModel) { isCompletion, scheduleModelWithId ->
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            dismissLoading()
-                            if (isCompletion) {
-                                AppDatabase.getInstance(this@ScheduleRoomActivity).scheduleDao().insertSchedule(scheduleModelWithId)
-                                pushNotification(scheduleRoomModel){
-                                    toastNotification(it)
-                                }
-                                launchActivity(Bundle().apply { putSerializable(ROOM_SCHEDULE, scheduleRoomModel) }, ScheduleRoomSuccessActivity::class.java)
-                            } else {
-                                toast("Error")
-                            }
-                        }
-                    }
+                    WarningScheduleDialog().show(supportFragmentManager,"WarningScheduleDialog")
                 }
             }
         }
