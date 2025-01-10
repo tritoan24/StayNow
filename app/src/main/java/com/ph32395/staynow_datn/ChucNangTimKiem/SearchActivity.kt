@@ -178,7 +178,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 // Truy vấn chi tiết thông tin diện tích
                 val task = firestore.collection("ChiTietThongTin")
                     .whereEqualTo("maPhongTro", id) // Truy vấn theo mã phòng trọ
-                    .whereEqualTo("tenThongTin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .whereEqualTo("tenThongTin", "Diện Tích") // Lọc theo thông tin "Diện tích"
                     .get()
                     .addOnSuccessListener { chiTietSnapshot ->
                         val chiTiet = chiTietSnapshot.documents.firstOrNull()
@@ -266,7 +266,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                 val roomList = document.toObject(PhongTroModel::class.java)
                 firestore.collection("ChiTietThongTin")
                     .whereEqualTo("maPhongTro", id) // Truy vấn theo mã phòng trọ
-                    .whereEqualTo("tenThongTin", "Diện tích") // Lọc theo thông tin "Diện tích"
+                    .whereEqualTo("tenThongTin", "Diện Tích") // Lọc theo thông tin "Diện tích"
                     .get()
                     .addOnSuccessListener { chiTietSnapshot ->
                         val chiTiet = chiTietSnapshot.documents.firstOrNull()
@@ -491,7 +491,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                     // Thêm truy vấn phụ vào danh sách
                     val task = firestore.collection("ChiTietThongTin")
                         .whereEqualTo("maPhongTro", id)
-                        .whereEqualTo("tenThongTin", "Diện tích")
+                        .whereEqualTo("tenThongTin", "Diện Tích")
                         .get()
                         .addOnSuccessListener { detailSnapshot ->
                             val chiTiet = detailSnapshot.documents.firstOrNull()
@@ -683,7 +683,7 @@ class SearchActivity : AppCompatActivity(), BottomSheetFragment.PriceRangeListen
                                                                 ) // Truy vấn theo mã phòng trọ
                                                                 .whereEqualTo(
                                                                     "tenThongTin",
-                                                                    "Diện tích"
+                                                                    "Diện Tích"
                                                                 ) // Lọc theo thông tin "Diện tích"
                                                                 .get()
                                                                 .addOnSuccessListener { chiTietSnapshot ->
