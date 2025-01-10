@@ -64,7 +64,6 @@ class ToCaoPhongTro : AppCompatActivity() {
             selectImageFromGallery()
         }
 
-        mDatabase = FirebaseDatabase.getInstance().getReference()
 
         // Nhận maPhongTro từ Intent và truy vấn Firebase
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
@@ -85,9 +84,12 @@ class ToCaoPhongTro : AppCompatActivity() {
         } else {
             Log.e("ToCaoPhongTro", "Không có maPhongTro trong Intent")
         }
+        mDatabase = FirebaseDatabase.getInstance().getReference()
+
+        // Nhận userId từ Intent và truy vấn Firebase
         val userId = intent.getStringExtra("idUser")
         if (userId != null) {
-            Log.d("ToCaoTaiKhoan", "User ID: $userId")
+            Log.d("ToCaoPhongTro", "User ID: $userId")
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -95,7 +97,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                         val name = snapshot.child("hoTen").value.toString().trim()
                         editTenPhongTro.setText(name.ifEmpty { "Chưa cập nhật" })
 
-                        // Lấy mã người dùng từ Firebase Realtime Database
+                        // Lấy mã người dùng từ Firebase
                         maNguoiDung = snapshot.child("maNguoiDung").value.toString()
 
                         // Làm cho trường không thể chỉnh sửa
@@ -128,9 +130,11 @@ class ToCaoPhongTro : AppCompatActivity() {
             val toCaoPhongData = hashMapOf(
                 "tenPhongTro" to editTenPhongTro.text.toString(),
                 "vanDePhong" to editVanDePhong.text.toString(),
-                "images" to imageUriList.map { it.toString() }, // Lưu URL từ Firebase Storage
+                "images" to imageUriList.map { it.toString() },// Lưu URL từ Firebase Storage
+                "maNguoiBiToCao" to userId,
                 "maPhongTro" to maPhongTro,
-                "maNguoiDung" to maNguoiDung // Gửi mã người dùng vào Firestore
+                "maNguoiToCao" to maNguoiDung, // Gửi mã người dùng vào Firestore,
+                "trangThai" to ""
             )
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
