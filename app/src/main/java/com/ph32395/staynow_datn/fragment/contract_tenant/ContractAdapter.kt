@@ -231,7 +231,7 @@ class ContractAdapter(
                     }
                     if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID && contract.trangThai==ContractStatus.PENDING) {
                         tvRemainingTime.visibility = View.VISIBLE
-                        tvRemainingTime.text = "Bạn đã thanh toán và hệ thống đang xử lý"
+                        tvRemainingTime.text = "Hóa đơn đã thanh toán và hệ thống đang xử lý"
                     }
 
                     //công add start

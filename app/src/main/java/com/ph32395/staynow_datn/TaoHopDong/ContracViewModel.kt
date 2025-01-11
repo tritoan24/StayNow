@@ -487,7 +487,7 @@ class ContractViewModel : ViewModel() {
         }
     }
 
-    fun updateContractTerminationRequest(
+    suspend fun updateContractTerminationRequest(
         contractId: String,
         reason: String?,
         status: TerminationStatus

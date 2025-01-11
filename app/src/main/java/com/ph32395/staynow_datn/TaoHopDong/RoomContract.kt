@@ -290,7 +290,7 @@ class RoomContract {
         getContracts("nguoiThue.maNguoiDung", tenantId, statuses, onContractsChanged)
     }
 
-    fun updateContractTerminationRequest(
+    suspend fun updateContractTerminationRequest(
         contractId: String,
         reason: String?,
         status: TerminationStatus,
@@ -308,6 +308,22 @@ class RoomContract {
         // Nếu có lý do, thêm vào bản đồ cập nhật
         reason?.let {
             updates["lyDoChamDut"] = it
+        }
+
+        if (status == TerminationStatus.APPROVED) {
+            val contractSnapshot = contractsCollection.document(contractId).get().await()
+            val roomId = contractSnapshot.getString("maPhong")
+
+            if (roomId != null) {
+                // Cập nhật trạng thái phòng trọ
+                roomsCollection.document(roomId)
+                    .update(
+                        mapOf(
+                            "trangThaiPhong" to false,
+                        )
+                    )
+                    .await()
+            }
         }
 
         contractsCollection.document(contractId)
@@ -417,7 +433,7 @@ class RoomContract {
                 .update("trangThai", newStatus.name)
                 .await()
 
-            if (newStatus == ContractStatus.EXPIRED || newStatus == ContractStatus.TERMINATED) {
+            if (newStatus == ContractStatus.TERMINATED || newStatus == ContractStatus.CANCELLED) {
                 // Lấy thông tin hợp đồng để tìm mã phòng
                 val contractSnapshot = contractsCollection.document(contractId).get().await()
                 val roomId = contractSnapshot.getString("maPhong")
@@ -428,7 +444,6 @@ class RoomContract {
                         .update(
                             mapOf(
                                 "trangThaiPhong" to false,
-                                "trangThaiDuyet" to "DaDuyet"
                             )
                         )
                         .await()
