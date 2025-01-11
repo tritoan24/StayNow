@@ -129,16 +129,15 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 }
 
                 TYPE_NOTI_TERMINATED_REQUEST -> {
-                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                    val intent = Intent(this,ContractActivity::class.java).apply {
                         putExtra("contractId", notification.idModel)
                     }
                     startActivity(intent)
                 }
 
                 TYPE_NOTI_TERMINATED_CONFIRM -> {
-                    val intent = Intent(this, ContractActivity::class.java).apply {
-                        putExtra("contractId", notification.idModel)
-                        putExtra("notify", "notify")
+                    val intent = Intent(this, CreateInvoice::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
                     }
                     startActivity(intent)
                 }
