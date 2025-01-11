@@ -293,49 +293,46 @@ class RoomContract {
     suspend fun updateContractTerminationRequest(
         contractId: String,
         reason: String?,
-        status: TerminationStatus,
-        onResult: (Boolean) -> Unit
-    ) {
+        status: TerminationStatus
+    ): Boolean {
         if (contractId.isEmpty()) {
-            onResult(false)
-            return
+            return false
         }
 
         val updates = mutableMapOf<String, Any>(
             "yeuCauChamDut" to status
         )
 
-        // Nếu có lý do, thêm vào bản đồ cập nhật
         reason?.let {
             updates["lyDoChamDut"] = it
         }
 
-        if (status == TerminationStatus.APPROVED) {
-            val contractSnapshot = contractsCollection.document(contractId).get().await()
-            val roomId = contractSnapshot.getString("maPhong")
+        try {
+            if (status == TerminationStatus.APPROVED) {
+                val contractSnapshot = contractsCollection.document(contractId).get().await()
+                val roomId = contractSnapshot.getString("maPhong")
 
-            if (roomId != null) {
-                // Cập nhật trạng thái phòng trọ
-                roomsCollection.document(roomId)
-                    .update(
-                        mapOf(
-                            "trangThaiPhong" to false,
+                if (roomId != null) {
+                    roomsCollection.document(roomId)
+                        .update(
+                            mapOf(
+                                "trangThaiPhong" to false,
+                            )
                         )
-                    )
-                    .await()
+                        .await()
+                }
             }
-        }
 
-        contractsCollection.document(contractId)
-            .update(updates)
-            .addOnSuccessListener {
-                Log.d("HopDongRepository", "Fields updated successfully for $contractId")
-                onResult(true)
-            }
-            .addOnFailureListener { e ->
-                Log.e("HopDongRepository", "Error updating fields: ${e.message}")
-                onResult(false)
-            }
+            contractsCollection.document(contractId)
+                .update(updates)
+                .await()
+
+            Log.d("HopDongRepository", "Fields updated successfully for $contractId")
+            return true
+        } catch (e: Exception) {
+            Log.e("HopDongRepository", "Error updating fields: ${e.message}")
+            return false
+        }
     }
 
     fun updateIsCreateBillContract(

@@ -487,16 +487,21 @@ class ContractViewModel : ViewModel() {
         }
     }
 
-    suspend fun updateContractTerminationRequest(
+    fun updateContractTerminationRequest(
         contractId: String,
         reason: String?,
         status: TerminationStatus
     ) {
-        contractRepository.updateContractTerminationRequest(contractId, reason, status) { success ->
-            _updateYCResult.postValue(success)
+        viewModelScope.launch {
+            try {
+                val success = contractRepository.updateContractTerminationRequest(contractId, reason, status)
+                _updateYCResult.postValue(success)
+            } catch (e: Exception) {
+                Log.e("ContractViewModel", "Error: ${e.message}")
+                _updateYCResult.postValue(false)
+            }
         }
     }
-
     // LiveData để lưu trữ kết quả
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()
     val previousUtilities: LiveData<Pair<Int, Int>> get() = _previousUtilities
