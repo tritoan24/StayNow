@@ -256,7 +256,7 @@ class ContractAdapter(
                         ) {
                             FirebaseFirestore.getInstance().collection("HopDong")
                                 .document(contract.maHopDong)
-                                .update("trangThai", "TERMINATED")
+                                .update("trangThai", "CANCELLED")
                                 .addOnSuccessListener {
                                     Toast.makeText(
                                         itemView.context,
