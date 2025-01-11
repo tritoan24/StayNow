@@ -154,7 +154,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                 "maNguoiBiToCao" to userId,
                 "maPhongTro" to maPhongTro,
                 "maNguoiToCao" to maNguoiDung, // Gửi mã người dùng vào Firestore
-                "trangThai" to ""
+                "trangThai" to "PENDING"
             )
 
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {

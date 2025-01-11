@@ -27,7 +27,6 @@ import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow_datn.BaoMat.CaiDat
 import com.ph32395.staynow_datn.BaoMat.PhanHoi
 import com.ph32395.staynow_datn.BaoMat.ThongTinNguoiDung
-import com.ph32395.staynow_datn.BaoMat.ToCaoNguoiDung
 import com.ph32395.staynow_datn.DangKiDangNhap.DangNhap
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.PhongTroDaXem.PhongTroDaXemActivity
@@ -52,7 +51,6 @@ class ProfileFragment : Fragment() {
     private lateinit var nextDoiMK: LinearLayout
     private lateinit var nextUpdate: CardView
     private lateinit var nextPhanhoi: LinearLayout
-    private lateinit var nextToCao: LinearLayout
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDatabase: DatabaseReference
     private lateinit var btnPhongTroDaXem: LinearLayout
@@ -80,7 +78,6 @@ class ProfileFragment : Fragment() {
         llScheduleRoom = view.findViewById(R.id.ll_schedule_room)
         llContract = view.findViewById(R.id.ll_hopdong)
         llBill = view.findViewById(R.id.ll_hoadon)
-        nextToCao = view.findViewById(R.id.next_toCaoNguoiDung)
         btnPhongTroDaXem = view.findViewById(R.id.btnPhongTroDaXem)
         seperatedLichsu = view.findViewById(R.id.viewlichsu)
         seperatedHoadon = view.findViewById(R.id.viewhoadon)
@@ -91,10 +88,6 @@ class ProfileFragment : Fragment() {
             launchActivity(PhongTroDaXemActivity::class.java)
         }
 
-        nextToCao.setOnClickListener {
-            val intent = Intent(requireContext(), ToCaoNguoiDung::class.java)
-            startActivity(intent)
-        }
 
         // Khởi tạo FirebaseAuth và DatabaseReference
         mAuth = FirebaseAuth.getInstance()
@@ -152,12 +145,10 @@ class ProfileFragment : Fragment() {
                         val registerLayout =
                             view.findViewById<LinearLayout>(R.id.viewDK) // Thay ID cho đúng
                         val scheduleRoom = view.findViewById<LinearLayout>(R.id.ll_schedule_room)
-                        val toCaoNguoiThue = view.findViewById<LinearLayout>(R.id.next_toCaoNguoiDung)
                         if (registerLayout != null) {
                             if ("NguoiChoThue" == accountType) {
                                 registerLayout.visibility = View.GONE
                                 scheduleRoom.visibility = View.GONE
-                                toCaoNguoiThue.visibility = View.VISIBLE
                                 llBill.visibility = View.GONE
                                 llContract.visibility = View.GONE
                                 seperatedLichsu.visibility = View.GONE
@@ -167,7 +158,6 @@ class ProfileFragment : Fragment() {
                             } else {
                                 registerLayout.visibility = View.VISIBLE
                                 scheduleRoom.visibility = View.VISIBLE
-                                toCaoNguoiThue.visibility = View.GONE
                             }
                         } else {
                             Log.e("ProfileFragment", "LinearLayout viewDK không tìm thấy.")
