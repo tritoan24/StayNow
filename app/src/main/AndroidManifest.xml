@@ -27,6 +27,9 @@
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".TaoHoaDon.CreateInvoiceEnd"
+            android:exported="false" />
+        <activity
             android:name=".BaoMat.ToCaoNguoiDung"
             android:exported="false" />
         <activity

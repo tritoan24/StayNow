@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.ph32395.staynow_datn.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
+import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoiceEnd
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
 import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
@@ -101,7 +102,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
 
                 TYPE_NOTI_BILL_MONTHLY -> {
                     // Navigate to invoice creation
-                    val intent = Intent(this, CreateInvoice::class.java).apply {
+                    val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
                     }
                     startActivity(intent)
@@ -137,7 +138,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 }
 
                 TYPE_NOTI_TERMINATED_CONFIRM -> {
-                    val intent = Intent(this, CreateInvoice::class.java).apply {
+                    val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
                     }
                     startActivity(intent)
