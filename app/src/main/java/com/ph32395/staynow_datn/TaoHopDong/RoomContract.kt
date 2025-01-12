@@ -258,10 +258,17 @@ class RoomContract {
     /**
      * Lấy thông tin hợp đồng theo ID.
      */
-    suspend fun getContract(contractId: String): HopDong? {
+    suspend fun getContract(contractId: String, status: InvoiceStatus): HopDong? {
         return try {
             val document = contractsCollection.document(contractId).get().await()
-            document.toObject(HopDong::class.java)
+            val hopDong = document.toObject(HopDong::class.java)
+
+            // Kiểm tra trạng thái hoaDonHopDong.trangThai với status truyền vào
+            if (hopDong?.hoaDonHopDong?.trangThai == status) {
+                hopDong
+            } else {
+                null  // Trả về null nếu không thỏa mãn điều kiện
+            }
         } catch (e: Exception) {
             null
         }

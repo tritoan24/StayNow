@@ -23,6 +23,11 @@ import kotlinx.coroutines.withTimeout
 class ContractViewModel : ViewModel() {
     // Thêm ViewModel để xử lý logic liên quan đến hợp đồng
     private val contractRepository = RoomContract()
+
+    // LiveData để lưu trữ hợp đồng
+    private val _contract = MutableLiveData<HopDong?>()
+    val contract: LiveData<HopDong?> get() = _contract
+
     private val _saveResult = MutableLiveData<Result<Unit>>()
     val saveResult: LiveData<Result<Unit>> = _saveResult
 
@@ -211,6 +216,13 @@ class ContractViewModel : ViewModel() {
     //lấy contract tenant theo userID và theo 1 hoặc nhiều trạng thái
 //    ----------------------------
 
+    // Hàm fetch hợp đồng từ repository theo trạng thái
+    fun fetchContract(contractId: String, status: InvoiceStatus) {
+        viewModelScope.launch {
+            val result = contractRepository.getContract(contractId, status)
+            _contract.value = result
+        }
+    }
 
     private fun fetchContractsForContractFragement(
         fetchFunction: (String, Set<ContractStatus>, (List<HopDong>) -> Unit) -> Unit,
@@ -502,6 +514,7 @@ class ContractViewModel : ViewModel() {
             }
         }
     }
+
     // LiveData để lưu trữ kết quả
     private val _previousUtilities = MutableLiveData<Pair<Int, Int>>()
     val previousUtilities: LiveData<Pair<Int, Int>> get() = _previousUtilities

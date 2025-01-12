@@ -69,6 +69,7 @@ class ContractAdapter(
     override fun getItemCount(): Int = contractList.size
 
     @SuppressLint("NotifyDataSetChanged")
+    @Synchronized
     fun updateContractList(newList: List<HopDong>) {
         contractList = newList
         notifyDataSetChanged()
@@ -156,7 +157,7 @@ class ContractAdapter(
                                     LoaiTaiKhoan.NguoiChoThue,
                                     Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST,
                                     "Yêu cầu chấm dứt hợp đồng",
-                                    "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen}"
+                                    "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen} \n Lí do: ${contract.lyDoChamDut}"
                                 )
                             }
                         }
