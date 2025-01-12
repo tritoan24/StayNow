@@ -104,13 +104,15 @@ class ContractAdapter(
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
 
-
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
             tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongtinphong.diaChiPhong}"
             tvStartDate.text = "Ngày Bắt Đầu: ${contract.ngayBatDau}"
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
+
+            //kiểm tra và cập nhật trạng thái hợp đồng
+            checkAndUpdateContractStatus(contract)
 
             when (type) {
                 ContractStatus.ACTIVE -> {
@@ -229,7 +231,7 @@ class ContractAdapter(
                         btnEditHopDongPending.visibility = View.GONE
                         btnHuyHopDongPending.visibility = View.GONE
                     }
-                    if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID && contract.trangThai==ContractStatus.PENDING) {
+                    if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID && contract.trangThai == ContractStatus.PENDING) {
                         tvRemainingTime.visibility = View.VISIBLE
                         tvRemainingTime.text = "Hóa đơn đã thanh toán và hệ thống đang xử lý"
                     }
@@ -390,8 +392,52 @@ class ContractAdapter(
             "Lỗi định dạng ngày"
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun checkAndUpdateContractStatus(contract: HopDong) {
+        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val currentDate = LocalDate.now()
+
+        when (contract.trangThai) {
+            ContractStatus.PENDING -> {
+                // Kiểm tra hợp đồng PENDING quá 3 ngày
+                val creationDate = LocalDate.parse(contract.ngayTao, dateFormatter)
+                val daysSinceCreation = ChronoUnit.DAYS.between(creationDate, currentDate)
+
+                if (daysSinceCreation >= 3 && contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) {
+                    onStatusUpdated(contract.maHopDong, ContractStatus.CANCELLED)
+                    updateContractList(contractList)
+                }
+            }
+
+            ContractStatus.ACTIVE -> {
+                // Kiểm tra hợp đồng ACTIVE hết hạn
+                val endDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
+                val daysOverdue = ChronoUnit.DAYS.between(endDate, currentDate)
+
+                when {
+                    daysOverdue > 3 -> {
+                        // Quá hạn 3 ngày
+                        onStatusUpdated(contract.maHopDong, ContractStatus.TERMINATED)
+                        updateContractList(contractList)
+                    }
+
+                    daysOverdue > 0 -> {
+                        // Mới quá hạn
+                        onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
+                        updateContractList(contractList)
+                    }
+                }
+            }
+
+            else -> { /* Không xử lý các trạng thái khác */
+            }
+        }
+    }
+
 }
 
+//hàm thông báo trạng thái hóa đơn
 private fun notifyPayment(context: Context, contract: HopDong) {
 
     val notification = NotificationModel(
@@ -430,6 +476,7 @@ private fun notifyPayment(context: Context, contract: HopDong) {
 
 }
 
+//hàm thông báo chấm dứt
 private fun notifyTermination(
     context: Context, contract: HopDong, role: LoaiTaiKhoan,
     loaiThongBao: String,
@@ -480,3 +527,4 @@ private fun notifyTermination(
     }
 
 }
+
