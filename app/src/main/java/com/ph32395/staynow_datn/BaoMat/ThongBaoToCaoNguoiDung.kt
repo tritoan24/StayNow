@@ -32,6 +32,7 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
 
         viewModel = ViewModelProvider(this)[RoomDetailViewModel::class.java]
         homViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+
         // Ánh xạ các view từ layout
         checkbox = view.findViewById(R.id.checkQuyenThongBao)
         btnHuyTB = view.findViewById(R.id.btnHuyThongBao)
@@ -50,24 +51,25 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
             dismiss() // Đóng dialog
         }
 
+        // Lấy userId và maPhongTro từ arguments
         val userId = arguments?.getString("idUser")
+        val maPhongTro = arguments?.getString("maPhongTro") // Nhận mã phòng trọ từ arguments
 
         btnXacNhanTB.setOnClickListener {
-            if (userId != null) {
-                val intent = Intent(requireContext(), ToCaoTaiKhoan::class.java)
+            if (userId != null && maPhongTro != null) {
+                val intent = Intent(requireContext(), ToCaoPhongTro::class.java)
                 intent.putExtra("idUser", userId) // Truyền userId qua Intent
+                intent.putExtra("maPhongTro", maPhongTro) // Truyền mã phòng trọ qua Intent
                 startActivity(intent)
             } else {
-                Toast.makeText(requireContext(), "Không có userId để truyền", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Không có userId hoặc maPhongTro để truyền", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-
 
         return view
     }
 
+    // Hàm cập nhật trạng thái nút dựa trên checkbox
     private fun updateButtonState(isChecked: Boolean) {
         val enabledColor = ColorStateList.valueOf(Color.parseColor("#532CA6")) // Màu tím
         val disabledColor = ColorStateList.valueOf(Color.parseColor("#C8C8C8")) // Màu xám nhạt

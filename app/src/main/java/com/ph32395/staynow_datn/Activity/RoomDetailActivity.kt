@@ -31,6 +31,7 @@ import com.ph32395.staynow_datn.Adapter.NoiThatAdapter
 import com.ph32395.staynow_datn.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow_datn.Adapter.SpacingItemDecoration
 import com.ph32395.staynow_datn.Adapter.TienNghiAdapter
+import com.ph32395.staynow_datn.BaoMat.ThongBaoToCaoNguoiDung
 import com.ph32395.staynow_datn.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow_datn.BaoMat.ToCaoPhongTro
 import com.ph32395.staynow_datn.CCCD.CCCD
@@ -221,32 +222,14 @@ class RoomDetailActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.toCaoPhong).setOnClickListener {
             // Quan sát userId từ ViewModel
             viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
-                // Tạo intent và truyền dữ liệu
-                val intent = Intent(this, ToCaoPhongTro::class.java)
-                intent.putExtra("maPhongTro", maPhongTro) // Truyền mã phòng trọ
-                intent.putExtra("idUser", maNguoiDung) // Truyền id người dùng
-                startActivity(intent)
-            }
-        }
-
-        findViewById<ImageView>(R.id.toCaoPhong).apply {
-            visibility = View.GONE // Mặc định ẩn, sẽ hiện lại nếu không phải "NguoiChoThue"
-            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
-            // Lấy dữ liệu từ Firebase Realtime Database
-            val database = FirebaseDatabase.getInstance().reference
-            val userRef = database.child("NguoiDung").child(userId)
-
-            userRef.get().addOnSuccessListener { snapshot ->
-                val accountType = snapshot.child("loaiTaiKhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
-
-                // Kiểm tra loại tài khoản
-                if ("NguoiChoThue" == accountType) {
-                    visibility = View.GONE // Ẩn nếu là "NguoiChoThue"
-                } else {
-                    visibility = View.VISIBLE // Hiện nếu không phải "NguoiChoThue"
+                // Tạo fragment và truyền dữ liệu
+                val dialogFragment = ThongBaoToCaoNguoiDung().apply {
+                    arguments = Bundle().apply {
+                        putString("maPhongTro", maPhongTro) // Truyền mã phòng trọ
+                        putString("idUser", maNguoiDung) // Truyền id người dùng
+                    }
                 }
-            }.addOnFailureListener { exception ->
-                Log.e("RoomDetailActivity", "Lỗi khi lấy dữ liệu người dùng: ${exception.message}", exception)
+                dialogFragment.show(supportFragmentManager, "ThongBaoToCaoNguoiDung")
             }
         }
 
