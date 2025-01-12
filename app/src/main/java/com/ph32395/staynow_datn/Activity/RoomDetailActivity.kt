@@ -482,22 +482,6 @@ class RoomDetailActivity : AppCompatActivity() {
 
 
 //            Chuc nang Cap nhat thong tin phong
-            findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
-                //                    Truyen du lieu qua Intent
-                viewModel.room.observe(this) { room ->
-
-                    if(room.maNhaTro.equals("")){
-                        val intent = Intent(this@RoomDetailActivity, SuaPhongTroDon::class.java)
-                        intent.putExtra("roomId",maPhongTro )
-                        startActivity(intent)
-                    }else{
-                        val intent = Intent(this@RoomDetailActivity, SuaPhongTro::class.java)
-                        intent.putExtra("roomId",maPhongTro )
-                        startActivity(intent)
-                    }
-                }
-
-            }
             findViewById<LinearLayout>(R.id.btnSuaPhongLuu).setOnClickListener{
                 viewModel.room.observe(this) { room ->
 

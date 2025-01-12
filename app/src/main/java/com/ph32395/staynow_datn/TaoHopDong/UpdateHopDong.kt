@@ -79,46 +79,6 @@ class UpdateHopDong(
     // Firebase Auth
     private val auth = FirebaseAuth.getInstance()
 
-    // Ánh xạ View
-//    private lateinit var tvNameRoom: TextView
-//    private lateinit var tvAddress: TextView
-//    private lateinit var tvPrice: TextView
-//    private lateinit var imageRoom: ImageView
-//    private lateinit var tvDienTich: TextView
-
-//    private lateinit var edSodien: EditText
-//    private lateinit var edSonuoc: EditText
-//    private lateinit var soNguoio: EditText
-
-
-//    private lateinit var tvStartDate: TextView
-//    private lateinit var tvEndDate: TextView
-//    private lateinit var startDateLayout: LinearLayout
-//    private lateinit var endDateLayout: LinearLayout
-//    private lateinit var tvMonth: TextView
-
-//    private lateinit var txtSoCCDCT: TextView
-//    private lateinit var txtHoTenCT: TextView
-//    private lateinit var txtNgaySinhCT: TextView
-//    private lateinit var txtGioiTinhCT: TextView
-//    private lateinit var txtSoDienThoaiCT: TextView
-//    private lateinit var txtDiaChiCT: TextView
-//    private lateinit var txtNgayCapCT: TextView
-
-//    private lateinit var txtSoCCDNT: TextView
-//    private lateinit var txtHoTenNT: TextView
-//    private lateinit var txtNgaySinhNT: TextView
-//    private lateinit var txtGioiTinhNT: TextView
-//    private lateinit var txtSoDienThoaiNT: TextView
-//    private lateinit var txtDiaChiNT: TextView
-//    private lateinit var txtNgayCapNT: TextView
-
-//    private lateinit var btnSaveContract: Button
-//    private lateinit var txtNgayThanhToan: TextView
-//    private lateinit var editorDieuKhoan: RichEditor
-//    private lateinit var note: TextView
-//    private lateinit var btnBack: Button
-//    private lateinit var btncardview: CardView
 
     //    private lateinit var maPhongTro: String
 //    private lateinit var maNguoiThue: String

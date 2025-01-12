@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +25,10 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.ph32395.staynow_datn.Adapter.ToCaoTaiKhoanAdapter
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.hieunt.model.NotificationModel
+import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ToCaoPhongTro : AppCompatActivity() {
@@ -34,6 +39,7 @@ class ToCaoPhongTro : AppCompatActivity() {
     private lateinit var editTenPhongTro: EditText
     private lateinit var editVanDePhong: EditText
     private lateinit var btnToCaoPhong: Button
+    private lateinit var viewModelNotification: NotificationViewModel
     private lateinit var mDatabase: DatabaseReference
 
     private val imageUriList = mutableListOf<Uri>() // Lưu URL của ảnh đã tải lên Firebase Storage
@@ -45,6 +51,8 @@ class ToCaoPhongTro : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_to_cao_phong_tro)
+        val factory = ViewModelFactory(this)
+        viewModelNotification = ViewModelProvider(this, factory)[NotificationViewModel::class.java]
 
         // Ánh xạ View
         imgBackToCaoPhong = findViewById(R.id.backScreenToCao)
@@ -130,6 +138,7 @@ class ToCaoPhongTro : AppCompatActivity() {
             val tenPhongTro = editTenPhongTro.text.toString().trim()
             val vanDePhong = editVanDePhong.text.toString().trim()
 
+
             // Kiểm tra các trường không được để trống
             if (tenPhongTro.isEmpty()) {
                 Toast.makeText(this, "Tên phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
@@ -159,6 +168,22 @@ class ToCaoPhongTro : AppCompatActivity() {
 
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
+
+                val notificationModel = NotificationModel(
+                    tieuDe = "Thông báo tố cáo",
+                    tinNhan = "Bạn có phòng trọ $tenPhongTro bị tố cáo",
+                    ngayGuiThongBao = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(
+                        Date()
+                    ),
+                    thoiGian = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
+                    loaiThongBao = "ToCao",
+                    mapLink = null,
+                    thoiGianGuiThongBao = System.currentTimeMillis(),
+                    idModel = "",
+                )
+                if (userId != null) {
+                    viewModelNotification.sendNotification(notificationModel, userId)
+                }
                 editTenPhongTro.text.clear()
                 editVanDePhong.text.clear()
                 imageUriList.clear()
