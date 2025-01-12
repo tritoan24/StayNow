@@ -442,6 +442,12 @@ class RoomContract {
                 val contractSnapshot = contractsCollection.document(contractId).get().await()
                 val roomId = contractSnapshot.getString("maPhong")
 
+                if (newStatus == ContractStatus.CANCELLED) {
+                    contractsCollection.document(contractId)
+                        .update("hoaDonHopDong.trangThai", newStatus.name)
+                        .await()
+                }
+
                 if (roomId != null) {
                     // Cập nhật trạng thái phòng trọ
                     roomsCollection.document(roomId)

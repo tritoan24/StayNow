@@ -151,13 +151,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
-                android:text="Tiền Phòng: 3,500,000"
+                android:text="Tiền Phòng"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tiền Cọc: 3,500,000"
+                android:text="Tiền Cọc"
                 tools:ignore="HardcodedText" />
 
             <TextView
@@ -360,7 +360,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="5.000.000 đ"
+                    android:text="5.000 đ"
                     android:textAlignment="textEnd"
                     android:textSize="15sp"
                     tools:ignore="HardcodedText" />
@@ -386,7 +386,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="5.000.000 đ"
+                    android:text="5.000 đ"
                     android:textAlignment="textEnd"
                     android:textSize="15sp"
                     tools:ignore="HardcodedText" />

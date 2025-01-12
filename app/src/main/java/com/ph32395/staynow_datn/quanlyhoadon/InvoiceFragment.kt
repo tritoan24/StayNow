@@ -1,6 +1,7 @@
 package com.ph32395.staynow_datn.quanlyhoadon
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,10 +13,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ph32395.staynow_datn.TaoHoaDon.InvoiceViewModel
+import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import com.ph32395.staynow_datn.TaoHopDong.HopDong
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.databinding.FragmentInvoiceBinding
+import com.ph32395.staynow_datn.hieunt.widget.tap
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -106,6 +109,13 @@ class InvoiceFragment : Fragment() {
             Log.d("InvoiceFragment", "Fetching invoices with contractId: $contractId, status: $it")
         }
 
+        //navigate đối với hóa đơn hợp đồng
+        binding.cardViewBill.tap {
+            val intent = Intent(context, ChiTietHopDong::class.java)
+            intent.putExtra("CONTRACT_ID", contractId)
+            intent.putExtra("detail", "detail")
+            startActivity(intent)
+        }
 
     }
 
