@@ -324,6 +324,7 @@ class RoomContract {
                         .update(
                             mapOf(
                                 "trangThaiPhong" to false,
+                                "trangThaiDuyet" to "DaDuyet"
                             )
                         )
                         .await()
@@ -454,6 +455,7 @@ class RoomContract {
                         .update(
                             mapOf(
                                 "trangThaiPhong" to false,
+                                "trangThaiDuyet" to "DaDuyet"
                             )
                         )
                         .await()

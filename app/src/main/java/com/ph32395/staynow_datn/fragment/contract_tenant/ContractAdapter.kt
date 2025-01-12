@@ -114,9 +114,6 @@ class ContractAdapter(
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
 
-            //kiểm tra và cập nhật trạng thái hợp đồng
-            checkAndUpdateContractStatus(itemView.context, contract)
-
             when (type) {
                 ContractStatus.ACTIVE -> {
                     tvRemainingTime.text = calculateRemainingDays(contract.ngayKetThuc)
@@ -326,7 +323,7 @@ class ContractAdapter(
                 }
 
                 ContractStatus.EXPIRED -> {
-                    tvRemainingTime.text = "Hợp đồng đã hết hạn"
+                    tvRemainingTime.text = "Hợp đồng sắp hết hạn"
                 }
 
                 ContractStatus.TERMINATED -> {
@@ -393,93 +390,6 @@ class ContractAdapter(
             }
         } catch (e: Exception) {
             "Lỗi định dạng ngày"
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun checkAndUpdateContractStatus(context: Context, contract: HopDong) {
-        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val currentDate = LocalDate.now()
-
-        when (contract.trangThai) {
-            ContractStatus.PENDING -> {
-                // Kiểm tra hóa đơn hợp đồng PENDING quá 3 ngày
-                val creationDate = LocalDate.parse(contract.ngayTao, dateFormatter)
-                val daysSinceCreation = ChronoUnit.DAYS.between(creationDate, currentDate)
-
-                if (daysSinceCreation >= 4 && contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) {
-                    onStatusUpdated(contract.maHopDong, ContractStatus.CANCELLED)
-                    updateContractList(contractList)
-                    notifyCheckAndChangeStatus(
-                        context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
-                        "Nhắc nhở thay đổi trạng thái hợp đồng",
-                        "Hóa đơn hợp đồng với mã ${contract.hoaDonHopDong.idHoaDon} đã qúa hạn thanh toán 3 ngày và đã được thay đổi trạng thái thành CANCELLED"
-                    )
-                }
-
-                // Kiểm tra hợp đồng PENDING quá 3 ngày
-                if (daysSinceCreation >= 4) {
-                    onStatusUpdated(contract.maHopDong, ContractStatus.CANCELLED)
-                    updateContractList(contractList)
-                    notifyCheckAndChangeStatus(
-                        context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
-                        "Nhắc nhở thay đổi trạng thái hợp đồng",
-                        "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn thanh toán 3 ngày và được thay đổi trạng thái thành CANCELLED"
-                    )
-                }
-            }
-
-            ContractStatus.ACTIVE -> {
-                // Kiểm tra hợp đồng ACTIVE hết hạn
-                val endDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
-                val daysOverdue = ChronoUnit.DAYS.between(endDate, currentDate)
-
-                when {
-                    daysOverdue > 3 -> {
-                        // Quá hạn 3 ngày
-                        onStatusUpdated(contract.maHopDong, ContractStatus.TERMINATED)
-                        updateContractList(contractList)
-                        notifyCheckAndChangeStatus(
-                            context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
-                            "Nhắc nhở thay đổi trạng thái hợp đồng",
-                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED"
-                        )
-                    }
-
-                    daysOverdue > 0 -> {
-                        // Mới quá hạn
-                        onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
-                        updateContractList(contractList)
-                        notifyCheckAndChangeStatus(
-                            context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
-                            "Nhắc nhở thay đổi trạng thái hợp đồng",
-                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} vừa hết hạn đã được thay đổi trạng thái thành EXPIRED"
-                        )
-                    }
-                }
-            }
-
-            ContractStatus.EXPIRED -> {
-                // Kiểm tra hợp đồng hết hạn 3 ngày
-                val endDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
-                val daysOverdue = ChronoUnit.DAYS.between(endDate, currentDate)
-
-                when {
-                    daysOverdue > 3 -> {
-                        // Quá hạn 3 ngày
-                        onStatusUpdated(contract.maHopDong, ContractStatus.TERMINATED)
-                        updateContractList(contractList)
-                        notifyCheckAndChangeStatus(
-                            context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
-                            "Nhắc nhở thay đổi trạng thái hợp đồng",
-                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED"
-                        )
-                    }
-                }
-            }
-
-            else -> { /* Không xử lý các trạng thái khác */
-            }
         }
     }
 
