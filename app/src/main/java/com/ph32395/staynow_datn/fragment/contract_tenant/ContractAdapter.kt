@@ -413,7 +413,7 @@ class ContractAdapter(
                     notifyCheckAndChangeStatus(
                         context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
                         "Nhắc nhở thay đổi trạng thái hợp đồng",
-                        "Hóa đơn hợp đồng với mã ${contract.hoaDonHopDong.idHoaDon} đã qúa hạn thanh toán 3 ngày và đã được thay đổi trạng thái thành CANCELLED}"
+                        "Hóa đơn hợp đồng với mã ${contract.hoaDonHopDong.idHoaDon} đã qúa hạn thanh toán 3 ngày và đã được thay đổi trạng thái thành CANCELLED"
                     )
                 }
 
@@ -424,7 +424,7 @@ class ContractAdapter(
                     notifyCheckAndChangeStatus(
                         context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
                         "Nhắc nhở thay đổi trạng thái hợp đồng",
-                        "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn thanh toán 3 ngày và được thay đổi trạng thái thành CANCELLED}"
+                        "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn thanh toán 3 ngày và được thay đổi trạng thái thành CANCELLED"
                     )
                 }
             }
@@ -442,7 +442,7 @@ class ContractAdapter(
                         notifyCheckAndChangeStatus(
                             context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
                             "Nhắc nhở thay đổi trạng thái hợp đồng",
-                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED}"
+                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED"
                         )
                     }
 
@@ -453,7 +453,7 @@ class ContractAdapter(
                         notifyCheckAndChangeStatus(
                             context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
                             "Nhắc nhở thay đổi trạng thái hợp đồng",
-                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} vừa hết hạn đã được thay đổi trạng thái thành EXPIRED}"
+                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} vừa hết hạn đã được thay đổi trạng thái thành EXPIRED"
                         )
                     }
                 }
@@ -472,7 +472,7 @@ class ContractAdapter(
                         notifyCheckAndChangeStatus(
                             context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
                             "Nhắc nhở thay đổi trạng thái hợp đồng",
-                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED}"
+                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED"
                         )
                     }
                 }
