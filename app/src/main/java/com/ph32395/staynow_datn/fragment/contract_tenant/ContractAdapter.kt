@@ -283,6 +283,27 @@ class ContractAdapter(
                                         factory
                                     )[NotificationViewModel::class.java]
                                     viewModelNotification.sendNotification(notificationModel, contract.nguoiThue.maNguoiDung)
+                                    //chuyen trang thai phong
+                                    FirebaseFirestore.getInstance().collection("PhongTro")
+                                        .document(contract.thongtinphong.maPhongTro)
+                                        .update(
+                                            "trangThaiPhong", false,
+                                            "trangThaiDuyet", "DaDuyet"
+
+                                        )
+                                        .addOnSuccessListener {
+                                            Log.d(
+                                                "TAGConTrucAdapter",
+                                                "bind: Update trang thai phong thanh cong ${contract.thongtinphong.tenPhong}"
+                                            )
+                                        }
+                                        .addOnFailureListener {
+                                            Log.e(
+                                                "TAGConTrucAdapter",
+                                                "update that bao ${it.message.toString()}"
+                                            )
+                                        }
+
                                 }
                                 .addOnFailureListener {
                                     Log.e("TAG_Update contract", "bind: ${it.message.toString()}")
