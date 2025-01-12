@@ -30,6 +30,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
@@ -152,6 +153,12 @@ class NotificationService : Service() {
             TYPE_NOTI_PAYMENT_INVOICE -> {
                 Intent(this, NotificationActivity::class.java).apply {
                     putExtra("invoiceId", notificationModel.idModel)
+                }
+            }
+
+            TYPE_NOTI_REMIND_STATUS_CONTRACT -> {
+                Intent(this, NotificationActivity::class.java).apply {
+                    putExtra("contractId", notificationModel.idModel)
                 }
             }
 

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
@@ -68,10 +69,12 @@ class ContractAdapter(
 
     override fun getItemCount(): Int = contractList.size
 
-    @SuppressLint("NotifyDataSetChanged")
+    @Synchronized
     fun updateContractList(newList: List<HopDong>) {
+        val diffCallback = ContractDiffCallback(contractList, newList)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
         contractList = newList
-        notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     inner class ContractViewHolder(itemView: ItemContractBinding) :
@@ -104,13 +107,15 @@ class ContractAdapter(
         @SuppressLint("SetTextI18n", "DefaultLocale")
         fun bind(contract: HopDong, type: ContractStatus, isLandlord: Boolean) {
 
-
             tvContractId.text = "Mã Hợp Đồng: ${contract.maHopDong}"
             tvRoomName.text = "Tên phòng: ${contract.thongtinphong.tenPhong}"
             tvRoomAddress.text = "Địa chỉ phòng: ${contract.thongtinphong.diaChiPhong}"
             tvStartDate.text = "Ngày Bắt Đầu: ${contract.ngayBatDau}"
             tvEndDate.text = "Ngày Kết Thúc: ${contract.ngayKetThuc}"
             tvRentDuration.text = "Thời Gian Thuê: ${contract.thoiHanThue}"
+
+            //kiểm tra và cập nhật trạng thái hợp đồng
+            checkAndUpdateContractStatus(itemView.context, contract)
 
             when (type) {
                 ContractStatus.ACTIVE -> {
@@ -154,7 +159,7 @@ class ContractAdapter(
                                     LoaiTaiKhoan.NguoiChoThue,
                                     Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST,
                                     "Yêu cầu chấm dứt hợp đồng",
-                                    "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen}"
+                                    "Hợp đồng với mã hợp đồng ${contract.maHopDong} được yêu cầu chấm dứt bởi người dùng ${contract.nguoiThue.hoTen} \n Lí do: ${contract.lyDoChamDut}"
                                 )
                             }
                         }
@@ -229,7 +234,10 @@ class ContractAdapter(
                         btnEditHopDongPending.visibility = View.GONE
                         btnHuyHopDongPending.visibility = View.GONE
                     }
-
+                    if (contract.hoaDonHopDong.trangThai == InvoiceStatus.PAID && contract.trangThai == ContractStatus.PENDING) {
+                        tvRemainingTime.visibility = View.VISIBLE
+                        tvRemainingTime.text = "Hóa đơn đã thanh toán và đang chờ hệ thống xử lý"
+                    }
 
                     //công add start
                     btnEditHopDongPending.setOnClickListener {
@@ -256,7 +264,7 @@ class ContractAdapter(
                         ) {
                             FirebaseFirestore.getInstance().collection("HopDong")
                                 .document(contract.maHopDong)
-                                .update("trangThai", "TERMINATED")
+                                .update("trangThai", "CANCELLED")
                                 .addOnSuccessListener {
                                     Toast.makeText(
                                         itemView.context,
@@ -387,8 +395,97 @@ class ContractAdapter(
             "Lỗi định dạng ngày"
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun checkAndUpdateContractStatus(context: Context, contract: HopDong) {
+        val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val currentDate = LocalDate.now()
+
+        when (contract.trangThai) {
+            ContractStatus.PENDING -> {
+                // Kiểm tra hóa đơn hợp đồng PENDING quá 3 ngày
+                val creationDate = LocalDate.parse(contract.ngayTao, dateFormatter)
+                val daysSinceCreation = ChronoUnit.DAYS.between(creationDate, currentDate)
+
+                if (daysSinceCreation >= 4 && contract.hoaDonHopDong.trangThai == InvoiceStatus.PENDING) {
+                    onStatusUpdated(contract.maHopDong, ContractStatus.CANCELLED)
+                    updateContractList(contractList)
+                    notifyCheckAndChangeStatus(
+                        context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
+                        "Nhắc nhở thay đổi trạng thái hợp đồng",
+                        "Hóa đơn hợp đồng với mã ${contract.hoaDonHopDong.idHoaDon} đã qúa hạn thanh toán 3 ngày và đã được thay đổi trạng thái thành CANCELLED"
+                    )
+                }
+
+                // Kiểm tra hợp đồng PENDING quá 3 ngày
+                if (daysSinceCreation >= 4) {
+                    onStatusUpdated(contract.maHopDong, ContractStatus.CANCELLED)
+                    updateContractList(contractList)
+                    notifyCheckAndChangeStatus(
+                        context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
+                        "Nhắc nhở thay đổi trạng thái hợp đồng",
+                        "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn thanh toán 3 ngày và được thay đổi trạng thái thành CANCELLED"
+                    )
+                }
+            }
+
+            ContractStatus.ACTIVE -> {
+                // Kiểm tra hợp đồng ACTIVE hết hạn
+                val endDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
+                val daysOverdue = ChronoUnit.DAYS.between(endDate, currentDate)
+
+                when {
+                    daysOverdue > 3 -> {
+                        // Quá hạn 3 ngày
+                        onStatusUpdated(contract.maHopDong, ContractStatus.TERMINATED)
+                        updateContractList(contractList)
+                        notifyCheckAndChangeStatus(
+                            context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
+                            "Nhắc nhở thay đổi trạng thái hợp đồng",
+                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED"
+                        )
+                    }
+
+                    daysOverdue > 0 -> {
+                        // Mới quá hạn
+                        onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
+                        updateContractList(contractList)
+                        notifyCheckAndChangeStatus(
+                            context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
+                            "Nhắc nhở thay đổi trạng thái hợp đồng",
+                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} vừa hết hạn đã được thay đổi trạng thái thành EXPIRED"
+                        )
+                    }
+                }
+            }
+
+            ContractStatus.EXPIRED -> {
+                // Kiểm tra hợp đồng hết hạn 3 ngày
+                val endDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
+                val daysOverdue = ChronoUnit.DAYS.between(endDate, currentDate)
+
+                when {
+                    daysOverdue > 3 -> {
+                        // Quá hạn 3 ngày
+                        onStatusUpdated(contract.maHopDong, ContractStatus.TERMINATED)
+                        updateContractList(contractList)
+                        notifyCheckAndChangeStatus(
+                            context, contract, LoaiTaiKhoan.TatCa, Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT,
+                            "Nhắc nhở thay đổi trạng thái hợp đồng",
+                            "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã quá hạn 3 ngày và được thay đổi trạng thái thành TERMINATED"
+                        )
+                    }
+                }
+            }
+
+            else -> { /* Không xử lý các trạng thái khác */
+            }
+        }
+    }
+
 }
 
+//hàm thông báo trạng thái hóa đơn
 private fun notifyPayment(context: Context, contract: HopDong) {
 
     val notification = NotificationModel(
@@ -427,6 +524,7 @@ private fun notifyPayment(context: Context, contract: HopDong) {
 
 }
 
+//hàm thông báo chấm dứt
 private fun notifyTermination(
     context: Context, contract: HopDong, role: LoaiTaiKhoan,
     loaiThongBao: String,
@@ -477,3 +575,73 @@ private fun notifyTermination(
     }
 
 }
+
+//hàm thông báo kiểm tra và cập nhật trạng thái
+private fun notifyCheckAndChangeStatus(
+    context: Context, contract: HopDong, role: LoaiTaiKhoan,
+    loaiThongBao: String,
+    tieuDe: String,
+    tinNhan: String
+) {
+
+    val notification = NotificationModel(
+        tieuDe = tieuDe,
+        tinNhan = tinNhan,
+        ngayGuiThongBao = Calendar.getInstance().time.toString(),
+        thoiGian = "0",
+        mapLink = null,
+        daDoc = false,
+        daGui = true,
+        idModel = contract.maHopDong,
+        loaiThongBao = loaiThongBao
+    )
+
+    val factory = ViewModelFactory(context)
+    val notificationViewModel = ViewModelProvider(
+        context as AppCompatActivity,
+        factory
+    )[NotificationViewModel::class.java]
+
+    val recipientIds = when (role) {
+        LoaiTaiKhoan.NguoiThue -> listOf(contract.nguoiThue.maNguoiDung)
+        LoaiTaiKhoan.NguoiChoThue -> listOf(contract.chuNha.maNguoiDung)
+        LoaiTaiKhoan.TatCa -> listOf(
+            contract.nguoiThue.maNguoiDung,
+            contract.chuNha.maNguoiDung
+        ) // Gửi cho cả 2
+        else -> emptyList()
+    }
+
+    recipientIds.forEach { recipientId ->
+        notificationViewModel.sendNotification(notification, recipientId)
+
+        notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
+            if (isSuccess) {
+                // Thông báo thành công
+                Toast.makeText(context, "Thông báo đã được gửi.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Thông báo thất bại
+                Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+}
+
+
+class ContractDiffCallback(
+    private val oldList: List<HopDong>,
+    private val newList: List<HopDong>
+) : DiffUtil.Callback() {
+    override fun getOldListSize() = oldList.size
+    override fun getNewListSize() = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].maHopDong == newList[newItemPosition].maHopDong
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+}
+

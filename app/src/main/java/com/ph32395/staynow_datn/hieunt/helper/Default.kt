@@ -89,6 +89,8 @@ object Default {
         const val TYPE_NOTI_TERMINATED_DENY = "tuChoiChamDut"
         const val TYPE_NOTI_TERMINATED_CONFIRM = "xacNhanChamDut"
 
+        const val TYPE_NOTI_REMIND_STATUS_CONTRACT = "kiemtranhacnhohopdong"
+
         const val TYPE_NOTI_CONTRACT = "HopDongMoi"
     }
 

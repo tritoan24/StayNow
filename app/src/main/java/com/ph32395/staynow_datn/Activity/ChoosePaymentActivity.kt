@@ -41,7 +41,6 @@ class ChoosePaymentActivity : AppCompatActivity() {
         val bill = intent.getSerializableExtra("bill") as? InvoiceMonthlyModel
         val zpToken = intent.getStringExtra("zpToken")
         val orderUrl = intent.getStringExtra("orderUrl")
-        val remainTime = intent.getLongExtra("remainTime", -1)
 
         // Khởi tạo socket
         socketManager = SocketManager()
@@ -93,7 +92,6 @@ class ChoosePaymentActivity : AppCompatActivity() {
 
             }
         }
-
 
     }
 
