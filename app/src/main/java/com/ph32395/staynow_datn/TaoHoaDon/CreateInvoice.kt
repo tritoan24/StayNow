@@ -2,6 +2,7 @@ package com.ph32395.staynow_datn.TaoHoaDon
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -19,18 +20,19 @@ import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHopDong.Adapter.FixedFeeAdapter
-import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import com.ph32395.staynow_datn.TaoHopDong.Invoice
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow_datn.databinding.ActivityCreateMontlyInvoiceAutoBinding
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT
+import com.ph32395.staynow_datn.hieunt.helper.Default
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_TENANT
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.random.Random
 
 class CreateInvoice : AppCompatActivity() {
     private lateinit var binding: ActivityCreateMontlyInvoiceAutoBinding
@@ -79,9 +81,7 @@ class CreateInvoice : AppCompatActivity() {
         // Quan sát dữ liệu và cập nhật UI
         viewModelHopDong.invoiceDetails.observe(this) { fetchedInvoice ->
             invoice = fetchedInvoice
-            if (idHopDong != null) {
-                updateUI(invoice, idHopDong)
-            }
+            updateUI(invoice)
             setupCalculationListeners()
         }
         if (idHopDong != null) {
@@ -101,9 +101,10 @@ class CreateInvoice : AppCompatActivity() {
     // Thêm biến flag để kiểm soát việc lưu dữ liệu
     private var isFinalCalculation = false
 
-    private fun updateUI(invoice: Invoice, contractId: String) {
+    private fun updateUI(invoice: Invoice) {
 
         // Tính toán các giá trị ban đầu
+        tienPhong = invoice.tienPhong
         tongTienDichVuCoDinh = invoice.tongTienDichVu
         tongTienPhiBienDong = 0.0
         tongPhiDichVu = tongTienDichVuCoDinh + tongTienPhiBienDong
@@ -116,9 +117,11 @@ class CreateInvoice : AppCompatActivity() {
         idNguoiGui = invoice.idNguoigui
         tenKhachHang = invoice.tenKhachHang
         tenPhong = invoice.tenPhong
+        tienCoc = invoice.tienCoc
         phiCoDinhList.addAll(invoice.phiCoDinh)
 
         // Cập nhật các TextView với giá trị ban đầu
+        binding.tvTienPhong.text = formatCurrency(tienPhong)
         binding.tvTongTienPhiCoDinh.text = formatCurrency(tongTienDichVuCoDinh)
         binding.tvTongTienPhiBienDoi.text = formatCurrency(tongTienPhiBienDong)
         binding.tvTongTien.text = formatCurrency(tongPhiDichVu)
@@ -127,6 +130,12 @@ class CreateInvoice : AppCompatActivity() {
         binding.tvTienThem.text = formatCurrency(tienThem)
         binding.tvTienGiam.text = formatCurrency(tienGiam)
 
+
+        Log.d("Invoice", "tien phong: " + tienPhong)
+        Log.d("Invoice", "phi co dinh: " + tongTienDichVuCoDinh)
+        Log.d("Invoice", "tong tien phi bien dong: " + tongTienPhiBienDong)
+        Log.d("Invoice", "tong phi dich vu: " + tongPhiDichVu)
+        Log.d("Invoice", "tong tien hoa don: " + tongTienHoaDon)
 
         // Thiết lập adapter cho các phí cố định và biến động
         val fixedFeeAdapter = FixedFeeAdapter(invoice.phiCoDinh)
@@ -164,12 +173,12 @@ class CreateInvoice : AppCompatActivity() {
             calculateUtilities()
             updateTotalBill()
 
-            val soDienCu = binding.editTextSoNuocCu.text.toString().toInt()
-            if (soDienCu != invoice.soDienCu) {
-                Log.d("zzzzCreateInvoice", "Số điện đã thay đổi: $idHopDong")
+            val soDienCu =   binding.editTextSoNuocCu.text.toString().toInt()
+            if(soDienCu != invoice.soDienCu){
+                Toast.makeText(this, "Số điện cũ đã bị thay đổi", Toast.LENGTH_SHORT).show()
             }
             loadingUtil.show()
-            saveInvoice(contractId)
+            saveInvoice()
         }
 
         // định dạng số tiền nhập vào
@@ -315,16 +324,15 @@ class CreateInvoice : AppCompatActivity() {
         Log.d("Invoice1", "Utility Fee Details: $utilityFeeDetails")
     }
 
-    private fun saveInvoice(contractId: String) {
+    private fun saveInvoice() {
         // Phương thức lưu hóa đơn
         // Sử dụng utilityFeeDetails để lưu chi tiết phí
         // Triển khai logic lưu vào Firestore hoặc cơ sở dữ liệu của bạn
-
         val hoaDonMon = InvoiceMonthlyModel(
             idHoaDon = "",
             idNguoiNhan = idNguoiNhan,
             idNguoiGui = idNguoiGui,
-            idHopDong = contractId,
+            idHopDong = idHopDong,
             tenKhachHang = tenKhachHang,
             tenPhong = tenPhong,
             ngayTaoHoaDon = Calendar.getInstance().time.toString(),
@@ -354,35 +362,35 @@ class CreateInvoice : AppCompatActivity() {
         )
         Log.d("Invoice2", "Invoice: $hoaDonMon")
 
-        invoiceViewModel.addInvoice(hoaDonMon, { invoiceId ->
-
-            hoaDonMon.idHoaDon = invoiceId
-
+        invoiceViewModel.addInvoice(hoaDonMon, {
             val factory = ViewModelFactory(applicationContext) // Hoặc context cần thiết
             val notificationViewModel = ViewModelProvider(this, factory).get(NotificationViewModel::class.java)
             Toast.makeText(this, "Tạo hóa đơn thành công", Toast.LENGTH_SHORT).show()
             loadingUtil.hide()
 
-            if (soDienCu == 0) {
+            if(soDienCu==0){
                 //gọi hàm update số điện số nc
                 viewModelHopDong.updatePreviousUtilities(
                     idHopDong,
                     0,
                     binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
                 )
-            } else if (soNuocCu == 0) {
+            }else if (soNuocCu ==0){
                 viewModelHopDong.updatePreviousUtilities(
                     idHopDong,
                     binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
                     0
                 )
-            } else {
+            }else {
                 viewModelHopDong.updatePreviousUtilities(
                     idHopDong,
                     binding.editTextSoDienMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0,
                     binding.editTextSoNuocMoi.text.toString().takeIf { it.isNotBlank() }?.toIntOrNull() ?: 0
                 )
             }
+
+            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soDienCu)
+            Log.d("ádfjasdlfkja","Invoice so dien cu "+ soNuocCu)
 
             Log.d("Invoice", "idHopDong: $idHopDong")
             // Giám sát trạng thái gửi thông báo
@@ -411,14 +419,13 @@ class CreateInvoice : AppCompatActivity() {
                 mapLink = null,
                 daDoc = false,
                 daGui = true,
-                loaiThongBao = TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT,
-                idModel = hoaDonMon.idHoaDon
+                loaiThongBao = TYPE_NOTI_TERMINATED_CONFIRM_TENANT,
+                idModel = idHopDong
             )
+
 
             val recipientId = idNguoiNhan
             notificationViewModel.sendNotification(notification, recipientId)
-
-            viewModelHopDong.updateIsCreateBillContract(hoaDonMon.idHopDong)
 
             //chuyển sang màn home khi tạo hóa đơn thành công
             startActivity(Intent(this, MainActivity::class.java))

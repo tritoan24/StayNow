@@ -78,7 +78,6 @@ class BillAdapter(
 
             binding.tvBillId.text = "ID: ${bill.idHoaDon}"
             binding.tvCustomerName.text = bill.tenKhachHang
-            binding.tvBillType.text = "Kiểu hóa đơn: ${bill.kieuHoadon}"
             binding.tvTotalAmount.text = "Tổng tiền: " + formatCurrency(bill.tongTien)
             binding.tvDate.text = "Ngày: " + bill.ngayTaoHoaDon
             binding.tvStatus.text = "Trạng thái: ${bill.trangThai}"

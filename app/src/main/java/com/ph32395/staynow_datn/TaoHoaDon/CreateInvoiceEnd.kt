@@ -354,6 +354,7 @@ class CreateInvoiceEnd : AppCompatActivity() {
         )
         Log.d("Invoice2", "Invoice: $hoaDonMon")
 
+
         invoiceViewModel.addInvoice(hoaDonMon, { invoiceId ->
 
             hoaDonMon.idHoaDon = invoiceId
@@ -413,6 +414,7 @@ class CreateInvoiceEnd : AppCompatActivity() {
             )
 
             val recipientId = idNguoiNhan
+
             notificationViewModel.sendNotification(notification, recipientId)
 
             viewModelHopDong.updateIsCreateBillContract(hoaDonMon.idHopDong)

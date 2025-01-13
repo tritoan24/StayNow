@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
-
+    android:fillViewport="true"
+    >
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
+        tools:context=".TaoHoaDon.CreateInvoice"
         android:orientation="vertical"
+        android:gravity="center"
         android:padding="8dp"
-        tools:context=".TaoHoaDon.CreateInvoice">
-
+        android:layout_marginTop="20dp"
+        >
         <TextView
             android:id="@+id/txtThang"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:text="@string/Create_monthly_invoices"
+            android:textSize="24sp"
             android:textColor="@color/purple"
-            android:textSize="24sp" />
-
+            android:layout_marginBottom="16dp"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Flat_Fee"
-            android:textStyle="bold" />
-
+            android:textStyle="bold"/>
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stretchColumns="*">
+            android:stretchColumns="*"
+            >
 
-            <TableRow android:background="@android:color/darker_gray">
-
+            <TableRow
+                android:background="@android:color/darker_gray">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.6"
                     android:padding="8dp"
                     android:text="STT"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
                 <TextView
@@ -54,38 +54,35 @@
                     android:layout_weight="1.2"
                     android:padding="8dp"
                     android:text="@string/Service_Name"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="8dp"
                     android:text="@string/Unit_Price"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.4"
                     android:padding="8dp"
                     android:text="SL"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:padding="8dp"
+                    android:textSize="12dp"
                     android:text="@string/into_money"
                     android:textColor="@android:color/white"
-                    android:textSize="12dp"
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>
@@ -93,29 +90,30 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvFixedFees"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Variable_fees"
-            android:textStyle="bold" />
+            android:textStyle="bold"/>
 
         <TableLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:stretchColumns="*">
+            android:stretchColumns="*"
+            >
 
-            <TableRow android:background="@android:color/darker_gray">
-
+            <TableRow
+                android:background="@android:color/darker_gray">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:padding="8dp"
                     android:text="STT"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
                 <TextView
@@ -124,38 +122,35 @@
                     android:layout_weight="0.6"
                     android:padding="8dp"
                     android:text="@string/Service_Name"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:padding="8dp"
                     android:text="@string/Unit_Price"
-                    android:textColor="@android:color/white"
                     android:textSize="12dp"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.3"
                     android:padding="8dp"
+                    android:textSize="12dp"
                     android:text="@string/Unit"
                     android:textColor="@android:color/white"
-                    android:textSize="12dp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:padding="8dp"
+                    android:textSize="12dp"
                     android:text="@string/into_money"
                     android:textColor="@android:color/white"
-                    android:textSize="12dp"
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>
@@ -163,15 +158,16 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcvVariableFees"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:id="@+id/LnSoDien"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
             android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="10dp"
+            >
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
@@ -180,7 +176,8 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSoDienCu"
@@ -195,12 +192,13 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_weight="1"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSoDienMoi"
@@ -211,7 +209,6 @@
                     android:textColor="@android:color/black"
                     android:textColorHint="#AE1FFF" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -219,27 +216,27 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editSoDien"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:hint="@string/Amount"
                     android:inputType="number"
                     android:textColor="@android:color/black"
-                    android:textColorHint="#AE1FFF" />
+                    android:textColorHint="#AE1FFF"
+                    android:enabled="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/LnsoNuoc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
@@ -248,7 +245,8 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSoNuocCu"
@@ -257,19 +255,20 @@
                     android:hint="@string/Water_Indicator"
                     android:inputType="number"
                     android:textColor="@android:color/black"
-                    android:textColorHint="#AE1FFF" />
+                    android:textColorHint="#AE1FFF"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_weight="1"
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextSoNuocMoi"
@@ -280,7 +279,6 @@
                     android:textColor="@android:color/black"
                     android:textColorHint="#AE1FFF" />
             </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -288,29 +286,30 @@
                 app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp">
+                app:boxCornerRadiusTopStart="8dp"
+                >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editSoNuoc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:hint="@string/Amount"
                     android:inputType="number"
                     android:textColor="@android:color/black"
-                    android:textColorHint="#AE1FFF" />
+                    android:textColorHint="#AE1FFF"
+                    android:enabled="false"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp">
+            app:boxCornerRadiusTopStart="8dp"
+            android:layout_marginHorizontal="16dp"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editPhiThem"
@@ -319,17 +318,18 @@
                 android:hint="@string/Extra_money"
                 android:inputType="number"
                 android:textColor="@android:color/black"
-                android:textColorHint="#AE1FFF" />
+                android:textColorHint="#AE1FFF"
+                />
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
             app:boxCornerRadiusBottomEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusTopStart="8dp">
+            app:boxCornerRadiusTopStart="8dp"
+            android:layout_marginHorizontal="16dp"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTienGiam"
@@ -338,7 +338,8 @@
                 android:hint="@string/Reduced_money"
                 android:inputType="number"
                 android:textColor="@android:color/black"
-                android:textColorHint="#AE1FFF" />
+                android:textColorHint="#AE1FFF"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -348,7 +349,8 @@
             app:boxCornerRadiusBottomEnd="16dp"
             app:boxCornerRadiusBottomStart="16dp"
             app:boxCornerRadiusTopEnd="16dp"
-            app:boxCornerRadiusTopStart="16dp">
+            app:boxCornerRadiusTopStart="16dp"
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextNotes"
@@ -360,7 +362,7 @@
                 android:maxLines="6"
                 android:minLines="3"
                 android:textColor="@android:color/black"
-                android:textColorHint="#AE1FFF" />
+                android:textColorHint="#AE1FFF"/>
         </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -368,168 +370,201 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Billing"
-            android:textAlignment="center" />
+            android:textAlignment="center"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:text="-----------------------------------------------------------------------------------------"
-            android:textAlignment="center" />
-
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            >
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Total_fixed_charges" />
+                android:text="@string/Room_Fee"
+                />
+            <TextView
+                android:id="@+id/tvTienPhong"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:text="10000000"
+                />
+        </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="-----------------------------------------------------------------------------------------"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/Total_fixed_charges"
+                />
             <TextView
                 android:id="@+id/tvTongTienPhiCoDinh"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="textEnd"
                 android:text="10000000"
-                android:textAlignment="textEnd" />
+                />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            >
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Total_variable_fees" />
-
+                android:text="@string/Total_variable_fees"
+                />
             <TextView
                 android:id="@+id/tvTongTienPhiBienDoi"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="textEnd"
                 android:text="10000000"
-                android:textAlignment="textEnd" />
+                />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            >
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="" />
-
+                android:text=""
+                />
             <TextView
                 android:id="@+id/tvTongTien"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="textEnd"
                 android:text="10000000"
-                android:textAlignment="textEnd" />
+                />
         </LinearLayout>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:text="-----------------------------------------------------------------------------------------"
-            android:textAlignment="center" />
-
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Extra_money" />
-
+                android:text="@string/Extra_money"
+                />
             <TextView
                 android:id="@+id/tvTienThem"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="textEnd"
                 android:text="903458"
-                android:textAlignment="textEnd" />
+                />
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Reduced_money" />
-
+                android:text="@string/Reduced_money"
+                />
             <TextView
                 android:id="@+id/tvTienGiam"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="textEnd"
                 android:text="903458"
-                android:textAlignment="textEnd" />
+                />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAlignment="center"
             android:text="-----------------------------------------------------------------------------------------"
-            android:textAlignment="center" />
-
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/Total_bill" />
-
+                android:text="@string/Total_bill"
+                />
             <TextView
                 android:id="@+id/tvTongHoaDon"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textAlignment="textEnd"
                 android:text="903458"
-                android:textAlignment="textEnd" />
+                />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:paddingBottom="10dp"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            >
             <Button
                 android:id="@+id/btnCancel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/Cancle"
                 android:background="@drawable/bg_button_detail"
-                android:text="@string/Cancle" />
-
+                />
             <Button
                 android:id="@+id/btnCreate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/Create_invoices"
                 android:background="@drawable/bg_button_detail"
-                android:text="@string/Create_invoices" />
+                />
 
         </LinearLayout>
 

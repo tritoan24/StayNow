@@ -129,15 +129,6 @@ class ContractAdapter(
                         }
                     }
 
-                    // Kiểm tra nếu ngày hết hạn đã qua, thay đổi trạng thái hợp đồng thành EXPIRED
-                    val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-                    val parsedEndDate = LocalDate.parse(contract.ngayKetThuc, dateFormatter)
-
-                    if (parsedEndDate.isBefore(LocalDate.now())) {
-                        onStatusUpdated(contract.maHopDong, ContractStatus.EXPIRED)
-                        updateContractList(contractList)
-                    }
-
                     btnTerminated.tap {
                         showReasonInputDialog(
                             context = itemView.context,
