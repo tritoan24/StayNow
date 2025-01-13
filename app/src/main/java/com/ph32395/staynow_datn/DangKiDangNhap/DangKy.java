@@ -174,6 +174,7 @@ public class DangKy extends AppCompatActivity {
                     loadingUtil.hide();
                 } else if (!password.equals(rppassword)) {
                     rppass.setError("Mật khẩu không trùng khớp");
+                    loadingUtil.hide();
                 } else if (avatarUri == null) {
                     Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
                     loadingUtil.hide();
