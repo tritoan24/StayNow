@@ -161,6 +161,7 @@ enum class InvoiceStatus {
     PROCESSING,
     PAID,
     CANCELLED,
+    DONE
 }
 
 enum class TerminationStatus {

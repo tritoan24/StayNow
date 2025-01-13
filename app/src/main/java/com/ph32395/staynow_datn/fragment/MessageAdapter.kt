@@ -48,7 +48,7 @@ class MessageAdapter(private val itemList: List<Chat>, private val onClickItem: 
                     // Lấy dữ liệu từ Firebase, nếu thiếu thì dùng giá trị mặc định
                     val name = snapshot.child("hoTen").value?.toString() ?: "Tên người dùng không có"
                     val avatar = snapshot.child("anhDaiDien").value?.toString() ?: ""
-                    val status = snapshot.child("status").value?.toString()
+                    val status = snapshot.child("trangThai").value?.toString()
                     Log.d(TAG, "onDataChange:status $status")
 
                     val statusDrawable = holder.statusUser.background as GradientDrawable

@@ -116,7 +116,7 @@ public class DangKy extends AppCompatActivity {
 
         // Đăng ký sự kiện cho nút "Đăng ký"
         registerButton.setOnClickListener(view -> {
-            loadingUtil = new LoadingUtil(this);
+//            loadingUtil = new LoadingUtil(this);
             loadingUtil.show();
             String ten = tenEditText.getText().toString().trim();
             String sdt = sdtEditText.getText().toString().trim();
@@ -126,34 +126,37 @@ public class DangKy extends AppCompatActivity {
 
             boolean isValid = true;
 
+
             if (ten.isEmpty()) {
                 tenEditText.setError("Vui lòng nhập Họ Tên");
                 isValid = false;
-                loadingUtil.hide();
             }
 
             if (sdt.isEmpty()) {
                 sdtEditText.setError("Vui lòng nhập số điện thoại");
                 isValid = false;
-                loadingUtil.hide();
             }
 
             if (email.isEmpty()) {
                 emailEditText.setError("Vui lòng nhập email");
                 isValid = false;
-                loadingUtil.hide();
             }
 
             if (password.isEmpty()) {
                 passwordEditText.setError("Vui lòng nhập mật khẩu");
                 isValid = false;
-                loadingUtil.hide();
             }
+
             if (rppassword.isEmpty()) {
-                rppass.setError("Vui lòng lại nhập mật khẩu");
+                rppass.setError("Vui lòng nhập lại mật khẩu");
                 isValid = false;
-                loadingUtil.hide();
             }
+
+            if (!isValid) {
+                loadingUtil.hide();
+                return; // Dừng function nếu có lỗi
+            }
+
 
             if (isValid) {
                 if (sdt.length() < 10) {
@@ -174,12 +177,12 @@ public class DangKy extends AppCompatActivity {
                     loadingUtil.hide();
                 } else if (!password.equals(rppassword)) {
                     rppass.setError("Mật khẩu không trùng khớp");
+                    loadingUtil.hide();
                 } else if (avatarUri == null) {
                     Toast.makeText(DangKy.this, "Vui lòng chọn ảnh đại diện", Toast.LENGTH_SHORT).show();
                     loadingUtil.hide();
                 } else {
                     signUpWithEmailPassword(ten, sdt, email, password, avatarUri.toString(), So_luotdatlich, loaiTaiKhoan, Trang_thaitaikhoan, loaiTaiKhoan , daXacThuc, Long.parseLong(Ngay_taotaikhoan), Long.parseLong(Ngay_capnhat));
-                    loadingUtil.hide();
                 }
             }
         });

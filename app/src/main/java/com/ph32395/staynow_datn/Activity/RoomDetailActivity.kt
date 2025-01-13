@@ -31,6 +31,7 @@ import com.ph32395.staynow_datn.Adapter.NoiThatAdapter
 import com.ph32395.staynow_datn.Adapter.PhiDichVuAdapter
 import com.ph32395.staynow_datn.Adapter.SpacingItemDecoration
 import com.ph32395.staynow_datn.Adapter.TienNghiAdapter
+import com.ph32395.staynow_datn.BaoMat.ThongBaoToCaoNguoiDung
 import com.ph32395.staynow_datn.BaoMat.ThongTinNguoiDung
 import com.ph32395.staynow_datn.BaoMat.ToCaoPhongTro
 import com.ph32395.staynow_datn.CCCD.CCCD
@@ -218,12 +219,41 @@ class RoomDetailActivity : AppCompatActivity() {
                 }
             }
         }
-
         findViewById<ImageView>(R.id.toCaoPhong).setOnClickListener {
-            val intent = Intent(this, ToCaoPhongTro::class.java)
-            intent.putExtra("maPhongTro", maPhongTro) // Truyền dữ liệu maPhongTro
-            startActivity(intent)
+            // Quan sát userId từ ViewModel
+            viewModel.userId.observe(this) { (maNguoiDung, hoTen) ->
+                // Tạo fragment và truyền dữ liệu
+                val dialogFragment = ThongBaoToCaoNguoiDung().apply {
+                    arguments = Bundle().apply {
+                        putString("maPhongTro", maPhongTro) // Truyền mã phòng trọ
+                        putString("idUser", maNguoiDung) // Truyền id người dùng
+                    }
+                }
+                dialogFragment.show(supportFragmentManager, "ThongBaoToCaoNguoiDung")
+            }
         }
+
+        findViewById<ImageView>(R.id.toCaoPhong).apply {
+            visibility = View.GONE // Mặc định ẩn, sẽ hiện lại nếu không phải "NguoiChoThue"
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            // Lấy dữ liệu từ Firebase Realtime Database
+            val database = FirebaseDatabase.getInstance().reference
+            val userRef = database.child("NguoiDung").child(userId)
+
+            userRef.get().addOnSuccessListener { snapshot ->
+                val accountType = snapshot.child("loaiTaiKhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
+
+                // Kiểm tra loại tài khoản
+                if ("NguoiChoThue" == accountType) {
+                    visibility = View.GONE // Ẩn nếu là "NguoiChoThue"
+                } else {
+                    visibility = View.VISIBLE // Hiện nếu không phải "NguoiChoThue"
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("RoomDetailActivity", "Lỗi khi lấy dữ liệu người dùng: ${exception.message}", exception)
+            }
+        }
+
 
 
 //        khoi tao Adapter
@@ -456,22 +486,6 @@ class RoomDetailActivity : AppCompatActivity() {
 
 
 //            Chuc nang Cap nhat thong tin phong
-            findViewById<LinearLayout>(R.id.btnSuaPhong).setOnClickListener {
-                //                    Truyen du lieu qua Intent
-                viewModel.room.observe(this) { room ->
-
-                    if(room.maNhaTro.equals("")){
-                        val intent = Intent(this@RoomDetailActivity, SuaPhongTroDon::class.java)
-                        intent.putExtra("roomId",maPhongTro )
-                        startActivity(intent)
-                    }else{
-                        val intent = Intent(this@RoomDetailActivity, SuaPhongTro::class.java)
-                        intent.putExtra("roomId",maPhongTro )
-                        startActivity(intent)
-                    }
-                }
-
-            }
             findViewById<LinearLayout>(R.id.btnSuaPhongLuu).setOnClickListener{
                 viewModel.room.observe(this) { room ->
 

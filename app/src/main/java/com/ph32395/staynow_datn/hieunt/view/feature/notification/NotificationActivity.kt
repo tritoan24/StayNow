@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.ph32395.staynow_datn.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
+import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoiceEnd
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
 import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
@@ -31,6 +32,7 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
@@ -129,16 +131,16 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 }
 
                 TYPE_NOTI_TERMINATED_REQUEST -> {
-                    val intent = Intent(this, BillContractActivity::class.java).apply {
+                    val intent = Intent(this,ContractActivity::class.java).apply {
                         putExtra("contractId", notification.idModel)
                     }
                     startActivity(intent)
                 }
 
                 TYPE_NOTI_TERMINATED_CONFIRM -> {
-                    val intent = Intent(this, ContractActivity::class.java).apply {
-                        putExtra("contractId", notification.idModel)
-                        putExtra("notify", "notify")
+                    val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                        putExtra("chamDutHopDong", "true")
                     }
                     startActivity(intent)
                 }
@@ -153,15 +155,19 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
 
                 TYPE_NOTI_PAYMENT_CONTRACT -> {
                     // Navigate to invoice creation
-                    val intent = Intent(this, BillContractActivity::class.java).apply {
-                        putExtra("contractId", notification.idModel)
-                        putExtra("notify", "notify")
+                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+                TYPE_NOTI_REMIND_STATUS_CONTRACT->{
+                    val intent = Intent(this, ChiTietHopDong::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
                     }
                     startActivity(intent)
                 }
                 // Add more navigation cases as needed
                 else -> {
-                    // Optional: handle default navigation or show a message
                 }
             }
             Log.d("hiweuyhr", "Notification clicked: ${notification.idModel}")

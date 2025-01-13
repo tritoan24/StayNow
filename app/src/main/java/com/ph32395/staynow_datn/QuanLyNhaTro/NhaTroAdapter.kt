@@ -242,18 +242,22 @@ class NhaTroAdapter(
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot.documents) {
                     val docId = document.id // Lấy document ID
-                    phongTroRef.document(docId)
-                        .update(
-                            "trangThaiLuu", true,
-                            "trangThaiDuyet", ""
-                        )
-                        .addOnSuccessListener {
-                            Log.d(TAG, "Cập nhật thành công: $docId")
-                            dialog.dismiss()
-                        }
-                        .addOnFailureListener {
-                            Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
-                        }
+                    val trangThaiPhong = document.getBoolean("trangThaiPhong") ?: false
+                    if (!trangThaiPhong) {
+                        phongTroRef.document(docId)
+                            .update(
+                                "trangThaiLuu", true,
+                                "trangThaiDuyet", ""
+                            )
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Cập nhật thành công: $docId")
+                                dialog.dismiss()
+                            }
+                            .addOnFailureListener {
+                                Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
+                            }
+
+                    }
                 }
             }
             .addOnFailureListener {
@@ -295,18 +299,21 @@ class NhaTroAdapter(
             .addOnSuccessListener { querySnapshot ->
                 for (document in querySnapshot.documents) {
                     val docId = document.id // Lấy document ID
-                    phongTroRef.document(docId)
-                        .update(
-                            "trangThaiLuu", true,
-                            "trangThaiDuyet", ""
-                        )
-                        .addOnSuccessListener {
-                            Log.d(TAG, "Cập nhật thành công: $docId")
-                            dialog.dismiss()
-                        }
-                        .addOnFailureListener {
-                            Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
-                        }
+                    val trangThaiPhong = document.getBoolean("trangThaiPhong") ?: false
+                    if (!trangThaiPhong) {
+                        phongTroRef.document(docId)
+                            .update(
+                                "trangThaiLuu", true,
+                                "trangThaiDuyet", ""
+                            )
+                            .addOnSuccessListener {
+                                Log.d(TAG, "Cập nhật thành công: $docId")
+                                dialog.dismiss()
+                            }
+                            .addOnFailureListener {
+                                Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
+                            }
+                    }
                 }
             }
             .addOnFailureListener {
@@ -435,8 +442,7 @@ class NhaTroAdapter(
 
 //                        Da thue
                         val totalPhongTroDaThue = querySnapshot.documents.count { snapMap ->
-                            snapMap.getString("trangThaiDuyet") == "" &&
-                                    snapMap.getBoolean("trangThaiPhong") == true &&
+                            snapMap.getBoolean("trangThaiPhong") == true &&
                                     snapMap.getBoolean("trangThaiLuu") == false
 
                         }

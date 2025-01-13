@@ -94,6 +94,7 @@ class OTPActivity : AppCompatActivity() {
         }
 
         binding.btnResendOtp.setOnClickListener {
+            loadingUtil = LoadingUtil(this@OTPActivity)
             loadingUtil.show()
             binding.btnResendOtp.isClickable = false  // Vô hiệu hóa nút "Resend OTP" ngay khi bấm
 

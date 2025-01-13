@@ -124,7 +124,7 @@ class ScheduleRoomActivity : BaseActivity<ActivityScheduleRoomBinding, CommonVM>
                                             1 -> {
                                                 toast("Phòng trọ đã được chủ trọ xác nhận")
                                             }
-                                            2, 3 -> {
+                                            2, 3, 4 -> {
                                                 if (scheduleRoomInDataBase.soLanDatPhong > 2) {
                                                     toast("Bạn đã bị đánh dấu Spam")
                                                 } else {

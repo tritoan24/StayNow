@@ -116,7 +116,7 @@ class AdapterThanhVien(
 
                             // Cập nhật danh sách trong Firestore
                             dbQuanLyNguoiThue.document(idHopDong)
-                                .update("thanhVienList", updatedList)
+                                .update("danhSachThanhVien", updatedList)
                                 .addOnSuccessListener {
                                     Log.d("Firestore", "Xóa thành viên thành công")
                                     Toast.makeText(context, "Xóa thành viên thành công", Toast.LENGTH_SHORT).show()

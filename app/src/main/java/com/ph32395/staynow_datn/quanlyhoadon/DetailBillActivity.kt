@@ -41,7 +41,7 @@ class DetailBillActivity : AppCompatActivity() {
         binding = ActivityDetailBillBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadingIndicator = binding.loadingIndicator
-        invoiceViewModel = ViewModelProvider(this).get(InvoiceViewModel::class.java)
+        invoiceViewModel = ViewModelProvider(this)[InvoiceViewModel::class.java]
 
         initZaloPay()
 

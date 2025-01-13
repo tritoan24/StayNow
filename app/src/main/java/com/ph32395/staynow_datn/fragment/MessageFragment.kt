@@ -37,7 +37,7 @@ class MessageFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_message, container, false)
         binding.btnAdminSuport.setOnClickListener {
-            val adminId = "oNzHlt3U8gNirb9DmT7sf72HXb92" // ID của admin bạn muốn truyền
+            val adminId = "so0Gf3HYBZaoNyxnsbrX4BJ3kHC3" // ID của admin bạn muốn truyền
             val userId =
                 FirebaseAuth.getInstance().currentUser?.uid  // Lấy ID của người dùng hiện tại
             Log.d(TAG, "onCreate: userId $userId")
@@ -127,16 +127,16 @@ class MessageFragment : Fragment() {
 
     data class UserStatus(
         val maNguoiDung: String = "",
-        val ho_ten: String = "",
-        val anh_daidien: String = "",
-        val status: String = ""
+        val hoTen: String = "",
+        val anhDaiDien: String = "",
+        val trangThai: String = ""
     ) {
         constructor() : this("", "", "", "")
     }
 
     data class StatusMessage(
-        val landlordId: String = "",
-        val tenantId: String = ""
+        val maNguoiThue: String = "",
+        val maNguoiChoThue: String = ""
     ) {
         constructor() : this("", "")
     }
@@ -151,8 +151,10 @@ class MessageFragment : Fragment() {
         statusMessageRef.get().addOnSuccessListener { documents ->
             for (document in documents.documents) {
                 val statusMessage = document.toObject(StatusMessage::class.java)
-                if (statusMessage?.tenantId == idUser) {
-                    statusMessage?.landlordId?.let { listUserId.add(it) }
+                if (statusMessage?.maNguoiThue == idUser) {
+                    statusMessage?.maNguoiChoThue?.let { listUserId.add(it) }
+                } else if (statusMessage?.maNguoiChoThue == idUser) {
+                    statusMessage?.maNguoiThue?.let { listUserId.add(it) }
                 }
             }
 
@@ -166,12 +168,14 @@ class MessageFragment : Fragment() {
                             val maNguoiDung = snapshot.child("maNguoiDung").value.toString()
                             val hoTen = snapshot.child("hoTen").value.toString()
                             val anhDaiDien = snapshot.child("anhDaiDien").value.toString()
-                            val status = snapshot.child("status").value.toString()
+                            val status = snapshot.child("trangThai").value.toString()
 
                             // Tìm user đã tồn tại và cập nhật trạng thái mới
-                            val existingUserIndex = listUser.indexOfFirst { it.maNguoiDung == maNguoiDung }
+                            val existingUserIndex =
+                                listUser.indexOfFirst { it.maNguoiDung == maNguoiDung }
                             if (existingUserIndex != -1) {
-                                listUser[existingUserIndex] = UserStatus(maNguoiDung, hoTen, anhDaiDien, status)
+                                listUser[existingUserIndex] =
+                                    UserStatus(maNguoiDung, hoTen, anhDaiDien, status)
                             } else {
                                 listUser.add(UserStatus(maNguoiDung, hoTen, anhDaiDien, status))
                             }

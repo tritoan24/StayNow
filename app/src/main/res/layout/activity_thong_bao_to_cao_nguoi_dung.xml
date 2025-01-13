@@ -50,12 +50,52 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Nếu bạn cung cấp thông tin sai sự thật thì sẽ bị khóa tài khoản vĩnh viễn"
+            android:text="Nếu bạn cố tình cung cấp thông tin sai sự thật hoặc tố cáo một cách không chính xác, tài khoản của bạn sẽ bị khóa vĩnh viễn. Hãy chỉ tố cáo khi có đủ căn cứ và bằng chứng hợp lý."
             android:letterSpacing="0.05"
             android:lineSpacingExtra="2dp"
             android:fontFamily="serif"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_agree"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chúng tôi cam kết bảo vệ quyền lợi của tất cả các bên. Việc tố cáo phòng trọ sẽ được xử lý nghiêm túc. Tuy nhiên, nếu bạn tố cáo sai sự thật, tài khoản của bạn có thể bị khóa vĩnh viễn mà không có bất kỳ cảnh báo trước.
+"
+            android:letterSpacing="0.05"
+            android:lineSpacingExtra="2dp"
+            android:fontFamily="serif"
+            />
+    </LinearLayout> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:orientation="horizontal">
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_gravity="center"
+        android:src="@drawable/icon_agree"
+        android:layout_marginEnd="5dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Không được SPAM quá nhiều khi tố cáo phòng trọ"
+        android:letterSpacing="0.05"
+        android:lineSpacingExtra="2dp"
+        android:fontFamily="serif"
+        />
+</LinearLayout>
     <CheckBox
         android:id="@+id/checkQuyenThongBao"
         android:layout_width="wrap_content"
@@ -67,7 +107,7 @@
         android:layout_marginStart="8dp"
         android:layout_gravity="center_vertical"
         android:layout_marginTop="20dp"
-        android:buttonTint="@color/black" />
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

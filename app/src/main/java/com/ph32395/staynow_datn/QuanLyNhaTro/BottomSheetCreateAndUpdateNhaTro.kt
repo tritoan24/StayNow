@@ -60,6 +60,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
     private var firestore = FirebaseFirestore.getInstance()
     private var typeRoomRef = firestore.collection("LoaiPhong")
     private var nhaTroRef = firestore.collection("NhaTro")
+    private var phongTroRef = firestore.collection("PhongTro")
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private val TAG = "ZZZBottomSheetCreateAndUpdateNhaTroZZZ"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -264,7 +265,7 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
             dcQuanHuyen = if (Dc_quanhuyen == "") item.dcQuanHuyen else Dc_quanhuyen,
             dcTinhTP = if (Dc_tinhtp == "") item.dcTinhTP else Dc_tinhtp,
             diaChi = if (fullAddressct == "") item.diaChi else fullAddressct,
-            diaChiChiTiet = if (fullAddressDeltail == "") item.diaChiChiTiet else fullAddressct,
+            diaChiChiTiet = if (fullAddressDeltail == "") item.diaChiChiTiet else fullAddressDeltail,
             tenNhaTro = tenNhaTro,
             tenLoaiNhaTro = loaiNhaTro,
             trangThai = item.trangThai,
@@ -283,6 +284,33 @@ class BottomSheetCreateAndUpdateNhaTro(private val item: NhaTroModel?) :
             }.addOnCompleteListener {
                 Log.d(TAG, "updateRoom: cập nhật nhà trọ hoàn thành")
                 progressDialog.dismiss()
+            }
+        phongTroRef.whereEqualTo("maNguoiDung", idUser)
+            .whereEqualTo("maNhaTro", item.maNhaTro)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                for (document in querySnapshot.documents) {
+                    val docId = document.id // Lấy document ID
+                    phongTroRef.document(docId)
+                        .update(
+                            "dcQuanHuyen", if (Dc_quanhuyen == "") item.dcQuanHuyen else Dc_quanhuyen,
+                            "dcTinhTP",  if (Dc_tinhtp == "") item.dcTinhTP else Dc_tinhtp,
+                            "diaChi", if (fullAddressct == "") item.diaChi else fullAddressct,
+                            "diaChiChiTiet", if (fullAddressDeltail == "") item.diaChiChiTiet else fullAddressDeltail,
+                        )
+                        .addOnSuccessListener {
+                            Log.d(TAG, "Cập nhật thành công: $docId")
+                        }
+                        .addOnFailureListener {
+                            Log.e(TAG, "Lỗi khi cập nhật: ${it.message}")
+                        }
+
+
+                }
+
+            }
+            .addOnFailureListener {
+                Log.e(TAG, "updateRoom: ${it.message.toString()}")
             }
     }
 

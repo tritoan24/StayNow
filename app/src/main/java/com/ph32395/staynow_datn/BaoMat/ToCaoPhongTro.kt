@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.DataSnapshot
@@ -24,6 +25,10 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import com.ph32395.staynow_datn.Adapter.ToCaoTaiKhoanAdapter
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.hieunt.model.NotificationModel
+import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
+import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
+import java.text.SimpleDateFormat
 import java.util.*
 
 class ToCaoPhongTro : AppCompatActivity() {
@@ -34,6 +39,7 @@ class ToCaoPhongTro : AppCompatActivity() {
     private lateinit var editTenPhongTro: EditText
     private lateinit var editVanDePhong: EditText
     private lateinit var btnToCaoPhong: Button
+    private lateinit var viewModelNotification: NotificationViewModel
     private lateinit var mDatabase: DatabaseReference
 
     private val imageUriList = mutableListOf<Uri>() // Lưu URL của ảnh đã tải lên Firebase Storage
@@ -45,6 +51,8 @@ class ToCaoPhongTro : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_to_cao_phong_tro)
+        val factory = ViewModelFactory(this)
+        viewModelNotification = ViewModelProvider(this, factory)[NotificationViewModel::class.java]
 
         // Ánh xạ View
         imgBackToCaoPhong = findViewById(R.id.backScreenToCao)
@@ -64,7 +72,6 @@ class ToCaoPhongTro : AppCompatActivity() {
             selectImageFromGallery()
         }
 
-        mDatabase = FirebaseDatabase.getInstance().getReference()
 
         // Nhận maPhongTro từ Intent và truy vấn Firebase
         val maPhongTro = intent.getStringExtra("maPhongTro") ?: ""
@@ -85,9 +92,12 @@ class ToCaoPhongTro : AppCompatActivity() {
         } else {
             Log.e("ToCaoPhongTro", "Không có maPhongTro trong Intent")
         }
+        mDatabase = FirebaseDatabase.getInstance().getReference()
+
+        // Nhận userId từ Intent và truy vấn Firebase
         val userId = intent.getStringExtra("idUser")
         if (userId != null) {
-            Log.d("ToCaoTaiKhoan", "User ID: $userId")
+            Log.d("ToCaoPhongTro", "User ID: $userId")
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -95,7 +105,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                         val name = snapshot.child("hoTen").value.toString().trim()
                         editTenPhongTro.setText(name.ifEmpty { "Chưa cập nhật" })
 
-                        // Lấy mã người dùng từ Firebase Realtime Database
+                        // Lấy mã người dùng từ Firebase
                         maNguoiDung = snapshot.child("maNguoiDung").value.toString()
 
                         // Làm cho trường không thể chỉnh sửa
@@ -125,15 +135,55 @@ class ToCaoPhongTro : AppCompatActivity() {
 
         // Lưu dữ liệu khi click btnToCaoPhong
         btnToCaoPhong.setOnClickListener {
+            val tenPhongTro = editTenPhongTro.text.toString().trim()
+            val vanDePhong = editVanDePhong.text.toString().trim()
+
+
+            // Kiểm tra các trường không được để trống
+            if (tenPhongTro.isEmpty()) {
+                Toast.makeText(this, "Tên phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (vanDePhong.isEmpty()) {
+                Toast.makeText(this, "Vấn đề phòng trọ không được để trống", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (imageUriList.isEmpty()) {
+                Toast.makeText(this, "Hãy chọn ít nhất một hình ảnh để tố cáo", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Nếu tất cả các trường hợp lệ, tiến hành lưu dữ liệu
             val toCaoPhongData = hashMapOf(
-                "tenPhongTro" to editTenPhongTro.text.toString(),
-                "vanDePhong" to editVanDePhong.text.toString(),
+                "tenPhongTro" to tenPhongTro,
+                "vanDePhong" to vanDePhong,
                 "images" to imageUriList.map { it.toString() }, // Lưu URL từ Firebase Storage
+                "maNguoiBiToCao" to userId,
                 "maPhongTro" to maPhongTro,
-                "maNguoiDung" to maNguoiDung // Gửi mã người dùng vào Firestore
+                "maNguoiToCao" to maNguoiDung, // Gửi mã người dùng vào Firestore
+                "trangThai" to "PENDING"
             )
+
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
+                finish()
+                val notificationModel = NotificationModel(
+                    tieuDe = "Thông báo tố cáo",
+                    tinNhan = "Bạn có phòng trọ $tenPhongTro bị tố cáo",
+                    ngayGuiThongBao = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(
+                        Date()
+                    ),
+                    thoiGian = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date()),
+                    loaiThongBao = "ToCao",
+                    mapLink = null,
+                    thoiGianGuiThongBao = System.currentTimeMillis(),
+                    idModel = "",
+                )
+                if (userId != null) {
+                    viewModelNotification.sendNotification(notificationModel, userId)
+                }
                 editTenPhongTro.text.clear()
                 editVanDePhong.text.clear()
                 imageUriList.clear()
@@ -145,6 +195,7 @@ class ToCaoPhongTro : AppCompatActivity() {
                 Toast.makeText(this, "Lỗi khi gửi tố cáo, vui lòng thử lại!", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun selectImageFromGallery() {

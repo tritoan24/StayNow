@@ -977,8 +977,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
         Log.d("zzzTAGzzz", "onPriceRangeSelected:minPrice  $minPrice ")
         Log.d("zzzTAGzzz", "onPriceRangeSelected:maxPrice  $maxPrice ")
         addresses2.clear()
-        dataRoom.whereGreaterThanOrEqualTo("Gia_phong", minPrice.toDouble())
-            .whereLessThanOrEqualTo("Gia_phong", maxPrice.toDouble())
+        dataRoom.whereGreaterThanOrEqualTo("giaPhong", minPrice.toDouble())
+            .whereLessThanOrEqualTo("giaPhong", maxPrice.toDouble())
             .get()
             .addOnSuccessListener { querySnapshot ->
                 val tasks =
@@ -993,7 +993,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     // Thêm truy vấn phụ vào danh sách
                     val task = firestore.collection("ChiTietThongTin")
                         .whereEqualTo("maPhongTro", id)
-                        .whereEqualTo("tenThongTin", "Diện tích")
+                        .whereEqualTo("tenThongTin", "Diện Tích")
                         .get()
                         .addOnSuccessListener { detailSnapshot ->
                             val chiTiet = detailSnapshot.documents.firstOrNull()
@@ -1134,7 +1134,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                     addresses2.clear()
                     // Truy vấn bảng PhongTro và lọc theo mã loại phòng
                     firestore.collection("PhongTro")
-                        .whereIn("maLoaiPhong", maLoaiPhongList)
+                        .whereIn("maLoaiNhaTro", maLoaiPhongList)
                         .get()
                         .addOnSuccessListener { phongTroSnapshot ->
                             val phongTroIds = phongTroSnapshot.documents.map { it.id }
@@ -1166,9 +1166,38 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback,
                                                 "Danh sách phòng trọ có tiện nghi: $phongTroWithTienNghiIds"
                                             )
                                             // Tìm giao của ba danh sách phòng trọ
-                                            val finalRooms = phongTroIds
-                                                .intersect(phongTroWithNoiThatIds.toSet())
-                                                .intersect(phongTroWithTienNghiIds.toSet())
+                                            // Hợp tất cả ID của phòng trọ
+                                            val allPhongTroIds = phongTroIds
+                                                .union(phongTroWithNoiThatIds.toSet())
+                                                .union(phongTroWithTienNghiIds.toSet())
+
+                                            // Tính số tiêu chí thỏa mãn và tìm mức độ phù hợp cao nhất
+                                            val roomsWithMatchScore = allPhongTroIds.map { id ->
+                                                val matchScore = listOf(
+                                                    phongTroIds.contains(id),          // Thỏa mãn loại phòng
+                                                    phongTroWithNoiThatIds.contains(id), // Thỏa mãn nội thất
+                                                    phongTroWithTienNghiIds.contains(id) // Thỏa mãn tiện nghi
+                                                ).count { it } // Đếm số tiêu chí thỏa mãn
+
+                                                id to matchScore
+                                            }
+
+                                            // Tìm `matchScore` cao nhất
+                                            val maxMatchScore =
+                                                roomsWithMatchScore.maxOf { it.second }
+
+                                            // Lọc ra các phòng trọ có `matchScore` cao nhất
+                                            val bestRooms =
+                                                roomsWithMatchScore.filter { it.second == maxMatchScore }
+                                            val finalRooms = bestRooms.map { it.first }
+                                            Log.d(
+                                                TAG,
+                                                "Danh sách phòng trọ sắp xếp theo mức độ phù hợp: ${
+                                                    bestRooms.map {
+                                                        it.first
+                                                    }
+                                                }"
+                                            )
                                             Log.d(TAG, "Danh sách phòng trọ cuối cùng: $finalRooms")
                                             if (finalRooms.isEmpty()) {
 //                                                binding.layoutNullMsg.visibility = View.VISIBLE

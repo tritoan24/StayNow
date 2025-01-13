@@ -66,11 +66,6 @@ class RoomContract {
                             //chuyển sang màn chi tiết hóa đơn hợp đồng
                             idHopDong = newContractId
 
-//                            //chuyển màn
-//                            val intent = Intent(requireContext(), ChiTietHoaDon::class.java)
-//                            intent.putExtra("idHopDong",idHopDong)
-//                            startActivity(intent)
-
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
                             val invoiceRef = newDoc.collection("hoaDonHopDong").document()
@@ -100,12 +95,9 @@ class RoomContract {
                         )
 
 
-                        // Xóa lịch hẹn
-                        Log.d(
-                            "HopDongViewModel",
-                            "Attempting to delete appointment: $appointmentId"
-                        )
-                        transaction.delete(appointmentRef)
+                        // ✅ Thay vì xóa lịch hẹn, cập nhật trạng thái trangThaiDatPhong thành "4"
+                        Log.d("HopDongViewModel", "Updating trangThaiDatPhong of appointment: $appointmentId")
+                        transaction.update(appointmentRef, "trangThaiDatPhong", 4)
                     }.await()
                 }
 
@@ -258,10 +250,17 @@ class RoomContract {
     /**
      * Lấy thông tin hợp đồng theo ID.
      */
-    suspend fun getContract(contractId: String): HopDong? {
+    suspend fun getContract(contractId: String, status: InvoiceStatus): HopDong? {
         return try {
             val document = contractsCollection.document(contractId).get().await()
-            document.toObject(HopDong::class.java)
+            val hopDong = document.toObject(HopDong::class.java)
+
+            // Kiểm tra trạng thái hoaDonHopDong.trangThai với status truyền vào
+            if (hopDong?.hoaDonHopDong?.trangThai == status) {
+                hopDong
+            } else {
+                null  // Trả về null nếu không thỏa mãn điều kiện
+            }
         } catch (e: Exception) {
             null
         }
@@ -290,36 +289,50 @@ class RoomContract {
         getContracts("nguoiThue.maNguoiDung", tenantId, statuses, onContractsChanged)
     }
 
-    fun updateContractTerminationRequest(
+    suspend fun updateContractTerminationRequest(
         contractId: String,
         reason: String?,
-        status: TerminationStatus,
-        onResult: (Boolean) -> Unit
-    ) {
+        status: TerminationStatus
+    ): Boolean {
         if (contractId.isEmpty()) {
-            onResult(false)
-            return
+            return false
         }
 
         val updates = mutableMapOf<String, Any>(
             "yeuCauChamDut" to status
         )
 
-        // Nếu có lý do, thêm vào bản đồ cập nhật
         reason?.let {
             updates["lyDoChamDut"] = it
         }
 
-        contractsCollection.document(contractId)
-            .update(updates)
-            .addOnSuccessListener {
-                Log.d("HopDongRepository", "Fields updated successfully for $contractId")
-                onResult(true)
+        try {
+            if (status == TerminationStatus.APPROVED) {
+                val contractSnapshot = contractsCollection.document(contractId).get().await()
+                val roomId = contractSnapshot.getString("maPhong")
+
+                if (roomId != null) {
+                    roomsCollection.document(roomId)
+                        .update(
+                            mapOf(
+                                "trangThaiPhong" to false,
+                                "trangThaiDuyet" to "DaDuyet"
+                            )
+                        )
+                        .await()
+                }
             }
-            .addOnFailureListener { e ->
-                Log.e("HopDongRepository", "Error updating fields: ${e.message}")
-                onResult(false)
-            }
+
+            contractsCollection.document(contractId)
+                .update(updates)
+                .await()
+
+            Log.d("HopDongRepository", "Fields updated successfully for $contractId")
+            return true
+        } catch (e: Exception) {
+            Log.e("HopDongRepository", "Error updating fields: ${e.message}")
+            return false
+        }
     }
 
     fun updateIsCreateBillContract(
@@ -417,10 +430,16 @@ class RoomContract {
                 .update("trangThai", newStatus.name)
                 .await()
 
-            if (newStatus == ContractStatus.EXPIRED || newStatus == ContractStatus.TERMINATED) {
+            if (newStatus == ContractStatus.TERMINATED || newStatus == ContractStatus.CANCELLED) {
                 // Lấy thông tin hợp đồng để tìm mã phòng
                 val contractSnapshot = contractsCollection.document(contractId).get().await()
                 val roomId = contractSnapshot.getString("maPhong")
+
+                if (newStatus == ContractStatus.CANCELLED) {
+                    contractsCollection.document(contractId)
+                        .update("hoaDonHopDong.trangThai", newStatus.name)
+                        .await()
+                }
 
                 if (roomId != null) {
                     // Cập nhật trạng thái phòng trọ

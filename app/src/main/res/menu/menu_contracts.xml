@@ -15,7 +15,7 @@
         tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_expired_contracts"
-        android:title="Hợp đồng hết hạn"
+        android:title="Hợp đồng sắp hết hạn"
         tools:ignore="HardcodedText" />
     <item
         android:id="@+id/menu_cancelled_contracts"

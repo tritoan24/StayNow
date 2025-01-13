@@ -43,11 +43,11 @@ class UserStatusOnOfAdapter(
         val status = itemView.vTrangThaiUser
         fun bin(userStatus: MessageFragment.UserStatus) {
             Glide.with(itemView.context)
-                .load(userStatus.anh_daidien)
+                .load(userStatus.anhDaiDien)
                 .circleCrop()
                 .into(ivAvatar)
             val statusDrawable = status.background as GradientDrawable
-            statusDrawable.setColor(if (userStatus.status == "online") Color.GREEN else Color.GRAY)
+            statusDrawable.setColor(if (userStatus.trangThai == "online") Color.GREEN else Color.GRAY)
 
         }
 

@@ -85,9 +85,12 @@ object Default {
 
         const val TYPE_NOTI_PAYMENT_CONTRACT = "hoadonhopdong"
         const val TYPE_NOTI_PAYMENT_INVOICE = "hoadonhangthang"
+
         const val TYPE_NOTI_TERMINATED_REQUEST = "yeuCauChamDut"
         const val TYPE_NOTI_TERMINATED_DENY = "tuChoiChamDut"
         const val TYPE_NOTI_TERMINATED_CONFIRM = "xacNhanChamDut"
+
+        const val TYPE_NOTI_REMIND_STATUS_CONTRACT = "kiemtranhacnhohopdong"
 
         const val TYPE_NOTI_CONTRACT = "HopDongMoi"
     }

@@ -28,6 +28,9 @@ class RenterInterestDialog(
                     dismiss()
                 }
             }
+            btnHuyChuTro.tap {
+                dismiss()
+            }
         }
     }
 
