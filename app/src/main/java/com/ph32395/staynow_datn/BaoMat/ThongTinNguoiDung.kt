@@ -47,7 +47,6 @@ class ThongTinNguoiDung : AppCompatActivity() {
         phoneInfor = findViewById(R.id.infor_phone);
         emailInfor = findViewById(R.id.infor_email);
         rcListRoom = findViewById(R.id.rc_listRoom)
-        imgThongBao = findViewById(R.id.imgThongBao)
 
 
 
@@ -64,14 +63,6 @@ class ThongTinNguoiDung : AppCompatActivity() {
 
         homViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         val userId = getIntent().getStringExtra("idUser");
-
-        imgThongBao.setOnClickListener {
-            val dialog = ThongBaoToCaoNguoiDung()
-            val bundle = Bundle()
-            bundle.putString("idUser", userId)
-            dialog.arguments = bundle
-            dialog.show(supportFragmentManager, "ThongBaoToCaoNguoiDung")
-        }
 
         if(userId != null) {
             mDatabase.child("NguoiDung").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {

@@ -39,19 +39,7 @@
                 android:layout_marginStart="16dp"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
 
-            <ImageView
-                android:id="@+id/imgThongBao"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:src="@drawable/to_cao"
-                android:layout_marginTop="19dp"
-                android:layout_marginRight="10dp"
-                />
         </LinearLayout>
 
         <!-- User Image and Name -->
