@@ -441,18 +441,18 @@ class TaoHopDong : AppCompatActivity() {
         }
     }
 
+
+    // Hàm lấy thông tin diện tích từ bảng chi tiết thông tin theo mã phòng trọ
+
 private fun observeViewModel() {
     //        Quan sat chi tiet thong tin
-    viewModel.chiTietList.observe(this) { chiTietList ->
-        chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
-        findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
-        if (chiTietList.size > 3) {
-            tvDienTich.text = "${chiTietList[3].soLuongDonVi} m²"
-        } else {
-            tvDienTich.text = "Không có dữ liệu"
-        }
+        viewModel.chiTietList.observe(this) { chiTietList ->
+            chiTietAdapter = ChiTietThongTinAdapter(chiTietList)
+            findViewById<RecyclerView>(R.id.listViewThongTin).adapter = chiTietAdapter
 
-    }
+            val dienTichText = viewModel.getDienTich()
+            tvDienTich.text = dienTichText
+        }
     //        Quan sat du lieu phi dich vu
     viewModel.phiDichVuList.observe(this) { phiDichVuList ->
         phiDichVuAdapter = PhiDichVuAdapter(phiDichVuList)

@@ -139,27 +139,6 @@
                 android:textColor="#A63030"
                 android:textStyle="italic"
                 tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Các chi phí cho hóa đơn bao gồm:"
-                android:textStyle="bold"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:text="Tiền Phòng: 3,500,000"
-                tools:ignore="HardcodedText" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Tiền Cọc: 3,500,000"
-                tools:ignore="HardcodedText" />
-
             <TextView
                 android:id="@+id/tvInvoiceDate"
                 android:layout_width="match_parent"

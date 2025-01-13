@@ -72,6 +72,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.IOException
+import java.text.NumberFormat
 import java.util.Locale
 import kotlin.collections.isNotEmpty
 import kotlin.text.isNotEmpty
@@ -572,8 +573,16 @@ class SuaPhongTroDon : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     private fun populateRoomDetails(roomDetails: PhongTroModel) {
         binding.roomName.setText(roomDetails.tenPhongTro)
-        binding.roomPrice.setText(roomDetails.giaPhong.toString())
         binding.description.setText(roomDetails.moTaChiTiet)
+
+        // Format số tiền trước khi gán vào EditText
+        val numberFormat = NumberFormat.getNumberInstance(Locale("vi", "VN"))
+        val formattedPrice = numberFormat.format(roomDetails.giaPhong)
+        binding.roomPrice.setText(formattedPrice)
+
+        binding.description.setText(roomDetails.moTaChiTiet)
+        CurrencyFormatTextWatcher.addTo(binding.roomPrice)
+        Log.d("Gia Phong", "Gia Phong formatted: $formattedPrice")
 
         // Điền thông tin địa chỉ
         diaChi = roomDetails.diaChi

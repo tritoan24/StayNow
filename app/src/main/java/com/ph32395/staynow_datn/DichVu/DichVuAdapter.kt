@@ -16,6 +16,8 @@ import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
 import com.ph32395.staynow_datn.databinding.ItemDichvuBinding
+import java.text.NumberFormat
+import java.util.Locale
 
 class DichVuAdapter(
     private val context: Context,
@@ -134,7 +136,10 @@ class DichVuAdapter(
         val existingPriceInfo = pricesMap[position]
         existingPriceInfo?.let {
             // Set giá đã nhập trước đó
-            editText.setText(it.first.toString())
+            // Format số để bỏ phần thập phân .0
+            val numberFormat = NumberFormat.getNumberInstance(Locale("vi", "VN"))
+            val formattedNumber = numberFormat.format(it.first)
+            editText.setText(formattedNumber)
 
             // Set đơn vị đã chọn trước đó
             val selectedUnitPosition = unitList.indexOf(it.second)
@@ -148,15 +153,14 @@ class DichVuAdapter(
             .setCustomView(dialogView)
             .setConfirmText("Xác nhận")
             .setConfirmClickListener { sDialog ->
-                val inputText = editText.text.toString().replace(",", "").toDoubleOrNull()
+                // Sử dụng hàm getUnformattedValue từ CurrencyFormatTextWatcher
+                val inputValue = CurrencyFormatTextWatcher.getUnformattedValue(editText)
                 val selectedUnit = spinner.selectedItem.toString()
 
-                if (inputText != null && inputText > 0 && selectedUnit.isNotEmpty()) {
-                    // Lưu giá và đơn vị vào pricesMap
-                    pricesMap[position] = inputText to selectedUnit
+                if (inputValue > 0 && selectedUnit.isNotEmpty()) {
+                    pricesMap[position] = inputValue to selectedUnit
                     notifyItemChanged(position)
 
-                    // Kiểm tra xem đã nhập đủ giá chưa
                     if (pricesMap.size == dichVuList.size) {
                         val priceList = dichVuList.mapIndexed { index, dichVu ->
                             PhiDichVu(
@@ -176,7 +180,6 @@ class DichVuAdapter(
             }
             .show()
 
-        // Khi khởi tạo dialog, áp dụng CurrencyFormatTextWatcher
         CurrencyFormatTextWatcher.addTo(editText)
     }
 
