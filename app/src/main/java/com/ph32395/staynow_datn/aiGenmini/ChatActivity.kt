@@ -129,7 +129,9 @@ class ChatActivity : AppCompatActivity() {
 
     private fun navigateToRoomDetail(roomId: String) {
         val intent = Intent(this, RoomDetailActivity::class.java).apply {
-            putExtra("ROOM_ID", roomId)
+            putExtra("maPhongTro", roomId)
+            putExtra("ManHome", "ManND")
+
         }
         startActivity(intent)
     }
