@@ -25,6 +25,7 @@ import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow_datn.databinding.ActivityCreateInvoiceEndBinding
 import com.ph32395.staynow_datn.databinding.ActivityCreateMontlyInvoiceAutoBinding
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
@@ -413,7 +414,7 @@ class CreateInvoiceEnd : AppCompatActivity() {
                 mapLink = null,
                 daDoc = false,
                 daGui = true,
-                loaiThongBao = "invoiceRemind",
+                loaiThongBao = TYPE_NOTI_TERMINATED_CONFIRM,
                 idModel = hoaDonMon.idHoaDon
             )
 

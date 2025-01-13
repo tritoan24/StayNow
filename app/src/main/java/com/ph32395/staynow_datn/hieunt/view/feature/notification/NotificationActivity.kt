@@ -102,7 +102,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
 
                 TYPE_NOTI_BILL_MONTHLY -> {
                     // Navigate to invoice creation
-                    val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
+                    val intent = Intent(this, CreateInvoice::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
                     }
                     startActivity(intent)
@@ -140,6 +140,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 TYPE_NOTI_TERMINATED_CONFIRM -> {
                     val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
+                        putExtra("chamDutHopDong", "true")
                     }
                     startActivity(intent)
                 }
