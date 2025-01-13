@@ -24,21 +24,23 @@ import com.ph32395.staynow_datn.hieunt.database.db.AppDatabase
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.IS_PUSHED
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.THONG_BAO
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_CONTRACT_DONE
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_END_LANDLORD
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_END_TENANT
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND_LANDLORD
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_LANDLORD
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view.feature.notification.NotificationActivity
-import com.ph32395.staynow_datn.quanlyhoadon.DetailBillActivity
 import com.ph32395.staynow_datn.quanlyhoadon.BillManagementActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -97,8 +99,8 @@ class NotificationService : Service() {
                 Intent(this, NotificationActivity::class.java)
             }
 
-            TYPE_NOTI_BILL_MONTHLY -> {
-                Intent(this, CreateInvoice::class.java).apply {
+            TYPE_NOTI_BILL_MONTHLY_REMIND_LANDLORD, TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT -> {
+                Intent(this, NotificationActivity::class.java).apply {
                     putExtra("CONTRACT_ID", notificationModel.idModel)
                 }
             }
@@ -119,10 +121,8 @@ class NotificationService : Service() {
                 Intent(this, NotificationActivity::class.java)
             }
 
-            TYPE_NOTI_BILL_MONTHLY_REMIND -> {
-                Intent(this, BillManagementActivity::class.java).apply {
-                    putExtra("invoiceId", notificationModel.idModel)
-                }
+            TYPE_NOTI_BILL_MONTHLY_END_TENANT, TYPE_NOTI_BILL_MONTHLY_END_LANDLORD  -> {
+                Intent(this, NotificationActivity::class.java)
             }
 
             TYPE_NOTI_PAYMENT_CONTRACT -> {
@@ -137,7 +137,7 @@ class NotificationService : Service() {
                 }
             }
 
-            TYPE_NOTI_TERMINATED_CONFIRM -> {
+            TYPE_NOTI_TERMINATED_CONFIRM_LANDLORD, TYPE_NOTI_TERMINATED_CONFIRM_TENANT -> {
                 Intent(this, NotificationActivity::class.java).apply {
                     putExtra("contractId", notificationModel.idModel)
                 }
