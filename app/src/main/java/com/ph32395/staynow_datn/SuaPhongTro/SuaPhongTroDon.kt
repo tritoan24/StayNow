@@ -38,7 +38,6 @@ import com.ph32395.staynow_datn.DichVu.DichVuAddServiceUtil
 import com.ph32395.staynow_datn.GioiTinh.GioiTinh
 import com.ph32395.staynow_datn.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
-import com.ph32395.staynow_datn.LoaiPhong.LoaiPhong
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongAdapter
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongViewModel
 import com.ph32395.staynow_datn.Maps.RetrofitInstance
@@ -51,16 +50,12 @@ import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.TaoPhongTro.ChoiceImageAdapter
-import com.ph32395.staynow_datn.TaoPhongTro.NhaTroViewModel
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
-import com.ph32395.staynow_datn.TaoPhongTro.SimpleHomeAdapter
-import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow_datn.ThongTin.ThongTin
 import com.ph32395.staynow_datn.ThongTin.ThongTinAdapter
 import com.ph32395.staynow_datn.TienNghi.TienNghi
 import com.ph32395.staynow_datn.TienNghi.TienNghiAdapter
 import com.ph32395.staynow_datn.TienNghi.TienNghiViewModel
-import com.ph32395.staynow_datn.databinding.ActivitySuaPhongTroBinding
 import com.ph32395.staynow_datn.databinding.ActivitySuaPhongTroDonBinding
 import gun0912.tedimagepicker.builder.TedImagePicker
 import kotlinx.coroutines.CoroutineScope
