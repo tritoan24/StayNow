@@ -68,7 +68,6 @@ class ContractActivity : AppCompatActivity() {
             popupMenu.show()
             popupMenu.setOnMenuItemClickListener { item ->
                 val itemName = item.title.toString()
-
                 when (item.itemId) {
                     R.id.menu_pending_contracts -> {
                         setupRecyclerView(pendingAdapter, itemName)

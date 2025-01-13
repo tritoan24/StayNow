@@ -2,7 +2,6 @@ package com.ph32395.staynow_datn.TaoHoaDon
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -20,21 +19,22 @@ import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHopDong.Adapter.FixedFeeAdapter
+import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import com.ph32395.staynow_datn.TaoHopDong.Invoice
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
+import com.ph32395.staynow_datn.databinding.ActivityCreateInvoiceEndBinding
 import com.ph32395.staynow_datn.databinding.ActivityCreateMontlyInvoiceAutoBinding
-import com.ph32395.staynow_datn.hieunt.helper.Default
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
-import kotlin.random.Random
 
-class CreateInvoice : AppCompatActivity() {
-    private lateinit var binding: ActivityCreateMontlyInvoiceAutoBinding
+class CreateInvoiceEnd : AppCompatActivity() {
+    private lateinit var binding: ActivityCreateInvoiceEndBinding
     private val viewModelHopDong: ContractViewModel by viewModels()
     private val invoiceViewModel: InvoiceViewModel by viewModels()
 
@@ -67,7 +67,7 @@ class CreateInvoice : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityCreateMontlyInvoiceAutoBinding.inflate(layoutInflater)
+        binding = ActivityCreateInvoiceEndBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
 
@@ -105,7 +105,6 @@ class CreateInvoice : AppCompatActivity() {
 
     private fun updateUI(invoice: Invoice, contractId: String,isChamDut:String?) {
 
-        // Tính toán các giá trị ban đầu
         tongTienDichVuCoDinh = invoice.tongTienDichVu
         tongTienPhiBienDong = 0.0
         tongPhiDichVu = tongTienDichVuCoDinh + tongTienPhiBienDong
@@ -121,6 +120,7 @@ class CreateInvoice : AppCompatActivity() {
         phiCoDinhList.addAll(invoice.phiCoDinh)
 
         // Cập nhật các TextView với giá trị ban đầu
+
         binding.tvTongTienPhiCoDinh.text = formatCurrency(tongTienDichVuCoDinh)
         binding.tvTongTienPhiBienDoi.text = formatCurrency(tongTienPhiBienDong)
         binding.tvTongTien.text = formatCurrency(tongPhiDichVu)
@@ -414,7 +414,7 @@ class CreateInvoice : AppCompatActivity() {
                 mapLink = null,
                 daDoc = false,
                 daGui = true,
-                loaiThongBao = "invoiceRemind",
+                loaiThongBao = TYPE_NOTI_TERMINATED_CONFIRM,
                 idModel = hoaDonMon.idHoaDon
             )
 
