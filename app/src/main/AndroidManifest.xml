@@ -26,6 +26,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StayNow"
         android:usesCleartextTraffic="true">
+         <activity
+         android:name=".aiGenmini.ChatActivity"
+         android:exported="false" />
         <activity
             android:name=".TaoHoaDon.CreateInvoiceEnd"
             android:exported="false" />
@@ -82,9 +85,7 @@
             android:exported="false" />
         <activity
             android:name=".BaoMat.ThayDoiNgonNgu"
-            android:exported="false" /> <!-- <activity -->
-        <!-- android:name=".QuanLyPhongTro.UpdateRoom.UpdateRoomActivity" -->
-        <!-- android:exported="false" /> -->
+            android:exported="false" />
         <service
             android:name=".hieunt.service.NotificationService"
             android:exported="false"

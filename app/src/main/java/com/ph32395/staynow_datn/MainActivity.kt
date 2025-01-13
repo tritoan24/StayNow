@@ -10,12 +10,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.ph32395.staynow_datn.Activity.RoomDetailActivity
 import com.ph32395.staynow_datn.ChucNangTimKiem.SearchActivity
 import com.ph32395.staynow_datn.PhongTroYeuThich.PhongTroYeuThichFragment
 import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTro
 import com.ph32395.staynow_datn.TaoPhongTro.TaoPhongTroNT
+import com.ph32395.staynow_datn.aiGenmini.ChatActivity
 import com.ph32395.staynow_datn.databinding.ActivityMainBinding
 import com.ph32395.staynow_datn.fragment.MessageFragment
 import com.ph32395.staynow_datn.fragment.ProfileFragment
@@ -86,6 +89,15 @@ class MainActivity : AppCompatActivity() {
                 finishAffinity()
             }
         })
+//
+        val fabCustom = findViewById<FloatingActionButton>(R.id.chatAI)
+        fabCustom.setOnClickListener {
+        //chuyen sang man chatActivity
+            val intent = Intent(this, ChatActivity::class.java)
+            startActivity(intent)
+
+        }
+
         // Khởi tạo tất cả các Fragment và thêm HomeFragment làm mặc định
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragment_container, profileFragment, "PROFILE").hide(profileFragment)

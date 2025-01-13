@@ -27,4 +27,17 @@ data class PhongTroModel(
     var maNhaTro: String = "",
 ): Serializable{
 //    constructor() : this("", "", "", "", "", "", "","", false, 0.0, 0, 0L, 0L,ArrayList(), "")
+    constructor() : this("", "", "", "", "", "", "",false, 0.0, 0, 0L, 0L, 0L,ArrayList(), "")
+
+    // Thêm một companion object để tạo PhongTroModel từ Firestore document
+    companion object {
+        fun fromDocument(document: com.google.firebase.firestore.DocumentSnapshot): PhongTroModel? {
+            return document.toObject(PhongTroModel::class.java)
+        }
+    }
 }
+
+data class PhongTroWithId(
+    val id: String,
+    val phongTro: PhongTroModel
+)
