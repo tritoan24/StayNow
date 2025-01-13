@@ -29,8 +29,14 @@ class ChonLoaiTK : AppCompatActivity() {
             userRef.child("loaiTaiKhoan").setValue("NguoiChoThue").addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("Đã cập nhật loại tài khoản: Chủ nhà trọ")
-                        // Chuyển sang màn home
-                        val intent = Intent(this, DangNhap::class.java)
+                    //                                                            Luu trang thai da dang nhap vao SharedPreferences
+                    val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    val editor = prefs.edit()
+                    editor.putBoolean("is_logged_in", true)
+                    editor.putString("check", "NguoiChoThue")
+                    editor.apply()
+                    // Chuyển sang màn home
+                        val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                          finish()
                 } else {
@@ -44,7 +50,12 @@ class ChonLoaiTK : AppCompatActivity() {
             userRef.child("loaiTaiKhoan").setValue("NguoiThue").addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     showToast("Đã cập nhật loại tài khoản: Người thuê trọ")
-                    val intent = Intent(this, DangNhap::class.java)
+                    val prefs = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                    val editor = prefs.edit()
+                    editor.putBoolean("is_logged_in", true)
+                    editor.putString("check", "NguoiThue")
+                    editor.apply()
+                    val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 } else {

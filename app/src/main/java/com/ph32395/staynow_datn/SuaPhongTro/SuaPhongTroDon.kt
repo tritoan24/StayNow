@@ -660,10 +660,6 @@ class SuaPhongTroDon : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show()
                 return false
             }
-            maNhaTro.isEmpty() -> {
-                Toast.makeText(this, "Vui lòng chọn nhà trọ", Toast.LENGTH_SHORT).show()
-                return false
-            }
             Ma_gioiTinh.isEmpty() -> {
                 Toast.makeText(this, "Vui lòng chọn giới tính", Toast.LENGTH_SHORT).show()
                 return false

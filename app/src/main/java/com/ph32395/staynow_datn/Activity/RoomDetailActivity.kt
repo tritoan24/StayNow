@@ -233,6 +233,27 @@ class RoomDetailActivity : AppCompatActivity() {
             }
         }
 
+        findViewById<ImageView>(R.id.toCaoPhong).apply {
+            visibility = View.GONE // Mặc định ẩn, sẽ hiện lại nếu không phải "NguoiChoThue"
+            val userId = FirebaseAuth.getInstance().currentUser?.uid ?: ""
+            // Lấy dữ liệu từ Firebase Realtime Database
+            val database = FirebaseDatabase.getInstance().reference
+            val userRef = database.child("NguoiDung").child(userId)
+
+            userRef.get().addOnSuccessListener { snapshot ->
+                val accountType = snapshot.child("loaiTaiKhoan").getValue(String::class.java) ?: "NguoiThue" // Mặc định là "NguoiThue"
+
+                // Kiểm tra loại tài khoản
+                if ("NguoiChoThue" == accountType) {
+                    visibility = View.GONE // Ẩn nếu là "NguoiChoThue"
+                } else {
+                    visibility = View.VISIBLE // Hiện nếu không phải "NguoiChoThue"
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("RoomDetailActivity", "Lỗi khi lấy dữ liệu người dùng: ${exception.message}", exception)
+            }
+        }
+
 
 
 //        khoi tao Adapter

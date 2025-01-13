@@ -168,7 +168,7 @@ class ToCaoPhongTro : AppCompatActivity() {
 
             firestore.collection("ToCaoPhongTro").add(toCaoPhongData).addOnSuccessListener {
                 Toast.makeText(this, "Tố cáo phòng trọ được gửi thành công", Toast.LENGTH_SHORT).show()
-
+                finish()
                 val notificationModel = NotificationModel(
                     tieuDe = "Thông báo tố cáo",
                     tinNhan = "Bạn có phòng trọ $tenPhongTro bị tố cáo",

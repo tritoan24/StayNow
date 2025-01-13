@@ -66,11 +66,6 @@ class RoomContract {
                             //chuyển sang màn chi tiết hóa đơn hợp đồng
                             idHopDong = newContractId
 
-//                            //chuyển màn
-//                            val intent = Intent(requireContext(), ChiTietHoaDon::class.java)
-//                            intent.putExtra("idHopDong",idHopDong)
-//                            startActivity(intent)
-
 
                             // Lưu hóa đơn vào subcollection của hợp đồng
                             val invoiceRef = newDoc.collection("hoaDonHopDong").document()
@@ -100,12 +95,9 @@ class RoomContract {
                         )
 
 
-                        // Xóa lịch hẹn
-                        Log.d(
-                            "HopDongViewModel",
-                            "Attempting to delete appointment: $appointmentId"
-                        )
-                        transaction.delete(appointmentRef)
+                        // ✅ Thay vì xóa lịch hẹn, cập nhật trạng thái trangThaiDatPhong thành "4"
+                        Log.d("HopDongViewModel", "Updating trangThaiDatPhong of appointment: $appointmentId")
+                        transaction.update(appointmentRef, "trangThaiDatPhong", 4)
                     }.await()
                 }
 

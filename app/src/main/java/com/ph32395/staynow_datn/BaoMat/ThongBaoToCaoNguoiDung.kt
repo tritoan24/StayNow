@@ -61,6 +61,7 @@ class ThongBaoToCaoNguoiDung : DialogFragment() {
                 intent.putExtra("idUser", userId) // Truyền userId qua Intent
                 intent.putExtra("maPhongTro", maPhongTro) // Truyền mã phòng trọ qua Intent
                 startActivity(intent)
+                dismiss() // Đóng dialog
             } else {
                 Toast.makeText(requireContext(), "Không có userId hoặc maPhongTro để truyền", Toast.LENGTH_SHORT).show()
             }

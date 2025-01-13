@@ -14,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.ph32395.staynow_datn.MainActivity
+import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyKhoPhong.QuanLyKhoPhongActivity
 import com.ph32395.staynow_datn.QuanLyPhongTro.fragment.PhongDaDangFragment
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.fragment.home.HomeViewModel
@@ -40,7 +41,7 @@ class QuanLyPhongTroActivity : AppCompatActivity() {
     private fun caiDatGiaoDien() {
         // Nút quay lại
         findViewById<ImageView>(R.id.imgBackQLPhong).setOnClickListener {
-            finish()
+            startActivity(Intent(this,QuanLyKhoPhongActivity::class.java))
         }
 
         // Cài đặt ViewPager và TabLayout
