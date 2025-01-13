@@ -2,7 +2,6 @@ package com.ph32395.staynow_datn.TaoHoaDon
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -20,18 +19,18 @@ import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.MainActivity
 import com.ph32395.staynow_datn.TaoHopDong.Adapter.FixedFeeAdapter
+import com.ph32395.staynow_datn.TaoHopDong.ContractViewModel
 import com.ph32395.staynow_datn.TaoHopDong.Invoice
 import com.ph32395.staynow_datn.TaoHopDong.InvoiceStatus
 import com.ph32395.staynow_datn.TaoHopDong.UtilityFeeDetail
 import com.ph32395.staynow_datn.databinding.ActivityCreateMontlyInvoiceAutoBinding
-import com.ph32395.staynow_datn.hieunt.helper.Default
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view_model.NotificationViewModel
 import com.ph32395.staynow_datn.hieunt.view_model.ViewModelFactory
 import java.text.NumberFormat
 import java.util.Calendar
 import java.util.Locale
-import kotlin.random.Random
 
 class CreateInvoice : AppCompatActivity() {
     private lateinit var binding: ActivityCreateMontlyInvoiceAutoBinding
@@ -72,7 +71,6 @@ class CreateInvoice : AppCompatActivity() {
 
 
         val idHopDong = intent.getStringExtra("CONTRACT_ID")
-        val isChamDut = intent.getStringExtra("chamDutHopDong")
 
         idHopDong?.let {
             viewModelHopDong.fetchInvoiceDetails(it)
@@ -82,7 +80,7 @@ class CreateInvoice : AppCompatActivity() {
         viewModelHopDong.invoiceDetails.observe(this) { fetchedInvoice ->
             invoice = fetchedInvoice
             if (idHopDong != null) {
-                updateUI(invoice, idHopDong,isChamDut)
+                updateUI(invoice, idHopDong)
             }
             setupCalculationListeners()
         }
@@ -103,7 +101,7 @@ class CreateInvoice : AppCompatActivity() {
     // Thêm biến flag để kiểm soát việc lưu dữ liệu
     private var isFinalCalculation = false
 
-    private fun updateUI(invoice: Invoice, contractId: String,isChamDut:String?) {
+    private fun updateUI(invoice: Invoice, contractId: String) {
 
         // Tính toán các giá trị ban đầu
         tongTienDichVuCoDinh = invoice.tongTienDichVu
@@ -171,7 +169,7 @@ class CreateInvoice : AppCompatActivity() {
                 Log.d("zzzzCreateInvoice", "Số điện đã thay đổi: $idHopDong")
             }
             loadingUtil.show()
-            saveInvoice(contractId,isChamDut)
+            saveInvoice(contractId)
         }
 
         // định dạng số tiền nhập vào
@@ -317,7 +315,7 @@ class CreateInvoice : AppCompatActivity() {
         Log.d("Invoice1", "Utility Fee Details: $utilityFeeDetails")
     }
 
-    private fun saveInvoice(contractId: String, isChamDut: String?) {
+    private fun saveInvoice(contractId: String) {
         // Phương thức lưu hóa đơn
         // Sử dụng utilityFeeDetails để lưu chi tiết phí
         // Triển khai logic lưu vào Firestore hoặc cơ sở dữ liệu của bạn
@@ -340,7 +338,7 @@ class CreateInvoice : AppCompatActivity() {
             tongPhiCoDinh = tongTienDichVuCoDinh,
             tongPhiBienDong = tongTienPhiBienDong,
             tongTienDichVu = tongPhiDichVu,
-            kieuHoadon = if (isChamDut == null) invoice.kieuHoadon else "HoaDonChamDut",
+            kieuHoadon = invoice.kieuHoadon,
             paymentDate = "Ngày thanh toán",
             soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0,
             soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0,
@@ -403,18 +401,17 @@ class CreateInvoice : AppCompatActivity() {
             } else {
                 "Đến ngày cần thanh toán hóa đơn cho tháng ${hoaDonMon.hoaDonThang}"
             }
-            val messageExtra="Hãy thanh toán hóa đơn này để hoàn thành chấm dứt hợp đồng với mã hợp đồng ${hoaDonMon.idHopDong}"
             // Ví dụ: gửi thông báo
             val notification = NotificationModel(
                 tieuDe = "Thanh toán hóa đơn",
-                tinNhan = if(isChamDut==null) message else messageExtra,
+                tinNhan = message,
                 //lấy ngày hôm nay
                 ngayGuiThongBao = Calendar.getInstance().time.toString(),
                 thoiGian = "0",
                 mapLink = null,
                 daDoc = false,
                 daGui = true,
-                loaiThongBao = "invoiceRemind",
+                loaiThongBao = TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT,
                 idModel = hoaDonMon.idHoaDon
             )
 

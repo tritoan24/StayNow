@@ -17,10 +17,10 @@ object Default {
     )
 
     val listScheduleState = mutableListOf<ScheduleStateModel>().apply {
-        add(ScheduleStateModel("Chờ xác nhận",0, 0,true))
-        add(ScheduleStateModel("Đã xác nhận",1, 0,false))
-        add(ScheduleStateModel("Đã xem",2, 0,false))
-        add(ScheduleStateModel("Đã hủy",3,0, false))
+        add(ScheduleStateModel("Chờ xác nhận", 0, 0, true))
+        add(ScheduleStateModel("Đã xác nhận", 1, 0, false))
+        add(ScheduleStateModel("Đã xem", 2, 0, false))
+        add(ScheduleStateModel("Đã hủy", 3, 0, false))
     }
 
     object IntentKeys {
@@ -75,20 +75,26 @@ object Default {
         const val TITLE_SCHEDULE_ROOM_SUCCESSFULLY = "Phòng trọ đã được đặt thành công"
     }
 
-    object TypeNotification{
+    object TypeNotification {
         const val TYPE_SCHEDULE_ROOM_RENTER = "type_schedule_room_renter"
         const val TYPE_SCHEDULE_ROOM_TENANT = "type_schedule_room_tenant"
-        const val TYPE_NOTI_BILL_MONTHLY = "invoiceCreation"
-        const val TYPE_NOTI_BILL_MONTHLY_REMIND = "invoiceRemind"
         const val TYPE_NOTI_MASSAGES = "send_massage"
         const val TYPE_CONTRACT_DONE = "ContractInvoice"
+
+        const val TYPE_NOTI_BILL_MONTHLY_END_LANDLORD = "invoiceCreationLandLord"
+        const val TYPE_NOTI_BILL_MONTHLY_END_TENANT = "invoiceCreationTenant"
+
+        const val TYPE_NOTI_BILL_MONTHLY_REMIND_LANDLORD = "invoiceRemindLandlord"
+        const val TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT = "invoiceRemindTenant"
 
         const val TYPE_NOTI_PAYMENT_CONTRACT = "hoadonhopdong"
         const val TYPE_NOTI_PAYMENT_INVOICE = "hoadonhangthang"
 
         const val TYPE_NOTI_TERMINATED_REQUEST = "yeuCauChamDut"
         const val TYPE_NOTI_TERMINATED_DENY = "tuChoiChamDut"
-        const val TYPE_NOTI_TERMINATED_CONFIRM = "xacNhanChamDut"
+
+        const val TYPE_NOTI_TERMINATED_CONFIRM_LANDLORD = "xacNhanChamDutChuNha"
+        const val TYPE_NOTI_TERMINATED_CONFIRM_TENANT = "xacNhanChamDutNguoiThue"
 
         const val TYPE_NOTI_REMIND_STATUS_CONTRACT = "kiemtranhacnhohopdong"
 

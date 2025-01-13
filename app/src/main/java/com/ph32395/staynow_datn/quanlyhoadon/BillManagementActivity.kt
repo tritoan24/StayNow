@@ -84,7 +84,6 @@ class BillManagementActivity : AppCompatActivity(), BillAdapter.OnInvoiceStatusU
         }
 
 
-
         if (userId != null) {
             contractViewModel.getUserRole(userId)
         }
