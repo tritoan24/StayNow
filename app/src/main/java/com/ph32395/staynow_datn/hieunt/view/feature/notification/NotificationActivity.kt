@@ -142,8 +142,8 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
 
-                //nhắc nhở có hóa đơn hàng tháng hoặc tháng cuối cùng cho người thuê-> vào màn danh sách để xem hóa đơn đang chờ
-                TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT, TYPE_NOTI_BILL_MONTHLY_END_TENANT -> {
+                //nhắc nhở có hóa đơn hàng tháng hoặc tháng cuối cùng cho người thuê, hoặc khi chấm dứt hợp đồng
+                TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT, TYPE_NOTI_BILL_MONTHLY_END_TENANT, TYPE_NOTI_TERMINATED_CONFIRM_TENANT -> {
                     val intent = Intent(this, BillManagementActivity::class.java)
                     startActivity(intent)
                 }
@@ -156,11 +156,6 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
 
-                // nhắc nhở người dùng chấm dứt hợp đồng
-                TYPE_NOTI_TERMINATED_CONFIRM_TENANT -> {
-                    val intent = Intent(this, BillManagementActivity::class.java)
-                    startActivity(intent)
-                }
                 //từ chối chấm dứt hđ
                 TYPE_NOTI_TERMINATED_DENY -> {
                     val intent = Intent(this, ContractActivity::class.java).apply {
