@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.airbnb.lottie.LottieAnimationView
 import com.google.android.gms.tasks.Task
@@ -23,6 +24,7 @@ import com.ph32395.staynow_datn.ChucNangChung.CurrencyFormatTextWatcher
 import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.DichVu.DichVu
 import com.ph32395.staynow_datn.DichVu.DichVuAddServiceUtil
+import com.ph32395.staynow_datn.GioiTinh.GioiTinh
 import com.ph32395.staynow_datn.GioiTinh.GioiTinhViewModel
 import com.ph32395.staynow_datn.Interface.AdapterTaoPhongTroEnteredListenner
 import com.ph32395.staynow_datn.LoaiPhong.LoaiPhongAdapter
@@ -34,6 +36,7 @@ import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroAdapter
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
 import com.ph32395.staynow_datn.R
+import com.ph32395.staynow_datn.TaoPhongTro.ChiTietThongTin
 import com.ph32395.staynow_datn.TaoPhongTro.ChoiceImageAdapter
 import com.ph32395.staynow_datn.TaoPhongTro.NhaTroViewModel
 import com.ph32395.staynow_datn.TaoPhongTro.PhiDichVu
@@ -50,6 +53,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.text.NumberFormat
+import java.util.Locale
 import kotlin.collections.isNotEmpty
 
 
@@ -117,274 +122,458 @@ class SuaPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         binding = ActivitySuaPhongTroBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        firestore = FirebaseFirestore.getInstance()
-
-
         completionAnimation = findViewById(R.id.completionAnimation)
+        // 1. Khởi tạo các thành phần cơ bản
+        initializeBasicComponents()
 
+        // 2. Thiết lập RecyclerViews
+        setupRecyclerViews()
 
-        // Khởi tạo FirebaseAuth và lấy userId
+        // 3. Khởi tạo các ViewModel
+        initializeViewModels()
+
+        // 4. Load dữ liệu phòng và xử lý các quan sát liên quan
+        setupRoomDetailsObservers()
+
+        // 5. Thiết lập các observers khác
+        setupOtherObservers()
+
+        // 6. Thiết lập các sự kiện click
+        setupClickListeners()
+    }
+
+    private fun initializeBasicComponents() {
+        // Khởi tạo Firebase
+        firestore = FirebaseFirestore.getInstance()
         mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser
         userId = currentUser?.uid ?: ""
-        Log.d("UID", "UID: $userId")
 
+        // Lấy roomId từ intent
         roomId = intent.getStringExtra("roomId").toString()
 
-
-        //Khởi tạo LoadingUtil
+        // Khởi tạo LoadingUtil
         loadingUtil = LoadingUtil(this)
         loadingUtil.show()
 
-
-        // Khởi tạo ViewModel
-        roomDetailsViewModel = ViewModelProvider(this).get(RoomDetailsViewModel::class.java)
-
-        roomDetailsViewModel.fetchRoomDetails(roomId)
-
-        // Quan sát dữ liệu phòng
-        roomDetailsViewModel.roomDetails.observe(this) { roomDetails ->
-            roomDetails?.let { populateRoomDetails(it) }
-        }
-
-// Khởi tạo dichVuAdapter
+        // Khởi tạo các adapter với danh sách rỗng
         dichVuAdapter = DichVuAdapter(this, emptyList(), this)
-        binding.listViewDichVu.adapter = dichVuAdapter
-
-        // Khởi tạo thongTinAdapter
         thongTinAdapter = ThongTinAdapter(this, emptyList(), this)
-        binding.listViewThongTin.adapter = thongTinAdapter
+        gioitinhAdapter = GioiTinhAdapter(this, emptyList(), this)
+        nhatroAdapter = SimpleHomeAdapter(this, emptyList(), this)
+    }
 
-        gioitinhAdapter = GioiTinhAdapter(this, emptyList(),this)
-        binding.listViewGioiTinh.adapter = gioitinhAdapter
+    private fun setupRecyclerViews() {
+        binding.apply {
+            recyclerView.layoutManager = GridLayoutManager(this@SuaPhongTro, 3)
+            RcTienNghi.layoutManager = GridLayoutManager(this@SuaPhongTro, 3)
+            listViewDichVu.layoutManager = GridLayoutManager(this@SuaPhongTro, 3)
+            listViewThongTin.layoutManager = GridLayoutManager(this@SuaPhongTro, 3)
+            imagegeContainer.layoutManager = GridLayoutManager(this@SuaPhongTro, 4)
+            listViewGioiTinh.layoutManager = GridLayoutManager(this@SuaPhongTro, 3)
+            listViewNhaTro.layoutManager = GridLayoutManager(this@SuaPhongTro, 3)
 
-       nhatroAdapter = SimpleHomeAdapter(this, emptyList(), this)
-        binding.listViewNhaTro.adapter = nhatroAdapter
-        roomDetailsViewModel.getListDichVu()
+            // Set adapters
+            listViewDichVu.adapter = dichVuAdapter
+            listViewThongTin.adapter = thongTinAdapter
+            listViewGioiTinh.adapter = gioitinhAdapter
+            listViewNhaTro.adapter = nhatroAdapter
+        }
+    }
 
-        // Khởi tạo RecyclerView
-        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
-        binding.RcTienNghi.layoutManager = GridLayoutManager(this, 3)
-        binding.listViewDichVu.layoutManager = GridLayoutManager(this, 3)
-        binding.listViewThongTin.layoutManager = GridLayoutManager(this, 3)
-        binding.imagegeContainer.layoutManager = GridLayoutManager(this, 4)
-        binding.listViewGioiTinh.layoutManager = GridLayoutManager(this, 3)
-        binding.listViewNhaTro.layoutManager = GridLayoutManager(this, 3)
-
-        // Khởi tạo ViewModel
+    private fun initializeViewModels() {
+        roomDetailsViewModel = ViewModelProvider(this).get(RoomDetailsViewModel::class.java)
         noiThatViewModel = ViewModelProvider(this).get(NoiThatViewModel::class.java)
         tienNghiViewModel = ViewModelProvider(this).get(TienNghiViewModel::class.java)
         gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
         nhatroViewModel = ViewModelProvider(this).get(NhaTroViewModel::class.java)
+    }
 
-        // 2. Gọi API để lấy danh sách dịch vụ
-        roomDetailsViewModel.getListDichVu()
+    private fun setupRoomDetailsObservers() {
+        // 1. Quan sát dữ liệu phòng chính
+        roomDetailsViewModel.roomDetails.observe(this) { roomDetails ->
+            roomDetails?.let { details ->
+                populateRoomDetails(details)
+                // Sau khi có thông tin phòng, mới load nhà trọ
+                nhatroViewModel.getAllNhaTroByUserId(userId)
+            }
+        }
 
-        // 3. Observe danh sách đơn vị mặc định trước
+        // 2. Load dữ liệu phòng
+        roomDetailsViewModel.fetchRoomDetails(roomId)
+
+        // 3. Khởi tạo danh sách đã chọn
+        roomDetailsViewModel.initializeSelectedLists(roomId)
+
+        // 4. Quan sát các thành phần của phòng
+        observeRoomComponents()
+    }
+
+    private fun observeRoomComponents() {
+        // Quan sát dịch vụ
         roomDetailsViewModel.listDichVu.observe(this) { dichVuList ->
             if (dichVuList != null && dichVuList.isNotEmpty()) {
-                // Lưu đơn vị của từng dịch vụ vào Map
                 dichVuList.forEach { dichVu ->
                     dichVuDonViMap[dichVu.tenDichVu] = dichVu.donVi
                 }
-                Log.d("DichVu_Debug", "Đã lưu Map đơn vị: $dichVuDonViMap")
             }
         }
 
+        // Quan sát services
         roomDetailsViewModel.services.observe(this) { services ->
             if (services.isNotEmpty()) {
-                // Cập nhật adapter với danh sách phí dịch vụ
-                dichVuAdapter.updateList(services.map { service ->
-                    val donViList = dichVuDonViMap[service.tenDichVu] ?: listOf(service.donVi)
-                    DichVu(
-                        maDichVu = "",
-                        tenDichVu = service.tenDichVu,
-                        iconDichVu = service.iconDichVu,
-                        donVi = donViList,
-                        trangThai = true
-                    )
-                })
-
-                // Cập nhật giá tiền
-                dichVuAdapter.pricesMap.clear()
-                services.forEachIndexed { index, service ->
-                    dichVuAdapter.pricesMap[index] = service.soTien to service.donVi
-                }
-
-                // Cập nhật listPhiDichVu ngay sau khi load dữ liệu
-                onAllPricesEntered(dichVuAdapter.getCurrentPhiDichVu())
-
-                loadingUtil.hide()
+                updateDichVuAdapter(services)
             }
         }
+
+        // Quan sát thông tin
         roomDetailsViewModel.imfor.observe(this) { detailsList ->
             if (detailsList.isNotEmpty()) {
-                // Cập nhật Adapter
-                thongTinAdapter.updateData(detailsList.map { chiTiet ->
-                    ThongTin(
-                        maThongTin = "",
-                        tenThongTin = chiTiet.tenThongTin.toString(),
-                        iconThongTin = chiTiet.iconThongTin.toString(),
-                        donVi = chiTiet.donVi.toString(),
-                        trangThai = true
-                    )
-                })
-
-                // Cập nhật giá trị
-                thongTinAdapter.pricesMap.clear()
-                detailsList.forEachIndexed { index, chiTiet ->
-                    thongTinAdapter.pricesMap[index] = chiTiet.soLuongDonVi.toLong()
-                }
-
-                // Cập nhật pricesMapThongTin ngay sau khi load dữ liệu
-                onThongTinimfor(thongTinAdapter.getCurrentThongTin())
-
-                thongTinAdapter.notifyDataSetChanged()
-            } else {
-                Toast.makeText(this, "Không có chi tiết thông tin nào", Toast.LENGTH_SHORT).show()
+                updateThongTinAdapter(detailsList)
             }
         }
 
-        // Khởi tạo observers
-        roomDetailsViewModel.furniture.observe(this) { selectedFurniture ->
-            selectedFurniture?.let {
-                // Cập nhật adapter
-                noiThatAdapter.updateSelectedItems(it)
-                // Cập nhật selectedNoiThatList
-                selectedNoiThatList.clear()
-                selectedNoiThatList.addAll(noiThatAdapter.getSelectedNoiThat())
-            }
-        }
+        // Quan sát nội thất và tiện nghi
+        setupFurnitureAndAmenitiesObservers()
+    }
 
-        roomDetailsViewModel.amenities.observe(this) { selectedAmenities ->
-            selectedAmenities?.let {
-                // Cập nhật adapter
-                TienNghiAdapter.updateSelectedItems(it)
-                // Cập nhật selectedTienNghiList
-                selectedTienNghiList.clear()
-                selectedTienNghiList.addAll(TienNghiAdapter.getSelectedTienNghi())
-            }
-        }
-        // Gọi hàm khởi tạo dữ liệu
-        roomDetailsViewModel.initializeSelectedLists(roomId)
-
-        // Quan sát lỗi
-        roomDetailsViewModel.error.observe(this) { errorMessage ->
-            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
-        }
-        nhatroAdapter = SimpleHomeAdapter(this, emptyList(), this)
-//currentUser?.uid ?: ""
-        nhatroViewModel.getAllNhaTroByUserId(userId)
-
-        // Observe the nhatro list
+    private fun setupOtherObservers() {
         nhatroViewModel.listNhaTro.observe(this) { nhatroList ->
             nhatroAdapter.updateList(nhatroList)
+            // Add this check - select the item after the list is updated
+            if (maNhaTro.isNotEmpty()) {
+                nhatroAdapter.selectById(maNhaTro)
+            }
         }
         nhatroViewModel.selectedNhaTroDetails.observe(this) { nhaTro ->
             nhaTro?.let {
-                binding.apply {
-                    maNhaTro = nhaTro.maNhaTro
-                    diaChi = nhaTro.diaChi
-                    diaChiChiTiet = nhaTro.diaChiChiTiet
-                    Dc_quanhuyen = nhaTro.dcQuanHuyen
-                    Dc_tinhtp = nhaTro.dcTinhTP
-                    maLoaiPhong = nhaTro.maLoaiNhaTro
-
-
-                }
-
-                Log.d("NhaTro", "NhaTro: $nhaTro")
-            } }
-
-
-        binding.btnBack.setOnClickListener {
-            finish()
-        }
-                // Logic khi nhấn nút "Lưu"
-        binding.addRoomButton2.setOnClickListener {
-            updateRoomInFirestore()
-            loadingUtil.show()
-        }
-
-
-        binding.roomName.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                // Hiển thị Snackbar khi trường nhập liệu được focus
-                Snackbar.make(
-                    findViewById(android.R.id.content),
-                    "Hãy nhập tên phòng, ví dụ: Phòng 101", Snackbar.LENGTH_LONG
-                )
-                    .show()
-            }
-        }
-//        // định dạng số tiền nhập vào
-        CurrencyFormatTextWatcher.addTo(binding.roomPrice)
-
-//nút lưu ở đây
-        binding.addImage.setOnClickListener {
-            TedImagePicker.with(this)
-                .startMultiImage { uriList ->
-                    displaySelectedImages(uriList)
-                }
-        }
-        // Inside your fragment or activity
-        binding.fabAddDichVu.setOnClickListener {
-            DichVuAddServiceUtil.showAddServiceDialog(this@SuaPhongTro) { newDichVu ->
-                // Directly call the method in your adapter to add the service
-                dichVuAdapter.addDichVu(newDichVu)
+                updateNhaTroDetails(it)
             }
         }
 
-
-        // Quan sát LiveData từ ViewModel
-        noiThatViewModel.getListNoiThat().observe(this, Observer { noiThatList ->
+        // Observe nội thất
+        noiThatViewModel.getListNoiThat().observe(this) { noiThatList ->
             if (noiThatList != null && noiThatList.isNotEmpty()) {
-                // Cập nhật RecyclerView khi có dữ liệu
-                noiThatAdapter = NoiThatAdapter(this, noiThatList, this)
-                binding.recyclerView.adapter = noiThatAdapter
-
-            } else {
-                // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu Nội Thất", Toast.LENGTH_SHORT).show()
+                updateNoiThatAdapter(noiThatList)
             }
-        })
-
-        tienNghiViewModel.getListTienNghi().observe(this, Observer { TienNghiList ->
-            if (TienNghiList != null && TienNghiList.isNotEmpty()) {
-                // Cập nhật RecyclerView khi có dữ liệu
-                TienNghiAdapter = TienNghiAdapter(this, TienNghiList, this)
-                binding.RcTienNghi.adapter = TienNghiAdapter
-            } else {
-                // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu Tiện Nghi", Toast.LENGTH_SHORT).show()
-            }
-        })
-
-
-        nhatroViewModel.listNhaTro.observe(this) { nhaTroList ->
-
-            // Tạo adapter mới với danh sách mới
-            nhatroAdapter = SimpleHomeAdapter(this, nhaTroList, this)
-            binding.listViewNhaTro.adapter = nhatroAdapter
-
-
-
         }
 
-
-        gioitinhViewModel.getListGioiTinh().observe(this, Observer { gioiTinhList ->
-            if (gioiTinhList != null && gioiTinhList.isNotEmpty()) {
-                // Cập nhật RecyclerView khi có dữ liệu
-                gioitinhAdapter = GioiTinhAdapter(this, gioiTinhList, this)
-                binding.listViewGioiTinh.adapter = gioitinhAdapter
-            } else {
-                // Hiển thị thông báo nếu không có dữ liệu
-                Toast.makeText(this, "Không có dữ liệu Giới Tính", Toast.LENGTH_SHORT).show()
+        // Observe tiện nghi
+        tienNghiViewModel.getListTienNghi().observe(this) { tienNghiList ->
+            if (tienNghiList != null && tienNghiList.isNotEmpty()) {
+                updateTienNghiAdapter(tienNghiList)
             }
-        })
+        }
+
+        // Observe giới tính
+        gioitinhViewModel.getListGioiTinh().observe(this) { gioiTinhList ->
+            if (gioiTinhList != null && gioiTinhList.isNotEmpty()) {
+                updateGioiTinhAdapter(gioiTinhList)
+            }
+        }
+    }
+
+    private fun setupClickListeners() {
+        binding.apply {
+            btnBack.setOnClickListener { finish() }
+
+            addRoomButton2.setOnClickListener {
+                updateRoomInFirestore()
+                loadingUtil.show()
+            }
+
+            addImage.setOnClickListener {
+                TedImagePicker.with(this@SuaPhongTro)
+                    .startMultiImage { uriList ->
+                        displaySelectedImages(uriList)
+                    }
+            }
+
+            fabAddDichVu.setOnClickListener {
+                DichVuAddServiceUtil.showAddServiceDialog(this@SuaPhongTro) { newDichVu ->
+                    dichVuAdapter.addDichVu(newDichVu)
+                }
+            }
+
+            setupRoomNameFocusListener()
+        }
 
     }
+
+//        firestore = FirebaseFirestore.getInstance()
+//
+//
+//        completionAnimation = findViewById(R.id.completionAnimation)
+//
+//
+//        // Khởi tạo FirebaseAuth và lấy userId
+//        mAuth = FirebaseAuth.getInstance()
+//        val currentUser = mAuth.currentUser
+//        userId = currentUser?.uid ?: ""
+//        Log.d("UID", "UID: $userId")
+//
+//        roomId = intent.getStringExtra("roomId").toString()
+//
+//
+//        //Khởi tạo LoadingUtil
+//        loadingUtil = LoadingUtil(this)
+//        loadingUtil.show()
+//
+//
+//        // Khởi tạo ViewModel
+//        roomDetailsViewModel = ViewModelProvider(this).get(RoomDetailsViewModel::class.java)
+//
+//        roomDetailsViewModel.fetchRoomDetails(roomId)
+//
+//        nhatroAdapter = SimpleHomeAdapter(this, emptyList(), this)
+//
+//
+//        // Quan sát dữ liệu phòng
+//        roomDetailsViewModel.roomDetails.observe(this) { roomDetails ->
+//            roomDetails?.let { populateRoomDetails(it) }
+//
+//            nhatroViewModel.getAllNhaTroByUserId(userId)
+//        }
+//
+//// Khởi tạo dichVuAdapter
+//        dichVuAdapter = DichVuAdapter(this, emptyList(), this)
+//        binding.listViewDichVu.adapter = dichVuAdapter
+//
+//        // Khởi tạo thongTinAdapter
+//        thongTinAdapter = ThongTinAdapter(this, emptyList(), this)
+//        binding.listViewThongTin.adapter = thongTinAdapter
+//
+//        gioitinhAdapter = GioiTinhAdapter(this, emptyList(),this)
+//        binding.listViewGioiTinh.adapter = gioitinhAdapter
+//
+//       nhatroAdapter = SimpleHomeAdapter(this, emptyList(), this)
+//        binding.listViewNhaTro.adapter = nhatroAdapter
+//        roomDetailsViewModel.getListDichVu()
+//
+//        // Khởi tạo RecyclerView
+//        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+//        binding.RcTienNghi.layoutManager = GridLayoutManager(this, 3)
+//        binding.listViewDichVu.layoutManager = GridLayoutManager(this, 3)
+//        binding.listViewThongTin.layoutManager = GridLayoutManager(this, 3)
+//        binding.imagegeContainer.layoutManager = GridLayoutManager(this, 4)
+//        binding.listViewGioiTinh.layoutManager = GridLayoutManager(this, 3)
+//        binding.listViewNhaTro.layoutManager = GridLayoutManager(this, 3)
+//
+//        // Khởi tạo ViewModel
+//        noiThatViewModel = ViewModelProvider(this).get(NoiThatViewModel::class.java)
+//        tienNghiViewModel = ViewModelProvider(this).get(TienNghiViewModel::class.java)
+//        gioitinhViewModel = ViewModelProvider(this).get(GioiTinhViewModel::class.java)
+//        nhatroViewModel = ViewModelProvider(this).get(NhaTroViewModel::class.java)
+//
+//
+//
+//
+//        // 2. Gọi API để lấy danh sách dịch vụ
+//        roomDetailsViewModel.getListDichVu()
+//
+//        // 3. Observe danh sách đơn vị mặc định trước
+//        roomDetailsViewModel.listDichVu.observe(this) { dichVuList ->
+//            if (dichVuList != null && dichVuList.isNotEmpty()) {
+//                // Lưu đơn vị của từng dịch vụ vào Map
+//                dichVuList.forEach { dichVu ->
+//                    dichVuDonViMap[dichVu.tenDichVu] = dichVu.donVi
+//                }
+//                Log.d("DichVu_Debug", "Đã lưu Map đơn vị: $dichVuDonViMap")
+//            }
+//        }
+//
+//        roomDetailsViewModel.services.observe(this) { services ->
+//            if (services.isNotEmpty()) {
+//                // Cập nhật adapter với danh sách phí dịch vụ
+//                dichVuAdapter.updateList(services.map { service ->
+//                    val donViList = dichVuDonViMap[service.tenDichVu] ?: listOf(service.donVi)
+//                    DichVu(
+//                        maDichVu = "",
+//                        tenDichVu = service.tenDichVu,
+//                        iconDichVu = service.iconDichVu,
+//                        donVi = donViList,
+//                        trangThai = true
+//                    )
+//                })
+//
+//                // Cập nhật giá tiền
+//                dichVuAdapter.pricesMap.clear()
+//                services.forEachIndexed { index, service ->
+//                    dichVuAdapter.pricesMap[index] = service.soTien to service.donVi
+//                }
+//
+//                // Cập nhật listPhiDichVu ngay sau khi load dữ liệu
+//                onAllPricesEntered(dichVuAdapter.getCurrentPhiDichVu())
+//
+//                loadingUtil.hide()
+//            }
+//        }
+//        roomDetailsViewModel.imfor.observe(this) { detailsList ->
+//            if (detailsList.isNotEmpty()) {
+//                // Cập nhật Adapter
+//                thongTinAdapter.updateData(detailsList.map { chiTiet ->
+//                    ThongTin(
+//                        maThongTin = "",
+//                        tenThongTin = chiTiet.tenThongTin.toString(),
+//                        iconThongTin = chiTiet.iconThongTin.toString(),
+//                        donVi = chiTiet.donVi.toString(),
+//                        trangThai = true
+//                    )
+//                })
+//
+//                // Cập nhật giá trị
+//                thongTinAdapter.pricesMap.clear()
+//                detailsList.forEachIndexed { index, chiTiet ->
+//                    thongTinAdapter.pricesMap[index] = chiTiet.soLuongDonVi.toLong()
+//                }
+//
+//                // Cập nhật pricesMapThongTin ngay sau khi load dữ liệu
+//                onThongTinimfor(thongTinAdapter.getCurrentThongTin())
+//
+//                thongTinAdapter.notifyDataSetChanged()
+//            } else {
+//                Toast.makeText(this, "Không có chi tiết thông tin nào", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//        // Khởi tạo observers
+//        roomDetailsViewModel.furniture.observe(this) { selectedFurniture ->
+//            selectedFurniture?.let {
+//                // Cập nhật adapter
+//                noiThatAdapter.updateSelectedItems(it)
+//                // Cập nhật selectedNoiThatList
+//                selectedNoiThatList.clear()
+//                selectedNoiThatList.addAll(noiThatAdapter.getSelectedNoiThat())
+//            }
+//        }
+//
+//        roomDetailsViewModel.amenities.observe(this) { selectedAmenities ->
+//            selectedAmenities?.let {
+//                // Cập nhật adapter
+//                TienNghiAdapter.updateSelectedItems(it)
+//                // Cập nhật selectedTienNghiList
+//                selectedTienNghiList.clear()
+//                selectedTienNghiList.addAll(TienNghiAdapter.getSelectedTienNghi())
+//            }
+//        }
+//        // Gọi hàm khởi tạo dữ liệu
+//        roomDetailsViewModel.initializeSelectedLists(roomId)
+//
+//        // Quan sát lỗi
+//        roomDetailsViewModel.error.observe(this) { errorMessage ->
+//            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+//        }
+////currentUser?.uid ?: ""
+//
+//
+//        // Observe the nhatro list
+//        nhatroViewModel.listNhaTro.observe(this) { nhatroList ->
+//            nhatroAdapter.updateList(nhatroList)
+//        }
+//        nhatroViewModel.selectedNhaTroDetails.observe(this) { nhaTro ->
+//            nhaTro?.let {
+//                binding.apply {
+//                    maNhaTro = nhaTro.maNhaTro
+//                    diaChi = nhaTro.diaChi
+//                    diaChiChiTiet = nhaTro.diaChiChiTiet
+//                    Dc_quanhuyen = nhaTro.dcQuanHuyen
+//                    Dc_tinhtp = nhaTro.dcTinhTP
+//                    maLoaiPhong = nhaTro.maLoaiNhaTro
+//
+//
+//                }
+//
+//                Log.d("NhaTro", "NhaTro: $nhaTro")
+//            } }
+//
+//
+//        binding.btnBack.setOnClickListener {
+//            finish()
+//        }
+//                // Logic khi nhấn nút "Lưu"
+//        binding.addRoomButton2.setOnClickListener {
+//            updateRoomInFirestore()
+//            loadingUtil.show()
+//        }
+//
+//
+//        binding.roomName.setOnFocusChangeListener { _, hasFocus ->
+//            if (hasFocus) {
+//                // Hiển thị Snackbar khi trường nhập liệu được focus
+//                Snackbar.make(
+//                    findViewById(android.R.id.content),
+//                    "Hãy nhập tên phòng, ví dụ: Phòng 101", Snackbar.LENGTH_LONG
+//                )
+//                    .show()
+//            }
+//        }
+////        // định dạng số tiền nhập vào
+//        CurrencyFormatTextWatcher.addTo(binding.roomPrice)
+//
+////nút lưu ở đây
+//        binding.addImage.setOnClickListener {
+//            TedImagePicker.with(this)
+//                .startMultiImage { uriList ->
+//                    displaySelectedImages(uriList)
+//                }
+//        }
+//        // Inside your fragment or activity
+//        binding.fabAddDichVu.setOnClickListener {
+//            DichVuAddServiceUtil.showAddServiceDialog(this@SuaPhongTro) { newDichVu ->
+//                // Directly call the method in your adapter to add the service
+//                dichVuAdapter.addDichVu(newDichVu)
+//            }
+//        }
+//
+//
+//        // Quan sát LiveData từ ViewModel
+//        noiThatViewModel.getListNoiThat().observe(this, Observer { noiThatList ->
+//            if (noiThatList != null && noiThatList.isNotEmpty()) {
+//                // Cập nhật RecyclerView khi có dữ liệu
+//                noiThatAdapter = NoiThatAdapter(this, noiThatList, this)
+//                binding.recyclerView.adapter = noiThatAdapter
+//
+//            } else {
+//                // Hiển thị thông báo nếu không có dữ liệu
+//                Toast.makeText(this, "Không có dữ liệu Nội Thất", Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//
+//        tienNghiViewModel.getListTienNghi().observe(this, Observer { TienNghiList ->
+//            if (TienNghiList != null && TienNghiList.isNotEmpty()) {
+//                // Cập nhật RecyclerView khi có dữ liệu
+//                TienNghiAdapter = TienNghiAdapter(this, TienNghiList, this)
+//                binding.RcTienNghi.adapter = TienNghiAdapter
+//            } else {
+//                // Hiển thị thông báo nếu không có dữ liệu
+//                Toast.makeText(this, "Không có dữ liệu Tiện Nghi", Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//
+//
+//        nhatroViewModel.listNhaTro.observe(this) { nhaTroList ->
+//
+//            // Tạo adapter mới với danh sách mới
+//            nhatroAdapter = SimpleHomeAdapter(this, nhaTroList, this)
+//            binding.listViewNhaTro.adapter = nhatroAdapter
+//
+//
+//
+//        }
+//
+//
+//        gioitinhViewModel.getListGioiTinh().observe(this, Observer { gioiTinhList ->
+//            if (gioiTinhList != null && gioiTinhList.isNotEmpty()) {
+//                // Cập nhật RecyclerView khi có dữ liệu
+//                gioitinhAdapter = GioiTinhAdapter(this, gioiTinhList, this)
+//                binding.listViewGioiTinh.adapter = gioitinhAdapter
+//            } else {
+//                // Hiển thị thông báo nếu không có dữ liệu
+//                Toast.makeText(this, "Không có dữ liệu Giới Tính", Toast.LENGTH_SHORT).show()
+//            }
+//        })
+//
+//    }
 
     override fun onAllPricesEntered(prices: List<PhiDichVu>) {
         // Lưu toàn bộ danh sách vào biến
@@ -459,8 +648,15 @@ class SuaPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
 
     private fun populateRoomDetails(roomDetails: PhongTroModel) {
         binding.roomName.setText(roomDetails.tenPhongTro)
-        binding.roomPrice.setText(roomDetails.giaPhong.toString())
         binding.description.setText(roomDetails.moTaChiTiet)
+        // Format số tiền trước khi gán vào EditText
+        val numberFormat = NumberFormat.getNumberInstance(Locale("vi", "VN"))
+        val formattedPrice = numberFormat.format(roomDetails.giaPhong)
+        binding.roomPrice.setText(formattedPrice)
+
+        binding.description.setText(roomDetails.moTaChiTiet)
+        CurrencyFormatTextWatcher.addTo(binding.roomPrice)
+        Log.d("Gia Phong", "Gia Phong formatted: $formattedPrice")
 
         // Điền thông tin địa chỉ
         diaChi = roomDetails.diaChi
@@ -470,6 +666,7 @@ class SuaPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         Ma_gioiTinh = roomDetails.maGioiTinh
         TrangThaiPhong = roomDetails.trangThaiPhong
         trangThaiDuyet = roomDetails.trangThaiDuyet
+        trangThaiLuu = roomDetails.trangThaiLuu
         soLuotXemPhong = roomDetails.soLuotXemPhong.toString()
 
 
@@ -478,7 +675,10 @@ class SuaPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         gioitinhAdapter.selectById(Ma_gioiTinh)
         nhatroAdapter.selectById(maNhaTro)
 
-
+        // Instead, trigger a refresh of the nhatro list if needed
+        if (maNhaTro.isNotEmpty()) {
+            nhatroViewModel.getAllNhaTroByUserId(userId)
+        }
         // Hiển thị danh sách ảnh
         displaySelectedImages(roomDetails.imageUrls.map { Uri.parse(it) })
     }
@@ -818,6 +1018,122 @@ class SuaPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
             Toast.LENGTH_SHORT
         ).show()
         Log.e("Firestore", "Lỗi khi cập nhật dữ liệu: ${e.message}")
+    }
+
+
+    /////
+    private fun updateDichVuAdapter(services: List<PhiDichVu>) {
+        // Cập nhật adapter với danh sách phí dịch vụ
+        dichVuAdapter.updateList(services.map { service ->
+            val donViList = dichVuDonViMap[service.tenDichVu] ?: listOf(service.donVi)
+            DichVu(
+                maDichVu = "",
+                tenDichVu = service.tenDichVu,
+                iconDichVu = service.iconDichVu,
+                donVi = donViList,
+                trangThai = true
+            )
+        })
+
+        // Cập nhật giá tiền
+        dichVuAdapter.pricesMap.clear()
+        services.forEachIndexed { index, service ->
+            dichVuAdapter.pricesMap[index] = service.soTien to service.donVi
+        }
+
+        // Cập nhật listPhiDichVu
+        onAllPricesEntered(dichVuAdapter.getCurrentPhiDichVu())
+        loadingUtil.hide()
+    }
+
+    private fun updateThongTinAdapter(detailsList: List<ChiTietThongTin>) {
+        // Cập nhật Adapter với danh sách thông tin
+        thongTinAdapter.updateData(detailsList.map { chiTiet ->
+            ThongTin(
+                maThongTin = "",
+                tenThongTin = chiTiet.tenThongTin.toString(),
+                iconThongTin = chiTiet.iconThongTin.toString(),
+                donVi = chiTiet.donVi.toString(),
+                trangThai = true
+            )
+        })
+
+        // Cập nhật giá trị
+        thongTinAdapter.pricesMap.clear()
+        detailsList.forEachIndexed { index, chiTiet ->
+            thongTinAdapter.pricesMap[index] = chiTiet.soLuongDonVi.toLong()
+        }
+
+        // Cập nhật pricesMapThongTin
+        onThongTinimfor(thongTinAdapter.getCurrentThongTin())
+        thongTinAdapter.notifyDataSetChanged()
+    }
+
+    private fun setupFurnitureAndAmenitiesObservers() {
+        // Quan sát nội thất đã chọn
+        roomDetailsViewModel.furniture.observe(this) { selectedFurniture ->
+            selectedFurniture?.let {
+                noiThatAdapter.updateSelectedItems(it)
+                selectedNoiThatList.clear()
+                selectedNoiThatList.addAll(noiThatAdapter.getSelectedNoiThat())
+            }
+        }
+
+        // Quan sát tiện nghi đã chọn
+        roomDetailsViewModel.amenities.observe(this) { selectedAmenities ->
+            selectedAmenities?.let {
+                TienNghiAdapter.updateSelectedItems(it)
+                selectedTienNghiList.clear()
+                selectedTienNghiList.addAll(TienNghiAdapter.getSelectedTienNghi())
+            }
+        }
+    }
+
+    private fun updateNhaTroDetails(nhaTro: NhaTroModel) {
+        binding.apply {
+            maNhaTro = nhaTro.maNhaTro
+            diaChi = nhaTro.diaChi
+            diaChiChiTiet = nhaTro.diaChiChiTiet
+            Dc_quanhuyen = nhaTro.dcQuanHuyen
+            Dc_tinhtp = nhaTro.dcTinhTP
+            maLoaiPhong = nhaTro.maLoaiNhaTro
+        }
+        Log.d("NhaTro", "NhaTro: $nhaTro")
+    }
+
+    private fun updateNoiThatAdapter(noiThatList: List<NoiThat>) {
+        noiThatAdapter = NoiThatAdapter(this, noiThatList, this)
+        binding.recyclerView.adapter = noiThatAdapter
+    }
+
+    private fun updateTienNghiAdapter(tienNghiList: List<TienNghi>) {
+        TienNghiAdapter = TienNghiAdapter(this, tienNghiList, this)
+        binding.RcTienNghi.adapter = TienNghiAdapter
+    }
+
+    private fun updateGioiTinhAdapter(gioiTinhList: List<GioiTinh>) {
+        gioitinhAdapter = GioiTinhAdapter(this, gioiTinhList, this)
+        binding.listViewGioiTinh.adapter = gioitinhAdapter
+
+        // Nếu đã có mã giới tính từ thông tin phòng
+        if (Ma_gioiTinh.isNotEmpty()) {
+            gioitinhAdapter.selectById(Ma_gioiTinh)
+        }
+    }
+    private fun setupRoomNameFocusListener() {
+        binding.roomName.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // Hiển thị Snackbar khi trường nhập liệu được focus
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    "Hãy nhập tên phòng, ví dụ: Phòng 101",
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+        }
+
+        // Thêm CurrencyFormatTextWatcher cho trường giá phòng
+        CurrencyFormatTextWatcher.addTo(binding.roomPrice)
     }
 }
 

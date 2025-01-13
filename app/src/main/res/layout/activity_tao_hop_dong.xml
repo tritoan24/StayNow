@@ -530,7 +530,7 @@
                         android:id="@+id/editTextSoDien"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Chỉ số điện"
+                        android:hint="số điện cũ"
                         android:inputType="number"
                         android:textColor="@android:color/black"
                         android:textColorHint="@color/purple" />
@@ -551,7 +551,7 @@
                         android:id="@+id/editTextSoNuoc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Chỉ số nước"
+                        android:hint="số nước cũ"
                         android:inputType="number"
                         android:textColor="@android:color/black"
                         android:textColorHint="@color/purple" />

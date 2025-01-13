@@ -122,6 +122,12 @@ class RoomDetailViewModel : ViewModel() {
                 Log.e("RoomDetailViewModel", "Lỗi khi lấy dữ liệu chi tiết thông tin", exception)
             }
     }
+    // Hàm lấy thông tin diện tích
+    fun getDienTich(): String {
+        val list = _chiTietList.value.orEmpty()
+        val dienTich = list.find { it.tenThongTin == "Diện Tích" }
+        return dienTich?.let { "${it.soLuongDonVi} m²" } ?: "Không có dữ liệu"
+    }
 
 //    Lay thong tin phi dich vu
     fun fetchPhiDichVu(maPhongTro: String) {
@@ -214,13 +220,16 @@ class RoomDetailViewModel : ViewModel() {
     }
     // Hàm lấy thông tin tiền cọc từ danh sách chi tiết
     private fun updateTienCocInfo() {
-        _tienCocInfo.value = _chiTietList.value?.find { it.tenThongTin == "Tiền cọc" }
+        _tienCocInfo.value = _chiTietList.value?.find { it.tenThongTin == "Tiền Cọc" }
     }
 
     // Hàm public để lấy giá trị tiền cọc
     fun getTienCocValue(): Double {
         return _tienCocInfo.value?.soLuongDonVi?.toDouble() ?: 0.0
     }
+
+
+
 
 //    Ham sao chep phong tro
     fun copyRoom(originalRoom: PhongTroModel, onSuccess: () -> Unit, onError: (String) -> Unit) {
