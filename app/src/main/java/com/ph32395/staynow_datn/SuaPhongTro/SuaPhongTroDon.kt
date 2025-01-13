@@ -2,6 +2,7 @@ package com.ph32395.staynow_datn.SuaPhongTro
 
 import DichVuAdapter
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.net.Uri
@@ -49,6 +50,7 @@ import com.ph32395.staynow_datn.NoiThat.NoiThat
 import com.ph32395.staynow_datn.NoiThat.NoiThatAdapter
 import com.ph32395.staynow_datn.NoiThat.NoiThatViewModel
 import com.ph32395.staynow_datn.QuanLyNhaTro.NhaTroModel
+import com.ph32395.staynow_datn.QuanLyPhongTro.QuanLyPhongTroActivity
 import com.ph32395.staynow_datn.R
 import com.ph32395.staynow_datn.TaoPhongTro.ChoiceImageAdapter
 import com.ph32395.staynow_datn.TaoPhongTro.NhaTroViewModel
@@ -958,6 +960,8 @@ class SuaPhongTroDon : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
                     "Cập nhật phòng trọ thành công!",
                     Toast.LENGTH_SHORT
                 ).show()
+                val intent = Intent(this@SuaPhongTroDon, QuanLyPhongTroActivity::class.java)
+                startActivity(intent)
                 finish()
             }, 2000)
         }
