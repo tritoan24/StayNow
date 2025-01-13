@@ -345,7 +345,8 @@ class RoomContract {
         }
 
         val updates = mutableMapOf<String, Any>(
-            "daTaoHoaDonChamDut" to true
+            "daTaoHoaDonChamDut" to true,
+            "yeuCauChamDut" to TerminationStatus.APPROVED
         )
 
         contractsCollection.document(contractId)
