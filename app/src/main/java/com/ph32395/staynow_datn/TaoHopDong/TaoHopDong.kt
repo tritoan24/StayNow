@@ -22,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -138,6 +137,7 @@ class TaoHopDong : AppCompatActivity() {
 
         // Gọi hàm ánh xạ View
         initViews()
+        editorDieuKhoan = findViewById(R.id.editorDieuKhoan)
 
         //nếu ngày thanh toán chưa nhập gì mặc định lấy ngày của startdate
         //ngày thanh toán ở ô Textinput của tôi đã setNumber
@@ -364,11 +364,26 @@ class TaoHopDong : AppCompatActivity() {
         }
         // Lưu hợp đồng
         btnSaveContract.setOnClickListener {
-            if(validateContract()) {
+            if (validateContract()) {
                 loadingUtil.show()
-                createAndSaveContract()
+
+                // Kiểm tra editorDieuKhoan
+                if (::editorDieuKhoan.isInitialized) {
+                    val htmlContent = editorDieuKhoan.html
+                    if (htmlContent.isNullOrBlank() || htmlContent.trim() == "<br>") {
+                        loadingUtil.hide()
+                        Toast.makeText(this, "Nội dung điều khoản không được để trống!", Toast.LENGTH_SHORT).show()
+                        return@setOnClickListener // Kết thúc hàm xử lý
+                    }
+                    // Gọi hàm lưu hợp đồng
+                    createAndSaveContract()
+                } else {
+                    loadingUtil.hide()
+                    Toast.makeText(this, "RichEditor chưa được khởi tạo!", Toast.LENGTH_SHORT).show()
+                }
             }
         }
+
 
         //ấn vào phòng trọ
         btncardview.setOnClickListener{
@@ -679,7 +694,6 @@ private fun observeViewModel() {
         txtNgayThanhToan = findViewById(R.id.editTextNgayThanhToan)
 
         // Điều khoản
-        editorDieuKhoan = findViewById(R.id.editorDieuKhoan)
 
         //note
         note = findViewById(R.id.note)
