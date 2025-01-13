@@ -3,7 +3,6 @@ package com.ph32395.staynow_datn.hieunt.view.feature.notification
 
 import android.content.Intent
 import android.net.Uri
-import android.os.Bundle
 import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -16,7 +15,6 @@ import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoiceEnd
 import com.ph32395.staynow_datn.TaoHopDong.ChiTietHopDong
 import com.ph32395.staynow_datn.databinding.ActivityNotificationBinding
-import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
 import com.ph32395.staynow_datn.fragment.contract_tenant.ContractActivity
 import com.ph32395.staynow_datn.hieunt.base.BaseActivity
 import com.ph32395.staynow_datn.hieunt.helper.Default.IntentKeys.OPEN_MANAGE_SCHEDULE_ROOM_BY_NOTIFICATION
@@ -26,14 +24,17 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_CO
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_RENTER
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_LEAVED_BY_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.NotificationTitle.TITLE_SCHEDULE_ROOM_SUCCESSFULLY
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_END_LANDLORD
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_END_TENANT
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND_LANDLORD
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_MASSAGES
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_CONTRACT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_PAYMENT_INVOICE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_REMIND_STATUS_CONTRACT
-import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_LANDLORD
+import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_TENANT
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_DENY
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_NOTI_TERMINATED_REQUEST
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_RENTER
@@ -47,6 +48,7 @@ import com.ph32395.staynow_datn.hieunt.widget.launchActivity
 import com.ph32395.staynow_datn.hieunt.widget.tap
 import com.ph32395.staynow_datn.hieunt.widget.toast
 import com.ph32395.staynow_datn.hieunt.widget.visible
+import com.ph32395.staynow_datn.quanlyhoadon.BillManagementActivity
 import com.ph32395.staynow_datn.quanlyhoadon.DetailBillActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -100,14 +102,6 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     }
                 }
 
-                TYPE_NOTI_BILL_MONTHLY -> {
-                    // Navigate to invoice creation
-                    val intent = Intent(this, CreateInvoice::class.java).apply {
-                        putExtra("CONTRACT_ID", notification.idModel)
-                    }
-                    startActivity(intent)
-                }
-
                 TYPE_NOTI_MASSAGES -> {
                     // Navigate to textingMassages
                     val intent = Intent(this, TextingMessengeActivity::class.java).apply {
@@ -116,13 +110,15 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
 
-                TYPE_NOTI_BILL_MONTHLY_REMIND,TYPE_NOTI_PAYMENT_INVOICE -> {
+                // thanh toán hóa đơn thành công
+                TYPE_NOTI_PAYMENT_INVOICE -> {
                     val intent = Intent(this, DetailBillActivity::class.java).apply {
                         putExtra("invoiceId", notification.idModel)
                     }
                     startActivity(intent)
                 }
 
+                //Hợp đồng mới
                 TYPE_NOTI_CONTRACT -> {
                     val intent = Intent(this, ChiTietHopDong::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
@@ -130,21 +126,37 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
 
+                // yêu cầu chấm dứt
                 TYPE_NOTI_TERMINATED_REQUEST -> {
-                    val intent = Intent(this,ContractActivity::class.java).apply {
+                    val intent = Intent(this, ContractActivity::class.java).apply {
                         putExtra("contractId", notification.idModel)
                     }
                     startActivity(intent)
                 }
 
-                TYPE_NOTI_TERMINATED_CONFIRM -> {
-                    val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
+                // nhắc nhở hóa đơn hàng tháng cho chủ nhà-> Tạo hóa đơn sau đó noti cho người thuê
+                TYPE_NOTI_BILL_MONTHLY_REMIND_LANDLORD -> {
+                    val intent = Intent(this, CreateInvoice::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
-                        putExtra("chamDutHopDong", "true")
                     }
                     startActivity(intent)
                 }
 
+                //nhắc nhở có hóa đơn hàng tháng hoặc tháng cuối cùng cho người thuê, hoặc khi chấm dứt hợp đồng
+                TYPE_NOTI_BILL_MONTHLY_REMIND_TENANT, TYPE_NOTI_BILL_MONTHLY_END_TENANT, TYPE_NOTI_TERMINATED_CONFIRM_TENANT -> {
+                    val intent = Intent(this, BillManagementActivity::class.java)
+                    startActivity(intent)
+                }
+
+                // nhắc nhở hóa đơn cuối cùng + chủ trọ tạo hóa đơn khi xác nhận chấm dứt hợp đồng. Nhảy vào màn tạo hóa đơn cuối cùng
+                TYPE_NOTI_BILL_MONTHLY_END_LANDLORD, TYPE_NOTI_TERMINATED_CONFIRM_LANDLORD -> {
+                    val intent = Intent(this, CreateInvoiceEnd::class.java).apply {
+                        putExtra("CONTRACT_ID", notification.idModel)
+                    }
+                    startActivity(intent)
+                }
+
+                //từ chối chấm dứt hđ
                 TYPE_NOTI_TERMINATED_DENY -> {
                     val intent = Intent(this, ContractActivity::class.java).apply {
                         putExtra("contractId", notification.idModel)
@@ -153,6 +165,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     startActivity(intent)
                 }
 
+                // thanh toán hợp đồng thành công
                 TYPE_NOTI_PAYMENT_CONTRACT -> {
                     // Navigate to invoice creation
                     val intent = Intent(this, ChiTietHopDong::class.java).apply {
@@ -160,13 +173,15 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                     }
                     startActivity(intent)
                 }
-                TYPE_NOTI_REMIND_STATUS_CONTRACT->{
+
+                // nhắc nhở thời hạn hợp đồng
+                TYPE_NOTI_REMIND_STATUS_CONTRACT -> {
                     val intent = Intent(this, ChiTietHopDong::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
                     }
                     startActivity(intent)
                 }
-                // Add more navigation cases as needed
+
                 else -> {
                 }
             }

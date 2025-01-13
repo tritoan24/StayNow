@@ -184,8 +184,16 @@ class ContractAdapter(
                             notifyTermination(
                                 itemView.context,
                                 contract,
-                                LoaiTaiKhoan.TatCa,
-                                Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM,
+                                LoaiTaiKhoan.NguoiChoThue,
+                                Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_LANDLORD,
+                                "Xác nhận chấm dứt hợp đồng",
+                                "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã được xác nhận chấm dứt bởi bạn. Hãy tạo hóa đơn cho người thuê thanh toán"
+                            )
+                            notifyTermination(
+                                itemView.context,
+                                contract,
+                                LoaiTaiKhoan.NguoiThue,
+                                Default.TypeNotification.TYPE_NOTI_TERMINATED_CONFIRM_TENANT,
                                 "Xác nhận chấm dứt hợp đồng",
                                 "Hợp đồng với mã hợp đồng ${contract.maHopDong} đã được xác nhận chấm dứt bởi ${contract.chuNha.hoTen} và đang được xử lý"
                             )
@@ -457,58 +465,6 @@ private fun notifyPayment(context: Context, contract: HopDong) {
 
 //hàm thông báo chấm dứt
 private fun notifyTermination(
-    context: Context, contract: HopDong, role: LoaiTaiKhoan,
-    loaiThongBao: String,
-    tieuDe: String,
-    tinNhan: String
-) {
-
-    val notification = NotificationModel(
-        tieuDe = tieuDe,
-        tinNhan = tinNhan,
-        ngayGuiThongBao = Calendar.getInstance().time.toString(),
-        thoiGian = "0",
-        mapLink = null,
-        daDoc = false,
-        daGui = true,
-        idModel = contract.maHopDong,
-        loaiThongBao = loaiThongBao
-    )
-
-    val factory = ViewModelFactory(context)
-    val notificationViewModel = ViewModelProvider(
-        context as AppCompatActivity,
-        factory
-    )[NotificationViewModel::class.java]
-
-    val recipientIds = when (role) {
-        LoaiTaiKhoan.NguoiThue -> listOf(contract.nguoiThue.maNguoiDung)
-        LoaiTaiKhoan.NguoiChoThue -> listOf(contract.chuNha.maNguoiDung)
-        LoaiTaiKhoan.TatCa -> listOf(
-            contract.nguoiThue.maNguoiDung,
-            contract.chuNha.maNguoiDung
-        ) // Gửi cho cả 2
-        else -> emptyList()
-    }
-
-    recipientIds.forEach { recipientId ->
-        notificationViewModel.sendNotification(notification, recipientId)
-
-        notificationViewModel.notificationStatus.observe(context, Observer { isSuccess ->
-            if (isSuccess) {
-                // Thông báo thành công
-                Toast.makeText(context, "Thông báo đã được gửi.", Toast.LENGTH_SHORT).show()
-            } else {
-                // Thông báo thất bại
-                Toast.makeText(context, "Gửi thông báo thất bại!", Toast.LENGTH_SHORT).show()
-            }
-        })
-    }
-
-}
-
-//hàm thông báo kiểm tra và cập nhật trạng thái
-private fun notifyCheckAndChangeStatus(
     context: Context, contract: HopDong, role: LoaiTaiKhoan,
     loaiThongBao: String,
     tieuDe: String,
