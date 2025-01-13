@@ -392,6 +392,8 @@ class SuaPhongTro : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         // Điền thông tin địa chỉ
         diaChi = roomDetails.diaChi
         diaChiChiTiet = roomDetails.diaChiChiTiet
+        Dc_quanhuyen = roomDetails.dcQuanHuyen
+        Dc_tinhtp = roomDetails.dcTinhTP
         maNhaTro = roomDetails.maNhaTro
         maLoaiPhong = roomDetails.maLoaiNhaTro
         Ma_gioiTinh = roomDetails.maGioiTinh

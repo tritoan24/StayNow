@@ -504,10 +504,13 @@ class SuaPhongTroDon : AppCompatActivity(), AdapterTaoPhongTroEnteredListenner {
         diaChi = roomDetails.diaChi
         diaChiChiTiet = roomDetails.diaChiChiTiet
         maNhaTro = roomDetails.maNhaTro
+        Dc_quanhuyen = roomDetails.dcQuanHuyen
+        Dc_tinhtp = roomDetails.dcTinhTP
         maLoaiPhong = roomDetails.maLoaiNhaTro
         Ma_gioiTinh = roomDetails.maGioiTinh
         TrangThaiPhong = roomDetails.trangThaiPhong
         trangThaiDuyet = roomDetails.trangThaiDuyet
+        trangThaiLuu = roomDetails.trangThaiLuu
         soLuotXemPhong = roomDetails.soLuotXemPhong.toString()
 
 

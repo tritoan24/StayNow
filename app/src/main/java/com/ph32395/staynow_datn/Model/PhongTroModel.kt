@@ -6,6 +6,8 @@ data class PhongTroModel(
     val maNguoiDung: String = "", // ma chu tro
     val maPhongTro: String = "",
     val tenPhongTro: String = "",
+    var dcQuanHuyen: String = "",
+    val dcTinhTP: String = "",
     val diaChi: String = "",
     val diaChiChiTiet: String = "",
     val moTaChiTiet: String? = "",
@@ -27,7 +29,7 @@ data class PhongTroModel(
     var maNhaTro: String = "",
 ): Serializable{
 //    constructor() : this("", "", "", "", "", "", "","", false, 0.0, 0, 0L, 0L,ArrayList(), "")
-    constructor() : this("", "", "", "", "", "", "",false, 0.0, 0, 0L, 0L, 0L,ArrayList(), "")
+    constructor() : this("", "", "", "", "", "", "","", "",false, 0.0, 0, 0L, 0L, 0L,ArrayList(), "")
 
     // Thêm một companion object để tạo PhongTroModel từ Firestore document
     companion object {
