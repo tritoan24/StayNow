@@ -18,7 +18,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.ph32395.staynow_datn.ChucNangNhanTinCC.TextingMessengeActivity
 import com.ph32395.staynow_datn.R
-import com.ph32395.staynow_datn.TaoHoaDon.CreateInvoice
 import com.ph32395.staynow_datn.fragment.contract_tenant.BillContractActivity
 import com.ph32395.staynow_datn.hieunt.database.db.AppDatabase
 import com.ph32395.staynow_datn.hieunt.helper.Default.Collection.IS_PUSHED
@@ -41,7 +40,6 @@ import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHE
 import com.ph32395.staynow_datn.hieunt.helper.Default.TypeNotification.TYPE_SCHEDULE_ROOM_TENANT
 import com.ph32395.staynow_datn.hieunt.model.NotificationModel
 import com.ph32395.staynow_datn.hieunt.view.feature.notification.NotificationActivity
-import com.ph32395.staynow_datn.quanlyhoadon.BillManagementActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
