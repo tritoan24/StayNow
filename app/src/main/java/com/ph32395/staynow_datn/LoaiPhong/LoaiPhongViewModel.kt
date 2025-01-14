@@ -14,14 +14,14 @@ class LoaiPhongViewModel : ViewModel() {
             .get()
             .addOnSuccessListener { result ->
                 val loaiPhongList = mutableListOf<LoaiPhong>()
-                for (document in result){
+                for (document in result) {
                     // Lấy các giá trị từ Firestore
                     val maLoaiPhong = document.getString("maLoaiPhong") ?: ""
                     val tenLoaiPhong = document.getString("tenLoaiPhong") ?: ""
                     val status = document.getBoolean("trangThai") ?: false
 
-                    // Kiểm tra nếu Status là true thì mới thêm vào danh sách
-                    if (status) {
+                    // Kiểm tra nếu Status là true và tenLoaiPhong không phải "Tất Cả" thì mới thêm vào danh sách
+                    if (status && tenLoaiPhong != "Tất Cả") {
                         loaiPhongList.add(
                             LoaiPhong(
                                 maLoaiPhong = maLoaiPhong,
@@ -30,14 +30,14 @@ class LoaiPhongViewModel : ViewModel() {
                             )
                         )
                     }
-                    }
-                    listLoaiPhong.value = loaiPhongList
                 }
-                    .addOnFailureListener { exception ->
-                        // Xử lý lỗi nếu có
-                        listLoaiPhong.value = emptyList()
-                    }
-
+                listLoaiPhong.value = loaiPhongList
             }
-        fun getListLoaiPhong(): MutableLiveData<List<LoaiPhong>> = listLoaiPhong
+            .addOnFailureListener { exception ->
+                // Xử lý lỗi nếu có
+                listLoaiPhong.value = emptyList()
+            }
     }
+
+    fun getListLoaiPhong(): MutableLiveData<List<LoaiPhong>> = listLoaiPhong
+}

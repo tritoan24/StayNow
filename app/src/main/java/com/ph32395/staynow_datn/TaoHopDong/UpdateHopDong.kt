@@ -420,6 +420,7 @@ class UpdateHopDong(
         binding.tvEndDate.text = contract.ngayKetThuc
         binding.editTextNgayThanhToan.setText(contract.ngayThanhToan.toString())
         binding.editTextSoDien.setText(contract.soDienCu.toString())
+        binding.editTextSoNuoc.setText(contract.soNuocCu.toString())
         binding.editTextSoNguoi.setText(contract.soNguoiO.toString())
         binding.editorDieuKhoan.html = contract.dieuKhoan
         binding.note.setText(contract.ghiChu)

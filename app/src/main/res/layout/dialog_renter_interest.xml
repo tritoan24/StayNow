@@ -35,12 +35,33 @@
             android:fontFamily="serif"
             />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_agree"
+            android:layout_marginEnd="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="StayNow sẽ thu phí 10% tiền phòng của hóa đơn hợp đồng"
+            android:letterSpacing="0.05"
+            android:lineSpacingExtra="2dp"
+            android:fontFamily="serif"
+            />
+    </LinearLayout>
+
 
     <!--    Text 1-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal">
         <ImageView
             android:layout_width="15dp"

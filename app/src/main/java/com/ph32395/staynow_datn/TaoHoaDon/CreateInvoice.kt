@@ -73,6 +73,7 @@ class CreateInvoice : AppCompatActivity() {
 
 
         val idHopDong = intent.getStringExtra("CONTRACT_ID")
+        val hoaDonHangThang = intent.getStringExtra("hoaDonHangThang")
 
         idHopDong?.let {
             viewModelHopDong.fetchInvoiceDetails(it)
@@ -81,7 +82,7 @@ class CreateInvoice : AppCompatActivity() {
         // Quan sát dữ liệu và cập nhật UI
         viewModelHopDong.invoiceDetails.observe(this) { fetchedInvoice ->
             invoice = fetchedInvoice
-            updateUI(invoice)
+            updateUI(invoice,hoaDonHangThang)
             setupCalculationListeners()
         }
         if (idHopDong != null) {
@@ -101,7 +102,7 @@ class CreateInvoice : AppCompatActivity() {
     // Thêm biến flag để kiểm soát việc lưu dữ liệu
     private var isFinalCalculation = false
 
-    private fun updateUI(invoice: Invoice) {
+    private fun updateUI(invoice: Invoice,hoaDonHangThang:String?) {
 
         // Tính toán các giá trị ban đầu
         tienPhong = invoice.tienPhong
@@ -178,7 +179,7 @@ class CreateInvoice : AppCompatActivity() {
                 Toast.makeText(this, "Số điện cũ đã bị thay đổi", Toast.LENGTH_SHORT).show()
             }
             loadingUtil.show()
-            saveInvoice()
+            saveInvoice(hoaDonHangThang)
         }
 
         // định dạng số tiền nhập vào
@@ -324,7 +325,7 @@ class CreateInvoice : AppCompatActivity() {
         Log.d("Invoice1", "Utility Fee Details: $utilityFeeDetails")
     }
 
-    private fun saveInvoice() {
+    private fun saveInvoice(hoaDonHangThang:String?) {
         // Phương thức lưu hóa đơn
         // Sử dụng utilityFeeDetails để lưu chi tiết phí
         // Triển khai logic lưu vào Firestore hoặc cơ sở dữ liệu của bạn
@@ -346,7 +347,7 @@ class CreateInvoice : AppCompatActivity() {
             tongPhiCoDinh = tongTienDichVuCoDinh,
             tongPhiBienDong = tongTienPhiBienDong,
             tongTienDichVu = tongPhiDichVu,
-            kieuHoadon = invoice.kieuHoadon,
+            kieuHoadon =if(hoaDonHangThang==null) invoice.kieuHoadon else "HoaDonHangThang",
             paymentDate = "Ngày thanh toán",
             soDienCu = binding.editTextSoDienCu.text.toString().toIntOrNull() ?: 0,
             soNuocCu = binding.editTextSoNuocCu.text.toString().toIntOrNull() ?: 0,

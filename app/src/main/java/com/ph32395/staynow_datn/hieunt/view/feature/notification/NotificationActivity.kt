@@ -138,6 +138,7 @@ class NotificationActivity : BaseActivity<ActivityNotificationBinding, Notificat
                 TYPE_NOTI_BILL_MONTHLY_REMIND_LANDLORD -> {
                     val intent = Intent(this, CreateInvoice::class.java).apply {
                         putExtra("CONTRACT_ID", notification.idModel)
+                        putExtra("hoaDonHangThang", "true")
                     }
                     startActivity(intent)
                 }

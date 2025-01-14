@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.ph32395.staynow_datn.ChucNangChung.LoadingUtil
 import com.ph32395.staynow_datn.R
 import java.util.UUID
 
@@ -27,6 +28,9 @@ class PaymentInfoActivity : AppCompatActivity() {
 
     private var qrCodeUri: Uri? = null
 
+    private lateinit var loadingUtil: LoadingUtil
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_payment_info)
@@ -38,6 +42,9 @@ class PaymentInfoActivity : AppCompatActivity() {
         btnUploadQr = findViewById(R.id.btnUploadQr)
         btnSavePaymentInfo = findViewById(R.id.btnSavePaymentInfo)
         mAuth = FirebaseAuth.getInstance()
+
+        loadingUtil = LoadingUtil(this)
+
 
         // Xử lý tải mã QR lên
         btnUploadQr.setOnClickListener {
@@ -52,9 +59,13 @@ class PaymentInfoActivity : AppCompatActivity() {
             val phone = etPhoneNumber.text.toString()
             val accountName = etAccountName.text.toString()
 
+            loadingUtil.show()
+
             if (phone.isEmpty() || accountName.isEmpty()) {
                 Toast.makeText(this, "Vui lòng điền đầy đủ thông tin!", Toast.LENGTH_SHORT).show()
+                loadingUtil.hide()
                 return@setOnClickListener
+
             }
 
             // Thực hiện lưu thông tin lên server
@@ -92,6 +103,7 @@ class PaymentInfoActivity : AppCompatActivity() {
         val userId = mAuth.currentUser?.uid
         if (userId == null) {
             Toast.makeText(this, "Người dùng chưa đăng nhập!", Toast.LENGTH_SHORT).show()
+            loadingUtil.hide()
             return
         }
 
@@ -103,6 +115,7 @@ class PaymentInfoActivity : AppCompatActivity() {
                     savePaymentInfoToFirestore(userId, phone, accountName, qrUrl)
                 } else {
                     Toast.makeText(this, "Lưu thông tin thanh toán thất bại!", Toast.LENGTH_SHORT).show()
+                    loadingUtil.hide()
                 }
             }
         } else {
@@ -127,6 +140,7 @@ class PaymentInfoActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Lưu thông tin thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
+                loadingUtil.hide()
             }
     }
     private fun updateTrangThaiPTTT(userId: String, paymentStatus: Boolean) {
@@ -143,9 +157,11 @@ class PaymentInfoActivity : AppCompatActivity() {
             .updateChildren(updates)
             .addOnSuccessListener {
                 Toast.makeText(this, "Cập nhật trạng thái thanh toán thành công!", Toast.LENGTH_SHORT).show()
+                loadingUtil.hide()
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Cập nhật trạng thái thanh toán thất bại: ${e.message}", Toast.LENGTH_SHORT).show()
+                loadingUtil.hide()
             }
     }
 
