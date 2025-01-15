@@ -521,27 +521,27 @@
                         </LinearLayout>
                         
                         <!--                    Tao hop dong-->
-                        <LinearLayout
-                            android:id="@+id/btnTaoHopDong"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:background="?attr/selectableItemBackground"
-                            android:layout_weight="1">
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/btnTaoHopDong"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="vertical"-->
+<!--                            android:gravity="center_horizontal"-->
+<!--                            android:clickable="true"-->
+<!--                            android:focusable="true"-->
+<!--                            android:background="?attr/selectableItemBackground"-->
+<!--                            android:layout_weight="1">-->
 
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/ic_tao_hop_dong"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/Create_a_Guild_Meeting"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
+<!--                            <ImageView-->
+<!--                                android:layout_width="25dp"-->
+<!--                                android:layout_height="25dp"-->
+<!--                                android:src="@drawable/ic_tao_hop_dong"/>-->
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="@string/Create_a_Guild_Meeting"-->
+<!--                                android:textSize="12sp"/>-->
+<!--                        </LinearLayout>-->
 
                         <!--                    Huy Phong-->
                         <LinearLayout
@@ -659,27 +659,27 @@
                         </LinearLayout>
 
                         <!--                    Tao hop dong-->
-                        <LinearLayout
-                            android:id="@+id/btnTaoHopDongLuu"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:orientation="vertical"
-                            android:gravity="center_horizontal"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:background="?attr/selectableItemBackground"
-                            android:layout_weight="1">
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/btnTaoHopDongLuu"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="match_parent"-->
+<!--                            android:orientation="vertical"-->
+<!--                            android:gravity="center_horizontal"-->
+<!--                            android:clickable="true"-->
+<!--                            android:focusable="true"-->
+<!--                            android:background="?attr/selectableItemBackground"-->
+<!--                            android:layout_weight="1">-->
 
-                            <ImageView
-                                android:layout_width="25dp"
-                                android:layout_height="25dp"
-                                android:src="@drawable/ic_tao_hop_dong"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/Create_a_Guild_Meeting"
-                                android:textSize="12sp"/>
-                        </LinearLayout>
+<!--                            <ImageView-->
+<!--                                android:layout_width="25dp"-->
+<!--                                android:layout_height="25dp"-->
+<!--                                android:src="@drawable/ic_tao_hop_dong"/>-->
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:text="@string/Create_a_Guild_Meeting"-->
+<!--                                android:textSize="12sp"/>-->
+<!--                        </LinearLayout>-->
 
                         <!--                    Huy Phong-->
                         <LinearLayout

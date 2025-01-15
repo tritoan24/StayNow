@@ -34,6 +34,16 @@
             android:textSize="14sp"
             tools:ignore="HardcodedText" />
 
+        <!-- Kiểu hóa đơn -->
+        <TextView
+            android:id="@+id/tvBillType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kiểu hóa đơn"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:ignore="HardcodedText" />
+
         <!-- Tổng tiền -->
         <TextView
             android:id="@+id/tvTotalAmount"
