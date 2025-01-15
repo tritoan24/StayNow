@@ -158,7 +158,7 @@ class ContractAdapter(
                         showConfirmDialog(
                             context = itemView.context,
                             title = "Xác nhận",
-                            message = "Bạn chắc chắn đồng ý chấm dứt hợp đồng này?"
+                            message = "Bạn chắc chắn đồng ý chấm dứt hợp đồng này?\n Hợp đồng chỉ được yêu cầu chấm dứt 1 lần duy nhất"
                         ) {
                             llBtnTermination.visibility = View.GONE
                             tvTermination.visibility = View.GONE
